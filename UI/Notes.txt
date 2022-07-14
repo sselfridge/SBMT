@@ -1,0 +1,6 @@
+On Reg:
+- Create user profile
+
+
+on reg stretch:
+-get PR for all segments
