@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { ThemeProvider } from "@mui/material/styles";
-import theme from "./theme/theme";
+import theme from "theme/theme";
 import reportWebVitals from "./reportWebVitals";
 
-import RootRoute from "./routes/RootRoute";
+import MeinRoutes from "./routes/MeinRoutes";
 
 import "./index.css";
 
@@ -12,7 +12,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <RootRoute />
+      <MeinRoutes />
     </ThemeProvider>
   </React.StrictMode>
 );

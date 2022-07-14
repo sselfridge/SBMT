@@ -2,8 +2,8 @@ import logo from "./logo.svg";
 import "./App.css";
 
 import Leaderboard from "./components/Leaderboard";
-import { Outlet, Link } from "react-router-dom";
-import NavBar from "./components/NavBar";
+import { Outlet } from "react-router-dom";
+import NavBar from "components/AppHeader";
 
 function App(appProps) {
   console.info("appProps: ", appProps);

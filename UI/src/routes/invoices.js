@@ -4,6 +4,8 @@ import {
   useParams,
   useSearchParams,
 } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+
 export default function Invoices(props) {
   console.info("invoice props: ", props);
 
@@ -21,6 +23,7 @@ export default function Invoices(props) {
   return (
     <main style={{ padding: "1rem 0" }}>
       <h2>Invoices</h2>
+      <Outlet />
     </main>
   );
 }

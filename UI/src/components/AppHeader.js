@@ -7,7 +7,9 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 
-export default function NavBar() {
+import logo from "assets/logoV1.svg";
+
+export default function AppHeader() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -21,9 +23,8 @@ export default function NavBar() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            SBMT
-          </Typography>
+
+          {/* <img src={logo} alt="rabble" /> */}
           <Button color="inherit">Login</Button>
         </Toolbar>
       </AppBar>

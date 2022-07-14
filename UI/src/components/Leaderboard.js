@@ -22,7 +22,8 @@ const NEWCOMP = (props) => {
       content
       <br />
       <Link to="/invoices">Invoices</Link> |{" "}
-      <Link to="/expenses">Expenses</Link>
+      <Link to="/expenses">Expenses</Link>|{" "}
+      <Link to="/invoices/expenses">Invoice Expenses</Link>
     </MyBox>
   );
 };
