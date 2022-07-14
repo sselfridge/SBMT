@@ -6,5 +6,5 @@ const theme = createTheme({
   palette,
 });
 
-console.info("theme: ", JSON.stringify(theme.palette));
+// console.info("theme: ", JSON.stringify(theme.palette));
 export default theme;

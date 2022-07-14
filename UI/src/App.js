@@ -1,16 +1,18 @@
 import logo from "./logo.svg";
 import "./App.css";
-import Leaderboard from "./components/Leaderboard";
-import { ThemeProvider, styled } from "@mui/material/styles";
-import theme from "./theme/theme";
 
-function App() {
+import Leaderboard from "./components/Leaderboard";
+import { Outlet, Link } from "react-router-dom";
+import NavBar from "./components/NavBar";
+
+function App(appProps) {
+  console.info("appProps: ", appProps);
   return (
     <div className="App">
+      <NavBar />
       <header className="App-header">
-        <ThemeProvider theme={theme}>
-          <Leaderboard />
-        </ThemeProvider>
+        <Leaderboard />
+        <Outlet />
       </header>
     </div>
   );

@@ -3,9 +3,9 @@ import PropTypes from "prop-types";
 import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-const MyBox = styled(Box)(({ theme }) => {
-  console.info("theme: ", theme);
+import { Link } from "react-router-dom";
 
+const MyBox = styled(Box)(({ theme }) => {
   return {
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.primary.contrastText,
@@ -16,7 +16,15 @@ const MyBox = styled(Box)(({ theme }) => {
 
 const NEWCOMP = (props) => {
   const { prop } = props;
-  return <MyBox>content</MyBox>;
+  console.info("props: ", props);
+  return (
+    <MyBox>
+      content
+      <br />
+      <Link to="/invoices">Invoices</Link> |{" "}
+      <Link to="/expenses">Expenses</Link>
+    </MyBox>
+  );
 };
 
 NEWCOMP.propTypes = {
