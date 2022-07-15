@@ -11,7 +11,6 @@ function App(appProps) {
     <div className="App">
       <NavBar />
       <header className="App-header">
-        <Leaderboard />
         <Outlet />
       </header>
     </div>

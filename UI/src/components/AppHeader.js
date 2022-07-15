@@ -1,13 +1,21 @@
 import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
+import {
+  AppBar,
+  Box,
+  Toolbar,
+  Typography,
+  Button,
+  IconButton,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 
+import { Link } from "react-router-dom";
+
 import logo from "assets/logoV1.svg";
+
+import { users } from "mockData/data";
+
+const user = users[0];
 
 export default function AppHeader() {
   return (
@@ -23,9 +31,29 @@ export default function AppHeader() {
           >
             <MenuIcon />
           </IconButton>
-
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1, fontSize: 30 }}
+          >
+            <span className="sbmt" sx={{}}>
+              SBMT
+            </span>
+          </Typography>{" "}
           {/* <img src={logo} alt="rabble" /> */}
-          <Button color="inherit">Login</Button>
+          <Button color="inherit">{`${user.firstname} ${user.lastname}`}</Button>
+        </Toolbar>
+        <Toolbar sx={{ justifyContent: "flex-end" }}>
+          <Link to="/leaderboard">
+            <Button variant="standard" color="secondary">
+              Leaderboard
+            </Button>
+          </Link>
+          <Link to="/segments">
+            <Button variant="standard" color="secondary">
+              Segments
+            </Button>
+          </Link>
         </Toolbar>
       </AppBar>
     </Box>
