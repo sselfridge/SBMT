@@ -1,7 +1,7 @@
-import { decode } from "@mapbox/polyline";
+import { toGeoJSON } from "@mapbox/polyline";
 
 export const addSegmentToMap = (map, segment) => {
-  const coordinates = getCoordinates(segment);
+  const geometry = getGeometry(segment);
   const { id } = segment;
 
   if (!map.getSource(`${id}`)) {
@@ -10,10 +10,7 @@ export const addSegmentToMap = (map, segment) => {
       data: {
         type: "Feature",
         properties: {},
-        geometry: {
-          type: "LineString",
-          coordinates,
-        },
+        geometry,
       },
     });
     map.addLayer({
@@ -30,18 +27,19 @@ export const addSegmentToMap = (map, segment) => {
       },
     });
   }
+  map.on("mouseover", `${id}`, () => {
+    console.info("id:", id);
+  });
 };
 
-const getCoordinates = (segment) => {
+const getGeometry = (segment) => {
   const polyline = segment?.map?.polyline;
-  let coords = [];
+  let geoJson = {
+    type: "lineString",
+    coordinates: [],
+  };
   if (polyline) {
-    coords = decode(polyline);
-    coords.forEach((a) => {
-      let temp = a[0];
-      a[0] = a[1];
-      a[1] = temp;
-    });
+    geoJson = toGeoJSON(polyline);
   }
-  return coords;
+  return geoJson;
 };

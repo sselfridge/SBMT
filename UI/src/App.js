@@ -6,7 +6,6 @@ import { Outlet } from "react-router-dom";
 import NavBar from "components/AppHeader";
 
 function App(appProps) {
-  console.info("appProps: ", appProps);
   return (
     <div className="App">
       <NavBar />

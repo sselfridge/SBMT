@@ -122,10 +122,8 @@ const Segments = (props) => {
   });
 
   React.useEffect(() => {
-    if (map.current && dataIdx !== 0) {
-      console.info("Add Segment");
+    if (map?.current?.loaded()) {
       const segment = segments[dataIdx];
-      console.info("segment: ", segment.name);
       addSegmentToMap(map.current, segment);
     }
   }, [dataIdx]);
