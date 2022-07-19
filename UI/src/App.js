@@ -10,9 +10,9 @@ function App(appProps) {
   return (
     <div className="App">
       <NavBar />
-      <header className="App-header">
+      <main className="App-header">
         <Outlet />
-      </header>
+      </main>
     </div>
   );
 }

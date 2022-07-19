@@ -44,6 +44,11 @@ export default function AppHeader() {
           <Button color="inherit">{`${user.firstname} ${user.lastname}`}</Button>
         </Toolbar>
         <Toolbar sx={{ justifyContent: "flex-end" }}>
+          <Link to="/demo">
+            <Button variant="standard" color="secondary">
+              Demo
+            </Button>
+          </Link>
           <Link to="/leaderboard">
             <Button variant="standard" color="secondary">
               Leaderboard
@@ -52,6 +57,11 @@ export default function AppHeader() {
           <Link to="/segments">
             <Button variant="standard" color="secondary">
               Segments
+            </Button>
+          </Link>
+          <Link to="/athletes">
+            <Button variant="standard" color="secondary">
+              Athletes
             </Button>
           </Link>
         </Toolbar>

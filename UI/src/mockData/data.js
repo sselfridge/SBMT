@@ -1,4 +1,4 @@
-const segments = [
+export const segments = [
   {
     id: 658277,
     resource_state: 3,
@@ -1168,3 +1168,5 @@ const segment_efforts = [
     kom_rank: null,
   },
 ];
+
+const data = [{}];
