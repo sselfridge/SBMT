@@ -1,4 +1,7 @@
 import logo from "./logo.svg";
+//https://stackoverflow.com/a/50948494
+import "mapbox-gl/dist/mapbox-gl.css";
+
 import "./App.css";
 
 import Leaderboard from "./components/Leaderboard";

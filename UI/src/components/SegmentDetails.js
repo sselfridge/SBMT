@@ -11,61 +11,25 @@ import {
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import { addSegmentToMap } from "utils/mapUtils";
 
+import marker from "assets/maki/marker.svg";
+
+import redMarkerSvg from "assets/hackyColors/redMarker.svg";
+import greenMarkerSvg from "assets/hackyColors/greenMarker.svg";
+import { ReactComponent as ReactLogo } from "assets/maki/marker.svg";
 import { segments } from "mockData/data";
 import keys from "config";
 
 mapboxgl.accessToken = keys.mapBox;
 
-const datas = [
-  [
-    [-122.483696, 37.833818],
-    [-122.483482, 37.833174],
-    [-122.483396, 37.8327],
-    [-122.483568, 37.832056],
-    [-122.48404, 37.831141],
-    [-122.48404, 37.830497],
-    [-122.483482, 37.82992],
-    [-122.483568, 37.829548],
-    [-122.48507, 37.829446],
-    [-122.4861, 37.828802],
-    [-122.486958, 37.82931],
-    [-122.487001, 37.830802],
-    [-122.487516, 37.831683],
-    [-122.488031, 37.832158],
-    [-122.488889, 37.832971],
-    [-122.489876, 37.832632],
-    [-122.490434, 37.832937],
-    [-122.49125, 37.832429],
-    [-122.491636, 37.832564],
-    [-122.492237, 37.833378],
-    [-122.493782, 37.833683],
-  ],
-  [
-    [-122.487001, 37.830802],
-    [-122.487516, 37.831683],
-    [-122.488031, 37.832158],
-    [-122.488889, 37.832971],
-    [-122.489876, 37.832632],
-    [-122.490434, 37.832937],
-    [-122.49125, 37.832429],
-    [-122.491636, 37.832564],
-    [-122.492237, 37.833378],
-    [-122.493782, 37.833683],
-  ],
-  [
-    [-122.483696, 37.833818],
-    [-122.483482, 37.833174],
-    [-122.483396, 37.8327],
-    [-122.483568, 37.832056],
-    [-122.48404, 37.831141],
-    [-122.48404, 37.830497],
-    [-122.483482, 37.82992],
-    [-122.483568, 37.829548],
-    [-122.48507, 37.829446],
-    [-122.4861, 37.828802],
-    [-122.486958, 37.82931],
-  ],
-];
+let addedIds = [];
+
+let redMarker = new Image(15, 15);
+redMarker.src = redMarkerSvg;
+console.info("redMarker: ", redMarker);
+
+let greenMarker = new Image(15, 15);
+greenMarker.src = greenMarkerSvg;
+console.info("greenMarker: ", greenMarker);
 
 const MyBox = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -92,45 +56,84 @@ const Segments = (props) => {
       center: [lng, lat],
       zoom: zoom,
     });
-
-    // map.current.on("load", () => {
-    // map.current.addSource("route", {
-    //   type: "geojson",
-    //   data: {
-    //     type: "Feature",
-    //     properties: {},
-    //     geometry: {
-    //       type: "LineString",
-    //       coordinates: datas[dataIdx],
-    //     },
-    //   },
-    // });
-    // map.current.addLayer({
-    //   id: "route",
-    //   type: "line",
-    //   source: "route",
-    //   layout: {
-    //     "line-join": "miter",
-    //     "line-cap": "round",
-    //   },
-    //   paint: {
-    //     "line-color": "#ff0088",
-    //     "line-width": 4,
-    //   },
-    // });
-    // });
+    map.current.addImage("redMarker", redMarker);
+    map.current.addImage("greenMarker", greenMarker);
+    map.current.on("load", () => {
+      // function addMarkers() {
+      //   /* For each feature in the GeoJSON object above: */
+      //   for (const marker of stores.features) {
+      //     /* Create a div element for the marker. */
+      //     const el = document.createElement("div");
+      //     /* Assign a unique `id` to the marker. */
+      //     el.id = `marker-${marker.properties.id}`;
+      //     /* Assign the `marker` class to each marker for styling. */
+      //     el.className = "redMark";
+      //     /**
+      //      * Create a marker using the div element
+      //      * defined above and add it to the map.
+      //      **/
+      //     new mapboxgl.Marker(el, { offset: [0, -23] })
+      //       .setLngLat(marker.geometry.coordinates)
+      //       .addTo(map);
+      //   }
+      // }
+      // map.current.addSource("route", {
+      //   type: "geojson",
+      //   data: {
+      //     type: "Feature",
+      //     properties: {},
+      //     geometry: {
+      //       type: "LineString",
+      //       coordinates: datas[dataIdx],
+      //     },
+      //   },
+      // });
+      // map.current.addLayer({
+      //   id: "route",
+      //   type: "line",
+      //   source: "route",
+      //   layout: {
+      //     "line-join": "miter",
+      //     "line-cap": "round",
+      //   },
+      //   paint: {
+      //     "line-color": "#ff0088",
+      //     "line-width": 4,
+      //   },
+      // });
+    });
   });
 
   React.useEffect(() => {
     if (map?.current?.loaded()) {
-      const segment = segments[dataIdx];
-      addSegmentToMap(map.current, segment);
+      if (dataIdx !== segments.length) {
+        const segment = segments[dataIdx];
+        addSegmentToMap(map.current, segment);
+        addedIds.push(segment.id);
+      } else {
+        console.info("CLEAR!!");
+        addedIds.forEach((id) => {
+          map.current.removeLayer(`${id}`);
+          map.current.removeLayer(`${id}-start`);
+          map.current.removeSource(`${id}`);
+          map.current.removeSource(`${id}-start`);
+        });
+        addedIds = [];
+      }
     }
+
+    // new mapboxgl.Marker({
+    //   color: "#FFFFFF",
+    //   draggable: true,
+    //   offset: [0, -50 / 2],
+    // })
+    //   .setLngLat([lng, lat])
+    //   .addTo(map.current);
   }, [dataIdx]);
 
   const swapData = () => {
     setDataIdx((curr) => {
-      const newVal = (curr + 1) % segments.length;
+      const newVal = (curr + 1) % (segments.length + 1);
       return newVal;
     });
   };
@@ -138,6 +141,7 @@ const Segments = (props) => {
   return (
     <MyBox>
       <header>Segment Detail {params.id}</header>
+
       <button onClick={swapData}>Do Stuff</button>
       <main>
         <div
