@@ -2,7 +2,7 @@ import React, { useState, useCallback, useRef } from "react";
 import PropTypes from "prop-types";
 import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { Outlet, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 
 const MyBox = styled(Box)(({ theme }) => ({
