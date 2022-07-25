@@ -24,6 +24,15 @@ const MyBox = styled(Box)(({ theme }) => ({
   color: theme.palette.common.black,
   backgroundColor: theme.palette.background.paper,
 }));
+const ProfileImg = styled("img")(({ theme }) => ({
+  padding: 8,
+  borderRadius: 4,
+  height: 40,
+  width: 40,
+  color: theme.palette.common.black,
+  backgroundColor: theme.palette.background.paper,
+  fontSize: 3,
+}));
 
 const Athletes = (props) => {
   const { prop } = props;
@@ -45,8 +54,11 @@ const Athletes = (props) => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>
-                {user.firstname} {user.lastname}
+              <TableCell sx={{ display: "flex" }}>
+                <ProfileImg src={user.profile} alt="profile_img" />{" "}
+                <div>
+                  {user.firstname} {user.lastname}
+                </div>
               </TableCell>
             </TableRow>
           </TableHead>

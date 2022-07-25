@@ -220,27 +220,21 @@ export const users = [
   },
   {
     id: 234670,
-    // username: "sirclesam",
-    // resource_state: 2,
+
     firstname: "Tina ",
     lastname: "Grant | LG",
-    // bio: "",
     city: "Culver City",
     state: "California",
     country: "United States",
     sex: "F",
     premium: true,
     summit: true,
-    // created_at: "2012-09-06T17:53:52Z",
-    // updated_at: "2022-07-14T16:52:23Z",
     badge_type_id: 1, //Maybe this is the pro icon?
     weight: 63.9144,
     profile_medium:
       "https://dgalywyr863hv.cloudfront.net/pictures/athletes/1075670/948003/4/medium.jpg",
     profile:
       "https://dgalywyr863hv.cloudfront.net/pictures/athletes/1075670/948003/4/large.jpg",
-    // friend: null,
-    // follower: null,
   },
 ];
 

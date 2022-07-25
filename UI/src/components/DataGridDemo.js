@@ -145,6 +145,8 @@ const StyledBox = styled(Box)(({ theme }) => ({
   flexDirection: "column",
   height: 600,
   width: "100%",
+  backgroundColor: theme.palette.background.paper,
+
   "& .MuiFormGroup-options": {
     alignItems: "center",
     paddingBottom: theme.spacing(1),
