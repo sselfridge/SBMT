@@ -4,13 +4,18 @@ import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
+import SegmentMap from "./SegmentMap";
+
+import { segments } from "mockData/data";
 
 const MyBox = styled(Box)(({ theme }) => ({
   height: "80vh",
-  width: "75vw",
+  width: "95vw",
   padding: 8,
   borderRadius: 4,
   backgroundColor: theme.palette.background.paper,
+  display: "flex",
+  flexDirection: "column",
 }));
 
 const rows = [
@@ -45,6 +50,7 @@ const Segments = (props) => {
   const { prop } = props;
   return (
     <MyBox>
+      <SegmentMap segments={segments} />
       <DataGrid
         rows={rows}
         columns={columns}

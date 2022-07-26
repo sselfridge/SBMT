@@ -1,83 +1,78 @@
 import { toGeoJSON } from "@mapbox/polyline";
+import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 
 export const addSegmentToMap = (map, segment) => {
   const geometry = getGeometry(segment);
-  const { id, start_latlng, end_latlng } = segment;
+  const { id, start_latlng } = segment;
 
   const startCoord = start_latlng.slice().reverse();
-  const endCoord = end_latlng.slice().reverse();
 
-  console.info("red\t", map.hasImage("redMarker"));
-  console.info("green\t", map.hasImage("greenMarker"));
+  const idString = `${id}`;
+  console.info("idString: ", idString);
 
-  if (!map.getSource(`${id}`)) {
-    map.addSource(`${id}`, {
-      type: "geojson",
-      data: {
-        type: "Feature",
-        properties: {},
-        geometry,
-      },
-    });
-    map.addSource(`${id}-start`, {
-      type: "geojson",
-      data: {
-        type: "Feature",
-        properties: { ...segment },
-        geometry: { type: "Point", coordinates: startCoord },
-      },
-    });
-    map.addSource(`${id}-end`, {
-      type: "geojson",
-      data: {
-        type: "Feature",
-        properties: { ...segment },
-        geometry: { type: "Point", coordinates: endCoord },
-      },
-    });
+  map.addSource(idString, {
+    type: "geojson",
+    data: {
+      type: "Feature",
+      properties: {},
+      geometry,
+    },
+  });
+  map.meinMarkers.sources.push(idString);
+  // map.addSource(`${id}-start`, {
+  //   type: "geojson",
+  //   data: {
+  //     type: "Feature",
+  //     properties: { ...segment },
+  //     geometry: { type: "Point", coordinates: startCoord },
+  //   },
+  // });
+  // map.addSource(`${id}-end`, {
+  //   type: "geojson",
+  //   data: {
+  //     type: "Feature",
+  //     properties: { ...segment },
+  //     geometry: { type: "Point", coordinates: endCoord },
+  //   },
+  // });
 
-    map.addLayer({
-      id: `${id}`,
-      type: "line",
-      source: `${id}`,
-      layout: {
-        "line-join": "miter",
-        "line-cap": "round",
-      },
-      paint: {
-        "line-color": "#ff0088",
-        "line-width": 4,
-      },
-    });
+  map.addLayer({
+    id: `${id}`,
+    type: "line",
+    source: `${id}`,
+    layout: {
+      "line-join": "miter",
+      "line-cap": "round",
+    },
+    paint: {
+      "line-color": "#ff0088",
+      "line-width": 4,
+    },
+  });
+  map.meinMarkers.layers.push(idString);
 
-    map.addLayer({
-      id: `${id}-start`,
-      type: "symbol",
-      source: `${id}-start`,
-      layout: {
-        "icon-image": "greenMarker", // reference the image
-        "icon-size": 1,
-      },
-    });
-    map.addLayer({
-      id: `${id}-end`,
-      type: "symbol",
-      source: `${id}-end`,
-      layout: {
-        "icon-image": "greenMarker", // reference the image
-        "icon-size": 1,
-      },
-    });
-    console.info(map.getSource(`${id}`));
-    console.info(map.getSource(`${id}-start`));
-    console.info(map.getSource(`${id}-end`));
+  // const markerRed = new mapboxgl.Marker({
+  //   color: "#ff0000",
+  //   // draggable: true,
+  //   offset: [0, -50 / 2],
+  //   scale: 0.5,
+  // })
+  //   .setLngLat(endCoord)
+  //   .addTo(map);
 
-    console.info(map.getLayer(`${id}`));
-    console.info(map.getLayer(`${id}-start`));
-    console.info(map.getLayer(`${id}-end`));
-    // const checkSource = map.getSource(`${id}-start`);
-    // console.info("checkSource: ", checkSource);
-  }
+  // if (map.meinMarkers) map.meinMarkers.push(markerRed);
+
+  const markerGreen = new mapboxgl.Marker({
+    color: "#008000",
+    // draggable: true,
+    // offset: [0, -50 / 2],
+    scale: 0.5,
+  })
+    .setLngLat(startCoord)
+    .addTo(map);
+
+  map.meinMarkers.markers.push(markerGreen);
+
   map.on("mouseover", `${id}`, () => {
     console.info("mouse over seg id:", id);
   });
