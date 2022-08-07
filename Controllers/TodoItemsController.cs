@@ -19,7 +19,7 @@ namespace TodoApi.Controllers
   [ApiController]
   public class TodoItemsController : ControllerBase
   {
-    private const int V = 1205724;
+    private const int V = 2;
     private readonly TodoContext _context;
 
     private string GenerateJwtToken()
@@ -79,7 +79,7 @@ namespace TodoApi.Controllers
 
 
 
-      //string? token = HttpContext.Request.Cookies["mapperjwt"];
+      var user = HttpContext.Items["User"];
 
       try
       {
