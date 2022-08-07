@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TodoApi.Models;
 using TodoApi.Services;
+using Newtonsoft.Json;
 
 
 namespace TodoApi.Controllers
@@ -51,13 +52,21 @@ namespace TodoApi.Controllers
       return todoItem;
     }
 
-    [HttpGet("MakeRequest")]
-    public async Task<ActionResult<TodoItem>> MakeReq()
+    [HttpGet("Test/Thing")]
+    public async Task<ActionResult<TodoItem>> TestThing()
     {
-      var get = new GetData();
-      get.MakeRequest();
+
+      using (StreamReader r = new StreamReader("config.json"))
+      {
+        string json = r.ReadToEnd();
+        StravaConfig config = JsonConvert.DeserializeObject<StravaConfig>(json);
+        Console.WriteLine("Hello there");
+      }
+
       return NoContent();
     }
+
+
 
     // PUT: api/TodoItems/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -79,7 +88,7 @@ namespace TodoApi.Controllers
       {
         if (!TodoItemExists(id))
         {
-          return NotFound(); 
+          return NotFound();
         }
         else
         {

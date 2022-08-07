@@ -36,7 +36,7 @@ namespace TodoApi.Controllers
 
 
 
-      return Redirect("http://127.0.0.1:5500/index.html");     
+      return Redirect("http://localhost:3000");     
     }
 
     [HttpGet]

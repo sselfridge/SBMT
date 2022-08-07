@@ -44,6 +44,11 @@ export default function AppHeader() {
           <Button color="inherit">{`${user.firstname} ${user.lastname}`}</Button>
         </Toolbar>
         <Toolbar sx={{ justifyContent: "flex-end" }}>
+          <button>
+            <a href="https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=https://localhost:7179/api/strava/callback&response_type=code&approval_prompt=auto&scope=read_all,activity:read_all">
+              Strava Login
+            </a>
+          </button>
           <Link to="/demo">
             <Button variant="standard" color="secondary">
               Demo
