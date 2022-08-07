@@ -19,10 +19,10 @@ const SegmentMap = (props) => {
       container: mapRef.current,
       style: "mapbox://styles/mapbox/streets-v11",
       center: [-119.6769, 34.46313],
-      zoom: 11,
+      zoom: 8.25,
     });
     newMap.addControl(new mapboxgl.NavigationControl());
-    newMap.scrollZoom.disable();
+    // newMap.scrollZoom.disable();
     newMap.meinMarkers = {
       markers: [],
       layers: [],

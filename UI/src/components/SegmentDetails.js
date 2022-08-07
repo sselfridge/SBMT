@@ -17,7 +17,7 @@ import markerSvg from "assets/maki/marker.svg";
 import redMarkerSvg from "assets/hackyColors/redMarker.svg";
 import greenMarkerSvg from "assets/hackyColors/greenMarker.svg";
 import { ReactComponent as ReactLogo } from "assets/maki/marker.svg";
-import { segments } from "mockData/data";
+import segments from "mockData/segments";
 import keys from "config";
 
 mapboxgl.accessToken = keys.mapBox;

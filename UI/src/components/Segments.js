@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 import SegmentMap from "./SegmentMap";
 
-import { segments } from "mockData/data";
+import segments from "mockData/segments";
 
 const MyBox = styled(Box)(({ theme }) => ({
   height: "80vh",
