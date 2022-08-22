@@ -13,33 +13,34 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
 
+
 namespace TodoApi.Controllers
 {
   [Route("api/[controller]")]
   [ApiController]
   public class TodoItemsController : ControllerBase
   {
-    private const int V = 2;
     private readonly TodoContext _context;
+    private IUserService _userService;
 
-    private string GenerateJwtToken()
+    private string GenerateJwtToken(int id)
     {
       // generate token that is valid for 7 days
       var tokenHandler = new JwtSecurityTokenHandler();
       var key = Encoding.ASCII.GetBytes("hellotherehellotherehellotherehellothere");
       var tokenDescriptor = new SecurityTokenDescriptor
       {
-        Subject = new ClaimsIdentity(new[] { new Claim("id", V.ToString()) }),
+        Subject = new ClaimsIdentity(new[] { new Claim("id", id.ToString()) }),
         Expires = DateTime.UtcNow.AddDays(7),
         SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
       };
       var token = tokenHandler.CreateToken(tokenDescriptor);
       return tokenHandler.WriteToken(token);
     }
-    public TodoItemsController(TodoContext context)
+    public TodoItemsController(TodoContext context,IUserService userService)
     {
       _context = context;
-
+      _userService = userService;
     }
 
     // GET: api/TodoItems
@@ -75,40 +76,23 @@ namespace TodoApi.Controllers
     public async Task<ActionResult<TodoItem>> TestThing()
     {
 
-      var token = GenerateJwtToken();
 
 
+      var possibleNulUser = HttpContext.Items["User"];
 
-      var user = HttpContext.Items["User"];
-
-      try
+      if(possibleNulUser == null)
       {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = "hellotherehellotherehellotherehellothere";
-        tokenHandler.ValidateToken(token, new TokenValidationParameters
-        {
-          ValidateIssuerSigningKey = true,
-          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
-          ValidateIssuer = false,
-          ValidateAudience = false,
-          // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
-          ClockSkew = TimeSpan.Zero
-        }, out SecurityToken validatedToken);
+        return Ok("Hello Null User");
 
-        var jwtToken = (JwtSecurityToken)validatedToken;
-        var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
-        Console.WriteLine(userId);
-        // attach user to context on successful jwt validation
-        //context.Items["User"] = userService.GetById(userId);
       }
-      catch (Exception ex)
-      {
+      User user = (User)possibleNulUser;
 
-        // do nothing if jwt validation fails
-        // user is not attached to context so request won't have access to secure routes
-      }
 
-      return Ok("Hello there");
+      var id = user.Id;
+
+      var cookie = GenerateJwtToken(id);
+      HttpContext.Response.Cookies.Append("SBMT", id.ToString());
+      return Ok("Hello there, cookie set");
 
     }
 

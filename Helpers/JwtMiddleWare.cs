@@ -23,7 +23,10 @@
     public async Task Invoke(HttpContext context, IUserService userService)
     {
       //var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-      var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIiLCJuYmYiOjE2NTk5MDAwNDcsImV4cCI6MTY2MDUwNDg0NywiaWF0IjoxNjU5OTAwMDQ3fQ.nS5Hg9GBMe_UJ8uDj4BrvH8WAftTAUg9H-yWTs3nwXA";
+      //var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIiLCJuYmYiOjE2NTk5MDAwNDcsImV4cCI6MTY2MDUwNDg0NywiaWF0IjoxNjU5OTAwMDQ3fQ.nS5Hg9GBMe_UJ8uDj4BrvH8WAftTAUg9H-yWTs3nwXA";
+      var cookie = context.Request.Cookies;
+      var sbmtCookie = context.Request.Cookies["SBMT"];
+      var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIiLCJuYmYiOjE2NjA3MDEzNjIsImV4cCI6MTY2MTMwNjE2MiwiaWF0IjoxNjYwNzAxMzYyfQ.5rQrJpJqq2o9Ll3syMPU5Dkzc5aX5rfDB4FO2_NNF0s";
       if (token != null)
         attachUserToContext(context, userService, token);
 
@@ -50,7 +53,7 @@
         var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
 
         // attach user to context on successful jwt validation
-        var user = userService.GetById(userId);
+        User user = userService.GetById(userId);
         context.Items["User"] = user;
         Console.WriteLine("check cont");
       }
