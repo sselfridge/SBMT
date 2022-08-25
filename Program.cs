@@ -1,13 +1,36 @@
 using Microsoft.EntityFrameworkCore;
 using TodoApi.Models;
+using TodoApi.Models.db;
 using TodoApi.Services;
 using TodoApi.Helpers;
+
+IConfiguration configuration = new ConfigurationBuilder()
+                            .AddJsonFile("appsettings.json")
+                            .Build();
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+
 builder.Services.AddControllers();
+
+string dbPass = configuration["DbConfig:dbPass"];
+string dbUser = configuration["DbConfig:dbUser"];
+string dbName = configuration["DbConfig:dbName"];
+
+string connectionString = $"" +
+  $"Server=sbmt.postgres.database.azure.com;" +
+  $"Database={dbName};" +
+  $"Port=5432;" +
+  $"User Id={dbUser};" +
+  $"Password={dbPass};" +
+  $"Ssl Mode=Require;" +
+  $"Trust Server Certificate=true";
+
+builder.Services.AddDbContext<ApplicationContext>(opt => opt.UseNpgsql(connectionString));
+
+
 
 builder.Services.AddDbContext<TodoContext>(opt =>
     opt.UseInMemoryDatabase("TodoList"));

@@ -1,6 +1,5 @@
 ﻿namespace TodoApi.Helpers
 {
-  using Microsoft.Extensions.Options;
   using Microsoft.IdentityModel.Tokens;
   using System.IdentityModel.Tokens.Jwt;
   using System.Text;
@@ -14,19 +13,20 @@
   public class JwtMiddleware
   {
     private readonly RequestDelegate _next;
+    private readonly IConfiguration Configuration;
 
-    public JwtMiddleware(RequestDelegate next)
+
+    public JwtMiddleware(RequestDelegate next, IConfiguration configuration)
     {
       _next = next;
+      Configuration = configuration;
     }
 
     public async Task Invoke(HttpContext context, IUserService userService)
     {
+      // keep this to remind/shame me into doing proper auth headers
       //var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-      //var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIiLCJuYmYiOjE2NTk5MDAwNDcsImV4cCI6MTY2MDUwNDg0NywiaWF0IjoxNjU5OTAwMDQ3fQ.nS5Hg9GBMe_UJ8uDj4BrvH8WAftTAUg9H-yWTs3nwXA";
-      var cookie = context.Request.Cookies;
-      var sbmtCookie = context.Request.Cookies["SBMT"];
-      var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIiLCJuYmYiOjE2NjA3MDEzNjIsImV4cCI6MTY2MTMwNjE2MiwiaWF0IjoxNjYwNzAxMzYyfQ.5rQrJpJqq2o9Ll3syMPU5Dkzc5aX5rfDB4FO2_NNF0s";
+      var token = context.Request.Cookies["SBMT"];
       if (token != null)
         attachUserToContext(context, userService, token);
 
@@ -38,7 +38,9 @@
       try
       {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes("hellotherehellotherehellotherehellothere");
+        var jwtKey = Configuration["jwtKey"];
+
+        var key = Encoding.ASCII.GetBytes(jwtKey);
         tokenHandler.ValidateToken(token, new TokenValidationParameters
         {
           ValidateIssuerSigningKey = true,

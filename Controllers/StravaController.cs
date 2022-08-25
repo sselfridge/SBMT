@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using TodoApi.Models;
+using TodoApi.Models.db;
 using TodoApi.Services;
 
 
@@ -16,40 +21,73 @@ namespace TodoApi.Controllers
   public class StravaController : ControllerBase
   {
     private readonly StravaOAuthContext _context;
+    private ApplicationContext _appContext;
+    private readonly IConfiguration Configuration;
 
-    public StravaController(StravaOAuthContext context)
+    private string GenerateJwtToken(int id)
     {
-      _context = context; 
+      // generate token that is valid for 30 days
+      var tokenHandler = new JwtSecurityTokenHandler();
+      var jwtKey = Configuration["jwtKey"];
+      var key = Encoding.ASCII.GetBytes(jwtKey);
+      var tokenDescriptor = new SecurityTokenDescriptor
+      {
+        Subject = new ClaimsIdentity(new[] { new Claim("id", id.ToString()) }),
+        Expires = DateTime.UtcNow.AddDays(300),
+        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+      };
+      var token = tokenHandler.CreateToken(tokenDescriptor);
+      return tokenHandler.WriteToken(token);
+    }
+
+    //private int CheckCookie()
+    //{
+    //  const token = HttpContext.Response.Cookies.get
+
+
+    //}
+
+    public StravaController(StravaOAuthContext context, ApplicationContext appContext, IConfiguration configuration)
+    {
+      _context = context;
+      _appContext = appContext;
+      Configuration = configuration;
     }
 
     // GET: api/TodoItems
     [HttpGet("callback")]
-    public async Task<ActionResult<IEnumerable<TodoItem>>> GetStravaCallback(string code,string scope)
+    public async Task<ActionResult<IEnumerable<TodoItem>>> GetStravaCallback(string code, string scope)
     {
-      //  create put requester
-      //TODO: Create response obj
-      // make basic FE app to be redirected to strava oauth
+
       var oAuth = await StravaServices.GetTokens(code);
 
-      _context.StravaOAuths.Add(oAuth);
-      await _context.SaveChangesAsync();
+      StravaAthlete athlete = oAuth.Athlete;
+
+      StravaUser newUser = new StravaUser(athlete);
+
+      var cookie = GenerateJwtToken(newUser.AthleteId);
+      HttpContext.Response.Cookies.Append("SBMT", cookie.ToString());
 
 
-
-      return Redirect("http://localhost:3000");     
+      return Redirect("http://localhost:3000");
     }
 
-    [HttpGet]
-    public async void GetAuths()
+    [HttpGet("AthleteId")]
+    public IActionResult GetAthleteId()
     {
-      if (_context.StravaOAuths == null)
+
+      var possibleNulUser = HttpContext.Items["User"];
+
+      if (possibleNulUser == null)
       {
-        NotFound();
+        return NotFound();
+
       }
-      var oauths =  await _context.StravaOAuths.ToListAsync();
 
 
-      Console.Write("Fin");
+
+
+      return Ok(123);
     }
 
   }

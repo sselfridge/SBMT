@@ -25,22 +25,25 @@ namespace TodoApi.Controllers
 
     private string GenerateJwtToken(int id)
     {
-      // generate token that is valid for 7 days
+      // generate token that is valid for 30 days
       var tokenHandler = new JwtSecurityTokenHandler();
-      var key = Encoding.ASCII.GetBytes("hellotherehellotherehellotherehellothere");
+      var jwtKey = Configuration["jwtKey"];
+
+      var key = Encoding.ASCII.GetBytes(jwtKey);
       var tokenDescriptor = new SecurityTokenDescriptor
       {
         Subject = new ClaimsIdentity(new[] { new Claim("id", id.ToString()) }),
-        Expires = DateTime.UtcNow.AddDays(7),
+        Expires = DateTime.UtcNow.AddDays(300),
         SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
       };
       var token = tokenHandler.CreateToken(tokenDescriptor);
       return tokenHandler.WriteToken(token);
     }
-    public TodoItemsController(TodoContext context,IUserService userService)
+    public TodoItemsController(TodoContext context, IUserService userService, ApplicationContext dbContext, IConfiguration configuration)
     {
       _context = context;
       _userService = userService;
+      Configuration = configuration;
     }
 
     // GET: api/TodoItems
@@ -80,7 +83,7 @@ namespace TodoApi.Controllers
 
       var possibleNulUser = HttpContext.Items["User"];
 
-      if(possibleNulUser == null)
+      if (possibleNulUser == null)
       {
         return Ok("Hello Null User");
 
@@ -99,9 +102,9 @@ namespace TodoApi.Controllers
 
 
 
-  // PUT: api/TodoItems/5
-  // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-  [HttpPut("{id}")]
+    // PUT: api/TodoItems/5
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [HttpPut("{id}")]
     public async Task<IActionResult> PutTodoItem(long id, TodoItem todoItem)
     {
       if (id != todoItem.Id)
