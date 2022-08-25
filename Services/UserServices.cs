@@ -20,7 +20,8 @@
     private List<User> _users = new List<User>
     {
         new User { Id = 1, FirstName = "Test", LastName = "User", Username = "test", Password = "test" },
-        new User { Id = 2, FirstName = "Tommy", LastName = "Tester", Username = "tomy", Password = "test" }
+        new User { Id = 2, FirstName = "Tommy", LastName = "Tester", Username = "tomy", Password = "test" },
+        new User { Id = 1075670, FirstName = "Samy", LastName = "Wise", Username = "tomy", Password = "test" }
     };
 
     //private readonly AppSettings _appSettings;
@@ -37,7 +38,7 @@
       if (user == null) return null;
 
       // authentication successful so generate jwt token
-      var token = generateJwtToken(user);
+      var token = "generateJwtToken(user);";
 
       return new AuthenticateResponse(user, token);
     }
@@ -52,21 +53,5 @@
       return _users.FirstOrDefault(x => x.Id == id);
     }
 
-    // helper methods
-
-    private string generateJwtToken(User user)
-    {
-      // generate token that is valid for 7 days
-      var tokenHandler = new JwtSecurityTokenHandler();
-      var key = Encoding.ASCII.GetBytes("hellotherehellotherehellotherehellothere");
-      var tokenDescriptor = new SecurityTokenDescriptor
-      {
-        Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),
-        Expires = DateTime.UtcNow.AddDays(7),
-        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-      };
-      var token = tokenHandler.CreateToken(tokenDescriptor);
-      return tokenHandler.WriteToken(token);
-    }
   }
 }

@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using TodoApi.Models;
-using TodoApi.Services;
-using Newtonsoft.Json;
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
+using TodoApi.Models;
+using TodoApi.Models.db;
+using TodoApi.Services;
 
 
 namespace TodoApi.Controllers
@@ -21,7 +16,10 @@ namespace TodoApi.Controllers
   public class TodoItemsController : ControllerBase
   {
     private readonly TodoContext _context;
+    private ApplicationContext _dbContext;
     private IUserService _userService;
+    private readonly IConfiguration Configuration;
+
 
     private string GenerateJwtToken(int id)
     {
@@ -43,6 +41,7 @@ namespace TodoApi.Controllers
     {
       _context = context;
       _userService = userService;
+      _dbContext = dbContext;
       Configuration = configuration;
     }
 
@@ -80,6 +79,17 @@ namespace TodoApi.Controllers
     {
 
 
+
+      var students = _dbContext.Students.ToList();
+
+      var newStudent = new Student();
+      newStudent.Name = "Bobby";
+      newStudent.Age = 34;
+      newStudent.Grade = 10;
+
+      _dbContext.Students.Add(newStudent);
+      _dbContext.SaveChanges();
+      var newCookie = GenerateJwtToken(1234);
 
       var possibleNulUser = HttpContext.Items["User"];
 
