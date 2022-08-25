@@ -1,6 +1,5 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
-using TodoApi.Models;
 
 namespace TodoApi.Models.db
 

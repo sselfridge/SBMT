@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using TodoApi.Helpers;
 using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Services;
-using TodoApi.Helpers;
 
 IConfiguration configuration = new ConfigurationBuilder()
                             .AddJsonFile("appsettings.json")

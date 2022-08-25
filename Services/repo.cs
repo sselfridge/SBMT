@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace TodoApi.Services
+﻿namespace TodoApi.Services
 
 {
   public class Repository

@@ -1,8 +1,4 @@
-﻿using System.Threading.Tasks;
-using System.Net.Http.Headers;
-using System.Text.Json;
-using TodoApi.Models;
-using Newtonsoft.Json;
+﻿using TodoApi.Models;
 
 namespace TodoApi.Services
 {

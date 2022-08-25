@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Text.Json;
 
 namespace TodoApi.Services
@@ -11,8 +10,8 @@ namespace TodoApi.Services
     {
       Console.Write("outVal");
 
-      
-       await ProcessRepositories();
+
+      await ProcessRepositories();
 
 
     }
@@ -32,7 +31,7 @@ namespace TodoApi.Services
 
       foreach (var repo in repositories)
         Console.WriteLine(repo.name);
-      
+
     }
 
   }
