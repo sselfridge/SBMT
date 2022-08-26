@@ -26,6 +26,16 @@ export default function AppHeader() {
         .catch((err) => console.error(err));
     }
   }, []);
+
+  const onLogout = () => {
+    Api.delete("/api/strava/logout")
+      .then((res) => {
+        console.info(res);
+        setUser(null);
+      })
+      .catch((err) => console.error(err));
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -59,6 +69,9 @@ export default function AppHeader() {
               <img style={{ borderRadius: 50 }} alt="" src={user.avatar} />
             </Button>
           )}
+          <Button onClick={onLogout} sx={{ color: "white" }}>
+            Logout
+          </Button>
         </Toolbar>
         <Toolbar sx={{ justifyContent: "flex-end" }}>
           {!user && (

@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using TodoApi.Models;
 using TodoApi.Models.db;
+using TodoApi.Models.stravaApi;
 using TodoApi.Services;
 
 
@@ -91,5 +92,14 @@ namespace TodoApi.Controllers
       return Ok(possibleNulUser);
     }
 
+    [HttpDelete("logout")]
+    public IActionResult Logout()
+    {
+
+      HttpContext.Response.Cookies.Delete("SBMT");
+
+
+      return Ok();
+    }
   }
 }
