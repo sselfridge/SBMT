@@ -4,7 +4,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Invoices from "routes/invoices";
 import Expenses from "routes/expenses";
 import DefaultRoute from "routes/DefaultRoute";
-import NavBar from "components/AppHeader";
 import Leaderboard from "components/Leaderboard";
 import Segments from "components/Segments";
 import SegmentDetails from "components/SegmentDetails";

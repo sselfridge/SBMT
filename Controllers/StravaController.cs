@@ -15,8 +15,8 @@ namespace TodoApi.Controllers
   public class StravaController : ControllerBase
   {
     private readonly StravaOAuthContext _context;
-    private ApplicationContext _appContext;
     private readonly IConfiguration Configuration;
+    private IUserService _userService;
 
     private string GenerateJwtToken(int id)
     {
@@ -41,11 +41,12 @@ namespace TodoApi.Controllers
 
     //}
 
-    public StravaController(StravaOAuthContext context, ApplicationContext appContext, IConfiguration configuration)
+    public StravaController(StravaOAuthContext context, IConfiguration configuration, IUserService userService
+      )
     {
       _context = context;
-      _appContext = appContext;
       Configuration = configuration;
+      _userService = userService;
     }
 
     // GET: api/TodoItems
@@ -59,6 +60,13 @@ namespace TodoApi.Controllers
 
       StravaUser newUser = new StravaUser(athlete);
 
+      var userExists = _userService.GetById(newUser.AthleteId);
+
+      if (userExists == null)
+      {
+        await _userService.Add(newUser);
+      }
+
       var cookie = GenerateJwtToken(newUser.AthleteId);
       HttpContext.Response.Cookies.Append("SBMT", cookie.ToString());
 
@@ -66,7 +74,7 @@ namespace TodoApi.Controllers
       return Redirect("http://localhost:3000");
     }
 
-    [HttpGet("AthleteId")]
+    [HttpGet("athlete/id")]
     public IActionResult GetAthleteId()
     {
 
@@ -80,8 +88,7 @@ namespace TodoApi.Controllers
 
 
 
-
-      return Ok(123);
+      return Ok(possibleNulUser);
     }
 
   }

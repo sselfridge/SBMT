@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, useRef } from "react";
 import {
   AppBar,
   Box,
@@ -8,16 +8,34 @@ import {
   IconButton,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import axios from "axios";
 
 import { Link } from "react-router-dom";
 
-import logo from "assets/logoV1.svg";
-
 import { users } from "mockData/data";
 
-const user = users[0];
-
 export default function AppHeader() {
+  const [user, setUser] = React.useState(null);
+  const fetchOnce = useRef(true);
+  console.info("AppHeader");
+  useEffect(() => {
+    if (fetchOnce.current) {
+      fetchOnce.current = null;
+      console.info("Fetch");
+      fetch("/api/strava/athlete/id")
+        .then((response) => {
+          console.info("Response1");
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data);
+          setUser(data);
+        });
+
+      console.info("End Fetch");
+    }
+  }, []);
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -41,7 +59,7 @@ export default function AppHeader() {
             </span>
           </Typography>{" "}
           {/* <img src={logo} alt="rabble" /> */}
-          <Button color="inherit">{`${user.firstname} ${user.lastname}`}</Button>
+          <Button color="inherit">{`${user?.firstname} ${user?.lastname}`}</Button>
         </Toolbar>
         <Toolbar sx={{ justifyContent: "flex-end" }}>
           <button>

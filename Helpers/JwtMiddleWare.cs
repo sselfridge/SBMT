@@ -3,7 +3,7 @@
   using Microsoft.IdentityModel.Tokens;
   using System.IdentityModel.Tokens.Jwt;
   using System.Text;
-  using TodoApi.Models;
+  using TodoApi.Models.db;
   using TodoApi.Services;
 
   //Taken from
@@ -55,7 +55,7 @@
         var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
 
         // attach user to context on successful jwt validation
-        User user = userService.GetById(userId);
+        StravaUser user = userService.GetById(userId);
         context.Items["User"] = user;
         Console.WriteLine("check cont");
       }

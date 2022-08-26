@@ -98,13 +98,13 @@ namespace TodoApi.Controllers
         return Ok("Hello Null User");
 
       }
-      User user = (User)possibleNulUser;
+      StravaUser user = (StravaUser)possibleNulUser;
 
 
-      var id = user.Id;
+      var id = user.AthleteId;
 
       var cookie = GenerateJwtToken(id);
-      HttpContext.Response.Cookies.Append("SBMT", id.ToString());
+      HttpContext.Response.Cookies.Append("SBMT", cookie);
       return Ok("Hello there, cookie set");
 
     }

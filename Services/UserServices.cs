@@ -1,12 +1,14 @@
 ﻿namespace TodoApi.Services
 {
   using TodoApi.Models;
+  using TodoApi.Models.db;
 
   public interface IUserService
   {
     AuthenticateResponse Authenticate(AuthenticateRequest model);
     IEnumerable<User> GetAll();
-    User GetById(int id);
+    StravaUser? GetById(int id);
+    Task<Boolean> Add(StravaUser user);
   }
 
   public class UserService : IUserService
@@ -19,11 +21,14 @@
         new User { Id = 1075670, FirstName = "Samy", LastName = "Wise", Username = "tomy", Password = "test" }
     };
 
+    private ApplicationContext _dbContext;
+
     //private readonly AppSettings _appSettings;
 
-    //public UserService()
-    //{  pretty sure I don't need a constructor that does nothing...
-    //}
+    public UserService(ApplicationContext dbContext)
+    {
+      _dbContext = dbContext;
+    }
 
     public AuthenticateResponse Authenticate(AuthenticateRequest model)
     {
@@ -43,10 +48,17 @@
       return _users;
     }
 
-    public User GetById(int id)
+    public StravaUser? GetById(int id)
     {
-      return _users.FirstOrDefault(x => x.Id == id);
+      return _dbContext.StravaUsers.FirstOrDefault(x => x.AthleteId == id);
     }
 
+    public async Task<Boolean> Add(StravaUser user)
+    {
+      _dbContext.StravaUsers.Add(user);
+      await _dbContext.SaveChangesAsync();
+      return true;
+
+    }
   }
 }

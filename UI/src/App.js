@@ -1,6 +1,5 @@
 //https://stackoverflow.com/a/50948494
 import "mapbox-gl/dist/mapbox-gl.css";
-
 import { Outlet } from "react-router-dom";
 import NavBar from "components/AppHeader";
 
@@ -9,7 +8,7 @@ function App(appProps) {
     <div className="App">
       <NavBar />
       <main className="App-Body">
-        <Outlet />
+        <Outlet /> {/* see MeinRoutes for value of outlet */}
       </main>
     </div>
   );
