@@ -1,7 +1,7 @@
 //https://stackoverflow.com/a/50948494
 import "mapbox-gl/dist/mapbox-gl.css";
 import { Outlet } from "react-router-dom";
-import NavBar from "components/AppHeader";
+import NavBar from "components/NavBar";
 
 function App(appProps) {
   return (

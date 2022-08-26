@@ -11,19 +11,19 @@ import MenuIcon from "@mui/icons-material/Menu";
 
 import { Link } from "react-router-dom";
 
+import Api from "api/api";
+
 export default function AppHeader() {
   const [user, setUser] = React.useState(null);
   const fetchOnce = useRef(true);
   useEffect(() => {
     if (fetchOnce.current) {
       fetchOnce.current = null;
-      fetch("/api/strava/athlete/id")
+      Api.get("/api/strava/athlete/id")
         .then((response) => {
-          return response.json();
+          if (response.status === 200) setUser(response.data);
         })
-        .then((data) => {
-          setUser(data);
-        });
+        .catch((err) => console.error(err));
     }
   }, []);
   return (
@@ -42,26 +42,32 @@ export default function AppHeader() {
           <Typography
             variant="h6"
             component="div"
-            sx={{ flexGrow: 1, fontSize: 30 }}
+            sx={{
+              flexGrow: 1,
+              fontSize: 45,
+              textAlign: "center",
+              fontFamily: "coordinates, monospace;",
+              fontWeight: 800,
+              letterSpacing: -4,
+            }}
           >
-            <span className="sbmt" sx={{}}>
-              SBMT
-            </span>
+            <span className="sbmt">SBMT</span>
           </Typography>{" "}
-          {/* <img src={logo} alt="rabble" /> */}
           {user && (
             <Button color="inherit">
-              <img alt="" src={user.avatar} />
               {`${user?.firstname} ${user?.lastname}`}
+              <img style={{ borderRadius: 50 }} alt="" src={user.avatar} />
             </Button>
           )}
         </Toolbar>
         <Toolbar sx={{ justifyContent: "flex-end" }}>
-          <button>
-            <a href="https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=https://localhost:7179/api/strava/callback&response_type=code&approval_prompt=auto&scope=read_all,activity:read_all">
-              Strava Login
-            </a>
-          </button>
+          {!user && (
+            <button>
+              <a href="https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=https://localhost:7179/api/strava/callback&response_type=code&approval_prompt=auto&scope=read_all,activity:read_all">
+                Strava Login
+              </a>
+            </button>
+          )}
           <Link to="/demo">
             <Button variant="standard" color="secondary">
               Demo

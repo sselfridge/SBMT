@@ -20,7 +20,6 @@ const MyBox = styled(Box)(({ theme }) => ({
 }));
 
 const Athletes = (props) => {
-  const { prop } = props;
   return (
     <MyBox>
       <Table>
