@@ -1,5 +1,6 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
+using TodoApi.Models.stravaApi;
 
 namespace TodoApi.Models.db
 
@@ -11,6 +12,7 @@ namespace TodoApi.Models.db
     public string Firstname { get; set; }
     public string Lastname { get; set; }
     public string Avatar { get; set; }
+    public DateTime JoinDate { get; set; }
 
     public StravaUser(int athleteId, string firstname, string lastname, string avatar)
     {
@@ -18,6 +20,7 @@ namespace TodoApi.Models.db
       Firstname = firstname;
       Lastname = lastname;
       Avatar = avatar;
+      JoinDate = DateTime.UtcNow;
     }
 
     public StravaUser(StravaAthlete athlete)
@@ -26,6 +29,7 @@ namespace TodoApi.Models.db
       Lastname = athlete.Lastname;
       Avatar = athlete.ProfileMedium;
       AthleteId = athlete.Id;
+      JoinDate = DateTime.UtcNow;
 
     }
 

@@ -1,4 +1,4 @@
-﻿using TodoApi.Models;
+﻿using TodoApi.Models.stravaApi;
 
 namespace TodoApi.Services
 {
@@ -57,6 +57,8 @@ namespace TodoApi.Services
 
       throw new Exception(response.StatusCode.ToString());
     }
+
+
 
   }
 

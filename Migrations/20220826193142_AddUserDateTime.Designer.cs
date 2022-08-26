@@ -12,8 +12,8 @@ using TodoApi.Models.db;
 namespace TodoApi.Migrations
 {
     [DbContext(typeof(sbmtContext))]
-    [Migration("20220825041443_AddStravaUser")]
-    partial class AddStravaUser
+    [Migration("20220826193142_AddUserDateTime")]
+    partial class AddUserDateTime
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -39,6 +39,9 @@ namespace TodoApi.Migrations
                     b.Property<string>("Firstname")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("JoinDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Lastname")
                         .IsRequired()

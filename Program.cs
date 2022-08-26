@@ -28,7 +28,7 @@ string connectionString = $"" +
   $"Ssl Mode=Require;" +
   $"Trust Server Certificate=true";
 
-builder.Services.AddDbContext<ApplicationContext>(opt => opt.UseNpgsql(connectionString));
+builder.Services.AddDbContext<sbmtContext>(opt => opt.UseNpgsql(connectionString));
 
 
 

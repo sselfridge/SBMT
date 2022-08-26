@@ -16,7 +16,7 @@ namespace TodoApi.Controllers
   public class TodoItemsController : ControllerBase
   {
     private readonly TodoContext _context;
-    private ApplicationContext _dbContext;
+    private sbmtContext _dbContext;
     private IUserService _userService;
     private readonly IConfiguration Configuration;
 
@@ -37,7 +37,7 @@ namespace TodoApi.Controllers
       var token = tokenHandler.CreateToken(tokenDescriptor);
       return tokenHandler.WriteToken(token);
     }
-    public TodoItemsController(TodoContext context, IUserService userService, ApplicationContext dbContext, IConfiguration configuration)
+    public TodoItemsController(TodoContext context, IUserService userService, sbmtContext dbContext, IConfiguration configuration)
     {
       _context = context;
       _userService = userService;

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TodoApi.Models.stravaApi;
 
 namespace TodoApi.Models
 {

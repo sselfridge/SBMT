@@ -11,7 +11,7 @@ using TodoApi.Models.db;
 
 namespace TodoApi.Migrations
 {
-    [DbContext(typeof(ApplicationContext))]
+    [DbContext(typeof(sbmtContext))]
     [Migration("20220822204112_InitialEntries")]
     partial class InitialEntries
     {

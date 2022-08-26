@@ -2,9 +2,9 @@
 
 namespace TodoApi.Models.db
 {
-  public class ApplicationContext : DbContext
+  public class sbmtContext : DbContext
   {
-    public ApplicationContext(DbContextOptions<ApplicationContext> options)
+    public sbmtContext(DbContextOptions<sbmtContext> options)
         : base(options)
     {
     }

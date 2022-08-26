@@ -10,7 +10,7 @@ using TodoApi.Models.db;
 
 namespace TodoApi.Migrations
 {
-    [DbContext(typeof(ApplicationContext))]
+    [DbContext(typeof(sbmtContext))]
     partial class ApplicationContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -37,6 +37,9 @@ namespace TodoApi.Migrations
                     b.Property<string>("Firstname")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("JoinDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Lastname")
                         .IsRequired()

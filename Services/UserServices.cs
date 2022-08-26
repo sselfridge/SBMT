@@ -21,11 +21,11 @@
         new User { Id = 1075670, FirstName = "Samy", LastName = "Wise", Username = "tomy", Password = "test" }
     };
 
-    private ApplicationContext _dbContext;
+    private sbmtContext _dbContext;
 
     //private readonly AppSettings _appSettings;
 
-    public UserService(ApplicationContext dbContext)
+    public UserService(sbmtContext dbContext)
     {
       _dbContext = dbContext;
     }

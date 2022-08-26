@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
-namespace TodoApi.Models
+
+namespace TodoApi.Models.stravaApi
 {
   public class StravaOAuthResponseDTO : StravaOAuthResponse
   {
