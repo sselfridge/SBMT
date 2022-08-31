@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Services;
@@ -110,6 +111,27 @@ namespace TodoApi.Controllers
     }
 
 
+
+
+
+    [HttpPost("strava")]
+    public async Task<IActionResult> pushPost()
+    {
+      Stream req = Request.Body;
+      var json = await new StreamReader(req).ReadToEndAsync();
+      StravaPushNotificationDTO? subRes = JsonSerializer.Deserialize<StravaPushNotificationDTO>(json);
+      if (subRes != null)
+      {
+        var pushNotification = new StravaPushNotification(subRes);
+        //var updates = JsonSerializer.Deserialize<JsonObject>(pushNotification.Updates);
+        _dbContext.StravaPushNotifications.Add(pushNotification);
+        _dbContext.SaveChanges();
+        return Ok("Created");
+
+      }
+      return Ok();
+
+    }
 
 
     // PUT: api/TodoItems/5

@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Models.stravaApi;
@@ -16,6 +17,7 @@ namespace TodoApi.Controllers
   public class StravaController : ControllerBase
   {
     private readonly StravaOAuthContext _context;
+    private sbmtContext _dbContext;
     private readonly IConfiguration Configuration;
     private IUserService _userService;
 
@@ -35,17 +37,13 @@ namespace TodoApi.Controllers
       return tokenHandler.WriteToken(token);
     }
 
-    //private int CheckCookie()
-    //{
-    //  const token = HttpContext.Response.Cookies.get
 
 
-    //}
-
-    public StravaController(StravaOAuthContext context, IConfiguration configuration, IUserService userService
+    public StravaController(StravaOAuthContext context, IConfiguration configuration, IUserService userService, sbmtContext dbContext
       )
     {
       _context = context;
+      _dbContext = dbContext;
       Configuration = configuration;
       _userService = userService;
     }
@@ -73,6 +71,38 @@ namespace TodoApi.Controllers
 
 
       return Redirect("http://localhost:3000");
+    }
+
+    //Verify push notifications subscription
+    [HttpGet("push")]
+    public IActionResult pushVerify()
+    {
+      string challenge = HttpContext.Request.Query["hub.challenge"];
+      string mode = HttpContext.Request.Query["hub.mode"];
+      string verify = HttpContext.Request.Query["hub.verify_token"];
+
+      //TODO - Log verify code here
+
+      return Ok(new SubChallengeRepsonse(challenge));
+
+    }
+
+    [HttpPost("push")]
+    public async Task<IActionResult> pushNotificaitonAsync()
+    {
+      Stream req = Request.Body;
+      var json = await new StreamReader(req).ReadToEndAsync();
+      StravaPushNotificationDTO? subRes = JsonSerializer.Deserialize<StravaPushNotificationDTO>(json);
+      if (subRes != null)
+      {
+        var pushNotification = new StravaPushNotification(subRes);
+        //var updates = JsonSerializer.Deserialize<JsonObject>(pushNotification.Updates);
+        _dbContext.StravaPushNotifications.Add(pushNotification);
+        await _dbContext.SaveChangesAsync();
+        return Ok("Created");
+
+      }
+      return Ok();
     }
 
     [HttpGet("athlete/id")]
