@@ -10,3 +10,7 @@ View existing:
 iptables -L -t nat
 
 https://superuser.com/questions/523290/what-is-command-to-look-list-of-redirect-rules-iptables
+
+Successfully received certificate.
+Certificate is saved at: /etc/letsencrypt/live/www.sbmtchallenge.com/fullchain.pem
+Key is saved at:         /etc/letsencrypt/live/www.sbmtchallenge.com/privkey.pem

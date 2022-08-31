@@ -9,6 +9,7 @@ IConfiguration configuration = new ConfigurationBuilder()
                             .Build();
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseUrls("http://*:5000", "https://*:5001");
 
 // Add services to the container.
 
@@ -51,7 +52,7 @@ if (app.Environment.IsDevelopment())
   app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAuthorization();
 
