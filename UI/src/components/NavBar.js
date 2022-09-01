@@ -76,7 +76,7 @@ export default function AppHeader() {
         <Toolbar sx={{ justifyContent: "flex-end" }}>
           {!user && (
             <button>
-              <a href="https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=https://localhost:7179/api/strava/callback&response_type=code&approval_prompt=auto&scope=read_all,activity:read_all">
+              <a href="https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=https://localhost:5001/api/strava/callback&response_type=code&approval_prompt=auto&scope=read_all,activity:read_all">
                 Strava Login
               </a>
             </button>
