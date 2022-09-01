@@ -5,10 +5,9 @@
 
   public interface IUserService
   {
-    AuthenticateResponse Authenticate(AuthenticateRequest model);
     IEnumerable<User> GetAll();
     StravaUser? GetById(int id);
-    Task<Boolean> Add(StravaUser user);
+    Task Add(StravaUser user);
   }
 
   public class UserService : IUserService
@@ -30,18 +29,18 @@
       _dbContext = dbContext;
     }
 
-    public AuthenticateResponse Authenticate(AuthenticateRequest model)
-    {
-      var user = _users.SingleOrDefault(x => x.Username == model.Username && x.Password == model.Password);
+    //public AuthenticateResponse Authenticate(AuthenticateRequest model)
+    //{
+    //  var user = _users.SingleOrDefault(x => x.Username == model.Username && x.Password == model.Password);
 
-      // return null if user not found
-      if (user == null) return null;
+    //  // return null if user not found
+    //  if (user == null) return null;
 
-      // authentication successful so generate jwt token
-      var token = "generateJwtToken(user);";
+    //  // authentication successful so generate jwt token
+    //  var token = "generateJwtToken(user);";
 
-      return new AuthenticateResponse(user, token);
-    }
+    //  return new AuthenticateResponse(user, token);
+    //}
 
     public IEnumerable<User> GetAll()
     {
@@ -53,11 +52,10 @@
       return _dbContext.StravaUsers.FirstOrDefault(x => x.AthleteId == id);
     }
 
-    public async Task<Boolean> Add(StravaUser user)
+    public async Task Add(StravaUser user)
     {
       _dbContext.StravaUsers.Add(user);
       await _dbContext.SaveChangesAsync();
-      return true;
 
     }
   }
