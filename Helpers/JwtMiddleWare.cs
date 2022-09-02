@@ -55,8 +55,12 @@
         var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
 
         // attach user to context on successful jwt validation
-        StravaUser user = userService.GetById(userId);
-        context.Items["User"] = user;
+        StravaUser? user = userService.GetById(userId);
+        if (user != null)
+        {
+          context.Items["User"] = user;
+        }
+
         Console.WriteLine("check cont");
       }
       catch
