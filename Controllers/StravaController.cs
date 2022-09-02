@@ -20,6 +20,7 @@ namespace TodoApi.Controllers
     private sbmtContext _dbContext;
     private readonly IConfiguration Configuration;
     private IUserService _userService;
+    private IStravaService _stravaService;
 
     private string GenerateJwtToken(int id)
     {
@@ -39,13 +40,17 @@ namespace TodoApi.Controllers
 
 
 
-    public StravaController(StravaOAuthContext context, IConfiguration configuration, IUserService userService, sbmtContext dbContext
+    public StravaController(StravaOAuthContext context,
+      IConfiguration configuration,
+      IUserService userService,
+      sbmtContext dbContext, IStravaService stravaService
       )
     {
       _context = context;
       _dbContext = dbContext;
       Configuration = configuration;
       _userService = userService;
+      _stravaService = stravaService;
     }
 
     // GET: api/TodoItems
@@ -53,7 +58,7 @@ namespace TodoApi.Controllers
     public async Task<ActionResult<IEnumerable<TodoItem>>> GetStravaCallback(string code, string scope)
     {
 
-      var oAuth = await StravaServices.GetTokens(code);
+      var oAuth = await _stravaService.GetTokens(code);
 
       StravaAthlete athlete = oAuth.Athlete;
 

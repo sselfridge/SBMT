@@ -41,6 +41,7 @@ builder.Services.AddDbContext<StravaOAuthContext>(opt =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IStravaService, StravaService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -19,6 +19,7 @@ namespace TodoApi.Controllers
     private readonly TodoContext _context;
     private sbmtContext _dbContext;
     private IUserService _userService;
+    private IStravaService _stravaService;
     private readonly IConfiguration Configuration;
 
 
@@ -38,10 +39,13 @@ namespace TodoApi.Controllers
       var token = tokenHandler.CreateToken(tokenDescriptor);
       return tokenHandler.WriteToken(token);
     }
-    public TodoItemsController(TodoContext context, IUserService userService, sbmtContext dbContext, IConfiguration configuration)
+    public TodoItemsController(TodoContext context,
+      IUserService userService, IStravaService stravaService,
+      sbmtContext dbContext, IConfiguration configuration)
     {
       _context = context;
       _userService = userService;
+      _stravaService = stravaService;
       _dbContext = dbContext;
       Configuration = configuration;
     }
@@ -91,6 +95,12 @@ namespace TodoApi.Controllers
       _dbContext.Students.Add(newStudent);
       _dbContext.SaveChanges();
       var newCookie = GenerateJwtToken(1234);
+
+
+      var activity = _stravaService.GetActivity(7729059578);
+
+
+
 
       var possibleNulUser = HttpContext.Items["User"];
 
