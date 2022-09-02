@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Headers;
+using TodoApi.Models.db;
 using TodoApi.Models.stravaApi;
 
 namespace TodoApi.Services
@@ -60,13 +61,35 @@ namespace TodoApi.Services
       var response = await client.GetAsync("https://www.strava.com/api/v3/activities/7729059578");
       if (response.IsSuccessStatusCode)
       {
-        JsonContent? result = await response.Content.ReadFromJsonAsync<JsonContent>();
-        if (result == null)
+        try
         {
-          throw new Exception("Cannot read strava oauth response");
+          ActivitySummaryResponse? result = await response.Content.ReadFromJsonAsync<ActivitySummaryResponse>();
+          if (result == null)
+          {
+            throw new Exception("Cannot read strava oauth response");
+          }
+
+          var efforts = result.SegmentEfforts;
+          Effort newEffort = new Effort(efforts[2]);
+
+
+
         }
+        catch (Exception e)
+        {
+
+          throw new Exception("Bad model!");
+        }
+
+
+
+
+
       }
 
+
+
+      return;
     }
 
   }
