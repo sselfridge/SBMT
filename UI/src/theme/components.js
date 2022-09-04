@@ -6,6 +6,21 @@ const components = {
       },
     },
   },
+  MuiButton: {
+    styleOverrides: {
+      root: {
+        color: "white",
+      },
+    },
+  },
+  MuiTabs: {
+    styleOverrides: {
+      indicator: {
+        backgroundColor: "#44ecf6",
+        height: 4,
+      },
+    },
+  },
   MuiCssBaseline: {
     styleOverrides: (themeParam) => `
     .App-Body {

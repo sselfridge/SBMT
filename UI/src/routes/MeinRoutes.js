@@ -10,6 +10,7 @@ import SegmentDetails from "components/SegmentDetails";
 import Athletes from "components/Athletes";
 import AthleteDetails from "components/AthleteDetail";
 import FullFeaturedDemo from "components/DataGridDemo";
+import UserSettings from "components/UserSettings";
 
 const MeinRoutes = (props) => {
   return (
@@ -24,6 +25,7 @@ const MeinRoutes = (props) => {
           <Route path="athletes" element={<Athletes />} />
           <Route path="athletes/:id" element={<AthleteDetails />} />
           <Route path="demo" element={<FullFeaturedDemo />} />
+          <Route path="settings" element={<UserSettings />} />
           <Route path="expenses" element={<Expenses />} />
           <Route path="invoices" element={<Invoices />}>
             <Route path="expenses" element={<Expenses />} />

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 import {
   AppBar,
   Box,
@@ -6,34 +7,33 @@ import {
   Typography,
   Button,
   IconButton,
+  Tabs,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-
+import { Tab } from "@mui/material";
+import UserMenu from "./UserMenu";
 import { Link } from "react-router-dom";
 
-import Api from "api/api";
+function LinkTab(props) {
+  return (
+    <Tab
+      component={Link}
+      sx={{
+        color: "white",
+        "&.Mui-selected": { color: "white", fontWeight: 800 },
+      }}
+      {...props}
+    />
+  );
+}
+LinkTab.propTypes = {
+  to: PropTypes.string.isRequired,
+};
 
 export default function AppHeader() {
-  const [user, setUser] = React.useState(null);
-  const fetchOnce = useRef(true);
-  useEffect(() => {
-    if (fetchOnce.current) {
-      fetchOnce.current = null;
-      Api.get("/api/strava/athlete/id")
-        .then((response) => {
-          if (response.status === 200) setUser(response.data);
-        })
-        .catch((err) => console.error(err));
-    }
-  }, []);
-
-  const onLogout = () => {
-    Api.delete("/api/strava/logout")
-      .then((res) => {
-        console.info(res);
-        setUser(null);
-      })
-      .catch((err) => console.error(err));
+  const [value, setValue] = React.useState(0);
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
   };
 
   return (
@@ -63,44 +63,19 @@ export default function AppHeader() {
           >
             <span className="sbmt">SBMT</span>
           </Typography>{" "}
-          {user && (
-            <Button color="inherit">
-              {`${user?.firstname} ${user?.lastname}`}
-              <img style={{ borderRadius: 50 }} alt="" src={user.avatar} />
-            </Button>
-          )}
-          <Button onClick={onLogout} sx={{ color: "white" }}>
-            Logout
-          </Button>
+          <UserMenu />
         </Toolbar>
         <Toolbar sx={{ justifyContent: "flex-end" }}>
-          {!user && (
-            <button>
-              <a href="https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=https://localhost:5001/api/strava/callback&response_type=code&approval_prompt=auto&scope=read_all,activity:read_all">
-                Strava Login
-              </a>
-            </button>
-          )}
-          <Link to="/demo">
-            <Button variant="standard" color="secondary">
-              Demo
-            </Button>
-          </Link>
-          <Link to="/leaderboard">
-            <Button variant="standard" color="secondary">
-              Leaderboard
-            </Button>
-          </Link>
-          <Link to="/segments">
-            <Button variant="standard" color="secondary">
-              Segments
-            </Button>
-          </Link>
-          <Link to="/athletes">
-            <Button variant="standard" color="secondary">
-              Athletes
-            </Button>
-          </Link>
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            aria-label="nav tabs example"
+          >
+            <LinkTab label="demo" to="/demo" />
+            <LinkTab label="Leaderboard" to="/leaderboard" />
+            <LinkTab label="Segments" to="/segments" />
+            <LinkTab label="Athletes" to="/athletes" />
+          </Tabs>
         </Toolbar>
       </AppBar>
     </Box>
