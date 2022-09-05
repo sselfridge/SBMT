@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import {
   DataGridPro,
   GRID_CHECKBOX_SELECTION_FIELD,
-  GridToolbar,
+  // GridToolbar,
 } from "@mui/x-data-grid-pro";
 import { useDemoData } from "@mui/x-data-grid-generator";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
@@ -317,16 +317,22 @@ export default function FullFeaturedDemo() {
       />
       <DataGridComponent
         {...data}
-        components={{
-          Toolbar: GridToolbar,
-        }}
-        componentsProps={{
-          toolbar: { showQuickFilter: true },
-        }}
+        // components={
+        //   {
+        //     // Toolbar: GridToolbar,
+        //   }
+        // }
+        // componentsProps={{
+        //   // toolbar: { showQuickFilter: true },
+        // }}
         loading={loading}
         checkboxSelection
         disableSelectionOnClick
         rowThreshold={0}
+        // disableColumnMenu="false"
+        // disableColumnFilter="false"
+        // disableDensitySelector="false"
+        // disableColumnSelector="false"
         initialState={{
           ...data.initialState,
           pinnedColumns: { left: [GRID_CHECKBOX_SELECTION_FIELD, "desk"] },

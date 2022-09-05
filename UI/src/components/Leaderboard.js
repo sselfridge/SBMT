@@ -4,13 +4,13 @@ import { Link } from "react-router-dom";
 import { intervalToDuration, format, addSeconds } from "date-fns";
 
 import { DataGrid } from "@mui/x-data-grid";
-import { Box, Button } from "@mui/material";
+import { Box, Paper, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import SettingsPanel from "./Filters";
 
 const MyBox = styled(Box)(({ theme }) => {
   return {
     backgroundColor: theme.palette.background.paper,
-    // color: theme.palette.primary.contrastText,
     padding: 8,
     borderRadius: 4,
   };
@@ -69,22 +69,34 @@ const columns = [
   },
 ];
 
+const handleApplyClick = (settings) => {
+  console.info("apply", settings);
+};
+
 const Leaderboard = (props) => {
   return (
-    <MyBox sx={{ height: "50vh", width: "75vw" }}>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        disableColumnMenu
-        sx={{
-          boxShadow: 2,
-          border: 2,
-          borderColor: "primary.light",
-          "& .MuiDataGrid-cell:hover": {
-            color: "primary.main",
-          },
-        }}
+    <MyBox sx={{ height: "95vh", width: "95vw" }}>
+      <SettingsPanel
+        onApply={handleApplyClick}
+        // size={size}
+        // type={type}
+        // theme={getActiveTheme()}
       />
+      <Paper sx={{ height: "100%", width: "100%" }}>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          disableColumnMenu
+          sx={{
+            boxShadow: 2,
+            border: 2,
+            borderColor: "primary.light",
+            "& .MuiDataGrid-cell:hover": {
+              color: "primary.main",
+            },
+          }}
+        />
+      </Paper>
     </MyBox>
   );
 };
