@@ -12,6 +12,9 @@ const components = {
         color: "white",
       },
     },
+    defaultProps: {
+      variant: "contained",
+    },
   },
   MuiTabs: {
     styleOverrides: {
@@ -19,6 +22,11 @@ const components = {
         backgroundColor: "#44ecf6",
         height: 4,
       },
+    },
+  },
+  MuiTypography: {
+    defaultProps: {
+      align: "center",
     },
   },
   MuiCssBaseline: {

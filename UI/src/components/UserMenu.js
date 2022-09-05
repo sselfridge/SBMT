@@ -14,6 +14,7 @@ import {
 import PersonAdd from "@mui/icons-material/PersonAdd";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
+import stravaSvg from "assets/stravaLogo.svg";
 import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import Api from "api/api";
@@ -35,6 +36,9 @@ const UserMenu = (props) => {
 
   const goToSettings = () => {
     navigate("/settings");
+  };
+  const goToHelp = () => {
+    navigate("/help");
   };
 
   const [user, setUser] = React.useState({
@@ -127,24 +131,30 @@ const UserMenu = (props) => {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem>
+        {/* <MenuItem>
           <Avatar /> Profile
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem>
-          <Avatar /> My account
+          <Avatar src={stravaSvg} /> My Strava Profile
         </MenuItem>
         <Divider />
-        <MenuItem>
+        {/* <MenuItem>
           <ListItemIcon>
             <PersonAdd fontSize="small" />
           </ListItemIcon>
           Add another account
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem onClick={goToSettings}>
           <ListItemIcon>
             <Settings fontSize="small" />
           </ListItemIcon>
           Settings
+        </MenuItem>
+        <MenuItem onClick={goToHelp}>
+          <ListItemIcon>
+            <Settings fontSize="small" />
+          </ListItemIcon>
+          Help / Contact
         </MenuItem>
         <MenuItem onClick={onLogout}>
           <ListItemIcon>

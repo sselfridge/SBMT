@@ -71,7 +71,7 @@ export default function AppHeader() {
             onChange={handleChange}
             aria-label="nav tabs example"
           >
-            <LinkTab label="demo" to="/demo" />
+            {/* <LinkTab label="demo" to="/demo" /> */}
             <LinkTab label="Leaderboard" to="/leaderboard" />
             <LinkTab label="Segments" to="/segments" />
             <LinkTab label="Athletes" to="/athletes" />

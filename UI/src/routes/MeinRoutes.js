@@ -11,6 +11,7 @@ import Athletes from "components/Athletes";
 import AthleteDetails from "components/AthleteDetail";
 import FullFeaturedDemo from "components/DataGridDemo";
 import UserSettings from "components/UserSettings";
+import HelpContact from "components/HelpContact";
 
 const MeinRoutes = (props) => {
   return (
@@ -26,6 +27,7 @@ const MeinRoutes = (props) => {
           <Route path="athletes/:id" element={<AthleteDetails />} />
           <Route path="demo" element={<FullFeaturedDemo />} />
           <Route path="settings" element={<UserSettings />} />
+          <Route path="help" element={<HelpContact />} />
           <Route path="expenses" element={<Expenses />} />
           <Route path="invoices" element={<Invoices />}>
             <Route path="expenses" element={<Expenses />} />
