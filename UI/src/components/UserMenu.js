@@ -4,6 +4,7 @@ import {
   Box,
   IconButton,
   Tooltip,
+  Button,
   Avatar,
   ListItemIcon,
   Menu,
@@ -11,7 +12,8 @@ import {
   MenuItem,
   Typography,
 } from "@mui/material";
-import PersonAdd from "@mui/icons-material/PersonAdd";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import stravaSvg from "assets/stravaLogo.svg";
@@ -33,20 +35,22 @@ const UserMenu = (props) => {
   };
 
   let navigate = useNavigate();
-
-  const goToSettings = () => {
-    navigate("/settings");
-  };
-  const goToHelp = () => {
-    navigate("/help");
+  const navTo = (path) => {
+    navigate(path);
   };
 
   const [user, setUser] = React.useState({
     firstName: "SamMock",
     lastName: "WiseMock",
+    id: 10645041,
     avatar:
       "https://dgalywyr863hv.cloudfront.net/pictures/athletes/10645041/16052758/1/medium.jpg",
   });
+
+  // useEffect(() => {
+  //   setUser({});
+  // }, []);
+
   const fetchOnce = useRef(true);
   useEffect(() => {
     if (fetchOnce.current) {
@@ -80,7 +84,29 @@ const UserMenu = (props) => {
 
   return (
     <React.Fragment>
-      <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          textAlign: "center",
+          position: "absolute",
+          top: "8px",
+          right: "8px",
+        }}
+      >
+        {!user.id && (
+          <Button
+            sx={{
+              backgroundColor: "strava.main",
+              "&:hover": {
+                backgroundColor: "strava.light",
+              },
+            }}
+          >
+            Register
+          </Button>
+        )}
+
         <IconButton
           onClick={handleClick}
           size="small"
@@ -89,7 +115,16 @@ const UserMenu = (props) => {
           aria-haspopup="true"
           aria-expanded={open ? "true" : undefined}
         >
-          <Typography sx={{ color: "primary.contrastText", mr: "15px" }}>
+          <Typography
+            sx={{
+              color: "primary.contrastText",
+              mr: "15px",
+              maxWidth: "160px",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
             {user.firstName} {user.lastName}
           </Typography>
 
@@ -134,34 +169,48 @@ const UserMenu = (props) => {
         {/* <MenuItem>
           <Avatar /> Profile
         </MenuItem> */}
-        <MenuItem>
-          <Avatar src={stravaSvg} /> My Strava Profile
-        </MenuItem>
-        <Divider />
+        {user.id && (
+          <a href={`https://www.strava.com/athletes/${user.id}`}>
+            <MenuItem>
+              <Avatar src={stravaSvg} /> My Strava Profile
+            </MenuItem>
+            <Divider />
+          </a>
+        )}
         {/* <MenuItem>
           <ListItemIcon>
             <PersonAdd fontSize="small" />
           </ListItemIcon>
           Add another account
         </MenuItem> */}
-        <MenuItem onClick={goToSettings}>
+        {user.id && (
+          <MenuItem onClick={() => navTo("/settings")}>
+            <ListItemIcon>
+              <Settings fontSize="small" />
+            </ListItemIcon>
+            Settings
+          </MenuItem>
+        )}
+        <MenuItem onClick={() => navTo("/info")}>
           <ListItemIcon>
-            <Settings fontSize="small" />
+            <InfoOutlinedIcon fontSize="small" />
           </ListItemIcon>
-          Settings
+          Info{" "}
         </MenuItem>
-        <MenuItem onClick={goToHelp}>
+        <MenuItem onClick={() => navTo("/help")}>
           <ListItemIcon>
-            <Settings fontSize="small" />
+            <HelpOutlineIcon fontSize="small" />
           </ListItemIcon>
           Help / Contact
         </MenuItem>
-        <MenuItem onClick={onLogout}>
-          <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
-          Logout
-        </MenuItem>
+        {user.id && (
+          <MenuItem onClick={onLogout}>
+            <ListItemIcon>
+              <Logout fontSize="small" />
+            </ListItemIcon>
+            Logout
+          </MenuItem>
+        )}
       </Menu>
     </React.Fragment>
   );

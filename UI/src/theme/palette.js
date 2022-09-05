@@ -5,6 +5,11 @@ const palette = {
   secondary: {
     main: "#44ecf6",
   },
+  strava: {
+    main: "#FC4C02",
+    light: "#ffb18c",
+    contrastText: "white",
+  },
 };
 
 export default palette;
