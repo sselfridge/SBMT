@@ -79,12 +79,12 @@ const ConfirmDelete = (props) => {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
+              width: "50vw",
             }}
           >
             <Typography variant="h4">Confirm Delete?</Typography>
             <Typography sx={{ margin: "24px" }}>
-              Click button below within 10 seconds of pressing 'Delete' button
-              to remove all data from SBMT.
+              Click button to remove all data from SBMT.
             </Typography>
             <StravaLogo />
             <Typography>Does not remove your data from strava</Typography>

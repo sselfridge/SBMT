@@ -68,15 +68,20 @@ const HelpContact = (props) => {
         <Divider />
         <Box
           sx={{
-            minWidth: "100px",
-            width: "16vw",
-            maxWidth: "100px",
             // padding: 0,
             "& .cls-1": { fill: "#545454" },
+            "& a": {
+              display: "flex",
+              flexDirection: "row-reverse",
+              alignItems: "center",
+            },
           }}
         >
           <a href="https://www.instagram.com/sbmtchallenge/">
-            <Insta />
+            <Insta
+              style={{ minWidth: "45px", maxWidth: "45px", margin: "20px" }}
+            />
+            @SBMTChallenge
           </a>
         </Box>
         <Divider />
