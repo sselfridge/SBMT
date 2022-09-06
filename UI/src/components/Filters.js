@@ -8,19 +8,23 @@ import {
   InputLabel,
   Select,
   Button,
+  Paper,
+  useMediaQuery,
+  Typography,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
 import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
+import FilterListIcon from "@mui/icons-material/FilterList";
 import LabeledSelect from "./Shared/LabeledSelect";
 
-import { styled } from "@mui/material/styles";
 import {
   ageList,
   categoryList,
   genderList,
   surfaceList,
 } from "utils/constants";
-
-const MyBox = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 
 const Filters = (props) => {
   const { onApply, surface, gender, category, age } = props;
@@ -43,6 +47,7 @@ const Filters = (props) => {
         "& .MuiFormControl-root": {
           paddingRight: "24px",
         },
+        justifyContent: "space-around",
       }}
       className="MuiFormGroup-options"
       row
@@ -72,9 +77,9 @@ const Filters = (props) => {
         list={ageList}
       />
 
-      <Button size="small" variant="contained" onClick={handleApplyChanges}>
+      {/* <Button size="small" variant="contained" onClick={handleApplyChanges}>
         <DoubleArrowIcon fontSize="small" /> Apply
-      </Button>
+      </Button> */}
     </FormGroup>
   );
 };
@@ -83,4 +88,25 @@ Filters.propTypes = {
   prop: PropTypes.string,
 };
 
-export default Filters;
+const FiltersWithMobile = (props) => {
+  const hidden = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  console.info("hidden: ", hidden);
+  return hidden ? (
+    <Box>
+      <Accordion>
+        <AccordionSummary>
+          <Button sx={{ width: "100%" }}>
+            Show Filters <FilterListIcon />
+          </Button>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Filters {...props} />
+        </AccordionDetails>
+      </Accordion>
+    </Box>
+  ) : (
+    <Filters {...props} />
+  );
+};
+
+export default FiltersWithMobile;

@@ -6,7 +6,7 @@ import { intervalToDuration, format, addSeconds } from "date-fns";
 import { DataGrid } from "@mui/x-data-grid";
 import { Box, Paper, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import SettingsPanel from "./Filters";
+import Filters from "./Filters";
 
 const MyBox = styled(Box)(({ theme }) => {
   return {
@@ -76,7 +76,7 @@ const handleApplyClick = (settings) => {
 const Leaderboard = (props) => {
   return (
     <MyBox sx={{ height: "95vh", width: "95vw" }}>
-      <SettingsPanel
+      <Filters
         onApply={handleApplyClick}
         // size={size}
         // type={type}
