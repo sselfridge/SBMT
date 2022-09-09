@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { intervalToDuration, format, addSeconds } from "date-fns";
 
 import { DataGrid } from "@mui/x-data-grid";
-import { Box, Paper, Button } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Filters from "./Filters";
 
@@ -18,177 +18,184 @@ const MyBox = styled(Box)(({ theme }) => {
 
 const rows = [
   {
-    id: 1,
-    athlete: "Bob Smith",
+    id: 12,
+    athlete: "Sam Smith SmithSmithSmith",
     rank: "1",
     completed: 4,
     totalTime: 1542,
   },
   {
-    id: 2,
-    athlete: "Nigel Pond",
-    rank: "2",
-    completed: 4,
-    totalTime: 1542 + 1542,
-  },
-  {
-    id: 3,
-    athlete: "Hugh Rant",
-    rank: "3",
-    completed: 3,
-    totalTime: 1542 + 1542 + 1542,
-  },
-  {
-    id: 3,
-    athlete: "Hugh Rant",
-    rank: "3",
-    completed: 3,
-    totalTime: 1542 + 1542 + 1542,
-  },
-  {
-    id: 1,
+    id: 22,
     athlete: "Bob Smith",
-    rank: "1",
+    rank: "2",
     completed: 4,
     totalTime: 1542,
   },
   {
-    id: 2,
+    id: 33,
     athlete: "Nigel Pond",
-    rank: "2",
+    rank: "3",
     completed: 4,
     totalTime: 1542 + 1542,
   },
   {
-    id: 3,
+    id: 44,
     athlete: "Hugh Rant",
-    rank: "3",
+    rank: "4",
     completed: 3,
     totalTime: 1542 + 1542 + 1542,
   },
   {
-    id: 1,
-    athlete: "Bob Smith",
-    rank: "1",
-    completed: 4,
-    totalTime: 1542,
-  },
-  {
-    id: 2,
-    athlete: "Nigel Pond",
-    rank: "2",
-    completed: 4,
-    totalTime: 1542 + 1542,
-  },
-  {
-    id: 3,
+    id: 54,
     athlete: "Hugh Rant",
-    rank: "3",
+    rank: "5",
     completed: 3,
     totalTime: 1542 + 1542 + 1542,
   },
   {
-    id: 1,
+    id: 62,
     athlete: "Bob Smith",
-    rank: "1",
+    rank: "6",
     completed: 4,
     totalTime: 1542,
   },
   {
-    id: 2,
+    id: 73,
     athlete: "Nigel Pond",
-    rank: "2",
+    rank: "7",
     completed: 4,
     totalTime: 1542 + 1542,
   },
   {
-    id: 3,
-    athlete: "Hugh Rant",
-    rank: "3",
+    id: 84,
+    athlete: "Hugh Hugh Hugh Hugh Rant",
+    rank: "8",
     completed: 3,
     totalTime: 1542 + 1542 + 1542,
   },
   {
-    id: 1,
+    id: 92,
     athlete: "Bob Smith",
-    rank: "1",
+    rank: "9",
     completed: 4,
     totalTime: 1542,
   },
   {
-    id: 2,
+    id: 103,
     athlete: "Nigel Pond",
-    rank: "2",
+    rank: "10",
     completed: 4,
     totalTime: 1542 + 1542,
   },
   {
-    id: 3,
+    id: 114,
     athlete: "Hugh Rant",
-    rank: "3",
+    rank: "11",
     completed: 3,
     totalTime: 1542 + 1542 + 1542,
   },
   {
-    id: 1,
+    id: 122,
     athlete: "Bob Smith",
-    rank: "1",
+    rank: "12",
     completed: 4,
     totalTime: 1542,
   },
   {
-    id: 2,
+    id: 133,
     athlete: "Nigel Pond",
-    rank: "2",
+    rank: "13",
     completed: 4,
     totalTime: 1542 + 1542,
   },
   {
-    id: 3,
+    id: 144,
     athlete: "Hugh Rant",
-    rank: "3",
+    rank: "14",
     completed: 3,
     totalTime: 1542 + 1542 + 1542,
   },
   {
-    id: 1,
+    id: 152,
     athlete: "Bob Smith",
-    rank: "1",
+    rank: "15",
     completed: 4,
     totalTime: 1542,
   },
   {
-    id: 2,
+    id: 163,
     athlete: "Nigel Pond",
-    rank: "2",
+    rank: "16",
     completed: 4,
     totalTime: 1542 + 1542,
   },
   {
-    id: 3,
+    id: 174,
     athlete: "Hugh Rant",
-    rank: "3",
+    rank: "17",
     completed: 3,
     totalTime: 1542 + 1542 + 1542,
   },
   {
-    id: 1,
+    id: 182,
     athlete: "Bob Smith",
-    rank: "1",
+    rank: "18",
     completed: 4,
     totalTime: 1542,
   },
   {
-    id: 2,
+    id: 193,
     athlete: "Nigel Pond",
-    rank: "2",
+    rank: "19",
     completed: 4,
     totalTime: 1542 + 1542,
   },
   {
-    id: 3,
+    id: 204,
     athlete: "Hugh Rant",
-    rank: "3",
+    rank: "20",
+    completed: 3,
+    totalTime: 1542 + 1542 + 1542,
+  },
+  {
+    id: 212,
+    athlete: "Bob Smith",
+    rank: "21",
+    completed: 4,
+    totalTime: 1542,
+  },
+  {
+    id: 223,
+    athlete: "Nigel Pond",
+    rank: "22",
+    completed: 4,
+    totalTime: 1542 + 1542,
+  },
+  {
+    id: 234,
+    athlete: "Hugh Rant",
+    rank: "23",
+    completed: 3,
+    totalTime: 1542 + 1542 + 1542,
+  },
+  {
+    id: 242,
+    athlete: "Bob Smith",
+    rank: "24",
+    completed: 4,
+    totalTime: 1542,
+  },
+  {
+    id: 253,
+    athlete: "Nigel Pond",
+    rank: "25",
+    completed: 4,
+    totalTime: 1542 + 1542,
+  },
+  {
+    id: 264,
+    athlete: "Hugh Rant",
+    rank: "26",
     completed: 3,
     totalTime: 1542 + 1542 + 1542,
   },
@@ -200,19 +207,35 @@ function formattedTime(seconds) {
 }
 
 const columns = [
-  { field: "athlete", sortable: false, headerName: "Athlete", width: 150 },
   { field: "rank", sortable: false, headerName: "Rank", width: 55 },
+  {
+    field: "athlete",
+    sortable: false,
+    headerName: "Athlete",
+    width: 100,
+    maxWidth: 150,
+  },
   {
     field: "completed",
     sortable: false,
-
     headerName: "Completed",
+    width: 150,
+  },
+  {
+    field: "distance",
+    sortable: false,
+    headerName: "Distance",
+    width: 150,
+  },
+  {
+    field: "elevation",
+    sortable: false,
+    headerName: "Elevation",
     width: 150,
   },
   {
     field: "totalTime",
     sortable: false,
-
     headerName: "Total Time",
     width: 90,
 
@@ -230,7 +253,14 @@ const handleApplyClick = (settings) => {
 const Leaderboard = (props) => {
   return (
     <MyBox sx={{ height: "95vh", width: "95vw", maxWidth: 1000 }}>
-      <Paper sx={{ height: "90%", width: "100%", boxShadow: "none" }}>
+      <Paper
+        sx={{
+          height: "100%",
+          width: "100%",
+          boxShadow: "none",
+          overflow: "scroll",
+        }}
+      >
         <Filters
           onApply={handleApplyClick}
           // size={size}
