@@ -11,6 +11,7 @@ import {
   Divider,
   MenuItem,
   Typography,
+  Link,
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
@@ -21,7 +22,14 @@ import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import Api from "api/api";
 
-const MyBox = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
+const UserMenuBox = styled(Box)(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  textAlign: "center",
+  position: "absolute",
+  top: "8px",
+  right: "8px",
+}));
 
 const UserMenu = (props) => {
   const { prop } = props;
@@ -40,16 +48,16 @@ const UserMenu = (props) => {
   };
 
   const [user, setUser] = React.useState({
-    firstName: "SamMock",
-    lastName: "WiseMock",
-    id: 10645041,
+    firstname: "SamMock",
+    lastname: "WiseMock",
+    athleteId: 10645041,
     avatar:
       "https://dgalywyr863hv.cloudfront.net/pictures/athletes/10645041/16052758/1/medium.jpg",
   });
 
-  // useEffect(() => {
-  //   setUser({});
-  // }, []);
+  useEffect(() => {
+    setUser({});
+  }, []);
 
   const fetchOnce = useRef(true);
   useEffect(() => {
@@ -72,41 +80,35 @@ const UserMenu = (props) => {
       .catch((err) => console.error(err));
   };
 
-  //   if (!user) {
-  //     return (
-  //       <button>
-  //         <a href="https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=https://localhost:5001/api/strava/callback&response_type=code&approval_prompt=auto&scope=read_all,activity:read_all">
-  //           Strava Login
-  //         </a>
-  //       </button>
-  //     );
-  //   }
-
   return (
     <React.Fragment>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          textAlign: "center",
-          position: "absolute",
-          top: "8px",
-          right: "8px",
-        }}
-      >
-        {!user.id && (
-          <Button
+      <UserMenuBox>
+        {!user?.athleteId && (
+          <Link
+            href="https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=https://localhost:5001/api/strava/callback&response_type=code&approval_prompt=auto&scope=read_all,activity:read_all"
             sx={{
               backgroundColor: "strava.main",
+              padding: "10px 20px",
+              borderRadius: 2,
+              textDecoration: "none",
+
               "&:hover": {
                 backgroundColor: "strava.light",
               },
             }}
           >
-            Register
-          </Button>
+            <Typography
+              sx={{
+                color: "strava.contrastText",
+                fontWeight: 800,
+                letterSpacing: "0.05em",
+              }}
+              variant="h6"
+            >
+              Register
+            </Typography>
+          </Link>
         )}
-
         <IconButton
           onClick={handleClick}
           size="small"
@@ -125,12 +127,12 @@ const UserMenu = (props) => {
               textOverflow: "ellipsis",
             }}
           >
-            {user.firstName} {user.lastName}
+            {user.firstname} {user.lastname}
           </Typography>
 
           <Avatar sx={{ width: 32, height: 32 }} src={user.avatar} />
         </IconButton>
-      </Box>
+      </UserMenuBox>
       <Menu
         anchorEl={anchorEl}
         id="account-menu"
@@ -166,24 +168,16 @@ const UserMenu = (props) => {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        {/* <MenuItem>
-          <Avatar /> Profile
-        </MenuItem> */}
-        {user.id && (
-          <a href={`https://www.strava.com/athletes/${user.id}`}>
+        {user?.athleteId && (
+          <a href={`https://www.strava.com/athletes/${user?.athleteId}`}>
             <MenuItem>
               <Avatar src={stravaSvg} /> My Strava Profile
             </MenuItem>
             <Divider />
           </a>
         )}
-        {/* <MenuItem>
-          <ListItemIcon>
-            <PersonAdd fontSize="small" />
-          </ListItemIcon>
-          Add another account
-        </MenuItem> */}
-        {user.id && (
+
+        {user?.athleteId && (
           <MenuItem onClick={() => navTo("/settings")}>
             <ListItemIcon>
               <Settings fontSize="small" />
@@ -203,7 +197,7 @@ const UserMenu = (props) => {
           </ListItemIcon>
           Help / Contact
         </MenuItem>
-        {user.id && (
+        {user?.athleteId && (
           <MenuItem onClick={onLogout}>
             <ListItemIcon>
               <Logout fontSize="small" />

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { AppBar, Box, Toolbar, Typography, Tabs } from "@mui/material";
 import { Tab } from "@mui/material";
@@ -22,28 +22,25 @@ LinkTab.propTypes = {
 };
 
 export default function AppHeader() {
-  const [value, setValue] = React.useState(0);
-  const handleChange = (e, newValue) => {
-    setValue(newValue);
-  };
+  const [currentTabIdx, setCurrentTabIdx] = useState(0);
 
   const { pathname } = useLocation();
 
   useEffect(() => {
     switch (pathname) {
       case "/leaderboard":
-        setValue(0);
+        setCurrentTabIdx(0);
         break;
       case "/segments":
-        setValue(1);
+        setCurrentTabIdx(1);
 
         break;
       case "/athletes":
-        setValue(2);
+        setCurrentTabIdx(2);
         break;
 
       default:
-        setValue(-1);
+        setCurrentTabIdx(false);
         break;
     }
   }, [pathname]);
@@ -69,11 +66,7 @@ export default function AppHeader() {
           </Typography>{" "}
         </Toolbar>
         <Toolbar sx={{ justifyContent: "flex-end" }}>
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            aria-label="nav tabs example"
-          >
+          <Tabs value={currentTabIdx} aria-label="nav tabs example">
             <LinkTab label="Leaderboard" to="/leaderboard" />
             <LinkTab label="Segments" to="/segments" />
             <LinkTab label="Athletes" to="/athletes" />
