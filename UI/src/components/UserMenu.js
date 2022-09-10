@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import PropTypes from "prop-types";
 import {
   Box,
@@ -33,7 +33,7 @@ const UserMenuBox = styled(Box)(({ theme }) => ({
 
 const UserMenu = (props) => {
   const { prop } = props;
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -47,17 +47,17 @@ const UserMenu = (props) => {
     navigate(path);
   };
 
-  const [user, setUser] = React.useState({
-    firstname: "SamMock",
-    lastname: "WiseMock",
-    athleteId: 10645041,
-    avatar:
-      "https://dgalywyr863hv.cloudfront.net/pictures/athletes/10645041/16052758/1/medium.jpg",
-  });
+  const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    setUser({});
-  }, []);
+  // useEffect(() => {
+  //   setUser({
+  //     firstname: "SamMock",
+  //     lastname: "WiseMock",
+  //     athleteId: 10645041,
+  //     avatar:
+  //       "https://dgalywyr863hv.cloudfront.net/pictures/athletes/10645041/16052758/1/medium.jpg",
+  //   });
+  // }, []);
 
   const fetchOnce = useRef(true);
   useEffect(() => {
@@ -67,7 +67,10 @@ const UserMenu = (props) => {
         .then((response) => {
           if (response.status === 200) setUser(response.data);
         })
-        .catch((err) => console.error(err));
+        .catch((err) => {
+          setUser({});
+          console.error(err);
+        });
     }
   }, []);
 
@@ -79,6 +82,10 @@ const UserMenu = (props) => {
       })
       .catch((err) => console.error(err));
   };
+
+  if (user === null) {
+    return null;
+  }
 
   return (
     <React.Fragment>

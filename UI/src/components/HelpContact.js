@@ -54,7 +54,12 @@ const HelpContact = (props) => {
           },
         }}
       >
-        <Typography variant="h2">Contact</Typography>
+        <Typography
+          variant="h2"
+          sx={{ borderBottom: `3px solid`, borderColor: "secondary.main" }}
+        >
+          Contact
+        </Typography>
         <Box>
           <Typography align="center" variant="h5">
             Email Me
