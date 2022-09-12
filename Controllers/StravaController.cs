@@ -16,7 +16,6 @@ namespace TodoApi.Controllers
   [ApiController]
   public class StravaController : ControllerBase
   {
-    private readonly StravaOAuthContext _context;
     private sbmtContext _dbContext;
     private readonly IConfiguration Configuration;
     private IUserService _userService;
@@ -40,13 +39,12 @@ namespace TodoApi.Controllers
 
 
 
-    public StravaController(StravaOAuthContext context,
+    public StravaController(
       IConfiguration configuration,
       IUserService userService,
       sbmtContext dbContext, IStravaService stravaService
       )
     {
-      _context = context;
       _dbContext = dbContext;
       Configuration = configuration;
       _userService = userService;
