@@ -2,3 +2,4 @@
 [Bb]in/
 .vs/
 /appsettings.json
+Models/stravaApi/Strava.NET
