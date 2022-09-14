@@ -58,19 +58,18 @@ namespace TodoApi.Services
       client.DefaultRequestHeaders.Authorization =
     new AuthenticationHeaderValue("Bearer", "");
 
-      var response = await client.GetAsync("https://www.strava.com/api/v3/activities/7729059578");
+      var response = await client.GetAsync("https://www.strava.com/api/v3/segments/813814");
       if (response.IsSuccessStatusCode)
       {
         try
         {
-          ActivitySummaryResponse? result = await response.Content.ReadFromJsonAsync<ActivitySummaryResponse>();
+          SegmentResponse? result = await response.Content.ReadFromJsonAsync<SegmentResponse>();
           if (result == null)
           {
             throw new Exception("Cannot read strava oauth response");
           }
 
-          var efforts = result.SegmentEfforts;
-          Effort newEffort = new Effort(efforts[2]);
+          Segment seg = new Segment(result);
 
 
 
