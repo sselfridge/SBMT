@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using TodoApi.Helpers;
 using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Models.stravaApi;
@@ -58,9 +59,8 @@ namespace TodoApi.Controllers
 
       var oAuth = await _stravaService.GetTokens(code);
 
-      StravaAthlete athlete = oAuth.Athlete;
 
-      StravaUser newUser = new StravaUser(athlete);
+      StravaUser newUser = new StravaUser(oAuth);
 
       var userExists = _userService.GetById(newUser.AthleteId);
 
@@ -109,7 +109,7 @@ namespace TodoApi.Controllers
     }
 
     [HttpGet("athlete/id")]
-    public IActionResult GetAthleteId()
+    public async Task<IActionResult> GetAthleteIdAsync()
     {
 
       var possibleNulUser = HttpContext.Items["User"];

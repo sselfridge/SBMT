@@ -99,9 +99,14 @@ namespace TodoApi.Controllers
 
       var activity = _stravaService.GetActivity(7729059578);
 
+      var expires = 1663213937;
 
 
+      TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
+      int secondsSinceEpoch = (int)t.TotalSeconds;
 
+      var isExpired = secondsSinceEpoch < expires;
+      var diff = expires - secondsSinceEpoch;
       var possibleNulUser = HttpContext.Items["User"];
 
       if (possibleNulUser == null)

@@ -7,10 +7,6 @@ namespace TodoApi.Models.stravaApi
 
     public int Id { get; set; }
 
-    public StravaOAuthResponseDTO(int id)
-    {
-      Id = id;
-    }
 
     public StravaOAuthResponseDTO(StravaOAuthResponse s)
     {
