@@ -10,7 +10,7 @@ namespace TodoApi.Models.db
     }
     public DbSet<Student> Students { get; set; }
     public DbSet<StravaUser> StravaUsers { get; set; }
-
     public DbSet<StravaPushNotification> StravaPushNotifications { get; set; }
+    public DbSet<Effort> Efforts { get; set; }
   }
 }

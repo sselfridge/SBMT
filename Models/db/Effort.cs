@@ -9,15 +9,17 @@ namespace TodoApi.Models.db
     public long ActivityId { get; set; }
     public int ElapsedTime { get; set; }
     public int MovingTime { get; set; }
+    public long SegmentId { get; set; }
 
 
-    public Effort(long id, int athleteId, long activityId, int elapsedTime, int movingTime)
+    public Effort(long id, int athleteId, long activityId, int elapsedTime, int movingTime, long segmentId)
     {
       Id = id;
       AthleteId = athleteId;
       ActivityId = activityId;
       ElapsedTime = elapsedTime;
       MovingTime = movingTime;
+      SegmentId = segmentId;
     }
 
     public Effort(ActivitySumResEffort eff)
@@ -27,6 +29,7 @@ namespace TodoApi.Models.db
       ActivityId = eff.Activity.Id;
       ElapsedTime = eff.ElapsedTime;
       MovingTime = eff.MovingTime;
+      SegmentId = eff.Segment.Id;
     }
   }
 

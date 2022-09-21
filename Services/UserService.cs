@@ -8,6 +8,7 @@
     IEnumerable<User> GetAll();
     StravaUser? GetById(int id);
     Task Add(StravaUser user);
+    Task<bool> Update(StravaUser user);
   }
 
   public class UserService : IUserService
@@ -49,7 +50,19 @@
 
     public StravaUser? GetById(int id)
     {
-      return _dbContext.StravaUsers.FirstOrDefault(x => x.AthleteId == id);
+      StravaUser? user;
+      try
+      {
+
+        user = _dbContext.StravaUsers.FirstOrDefault(x => x.AthleteId == id);
+      }
+      catch (Exception)
+      {
+
+        throw;
+      }
+      return user;
+
     }
 
     public async Task Add(StravaUser user)
@@ -57,6 +70,22 @@
       _dbContext.StravaUsers.Add(user);
       await _dbContext.SaveChangesAsync();
 
+    }
+
+    public async Task<bool> Update(StravaUser user)
+    {
+
+      var updatedUser = GetById(user.AthleteId);
+
+      if (updatedUser == null) throw new Exception("User not found in DB");
+
+      updatedUser.AccessToken = user.AccessToken;
+      updatedUser.ExpiresAt = user.ExpiresAt;
+      updatedUser.RefreshToken = user.RefreshToken;
+      _dbContext.Update(updatedUser);
+      await _dbContext.SaveChangesAsync();
+
+      return true;
     }
   }
 }

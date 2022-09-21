@@ -5,6 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using TodoApi.Helpers;
 using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Services;
@@ -97,16 +98,24 @@ namespace TodoApi.Controllers
       var newCookie = GenerateJwtToken(1234);
 
 
-      var activity = _stravaService.GetActivity(7729059578);
+      var activity = await _stravaService.GetActivity(7729059578, 1075670);
+      var segmentIds = new long[] { 1290381, 9826549, 16075114 };
 
-      var expires = 1663213937;
+      var efforts = StravaUtilities.PullEffortsFromActivity(activity, segmentIds);
 
+      Array.ForEach(efforts, (effort) =>
+      {
+        var effortExists = _dbContext.Efforts.Any(e => e.Id == effort.Id);
+        if (effortExists == false)
+        {
+          _dbContext.Add(effort);
+        }
+      });
 
-      TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
-      int secondsSinceEpoch = (int)t.TotalSeconds;
+      _dbContext.SaveChanges();
 
-      var isExpired = secondsSinceEpoch < expires;
-      var diff = expires - secondsSinceEpoch;
+      return Ok(efforts);
+
       var possibleNulUser = HttpContext.Items["User"];
 
       if (possibleNulUser == null)

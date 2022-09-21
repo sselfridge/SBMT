@@ -7,16 +7,18 @@ namespace TodoApi.Services
   public interface IStravaService
   {
     Task<StravaOAuthResponseDTO> GetTokens(string code);
-    Task GetActivity(long id);
+    Task<ActivitySummaryResponse> GetActivity(long id, int athleteId);
   }
   public class StravaService : IStravaService
   {
     private readonly IConfiguration Configuration;
+    private IUserService UserService;
 
 
-    public StravaService(IConfiguration configuration)
+    public StravaService(IConfiguration configuration, IUserService userService)
     {
       Configuration = configuration;
+      UserService = userService;
     }
 
     public async Task<StravaOAuthResponseDTO> GetTokens(string code)
@@ -52,26 +54,34 @@ namespace TodoApi.Services
       throw new Exception(response.StatusCode.ToString());
     }
 
-    public async Task GetActivity(long id)
+    public async Task<ActivitySummaryResponse> GetActivity(long activityId, int athleteId)
     {
+
+      var user = UserService.GetById(athleteId);
+
+      if (user == null)
+      {
+        throw new Exception($"User with id {athleteId} not found");
+      }
+
+      var accessToken = await checkAccessTokenAsync(user);
+
       var client = new HttpClient();
       client.DefaultRequestHeaders.Authorization =
-    new AuthenticationHeaderValue("Bearer", "");
+          new AuthenticationHeaderValue("Bearer", accessToken);
 
-      var response = await client.GetAsync("https://www.strava.com/api/v3/segments/813814");
+      var response = await client.GetAsync($"https://www.strava.com/api/v3/activities/{activityId}");
       if (response.IsSuccessStatusCode)
       {
         try
         {
-          SegmentResponse? result = await response.Content.ReadFromJsonAsync<SegmentResponse>();
+          ActivitySummaryResponse? result = await response.Content.ReadFromJsonAsync<ActivitySummaryResponse>();
           if (result == null)
           {
-            throw new Exception("Cannot read strava oauth response");
+            throw new Exception("Invalid Activity response");
           }
 
-          Segment seg = new Segment(result);
-
-
+          return result;
 
         }
         catch (Exception e)
@@ -81,14 +91,84 @@ namespace TodoApi.Services
         }
 
 
+      }
+      else
+      {
 
-
+        throw new Exception("Get Activity Failed");
 
       }
 
 
+    }
 
-      return;
+
+    private async Task<string> checkAccessTokenAsync(StravaUser user)
+    {
+
+      var isExpired = isTokenExpired(user.ExpiresAt);
+      string accessToken;
+      if (isExpired)
+      {
+        accessToken = await refreshTokenAsync(user);
+      }
+      else
+      {
+        accessToken = user.AccessToken;
+      }
+
+      return accessToken;
+    }
+
+
+    private bool isTokenExpired(long expiresAt)
+    {
+
+      TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
+      int secondsSinceEpoch = (int)t.TotalSeconds;
+
+      return secondsSinceEpoch + 10 > expiresAt;
+
+    }
+
+    private async Task<string> refreshTokenAsync(StravaUser user)
+    {
+      IConfiguration configuration = new ConfigurationBuilder()
+                            .AddJsonFile("appsettings.json")
+                            .Build();
+
+      string clientId = configuration["StravaConfig:clientId"];
+      string clientSecret = configuration["StravaConfig:clientSecret"];
+
+
+      var pairs = new List<KeyValuePair<string, string>>();
+      pairs.Add(new KeyValuePair<string, string>("client_id", clientId));
+      pairs.Add(new KeyValuePair<string, string>("client_secret", clientSecret));
+      pairs.Add(new KeyValuePair<string, string>("grant_type", "refresh_token"));
+      pairs.Add(new KeyValuePair<string, string>("refresh_token", user.RefreshToken));
+
+      var content = new FormUrlEncodedContent(pairs);
+
+      var client = new HttpClient();
+
+      client.DefaultRequestHeaders.Accept.Clear();
+      var response = await client.PostAsync("https://www.strava.com/oauth/token", content);
+      if (response.IsSuccessStatusCode)
+      {
+        StravaTokenRefreshResponse? result = await response.Content.ReadFromJsonAsync<StravaTokenRefreshResponse>();
+        if (result == null) throw new Exception("Cannot read strava refresh response");
+
+        user.AccessToken = result.AccessToken;
+        user.RefreshToken = result.RefreshToken;
+        user.ExpiresAt = result.ExpiresAt;
+
+        await UserService.Update(user);
+
+        return user.AccessToken;
+      }
+
+      throw new Exception(response.StatusCode.ToString());
+
     }
 
   }
