@@ -8,6 +8,8 @@ namespace TodoApi.Services
   {
     Task<StravaOAuthResponseDTO> GetTokens(string code);
     Task<ActivitySummaryResponse> GetActivity(long id, int athleteId);
+
+    Task<Segment> GetSegment(long id);
   }
   public class StravaService : IStravaService
   {
@@ -102,7 +104,52 @@ namespace TodoApi.Services
 
     }
 
+    public async Task<Segment> GetSegment(long segmentId)
+    {
 
+      var user = UserService.GetById(1);
+
+      if (user == null)
+      {
+        throw new Exception($"User with id {1} not found");
+      }
+
+      var accessToken = await checkAccessTokenAsync(user);
+
+      var client = new HttpClient();
+      client.DefaultRequestHeaders.Authorization =
+          new AuthenticationHeaderValue("Bearer", accessToken);
+
+      var response = await client.GetAsync($"https://www.strava.com/api/v3/segments/{segmentId}");
+      if (response.IsSuccessStatusCode)
+      {
+        try
+        {
+          SegmentResponse? result = await response.Content.ReadFromJsonAsync<SegmentResponse>();
+          if (result == null)
+          {
+            throw new Exception("Invalid Activity response");
+          }
+
+          return new Segment(result);
+
+        }
+        catch (Exception e)
+        {
+          Console.WriteLine(e);
+          throw new Exception("Bad model!");
+        }
+
+
+      }
+      else
+      {
+
+        throw new Exception("Get Activity Failed");
+
+      }
+
+    }
     private async Task<string> checkAccessTokenAsync(StravaUser user)
     {
 

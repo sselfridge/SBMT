@@ -42,6 +42,9 @@ namespace TodoApi.Models.stravaApi
     [JsonPropertyName("xoms")]
     public SegmentResXoms Xoms { get; set; }
 
+    //[JsonPropertyName("athlete_segment_stats")]
+    //public SegmentResAthleteStats AthleteStats { get; set; }
+
   }
 
 
@@ -70,10 +73,10 @@ namespace TodoApi.Models.stravaApi
     public long PrElapsedTime { get; set; }
 
     [JsonPropertyName("pr_date")]
-    public long PrDate { get; set; }
+    public string PrDate { get; set; }
 
     [JsonPropertyName("pr_activity_id")]
-    public string PrActivityId { get; set; }
+    public long PrActivityId { get; set; }
 
     [JsonPropertyName("effort_count")]
     public long EffortCount { get; set; }

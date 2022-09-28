@@ -5,7 +5,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
-using TodoApi.Helpers;
 using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Services;
@@ -98,22 +97,25 @@ namespace TodoApi.Controllers
       var newCookie = GenerateJwtToken(1234);
 
 
-      var activity = await _stravaService.GetActivity(6156488864, 1075670);
+      //var activity = await _stravaService.GetActivity(6156488864, 1075670);
+      //var efforts = StravaUtilities.PullEffortsFromActivity(activity);
+      //Array.ForEach(efforts, (effort) =>
+      //{
+      //  var effortExists = _dbContext.Efforts.Any(e => e.Id == effort.Id);
+      //  if (effortExists == false)
+      //  {
+      //    _dbContext.Add(effort);
+      //  }
+      //});
 
-      var efforts = StravaUtilities.PullEffortsFromActivity(activity);
+      //_dbContext.SaveChanges();
 
-      Array.ForEach(efforts, (effort) =>
-      {
-        var effortExists = _dbContext.Efforts.Any(e => e.Id == effort.Id);
-        if (effortExists == false)
-        {
-          _dbContext.Add(effort);
-        }
-      });
 
-      _dbContext.SaveChanges();
 
-      return Ok(efforts);
+      var segment = await _stravaService.GetSegment(1313);
+
+
+      return Ok(segment);
 
       var possibleNulUser = HttpContext.Items["User"];
 
@@ -239,3 +241,25 @@ namespace TodoApi.Controllers
     }
   }
 }
+
+
+//populate Segment DB
+//    var roadSegmentIdsArr = new long[] {658277,1290381,637362,881465,631703,3596686,29015105,
+//                                   618305,1313,1315,5106261,12039079,813814,751029,};
+
+//var roadSegmentIds = roadSegmentIdsArr.ToList();
+
+//var gravelSegmentIds = new long[] {746977,
+//                                        647251,
+//                                        2622235,
+//                                        641588 };
+
+// need to manually tweak GetSegment to return road / gravel
+//var tasks = gravelSegmentIds.ToList().Select(id => _stravaService.GetSegment(id));
+////  tasks.Add(_stravaService.GetSegment(id));
+
+
+//var t = await Task.WhenAll(tasks);
+
+//_dbContext.AddRange(t);
+//await _dbContext.SaveChangesAsync();

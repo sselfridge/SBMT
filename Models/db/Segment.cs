@@ -20,15 +20,22 @@ namespace TodoApi.Models.db
     public long EffortCount { get; set; }
     public long AthleteCount { get; set; }
 
-    public SegmentResMap Map { get; set; }
+    public string Polyline { get; set; }
 
-    public SegmentResXoms Xoms { get; set; }
+    public string Kom { get; set; }
+    public string Qom { get; set; }
+    public string SurfaceType { get; set; } = "road";
 
 
 
 
 
-    public Segment(long id, long resourceState, string name, string activityType, float distance, float averageGrade, float maximumGrade, float elevationHigh, float elevationLow, float[] startLatlng, float[] endLatlng, long climbCategory, float totalElevationGain, long effortCount, long athleteCount, SegmentResMap map, SegmentResXoms xoms)
+    public Segment(long id, long resourceState, string name,
+      string activityType, float distance, float averageGrade,
+      float maximumGrade, float elevationHigh, float elevationLow,
+      float[] startLatlng, float[] endLatlng, long climbCategory,
+      float totalElevationGain, long effortCount, long athleteCount,
+      string polyline, string kom, string qom, string surfaceType)
     {
       Id = id;
       ResourceState = resourceState;
@@ -45,8 +52,9 @@ namespace TodoApi.Models.db
       TotalElevationGain = totalElevationGain;
       EffortCount = effortCount;
       AthleteCount = athleteCount;
-      Map = map;
-      Xoms = xoms;
+      Polyline = polyline;
+      Kom = kom;
+      Qom = qom;
     }
 
     public Segment(SegmentResponse res)
@@ -66,8 +74,32 @@ namespace TodoApi.Models.db
       TotalElevationGain = res.TotalElevationGain;
       EffortCount = res.EffortCount;
       AthleteCount = res.AthleteCount;
-      Map = res.Map;
-      Xoms = res.Xoms;
+      Polyline = res.Map.Polyline;
+      Kom = res.Xoms.Kom;
+      Qom = res.Xoms.Qom;
+    }
+
+    public Segment(SegmentResponse res, string surfaceType)
+    {
+      Id = res.Id;
+      ResourceState = res.ResourceState;
+      Name = res.Name;
+      ActivityType = res.ActivityType;
+      Distance = res.Distance;
+      AverageGrade = res.AverageGrade;
+      MaximumGrade = res.MaximumGrade;
+      ElevationHigh = res.ElevationHigh;
+      ElevationLow = res.ElevationLow;
+      StartLatlng = res.StartLatlng;
+      EndLatlng = res.EndLatlng;
+      ClimbCategory = res.ClimbCategory;
+      TotalElevationGain = res.TotalElevationGain;
+      EffortCount = res.EffortCount;
+      AthleteCount = res.AthleteCount;
+      Polyline = res.Map.Polyline;
+      Kom = res.Xoms.Kom;
+      Qom = res.Xoms.Qom;
+      SurfaceType = surfaceType;
     }
   }
 }
