@@ -1,12 +1,13 @@
 import React, { useState, useCallback, useRef } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { intervalToDuration, formatDuration, addSeconds } from "date-fns";
 
 import { DataGrid } from "@mui/x-data-grid";
 import { Box, Paper } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Filters from "./Filters";
+
+import { formattedTime } from "utils/helperFuncs";
 
 import Api from "api/api";
 
@@ -24,16 +25,6 @@ const AvatarBox = styled(Box)(({ theme }) => ({
     width: 35,
   },
 }));
-
-function formattedTime(seconds) {
-  const out = intervalToDuration({ start: 0, end: seconds * 1000 });
-
-  let str = "";
-  if (out.hours) str += `${out.hours}:`.padStart(3, 0);
-  if (out.minutes) str += `${out.minutes}:`.padStart(3, 0);
-  if (out.seconds) str += `${out.seconds}`.padStart(2, 0);
-  return str;
-}
 
 const columns = [
   {

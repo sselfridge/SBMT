@@ -12,6 +12,7 @@ import { styled } from "@mui/material/styles";
 import Filters from "./Filters";
 
 import { ALL_COLUMNS, MOBILE_COLUMNS } from "utils/constants";
+import { formattedTime } from "utils/helperFuncs";
 
 const MyBox = styled(Box)(({ theme }) => {
   return {
@@ -262,14 +263,16 @@ const rows = [
   },
 ];
 
-function formattedTime(seconds) {
-  var helperDate = addSeconds(new Date(0), seconds);
-  return format(helperDate, "hh:mm:ss");
-}
-
 const columns = [
-  { field: "rank", sortable: false, headerName: "Rank", flex: 10 },
   {
+    flex: 1,
+    field: "rank",
+    sortable: false,
+    headerName: "Rank",
+    width: 55,
+  },
+  {
+    flex: 1,
     field: "athlete",
     sortable: false,
     headerName: "Athlete",
@@ -292,6 +295,7 @@ const columns = [
     valueGetter: ({ row }) => row.completed,
   },
   {
+    flex: 1,
     field: "distance",
     sortable: false,
     headerName: "Distance Total",
@@ -300,6 +304,7 @@ const columns = [
     flex: 25,
   },
   {
+    flex: 1,
     field: "elevation",
     sortable: false,
     headerName: "Elevation Total",
@@ -330,7 +335,7 @@ const columns = [
     valueGetter: ({ row }) => row.totalTime,
     renderCell: (props) => {
       const { value } = props;
-      return formattedTime(value);
+      return formattedTime(value, true);
     },
   },
 ];
