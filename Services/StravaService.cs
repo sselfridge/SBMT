@@ -86,7 +86,7 @@ namespace TodoApi.Services
         }
         catch (Exception e)
         {
-
+          Console.WriteLine(e);
           throw new Exception("Bad model!");
         }
 

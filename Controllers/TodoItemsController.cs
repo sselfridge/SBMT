@@ -98,10 +98,9 @@ namespace TodoApi.Controllers
       var newCookie = GenerateJwtToken(1234);
 
 
-      var activity = await _stravaService.GetActivity(7729059578, 1075670);
-      var segmentIds = new long[] { 1290381, 9826549, 16075114 };
+      var activity = await _stravaService.GetActivity(6156488864, 1075670);
 
-      var efforts = StravaUtilities.PullEffortsFromActivity(activity, segmentIds);
+      var efforts = StravaUtilities.PullEffortsFromActivity(activity);
 
       Array.ForEach(efforts, (effort) =>
       {

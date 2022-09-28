@@ -4,7 +4,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
-using TodoApi.Helpers;
 using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Models.stravaApi;
