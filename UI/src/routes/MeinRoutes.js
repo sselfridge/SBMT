@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Invoices from "routes/invoices";
 import Expenses from "routes/expenses";
 import DefaultRoute from "routes/DefaultRoute";
+import Recent from "components/Recent";
 import Leaderboard from "components/Leaderboard";
 import Segments from "components/Segments";
 import SegmentDetails from "components/SegmentDetails";
@@ -19,8 +20,9 @@ const MeinRoutes = (props) => {
     <BrowserRouter>
       <Routes>
         {/* <NavBar /> */}
-        <Route path="/" element={<Navigate to="/leaderboard" />} />
+        <Route path="/" element={<Navigate to="/recent" />} />
         <Route path="/" element={<App />}>
+          <Route path="recent" element={<Recent />} />
           <Route path="leaderboard" element={<Leaderboard />} />
           <Route path="segments" element={<Segments />} />
           <Route path="segments/:id" element={<SegmentDetails />} />
