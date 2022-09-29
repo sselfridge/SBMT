@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { AppBar, Box, Toolbar, Typography, Tabs } from "@mui/material";
-import { Tab } from "@mui/material";
+import { AppBar, Box, Toolbar, Typography, Tab, Tabs } from "@mui/material";
+import { styled } from "@mui/material/styles";
+
 import UserMenu from "./UserMenu";
 import { Link, useLocation } from "react-router-dom";
 
@@ -20,6 +21,11 @@ function LinkTab(props) {
 LinkTab.propTypes = {
   to: PropTypes.string.isRequired,
 };
+
+const TitleLink = styled("a")(({ theme }) => ({
+  color: theme.palette.primary.contrastText,
+  textDecoration: "none",
+}));
 
 export default function AppHeader() {
   const [currentTabIdx, setCurrentTabIdx] = useState(0);
@@ -61,7 +67,9 @@ export default function AppHeader() {
               letterSpacing: -4,
             }}
           >
-            <span className="sbmt">SBMT</span>
+            <TitleLink href="/">
+              <span className="sbmt">SBMT</span>
+            </TitleLink>
             <UserMenu />
           </Typography>{" "}
         </Toolbar>

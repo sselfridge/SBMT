@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 import { DataGrid } from "@mui/x-data-grid";
-import { Box, Paper } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Filters from "./Filters";
 
@@ -32,12 +32,17 @@ const columns = [
     sortable: false,
     headerName: "",
     width: 55,
-    renderCell: ({ value }) => (
-      <AvatarBox>
-        <img alt="avatar" src={value} />
-      </AvatarBox>
+    renderCell: ({ value: v }) => (
+      <a href={`https://www.strava.com/athletes/${v.athleteId}`}>
+        <AvatarBox>
+          <img alt="avatar" src={v.avatar} />
+        </AvatarBox>
+      </a>
     ),
-    // flex: 1,
+    valueGetter: ({ row }) => ({
+      avatar: row.avatar,
+      athleteId: row.athleteId,
+    }),
   },
   {
     field: "name",
@@ -45,35 +50,39 @@ const columns = [
     headerName: "Name",
     width: 200,
     // maxWidth: 150,
-    flex: 1,
+    flex: 2,
+    renderCell: ({ value }) => value,
+    valueGetter: ({ row }) => (
+      <a href={`https://www.strava.com/athletes/${row.athleteId}`}>
+        {row.name}
+      </a>
+    ),
   },
   {
-    field: "segmentId",
+    field: "segmentName",
     sortable: false,
     headerName: "Segment",
     // width: 150,
-    renderCell: ({ value }) => (
-      <a href={`https://www.strava.com/segments/${value}`}>Segment</a>
+    renderCell: ({ value }) => value,
+    valueGetter: ({ row }) => (
+      <a href={`https://www.strava.com/segments/${row.segmentId}`}>
+        {row.segmentName}
+      </a>
     ),
-    flex: 1,
+
+    flex: 4,
   },
   {
     field: "elapsedTime",
     sortable: false,
     headerName: "Time",
     width: 75,
-    renderCell: ({ value }) => formattedTime(value),
-    flex: 1,
-  },
-  {
-    field: "activityId",
-    sortable: false,
-    headerName: "Activity",
-    width: 90,
-
     renderCell: ({ value }) => (
-      <a href={`https://www.strava.com/activities/${value}`}>Activity</a>
+      <a href={`https://www.strava.com/activities/${value.id}`}>
+        {formattedTime(value.time)}
+      </a>
     ),
+    valueGetter: ({ row }) => ({ id: row.activityId, time: row.elapsedTime }),
     flex: 1,
   },
 ];
@@ -93,7 +102,7 @@ const Recent = (props) => {
   }, []);
 
   return (
-    <MyBox sx={{ height: "90vh", width: "95vw", maxWidth: 1000 }}>
+    <MyBox sx={{ height: "80vh", width: "95vw", maxWidth: 1000 }}>
       <Paper
         sx={{
           height: "100%",
@@ -102,6 +111,7 @@ const Recent = (props) => {
           overflow: "scroll",
         }}
       >
+        <Typography variant="h4">Recent Efforts</Typography>
         <DataGrid
           rows={recentEfforts}
           columns={columns}
