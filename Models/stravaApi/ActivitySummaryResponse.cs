@@ -20,7 +20,7 @@ namespace TodoApi.Models.stravaApi
     public string? Visibility { get; set; }
 
     [JsonPropertyName("segment_efforts")]
-    public ActivitySumResEffort[] SegmentEfforts { get; set; }
+    public ActivitySumResEffort[]? SegmentEfforts { get; set; }
 
   }
 

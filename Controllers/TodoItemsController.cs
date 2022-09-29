@@ -80,7 +80,7 @@ namespace TodoApi.Controllers
     }
 
     [HttpGet()]
-    public async Task<ActionResult<TodoItem>> TestThing()
+    public async Task<ActionResult<TodoItem>> TestThing([FromServices] IServiceScopeFactory serviceScopeFactory)
     {
 
 
@@ -110,12 +110,37 @@ namespace TodoApi.Controllers
 
       //_dbContext.SaveChanges();
 
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+      //Task.Run(async () =>
+      //{
+
+      //  using (var scope = serviceScopeFactory.CreateScope())
+      //  {
+      //    var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
+      //    var activities = await _stravaService.GetActivities(1075670, context);
+
+      //    var newStudent = new Student();
+      //    newStudent.Name = "WAIT FOR ME!!!!";
+      //    newStudent.Age = 20;
+      //    newStudent.Grade = 10;
+
+      //    context.Students.Add(newStudent);
+      //    await context.SaveChangesAsync();
+      //    Console.WriteLine("WAIT Saved!");
+      //  }
+      //});
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+
+      //var activities = await _stravaService.GetActivities(1075670, _dbContext);
+      var activities = await _stravaService.GetActivity(7856134889, 1075670);
+      //List<Segment> segList = new List<Segment>();
+      //var segment = await _stravaService.GetSegment(25834430);
+      //segList.Add(segment);
+      //segment = await _stravaService.GetSegment(14754748);
+      //segList.Add(segment);
 
 
-      var segment = await _stravaService.GetSegment(1313);
-
-
-      return Ok(segment);
+      return Ok(activities);
 
       var possibleNulUser = HttpContext.Items["User"];
 

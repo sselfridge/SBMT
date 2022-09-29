@@ -36,12 +36,30 @@ namespace TodoApi.Controllers
         {
           id = effort.Id,
           name = $"{user.Firstname} {user.Lastname}",
+          athleteId = user.AthleteId,
           avatar = user.Avatar,
           activityId = effort.ActivityId,
           created = effort.CreatedAt,
           elapsedTime = effort.ElapsedTime,
           segmentId = effort.SegmentId,
-        }).ToList();
+        }).Join(_dbContext.Segments,
+        effort => effort.segmentId,
+          segment => segment.Id,
+          (effort, segment) => new
+          {
+            id = effort.id,
+            name = effort.name,
+            athleteId = effort.athleteId,
+            avatar = effort.avatar,
+            activityId = effort.activityId,
+            created = effort.created,
+            elapsedTime = effort.elapsedTime,
+            segmentId = effort.segmentId,
+            SegmentName = segment.Name,
+            surfaceType = segment.SurfaceType
+          }
+
+          ).ToList();
 
       return Ok(data);
     }

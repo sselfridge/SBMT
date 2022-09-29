@@ -9,13 +9,14 @@ namespace TodoApi.Services
     Task<StravaOAuthResponseDTO> GetTokens(string code);
     Task<ActivitySummaryResponse> GetActivity(long id, int athleteId);
 
-    Task<Segment> GetSegment(long id);
+    Task<List<ActivitySummaryResponse>> GetActivities(int athleteId, sbmtContext context);
+    Task<Segment> GetSegment(long segmentId);
   }
   public class StravaService : IStravaService
   {
     private readonly IConfiguration Configuration;
     private IUserService UserService;
-
+    private sbmtContext? scopeContext;
 
     public StravaService(IConfiguration configuration, IUserService userService)
     {
@@ -150,6 +151,63 @@ namespace TodoApi.Services
       }
 
     }
+
+    public async Task<List<ActivitySummaryResponse>> GetActivities(int athleteId, sbmtContext context)
+    {
+      scopeContext = context;
+
+      var user = UserService.GetById(athleteId, scopeContext);
+
+      if (user == null)
+      {
+        throw new Exception($"User with id {athleteId} not found");
+      }
+
+      var accessToken = await checkAccessTokenAsync(user);
+
+      var client = new HttpClient();
+      client.DefaultRequestHeaders.Authorization =
+          new AuthenticationHeaderValue("Bearer", accessToken);
+
+      var response = await client.GetAsync(
+        $"https://www.strava.com/api/v3/athlete/activities" +
+        $"?before=1664077344" +
+        $"&after=1662003744" +
+        $"&page=1" +
+        $"&per_page=200");
+      if (response.IsSuccessStatusCode)
+      {
+        try
+        {
+          ActivitySummaryResponse[]? result = await response.Content.ReadFromJsonAsync<ActivitySummaryResponse[]>();
+          if (result == null)
+          {
+            throw new Exception("Invalid Activity response");
+          }
+
+          return result.ToList();
+
+        }
+        catch (Exception e)
+        {
+          Console.WriteLine(e);
+          throw new Exception("Bad model!");
+        }
+
+
+      }
+      else
+      {
+
+        throw new Exception("Get Activity Failed");
+
+      }
+    }
+
+    /**
+     * Private functions below
+     * 
+     */
     private async Task<string> checkAccessTokenAsync(StravaUser user)
     {
 
@@ -173,7 +231,7 @@ namespace TodoApi.Services
 
       TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
       int secondsSinceEpoch = (int)t.TotalSeconds;
-
+      return true;
       return secondsSinceEpoch + 10 > expiresAt;
 
     }
@@ -209,7 +267,10 @@ namespace TodoApi.Services
         user.RefreshToken = result.RefreshToken;
         user.ExpiresAt = result.ExpiresAt;
 
-        await UserService.Update(user);
+
+        await UserService.Update(user, scopeContext);
+
+
 
         return user.AccessToken;
       }

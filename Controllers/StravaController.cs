@@ -58,7 +58,6 @@ namespace TodoApi.Controllers
 
       var oAuth = await _stravaService.GetTokens(code);
 
-
       StravaUser newUser = new StravaUser(oAuth);
 
       var userExists = _userService.GetById(newUser.AthleteId);

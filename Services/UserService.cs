@@ -6,9 +6,11 @@
   public interface IUserService
   {
     IEnumerable<User> GetAll();
-    StravaUser? GetById(int id);
+    //StravaUser? GetById(int id);
+    StravaUser? GetById(int id, sbmtContext? scopeContext = null);
     Task Add(StravaUser user);
-    Task<bool> Update(StravaUser user);
+    //Task<StravaUser> Update(StravaUser user);
+    Task<StravaUser> Update(StravaUser user, sbmtContext? scopeContext = null);
   }
 
   public class UserService : IUserService
@@ -22,6 +24,7 @@
     };
 
     private sbmtContext _dbContext;
+
 
     //private readonly AppSettings _appSettings;
 
@@ -48,44 +51,35 @@
       return _users;
     }
 
-    public StravaUser? GetById(int id)
+    //public StravaUser? GetById(int id)
+    //{
+    //  return GetById(id, _dbContext);
+    //}
+
+    public StravaUser? GetById(int id, sbmtContext? scopeContext)
     {
-      StravaUser? user;
-      try
-      {
+      sbmtContext dbContext = scopeContext ?? _dbContext;
 
-        user = _dbContext.StravaUsers.FirstOrDefault(x => x.AthleteId == id);
-      }
-      catch (Exception)
-      {
-
-        throw;
-      }
-      return user;
-
+      return dbContext.StravaUsers.FirstOrDefault(x => x.AthleteId == id);
     }
 
     public async Task Add(StravaUser user)
     {
       _dbContext.StravaUsers.Add(user);
       await _dbContext.SaveChangesAsync();
-
     }
 
-    public async Task<bool> Update(StravaUser user)
+    //public async Task<StravaUser> Update(StravaUser user)
+    //{
+    //  return await Update(user, _dbContext);
+    //}
+    public async Task<StravaUser> Update(StravaUser user, sbmtContext? scopeContext)
     {
+      sbmtContext dbContext = scopeContext ?? _dbContext;
 
-      var updatedUser = GetById(user.AthleteId);
-
-      if (updatedUser == null) throw new Exception("User not found in DB");
-
-      updatedUser.AccessToken = user.AccessToken;
-      updatedUser.ExpiresAt = user.ExpiresAt;
-      updatedUser.RefreshToken = user.RefreshToken;
-      _dbContext.Update(updatedUser);
-      await _dbContext.SaveChangesAsync();
-
-      return true;
+      dbContext.Update(user);
+      await dbContext.SaveChangesAsync();
+      return user;
     }
   }
 }
