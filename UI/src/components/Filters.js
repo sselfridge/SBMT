@@ -26,20 +26,17 @@ import {
   surfaceList,
 } from "utils/constants";
 
-const Filters = (props) => {
-  const { onApply, surface, gender, category, age } = props;
-  const [_surface, setSurface] = useState(surfaceList[0]);
-  const [_gender, setGender] = useState(genderList[0]);
-  const [_age, setAge] = useState(ageList[0]);
-  const [_category, setCategory] = useState(categoryList[0]);
+import ChipSelect from "./Shared/ChipSelect";
 
-  const handleApplyChanges = React.useCallback(() => {
-    onApply({});
-  }, [onApply]);
+const Filters = ({ onApplyFilters }) => {
+  const [surface, setSurface] = useState(surfaceList[0]);
+  const [gender, setGender] = useState(genderList[0]);
+  const [age, setAge] = useState(ageList[0]);
+  const [category, setCategory] = useState(categoryList[0]);
 
   useEffect(() => {
-    console.info("Update ", _surface, _gender, _age, _category);
-  }, [_surface, _gender, _age, _category]);
+    onApplyFilters({ surface, gender, age, category });
+  }, [surface, gender, age, category, onApplyFilters]);
 
   return (
     <FormGroup
@@ -54,25 +51,31 @@ const Filters = (props) => {
     >
       <LabeledSelect
         label={"Surface"}
-        value={_surface}
+        value={surface}
         setValue={setSurface}
         list={surfaceList}
       />
+      {/* <ChipSelect
+        label={"Surface"}
+        list={surfaceList}
+        setValue={setSurface}
+        value={surface}
+      /> */}
       <LabeledSelect
         label={"Gender"}
-        value={_gender}
+        value={gender}
         setValue={setGender}
         list={genderList}
       />
       <LabeledSelect
         label={"Category"}
-        value={_category}
+        value={category}
         setValue={setCategory}
         list={categoryList}
       />
       <LabeledSelect
         label={"Age Group"}
-        value={_age}
+        value={age}
         setValue={setAge}
         list={ageList}
       />
@@ -90,7 +93,6 @@ Filters.propTypes = {
 
 const FiltersWithMobile = (props) => {
   const hidden = useMediaQuery((theme) => theme.breakpoints.down("sm"));
-  console.info("hidden: ", hidden);
   return hidden ? (
     <Box>
       <Accordion>

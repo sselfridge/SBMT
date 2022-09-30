@@ -32,3 +32,20 @@ export const weightClass = [
   "225lbs to 249lbs",
   "250lbs and over",
 ];
+
+export const MOBILE_COLUMNS = {
+  rank: true,
+  athlete: true,
+  completed: true,
+  distance: false,
+  elevation: false,
+  totalTime: true,
+};
+export const ALL_COLUMNS = {
+  rank: true,
+  athlete: true,
+  completed: true,
+  distance: true,
+  elevation: true,
+  totalTime: true,
+};

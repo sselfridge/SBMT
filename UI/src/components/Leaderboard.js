@@ -3,10 +3,15 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { intervalToDuration, format, addSeconds } from "date-fns";
 
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
+
 import { DataGrid } from "@mui/x-data-grid";
 import { Box, Paper } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Filters from "./Filters";
+
+import { ALL_COLUMNS, MOBILE_COLUMNS } from "utils/constants";
 
 const MyBox = styled(Box)(({ theme }) => {
   return {
@@ -207,37 +212,37 @@ function formattedTime(seconds) {
 }
 
 const columns = [
-  { field: "rank", sortable: false, headerName: "Rank", width: 55 },
+  { field: "rank", sortable: false, headerName: "Rank", flex: 10 },
   {
     field: "athlete",
     sortable: false,
     headerName: "Athlete",
-    width: 100,
-    maxWidth: 150,
+    flex: 35,
   },
   {
     field: "completed",
     sortable: false,
     headerName: "Completed",
-    width: 150,
+
+    flex: 13,
   },
   {
     field: "distance",
     sortable: false,
-    headerName: "Distance",
-    width: 150,
+    headerName: "Distance Total",
+    flex: 25,
   },
   {
     field: "elevation",
     sortable: false,
-    headerName: "Elevation",
-    width: 150,
+    headerName: "Elevation Total",
+    flex: 25,
   },
   {
     field: "totalTime",
     sortable: false,
     headerName: "Total Time",
-    width: 90,
+    flex: 30,
 
     renderCell: (props) => {
       const { value } = props;
@@ -246,11 +251,19 @@ const columns = [
   },
 ];
 
-const handleApplyClick = (settings) => {
-  console.info("apply", settings);
-};
+const onApplyFilters = (filters) => {};
 
 const Leaderboard = (props) => {
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.up("sm"));
+  console.info("matches: ", matches);
+
+  const [columnVisible, setColumnVisible] = React.useState(ALL_COLUMNS);
+  React.useEffect(() => {
+    const newColumns = matches ? ALL_COLUMNS : MOBILE_COLUMNS;
+    setColumnVisible(newColumns);
+  }, [matches]);
+
   return (
     <MyBox sx={{ height: "95vh", width: "95vw", maxWidth: 1000 }}>
       <Paper
@@ -261,17 +274,13 @@ const Leaderboard = (props) => {
           overflow: "scroll",
         }}
       >
-        <Filters
-          onApply={handleApplyClick}
-          // size={size}
-          // type={type}
-          // theme={getActiveTheme()}
-        />
+        <Filters onApplyFilters={onApplyFilters} />
         <DataGrid
           rows={rows}
           columns={columns}
           disableColumnMenu
           hideFooter={true}
+          columnVisibilityModel={columnVisible}
           sx={{
             boxShadow: 2,
             border: 2,
