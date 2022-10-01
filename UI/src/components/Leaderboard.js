@@ -21,6 +21,10 @@ const MyBox = styled(Box)(({ theme }) => {
   };
 });
 
+const NumberCell = styled(Box)(() => ({
+  textAlign: "right",
+}));
+
 const rows = [
   {
     id: 12,
@@ -28,6 +32,8 @@ const rows = [
     rank: "1",
     completed: 4,
     totalTime: 1542,
+    distance: 333,
+    elevation: 34189,
   },
   {
     id: 22,
@@ -35,6 +41,8 @@ const rows = [
     rank: "2",
     completed: 4,
     totalTime: 1542,
+    distance: 333,
+    elevation: 34189,
   },
   {
     id: 33,
@@ -42,6 +50,8 @@ const rows = [
     rank: "3",
     completed: 4,
     totalTime: 1542 + 1542,
+    distance: 333,
+    elevation: 34189,
   },
   {
     id: 44,
@@ -49,6 +59,8 @@ const rows = [
     rank: "4",
     completed: 3,
     totalTime: 1542 + 1542 + 1542,
+    distance: 333,
+    elevation: 34189,
   },
   {
     id: 54,
@@ -56,6 +68,8 @@ const rows = [
     rank: "5",
     completed: 3,
     totalTime: 1542 + 1542 + 1542,
+    distance: 333,
+    elevation: 34189,
   },
   {
     id: 62,
@@ -63,6 +77,8 @@ const rows = [
     rank: "6",
     completed: 4,
     totalTime: 1542,
+    distance: 333,
+    elevation: 34189,
   },
   {
     id: 73,
@@ -70,6 +86,8 @@ const rows = [
     rank: "7",
     completed: 4,
     totalTime: 1542 + 1542,
+    distance: 333,
+    elevation: 34189,
   },
   {
     id: 84,
@@ -77,6 +95,8 @@ const rows = [
     rank: "8",
     completed: 3,
     totalTime: 1542 + 1542 + 1542,
+    distance: 333,
+    elevation: 34189,
   },
   {
     id: 92,
@@ -84,6 +104,8 @@ const rows = [
     rank: "9",
     completed: 4,
     totalTime: 1542,
+    distance: 333,
+    elevation: 34189,
   },
   {
     id: 103,
@@ -91,6 +113,8 @@ const rows = [
     rank: "10",
     completed: 4,
     totalTime: 1542 + 1542,
+    distance: 333,
+    elevation: 34189,
   },
   {
     id: 114,
@@ -98,6 +122,8 @@ const rows = [
     rank: "11",
     completed: 3,
     totalTime: 1542 + 1542 + 1542,
+    distance: 333,
+    elevation: 34189,
   },
   {
     id: 122,
@@ -105,6 +131,8 @@ const rows = [
     rank: "12",
     completed: 4,
     totalTime: 1542,
+    distance: 333,
+    elevation: 34189,
   },
   {
     id: 133,
@@ -112,6 +140,8 @@ const rows = [
     rank: "13",
     completed: 4,
     totalTime: 1542 + 1542,
+    distance: 333,
+    elevation: 34189,
   },
   {
     id: 144,
@@ -119,6 +149,8 @@ const rows = [
     rank: "14",
     completed: 3,
     totalTime: 1542 + 1542 + 1542,
+    distance: 333,
+    elevation: 34189,
   },
   {
     id: 152,
@@ -126,6 +158,8 @@ const rows = [
     rank: "15",
     completed: 4,
     totalTime: 1542,
+    distance: 333,
+    elevation: 34189,
   },
   {
     id: 163,
@@ -133,6 +167,8 @@ const rows = [
     rank: "16",
     completed: 4,
     totalTime: 1542 + 1542,
+    distance: 333,
+    elevation: 34189,
   },
   {
     id: 174,
@@ -140,6 +176,8 @@ const rows = [
     rank: "17",
     completed: 3,
     totalTime: 1542 + 1542 + 1542,
+    distance: 333,
+    elevation: 34189,
   },
   {
     id: 182,
@@ -147,6 +185,8 @@ const rows = [
     rank: "18",
     completed: 4,
     totalTime: 1542,
+    distance: 333,
+    elevation: 34189,
   },
   {
     id: 193,
@@ -154,6 +194,8 @@ const rows = [
     rank: "19",
     completed: 4,
     totalTime: 1542 + 1542,
+    distance: 333,
+    elevation: 34189,
   },
   {
     id: 204,
@@ -161,6 +203,8 @@ const rows = [
     rank: "20",
     completed: 3,
     totalTime: 1542 + 1542 + 1542,
+    distance: 333,
+    elevation: 34189,
   },
   {
     id: 212,
@@ -168,6 +212,8 @@ const rows = [
     rank: "21",
     completed: 4,
     totalTime: 1542,
+    distance: 333,
+    elevation: 34189,
   },
   {
     id: 223,
@@ -175,6 +221,8 @@ const rows = [
     rank: "22",
     completed: 4,
     totalTime: 1542 + 1542,
+    distance: 333,
+    elevation: 34189,
   },
   {
     id: 234,
@@ -182,6 +230,8 @@ const rows = [
     rank: "23",
     completed: 3,
     totalTime: 1542 + 1542 + 1542,
+    distance: 333,
+    elevation: 34189,
   },
   {
     id: 242,
@@ -189,6 +239,8 @@ const rows = [
     rank: "24",
     completed: 4,
     totalTime: 1542,
+    distance: 333,
+    elevation: 34189,
   },
   {
     id: 253,
@@ -196,6 +248,8 @@ const rows = [
     rank: "25",
     completed: 4,
     totalTime: 1542 + 1542,
+    distance: 333,
+    elevation: 34189,
   },
   {
     id: 264,
@@ -203,6 +257,8 @@ const rows = [
     rank: "26",
     completed: 3,
     totalTime: 1542 + 1542 + 1542,
+    distance: 333,
+    elevation: 34189,
   },
 ];
 
@@ -220,30 +276,58 @@ const columns = [
     flex: 35,
   },
   {
-    field: "completed",
+    field: "completedDesktop",
     sortable: false,
     headerName: "Completed",
-
     flex: 13,
+    valueGetter: ({ row }) => <NumberCell>{row.completed}</NumberCell>,
+  },
+  {
+    field: "completedMobile",
+    sortable: false,
+    headerName: "#",
+    headerAlign: "right",
+    flex: 5,
+    align: "right",
+    valueGetter: ({ row }) => row.completed,
   },
   {
     field: "distance",
     sortable: false,
     headerName: "Distance Total",
+    headerAlign: "right",
+    align: "right",
     flex: 25,
   },
   {
     field: "elevation",
     sortable: false,
     headerName: "Elevation Total",
+    headerAlign: "right",
+    align: "right",
     flex: 25,
   },
   {
-    field: "totalTime",
+    field: "totalTimeDesktop",
     sortable: false,
     headerName: "Total Time",
+    align: "center",
+    headerAlign: "center",
     flex: 30,
-
+    valueGetter: ({ row }) => row.totalTime,
+    renderCell: (props) => {
+      const { value } = props;
+      return formattedTime(value);
+    },
+  },
+  {
+    field: "totalTimeMobile",
+    sortable: false,
+    headerName: "Total Time",
+    align: "right",
+    headerAlign: "right",
+    flex: 30,
+    valueGetter: ({ row }) => row.totalTime,
     renderCell: (props) => {
       const { value } = props;
       return formattedTime(value);
@@ -255,14 +339,13 @@ const onApplyFilters = (filters) => {};
 
 const Leaderboard = (props) => {
   const theme = useTheme();
-  const matches = useMediaQuery(theme.breakpoints.up("sm"));
-  console.info("matches: ", matches);
+  const isMobile = !useMediaQuery(theme.breakpoints.up("sm"));
 
   const [columnVisible, setColumnVisible] = React.useState(ALL_COLUMNS);
   React.useEffect(() => {
-    const newColumns = matches ? ALL_COLUMNS : MOBILE_COLUMNS;
+    const newColumns = isMobile ? MOBILE_COLUMNS : ALL_COLUMNS;
     setColumnVisible(newColumns);
-  }, [matches]);
+  }, [isMobile]);
 
   return (
     <MyBox sx={{ height: "95vh", width: "95vw", maxWidth: 1000 }}>

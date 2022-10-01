@@ -36,16 +36,20 @@ export const weightClass = [
 export const MOBILE_COLUMNS = {
   rank: true,
   athlete: true,
-  completed: true,
+  completedDesktop: false,
+  completedMobile: true,
   distance: false,
   elevation: false,
-  totalTime: true,
+  totalTimeDesktop: false,
+  totalTimeMobile: true,
 };
 export const ALL_COLUMNS = {
   rank: true,
   athlete: true,
-  completed: true,
+  completedDesktop: true,
+  completedMobile: false,
   distance: true,
   elevation: true,
-  totalTime: true,
+  totalTimeDesktop: true,
+  totalTimeMobile: false,
 };
