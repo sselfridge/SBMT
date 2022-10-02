@@ -11,6 +11,7 @@ import segments from "mockData/segments";
 const MyBox = styled(Box)(({ theme }) => ({
   height: "90vh",
   width: "95vw",
+  maxWidth: "1000px",
   padding: 8,
   borderRadius: 4,
   backgroundColor: theme.palette.background.paper,
