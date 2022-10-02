@@ -1,11 +1,12 @@
 import { toGeoJSON } from "@mapbox/polyline";
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 
-export const addSegmentToMap = (map, segment) => {
+export const addSegmentToMap = (map, segment, markerArr) => {
   const geometry = getGeometry(segment);
   const { id, start_latlng } = segment;
 
   const startCoord = start_latlng.slice().reverse();
+  if (markerArr) markerArr.push(startCoord);
 
   const idString = `${id}`;
   console.info("idString: ", idString);
@@ -72,7 +73,6 @@ export const addSegmentToMap = (map, segment) => {
     .addTo(map);
 
   map.meinMarkers.markers.push(markerGreen);
-
   map.on("mouseover", `${id}`, () => {
     console.info("mouse over seg id:", id);
   });
@@ -88,4 +88,25 @@ const getGeometry = (segment) => {
     geoJson = toGeoJSON(polyline);
   }
   return geoJson;
+};
+
+export const getBounds = (arr) => {
+  let minLat = Number.POSITIVE_INFINITY,
+    maxLat = Number.NEGATIVE_INFINITY,
+    minLng = Number.POSITIVE_INFINITY,
+    maxLng = Number.NEGATIVE_INFINITY;
+
+  arr.forEach(([lat, lng]) => {
+    if (lat < minLat) minLat = lat;
+    if (lng < minLng) minLng = lng;
+    if (lat > maxLat) maxLat = lat;
+    if (lng > maxLng) maxLng = lng;
+  });
+
+  const PADDING = 0.01;
+
+  return [
+    [minLat - PADDING, minLng - PADDING],
+    [maxLat + PADDING, maxLng + PADDING],
+  ];
 };

@@ -9,7 +9,7 @@ import SegmentMap from "./SegmentMap";
 import segments from "mockData/segments";
 
 const MyBox = styled(Box)(({ theme }) => ({
-  height: "80vh",
+  height: "90vh",
   width: "95vw",
   padding: 8,
   borderRadius: 4,
@@ -17,42 +17,41 @@ const MyBox = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
 }));
-
-const rows = [
-  { id: 4, name: "Painted Cave", time: 0, attempts: 15 },
-  { id: 3, name: "OSM", time: 3400, attempts: 25 },
-  { id: 1, name: "Gibraltar", time: 1234, attempts: 35 },
-  { id: 2, name: "Arroyo Burro", time: 2345, attempts: 5 },
-];
+const MapBox = styled(Box)(({ theme }) => ({
+  height: "30vh",
+  width: "calc(100%)",
+}));
 
 const columns = [
   {
     field: "name",
     headerName: "Name",
-    width: 200,
+    flex: 4,
     renderCell: (props) => {
       const { value, id } = props;
       return <Link to={`${id}`}>{value}</Link>;
     },
   },
-  { field: "time", headerName: "Time", width: 100 },
   {
-    field: "attempts",
+    field: "effort_count",
     headerName: "Attempts",
-    width: 100,
+    flex: 2,
     renderCell: (props) => {
       return props.value;
     },
   },
 ];
+console.info("segments: ", segments);
 
 const Segments = (props) => {
   const { prop } = props;
   return (
     <MyBox>
-      <SegmentMap segments={segments} />
+      <MapBox>
+        <SegmentMap segments={segments} />
+      </MapBox>
       <DataGrid
-        rows={rows}
+        rows={segments}
         columns={columns}
         sx={{
           boxShadow: 2,

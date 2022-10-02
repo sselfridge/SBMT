@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
-import { addSegmentToMap } from "utils/mapUtils";
+import { addSegmentToMap, getBounds } from "utils/mapUtils";
 
 const MyBox = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 
@@ -36,20 +36,21 @@ const SegmentMap = (props) => {
   }, []);
 
   useEffect(() => {
-    console.info("map?.loaded: ", map?.loaded);
+    const startMarkers = [];
     if (isLoaded) {
-      console.info("Add segments");
-      console.info("segments: ", segments);
-      segments.forEach((seg) => addSegmentToMap(map, seg));
+      segments.forEach((seg) => addSegmentToMap(map, seg, startMarkers));
     }
 
+    if (startMarkers.length > 0) {
+      map.fitBounds(getBounds(startMarkers));
+    }
     return () => {
-      if (map?.meinMarkers) {
-        const { markers, layers, sources } = map.meinMarkers;
-        console.info("clear", markers);
-        console.info("clear", layers);
-        console.info("clear", sources);
-      }
+      // if (map?.meinMarkers) {
+      //   const { markers, layers, sources } = map.meinMarkers;
+      //   console.info("clear", markers);
+      //   console.info("clear", layers);
+      //   console.info("clear", sources);
+      // }
     };
   }, [isLoaded, map, segments]);
 

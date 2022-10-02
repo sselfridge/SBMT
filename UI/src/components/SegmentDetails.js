@@ -12,6 +12,8 @@ import {
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import { addSegmentToMap } from "utils/mapUtils";
 
+import { segments as datas } from "mockData/data";
+
 import markerSvg from "assets/maki/marker.svg";
 
 import redMarkerSvg from "assets/hackyColors/redMarker.svg";
@@ -59,7 +61,11 @@ const Segments = (props) => {
       center: [lng, lat],
       zoom: zoom,
     });
-    map.current.meinMarkers = [];
+    map.current.meinMarkers = {
+      markers: [],
+      layers: [],
+      sources: [],
+    };
     console.info("map.current.meinMarkers: ", map.current.meinMarkers);
     map.current.addImage("redMarker", redMarker);
     map.current.addImage("greenMarker", greenMarker);
@@ -82,30 +88,30 @@ const Segments = (props) => {
       //       .addTo(map);
       //   }
       // }
-      // map.current.addSource("route", {
-      //   type: "geojson",
-      //   data: {
-      //     type: "Feature",
-      //     properties: {},
-      //     geometry: {
-      //       type: "LineString",
-      //       coordinates: datas[dataIdx],
-      //     },
-      //   },
-      // });
-      // map.current.addLayer({
-      //   id: "route",
-      //   type: "line",
-      //   source: "route",
-      //   layout: {
-      //     "line-join": "miter",
-      //     "line-cap": "round",
-      //   },
-      //   paint: {
-      //     "line-color": "#ff0088",
-      //     "line-width": 4,
-      //   },
-      // });
+      map.current.addSource("route", {
+        type: "geojson",
+        data: {
+          type: "Feature",
+          properties: {},
+          geometry: {
+            type: "LineString",
+            coordinates: datas[dataIdx],
+          },
+        },
+      });
+      map.current.addLayer({
+        id: "route",
+        type: "line",
+        source: "route",
+        layout: {
+          "line-join": "miter",
+          "line-cap": "round",
+        },
+        paint: {
+          "line-color": "#ff0088",
+          "line-width": 4,
+        },
+      });
     });
   });
 
@@ -119,7 +125,7 @@ const Segments = (props) => {
         console.info("CLEAR!!");
         if (map.current.meinMarkers) {
           console.info(map.current.meinMarkers);
-          map.current.meinMarkers.forEach((m) => m.remove());
+          map.current.meinMarkers.sources.forEach((m) => m.remove());
         }
         addedIds.forEach((id) => {
           try {
