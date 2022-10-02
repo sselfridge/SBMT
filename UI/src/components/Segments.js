@@ -1,12 +1,12 @@
 import React, { useState, useCallback, useRef } from "react";
 import PropTypes from "prop-types";
-import { Box } from "@mui/material";
+import { Box, Tabs, Tab } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 import SegmentMap from "./SegmentMap";
 
-import segments from "mockData/segments";
+import SEGMENTS from "mockData/segments";
 
 const MyBox = styled(Box)(({ theme }) => ({
   height: "90vh",
@@ -42,16 +42,35 @@ const columns = [
     },
   },
 ];
-console.info("segments: ", segments);
 
 const Segments = (props) => {
+  const [tabVal, setTabVal] = useState(2);
+  const [segments, setSegments] = useState(SEGMENTS);
+
+  const handleTabChange = (event, newValue) => {
+    setTabVal(newValue);
+  };
+
+  React.useEffect(() => {
+    setSegments((seg) => seg.filter((s) => s.id % tabVal === 0));
+    return () => {};
+  }, [tabVal]);
+
   const { prop } = props;
   return (
     <MyBox>
       <MapBox>
         <SegmentMap segments={segments} />
       </MapBox>
-
+      <Tabs
+        value={tabVal}
+        onChange={handleTabChange}
+        aria-label="nav tabs example"
+      >
+        <Tab label="Road" value={0} />
+        <Tab label="Gravel" value={1} />
+        <Tab label="Show All" value={2} />
+      </Tabs>
       <DataGrid
         rows={segments}
         columns={columns}
