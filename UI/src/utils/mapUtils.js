@@ -103,7 +103,7 @@ export const getBounds = (arr) => {
     if (lng > maxLng) maxLng = lng;
   });
 
-  const PADDING = 0.01;
+  const PADDING = 0.015;
 
   return [
     [minLat - PADDING, minLng - PADDING],

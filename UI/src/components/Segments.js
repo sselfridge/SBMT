@@ -26,7 +26,7 @@ const MapBox = styled(Box)(({ theme }) => ({
 const columns = [
   {
     field: "name",
-    headerName: "Name",
+    headerName: "Segment Name",
     flex: 4,
     renderCell: (props) => {
       const { value, id } = props;
@@ -51,9 +51,11 @@ const Segments = (props) => {
       <MapBox>
         <SegmentMap segments={segments} />
       </MapBox>
+
       <DataGrid
         rows={segments}
         columns={columns}
+        hideFooter={true}
         sx={{
           boxShadow: 2,
           border: 2,

@@ -41,6 +41,8 @@ const SegmentMap = (props) => {
       segments.forEach((seg) => addSegmentToMap(map, seg, startMarkers));
     }
 
+    //TODO - this doesn't look great on mobile, maybe start from all then zoom in to DT area?
+
     if (startMarkers.length > 0) {
       map.fitBounds(getBounds(startMarkers));
     }
