@@ -44,7 +44,7 @@ const columns = [
 ];
 
 const Segments = (props) => {
-  const [tabVal, setTabVal] = useState(2);
+  const [tabVal, setTabVal] = useState("gravel");
   const [segments, setSegments] = useState(SEGMENTS);
 
   const handleTabChange = (event, newValue) => {
@@ -52,13 +52,16 @@ const Segments = (props) => {
   };
 
   React.useEffect(() => {
-    let val = 0;
-    if (tabVal === 2) {
-      val = 0;
+    let filterFunc;
+    if (tabVal === "road") {
+      filterFunc = (s) => s.id % 2 === 0;
+    } else if (tabVal === "gravel") {
+      filterFunc = (s) => s.id % 2 === 1;
     } else {
-      val = 1;
+      filterFunc = () => true;
     }
-    setSegments((seg) => SEGMENTS.filter((s) => s.id % 2 === val));
+
+    setSegments((seg) => SEGMENTS.filter(filterFunc));
     return () => {};
   }, [tabVal]);
 
@@ -73,9 +76,9 @@ const Segments = (props) => {
         onChange={handleTabChange}
         aria-label="nav tabs example"
       >
-        <Tab label="Road" value={0} />
-        <Tab label="Gravel" value={1} />
-        <Tab label="Show All" value={2} />
+        <Tab label="Road" value={"road"} />
+        <Tab label="Gravel" value={"gravel"} />
+        <Tab label="Show All" value={"ALL"} />
       </Tabs>
       <DataGrid
         rows={segments}
