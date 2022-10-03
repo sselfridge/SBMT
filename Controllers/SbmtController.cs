@@ -65,6 +65,39 @@ namespace TodoApi.Controllers
     }
 
 
+    [HttpGet("segments")]
+    public List<Segment> GetSegments()
+    {
+      var segments = _dbContext.Segments.ToList();
+
+      return segments;
+    }
+
+    [HttpGet("athlete/id")]
+    public async Task<IActionResult> GetAthleteIdAsync()
+    {
+
+      var possibleNulUser = HttpContext.Items["User"];
+
+      if (possibleNulUser == null)
+      {
+        return NotFound();
+
+      }
+
+      return Ok(possibleNulUser);
+    }
+
+    [HttpDelete("logout")]
+    public IActionResult Logout()
+    {
+
+      HttpContext.Response.Cookies.Delete("SBMT");
+
+
+      return Ok();
+    }
+
     [HttpPost]
     public void Post([FromBody] string value)
     {

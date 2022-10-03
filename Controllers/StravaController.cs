@@ -106,31 +106,8 @@ namespace TodoApi.Controllers
       return Ok();
     }
 
-    [HttpGet("athlete/id")]
-    public async Task<IActionResult> GetAthleteIdAsync()
-    {
-
-      var possibleNulUser = HttpContext.Items["User"];
-
-      if (possibleNulUser == null)
-      {
-        return NotFound();
-
-      }
 
 
 
-      return Ok(possibleNulUser);
-    }
-
-    [HttpDelete("logout")]
-    public IActionResult Logout()
-    {
-
-      HttpContext.Response.Cookies.Delete("SBMT");
-
-
-      return Ok();
-    }
   }
 }

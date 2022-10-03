@@ -84,6 +84,11 @@ const Segments = (props) => {
         rows={segments}
         columns={columns}
         hideFooter={true}
+        initialState={{
+          sorting: {
+            sortModel: [{ field: "name", sort: "asc" }],
+          },
+        }}
         sx={{
           boxShadow: 2,
           border: 2,

@@ -3,8 +3,6 @@ import PropTypes from "prop-types";
 import {
   Box,
   IconButton,
-  Tooltip,
-  Button,
   Avatar,
   ListItemIcon,
   Menu,
@@ -49,21 +47,11 @@ const UserMenu = (props) => {
 
   const [user, setUser] = useState(null);
 
-  // useEffect(() => {
-  //   setUser({
-  //     firstname: "SamMock",
-  //     lastname: "WiseMock",
-  //     athleteId: 10645041,
-  //     avatar:
-  //       "https://dgalywyr863hv.cloudfront.net/pictures/athletes/10645041/16052758/1/medium.jpg",
-  //   });
-  // }, []);
-
   const fetchOnce = useRef(true);
   useEffect(() => {
     if (fetchOnce.current) {
       fetchOnce.current = null;
-      Api.get("/api/strava/athlete/id")
+      Api.get("/api/athlete/id")
         .then((response) => {
           if (response.status === 200) setUser(response.data);
         })
@@ -75,10 +63,10 @@ const UserMenu = (props) => {
   }, []);
 
   const onLogout = () => {
-    Api.delete("/api/strava/logout")
+    Api.delete("/api/logout")
       .then((res) => {
         console.info(res);
-        setUser(null);
+        setUser({});
       })
       .catch((err) => console.error(err));
   };
@@ -112,7 +100,7 @@ const UserMenu = (props) => {
               }}
               variant="h6"
             >
-              Register
+              Register / Login
             </Typography>
           </Link>
         )}

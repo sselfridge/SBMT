@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useRef } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { intervalToDuration, format, addSeconds } from "date-fns";
 
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -21,10 +20,6 @@ const MyBox = styled(Box)(({ theme }) => {
     borderRadius: 4,
   };
 });
-
-const NumberCell = styled(Box)(() => ({
-  textAlign: "right",
-}));
 
 const rows = [
   {
@@ -265,46 +260,43 @@ const rows = [
 
 const columns = [
   {
-    flex: 1,
+    flex: 8,
     field: "rank",
     sortable: false,
     headerName: "Rank",
-    width: 55,
   },
   {
-    flex: 1,
+    flex: 35,
     field: "athlete",
     sortable: false,
     headerName: "Athlete",
-    flex: 35,
   },
   {
+    flex: 13,
     field: "completedDesktop",
     sortable: false,
     headerName: "Completed",
-    flex: 13,
-    valueGetter: ({ row }) => <NumberCell>{row.completed}</NumberCell>,
-  },
-  {
-    field: "completedMobile",
-    sortable: false,
-    headerName: "#",
-    headerAlign: "right",
-    flex: 5,
     align: "right",
     valueGetter: ({ row }) => row.completed,
   },
   {
-    flex: 1,
+    flex: 5,
+    field: "completedMobile",
+    sortable: false,
+    headerName: "#",
+    headerAlign: "right",
+    align: "right",
+    valueGetter: ({ row }) => row.completed,
+  },
+  {
+    flex: 25,
     field: "distance",
     sortable: false,
     headerName: "Distance Total",
     headerAlign: "right",
     align: "right",
-    flex: 25,
   },
   {
-    flex: 1,
     field: "elevation",
     sortable: false,
     headerName: "Elevation Total",
@@ -369,6 +361,11 @@ const Leaderboard = (props) => {
           disableColumnMenu
           hideFooter={true}
           columnVisibilityModel={columnVisible}
+          initialState={{
+            sorting: {
+              sortModel: [{ field: "rank", sort: "desc" }],
+            },
+          }}
           sx={{
             boxShadow: 2,
             border: 2,
