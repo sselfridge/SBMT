@@ -38,9 +38,9 @@ export const addSegmentToMap = (map, segment, markerArr) => {
   // });
 
   map.addLayer({
-    id: `${id}`,
+    id: idString,
     type: "line",
-    source: `${id}`,
+    source: idString,
     layout: {
       "line-join": "miter",
       "line-cap": "round",
@@ -64,16 +64,16 @@ export const addSegmentToMap = (map, segment, markerArr) => {
   // if (map.meinMarkers) map.meinMarkers.push(markerRed);
 
   const markerGreen = new mapboxgl.Marker({
+    id: idString,
     color: "#008000",
     // draggable: true,
     // offset: [0, -50 / 2],
     scale: 0.5,
-  })
-    .setLngLat(startCoord)
-    .addTo(map);
+  });
+  markerGreen.setLngLat(startCoord).addTo(map);
 
   map.meinMarkers.markers.push(markerGreen);
-  map.on("mouseover", `${id}`, () => {
+  map.on("mouseover", idString, () => {
     console.info("mouse over seg id:", id);
   });
 };

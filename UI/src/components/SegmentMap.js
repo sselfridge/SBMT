@@ -47,12 +47,15 @@ const SegmentMap = (props) => {
       map.fitBounds(getBounds(startMarkers));
     }
     return () => {
-      // if (map?.meinMarkers) {
-      //   const { markers, layers, sources } = map.meinMarkers;
-      //   console.info("clear", markers);
-      //   console.info("clear", layers);
-      //   console.info("clear", sources);
-      // }
+      if (map?.meinMarkers) {
+        const { markers, layers, sources } = map.meinMarkers;
+        markers.forEach((m) => m.remove());
+        map.meinMarkers.markers = [];
+        layers.forEach((l) => map.removeLayer(l));
+        map.meinMarkers.layers = [];
+        sources.forEach((s) => map.removeSource(s));
+        map.meinMarkers.sources = [];
+      }
     };
   }, [isLoaded, map, segments]);
 
@@ -60,7 +63,7 @@ const SegmentMap = (props) => {
 };
 
 SegmentMap.propTypes = {
-  prop: PropTypes.array.isRequired,
+  // prop: PropTypes.array.isRequired,
 };
 
 export default SegmentMap;

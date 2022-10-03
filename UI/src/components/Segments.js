@@ -52,7 +52,13 @@ const Segments = (props) => {
   };
 
   React.useEffect(() => {
-    setSegments((seg) => seg.filter((s) => s.id % tabVal === 0));
+    let val = 0;
+    if (tabVal === 2) {
+      val = 0;
+    } else {
+      val = 1;
+    }
+    setSegments((seg) => SEGMENTS.filter((s) => s.id % 2 === val));
     return () => {};
   }, [tabVal]);
 
