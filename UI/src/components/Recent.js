@@ -47,9 +47,8 @@ const columns = [
   {
     field: "name",
     sortable: false,
-    headerName: "Name",
+    headerName: "Athlete",
     width: 200,
-    // maxWidth: 150,
     flex: 2,
     renderCell: ({ value }) => value,
     valueGetter: ({ row }) => (
@@ -62,7 +61,6 @@ const columns = [
     field: "segmentName",
     sortable: false,
     headerName: "Segment",
-    // width: 150,
     renderCell: ({ value }) => value,
     valueGetter: ({ row }) => (
       <a href={`https://www.strava.com/segments/${row.segmentId}`}>
@@ -91,7 +89,6 @@ const Recent = (props) => {
   const [recentEfforts, setRecentEfforts] = useState([]);
 
   React.useEffect(() => {
-    console.info("recentEfforts: ", recentEfforts);
     Api.get("/api/recentEfforts")
       .then((response) => {
         if (response.status === 200) setRecentEfforts(response.data);

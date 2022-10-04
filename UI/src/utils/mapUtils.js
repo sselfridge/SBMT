@@ -5,7 +5,7 @@ export const addSegmentToMap = (map, segment, markerArr) => {
   const geometry = getGeometry(segment);
   const { id, startLatlng } = segment;
 
-  const startCoord = startLatlng.reverse();
+  const startCoord = startLatlng.slice().reverse();
   if (markerArr) markerArr.push(startCoord);
 
   const idString = `${id}`;
@@ -89,7 +89,7 @@ const getGeometry = (segment) => {
   return geoJson;
 };
 
-export const getBounds = (arr) => {
+export const getBounds = (arr, padding = 0.015) => {
   let minLat = Number.POSITIVE_INFINITY,
     maxLat = Number.NEGATIVE_INFINITY,
     minLng = Number.POSITIVE_INFINITY,
@@ -102,10 +102,8 @@ export const getBounds = (arr) => {
     if (lng > maxLng) maxLng = lng;
   });
 
-  const PADDING = 0.015;
-
   return [
-    [minLat - PADDING, minLng - PADDING],
-    [maxLat + PADDING, maxLng + PADDING],
+    [minLat - padding, minLng - padding],
+    [maxLat + padding, maxLng + padding],
   ];
 };

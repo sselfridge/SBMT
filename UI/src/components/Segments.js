@@ -7,7 +7,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import SegmentMap from "./SegmentMap";
 
 import SEGMENTS from "mockData/segments";
-import Api from "api/api";
+import { ApiGet } from "api/api";
 
 const MyBox = styled(Box)(({ theme }) => ({
   height: "90vh",
@@ -55,14 +55,7 @@ const Segments = () => {
 
   React.useEffect(() => {
     console.info("Get Segments");
-    Api.get("/api/segments")
-      .then((response) => {
-        console.info("response: ", response.data);
-        if (response.status === 200) setAllSegments(response.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    ApiGet("api/segment", setAllSegments);
   }, []);
 
   React.useEffect(() => {

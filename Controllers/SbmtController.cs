@@ -65,7 +65,7 @@ namespace TodoApi.Controllers
     }
 
 
-    [HttpGet("segments")]
+    [HttpGet("segment")]
     [ResponseCache(Duration = 3600)]
 
     public List<Segment> GetSegments()
@@ -73,6 +73,18 @@ namespace TodoApi.Controllers
       var segments = _dbContext.Segments.ToList();
 
       return segments;
+    }
+
+    [HttpGet("segment/{id}")]
+    [ResponseCache(Duration = 3600)]
+
+    public IActionResult GetSegment(long id)
+    {
+      var segment = _dbContext.Segments.FirstOrDefault(s => s.Id == id);
+
+      if (segment == null) return NotFound();
+
+      return Ok(segment);
     }
 
     [HttpGet("athlete/id")]

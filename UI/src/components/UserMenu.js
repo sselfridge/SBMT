@@ -18,7 +18,7 @@ import Logout from "@mui/icons-material/Logout";
 import stravaSvg from "assets/stravaLogo.svg";
 import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
-import Api from "api/api";
+import Api, { ApiGet } from "api/api";
 
 const UserMenuBox = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -51,14 +51,15 @@ const UserMenu = (props) => {
   useEffect(() => {
     if (fetchOnce.current) {
       fetchOnce.current = null;
-      Api.get("/api/athlete/id")
-        .then((response) => {
-          if (response.status === 200) setUser(response.data);
-        })
-        .catch((err) => {
-          setUser({});
-          console.error(err);
-        });
+      // Api.get()
+      //   .then((response) => {
+      //     if (response.status === 200) setUser(response.data);
+      //   })
+      //   .catch((err) => {
+      //     setUser({});
+      //     console.error(err);
+      //   });
+      ApiGet("/api/athlete/id", setUser, true, {});
     }
   }, []);
 

@@ -1,9 +1,14 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import PropTypes from "prop-types";
 import { Box } from "@mui/material";
+import { useParams } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import { addSegmentToMap, getBounds } from "utils/mapUtils";
+
+import keys from "config";
+
+mapboxgl.accessToken = keys.mapBox;
 
 const MyBox = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 
@@ -13,6 +18,9 @@ const SegmentMap = (props) => {
   const [map, setMap] = useState(null);
   const mapRef = useRef(null);
   const [isLoaded, setIsLoaded] = useState(false);
+
+  //TODO - see about only doing the zoom in animation on initial load,
+  //  gets kind of old going back and forth
 
   useEffect(() => {
     const newMap = new mapboxgl.Map({

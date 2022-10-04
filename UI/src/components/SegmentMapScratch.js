@@ -192,11 +192,11 @@ const Segments = (props) => {
       ],
     };
 
-    const featus = map.current.queryRenderedFeatures();
+    const features = map.current.queryRenderedFeatures();
 
     const obj = {};
     const set = new Set();
-    featus.forEach((f) => {
+    features.forEach((f) => {
       const keys = Object.keys(f);
       keys.forEach((k) => set.add(k));
       if (obj[f.sourceLayer]) {

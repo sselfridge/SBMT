@@ -8,3 +8,11 @@ export function formattedTime(seconds, showHours = false) {
   str += `${out.seconds}`.padStart(2, 0);
   return str;
 }
+
+export const deepFreeze = (obj1) => {
+  Object.keys(obj1).forEach((property) => {
+    if (typeof obj1[property] === "object" && !Object.isFrozen(obj1[property]))
+      deepFreeze(obj1[property]);
+  });
+  return Object.freeze(obj1);
+};

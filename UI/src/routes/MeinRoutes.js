@@ -7,7 +7,7 @@ import DefaultRoute from "routes/DefaultRoute";
 import Recent from "components/Recent";
 import Leaderboard from "components/Leaderboard";
 import Segments from "components/Segments";
-import SegmentDetails from "components/SegmentDetails";
+import SegmentDetails from "components/SegmentDetail";
 import Athletes from "components/Athletes";
 import AthleteDetails from "components/AthleteDetail";
 import FullFeaturedDemo from "components/DataGridDemo";
