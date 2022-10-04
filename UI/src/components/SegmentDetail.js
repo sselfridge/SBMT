@@ -38,8 +38,16 @@ const Segments = (props) => {
         <Box sx={{ flex: 5 }}>
           <Typography>{segment.name}</Typography>
         </Box>
-        <Box style={{ height: "80vh", flex: 5 }}>
-          <SegmentDetailMap segment={segment} />
+        <Box sx={{ height: "80vh", flex: 5 }}>
+          {/* <SegmentDetailMap segment={segment} /> */}
+          <Box
+            sx={{
+              background:
+                "repeating-linear-gradient(  45deg,  #606dbc,  #606dbc 10px,  #465298 10px,  #465298 20px)",
+              height: "100%",
+              width: "100%",
+            }}
+          />{" "}
         </Box>
       </Paper>
     </MyBox>
