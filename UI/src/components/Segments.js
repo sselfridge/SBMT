@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useRef } from "react";
-import PropTypes from "prop-types";
+import React, { useState } from "react";
+// import PropTypes from "prop-types";
 import { Box, Tabs, Tab } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
@@ -7,6 +7,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import SegmentMap from "./SegmentMap";
 
 import SEGMENTS from "mockData/segments";
+import Api from "api/api";
 
 const MyBox = styled(Box)(({ theme }) => ({
   height: "90vh",
@@ -43,8 +44,9 @@ const columns = [
   },
 ];
 
-const Segments = (props) => {
-  const [tabVal, setTabVal] = useState("gravel");
+const Segments = () => {
+  const [tabVal, setTabVal] = useState("road");
+  const [allSegments, setAllSegments] = useState([]);
   const [segments, setSegments] = useState(SEGMENTS);
 
   const handleTabChange = (event, newValue) => {
@@ -52,20 +54,31 @@ const Segments = (props) => {
   };
 
   React.useEffect(() => {
+    console.info("Get Segments");
+    Api.get("/api/segments")
+      .then((response) => {
+        console.info("response: ", response.data);
+        if (response.status === 200) setAllSegments(response.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
+
+  React.useEffect(() => {
     let filterFunc;
     if (tabVal === "road") {
-      filterFunc = (s) => s.id % 2 === 0;
+      filterFunc = (s) => s.surfaceType === "road";
     } else if (tabVal === "gravel") {
-      filterFunc = (s) => s.id % 2 === 1;
+      filterFunc = (s) => s.surfaceType === "gravel";
     } else {
       filterFunc = () => true;
     }
 
-    setSegments((seg) => SEGMENTS.filter(filterFunc));
+    setSegments((seg) => allSegments.filter(filterFunc));
     return () => {};
-  }, [tabVal]);
+  }, [allSegments, tabVal]);
 
-  const { prop } = props;
   return (
     <MyBox>
       <MapBox>
@@ -103,7 +116,7 @@ const Segments = (props) => {
 };
 
 Segments.propTypes = {
-  prop: PropTypes.string,
+  // prop: PropTypes.string,
 };
 
 export default Segments;

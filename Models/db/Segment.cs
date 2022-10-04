@@ -35,7 +35,7 @@ namespace TodoApi.Models.db
       float maximumGrade, float elevationHigh, float elevationLow,
       float[] startLatlng, float[] endLatlng, long climbCategory,
       float totalElevationGain, long effortCount, long athleteCount,
-      string polyline, string kom, string qom, string surfaceType)
+      string polyline, string kom, string qom)
     {
       Id = id;
       ResourceState = resourceState;
@@ -55,6 +55,7 @@ namespace TodoApi.Models.db
       Polyline = polyline;
       Kom = kom;
       Qom = qom;
+      //SurfaceType = surfaceType;
     }
 
     public Segment(SegmentResponse res)
@@ -77,6 +78,7 @@ namespace TodoApi.Models.db
       Polyline = res.Map.Polyline;
       Kom = res.Xoms.Kom;
       Qom = res.Xoms.Qom;
+      //SurfaceType = "road";
     }
 
     public Segment(SegmentResponse res, string surfaceType)

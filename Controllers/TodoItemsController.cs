@@ -131,16 +131,11 @@ namespace TodoApi.Controllers
       //});
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
-      //var activities = await _stravaService.GetActivities(1075670, _dbContext);
-      var activities = await _stravaService.GetActivity(7856134889, 1075670);
-      //List<Segment> segList = new List<Segment>();
-      //var segment = await _stravaService.GetSegment(25834430);
-      //segList.Add(segment);
-      //segment = await _stravaService.GetSegment(14754748);
-      //segList.Add(segment);
+      //var seg = _dbContext.Segments.FirstOrDefault(s => s.Id == 746977);
+      var seg = _dbContext.Segments.ToList();
 
 
-      return Ok(activities);
+      return Ok(seg);
 
       var possibleNulUser = HttpContext.Items["User"];
 

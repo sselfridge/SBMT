@@ -66,6 +66,8 @@ namespace TodoApi.Controllers
 
 
     [HttpGet("segments")]
+    [ResponseCache(Duration = 3600)]
+
     public List<Segment> GetSegments()
     {
       var segments = _dbContext.Segments.ToList();

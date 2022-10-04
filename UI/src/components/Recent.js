@@ -89,9 +89,9 @@ const columns = [
 
 const Recent = (props) => {
   const [recentEfforts, setRecentEfforts] = useState([]);
-  console.info("recentEfforts: ", recentEfforts);
 
   React.useEffect(() => {
+    console.info("recentEfforts: ", recentEfforts);
     Api.get("/api/recentEfforts")
       .then((response) => {
         if (response.status === 200) setRecentEfforts(response.data);

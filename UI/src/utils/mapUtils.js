@@ -3,13 +3,12 @@ import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-load
 
 export const addSegmentToMap = (map, segment, markerArr) => {
   const geometry = getGeometry(segment);
-  const { id, start_latlng } = segment;
+  const { id, startLatlng } = segment;
 
-  const startCoord = start_latlng.slice().reverse();
+  const startCoord = startLatlng.reverse();
   if (markerArr) markerArr.push(startCoord);
 
   const idString = `${id}`;
-  console.info("idString: ", idString);
 
   map.addSource(idString, {
     type: "geojson",
@@ -79,7 +78,7 @@ export const addSegmentToMap = (map, segment, markerArr) => {
 };
 
 const getGeometry = (segment) => {
-  const polyline = segment?.map?.polyline;
+  const polyline = segment?.polyline;
   let geoJson = {
     type: "lineString",
     coordinates: [],

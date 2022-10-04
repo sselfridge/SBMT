@@ -16,6 +16,7 @@ import HelpContact from "components/HelpContact";
 import Info from "components/Info";
 
 const MeinRoutes = (props) => {
+  console.info("MeinRoutes");
   return (
     <BrowserRouter>
       <Routes>
