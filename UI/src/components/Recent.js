@@ -19,6 +19,74 @@ const MyBox = styled(Box)(({ theme }) => {
   };
 });
 
+const CACHE = [
+  {
+    id: 2887087080316464336,
+    name: "Sam  Wise | LG",
+    athleteId: 1075670,
+    avatar:
+      "https://dgalywyr863hv.cloudfront.net/pictures/athletes/1075670/948003/4/medium.jpg",
+    activityId: 6156488864,
+    created: "2022-09-27T03:06:27.743006Z",
+    elapsedTime: 2276,
+    segmentId: 658277,
+    segmentName: "Gibraltar Climb",
+    surfaceType: "road",
+  },
+  {
+    id: 2887087080313862352,
+    name: "Sam  Wise | LG",
+    athleteId: 1075670,
+    avatar:
+      "https://dgalywyr863hv.cloudfront.net/pictures/athletes/1075670/948003/4/medium.jpg",
+    activityId: 6156488864,
+    created: "2022-09-27T03:06:27.742971Z",
+    elapsedTime: 432,
+    segmentId: 881465,
+    segmentName: "Ladera Lane",
+    surfaceType: "road",
+  },
+  {
+    id: 2999914709367658400,
+    name: "Sam  Wise | LG",
+    athleteId: 1075670,
+    avatar:
+      "https://dgalywyr863hv.cloudfront.net/pictures/athletes/1075670/948003/4/medium.jpg",
+    activityId: 7729059578,
+    created: "0001-01-01T00:00:00",
+    elapsedTime: 1533,
+    segmentId: 1290381,
+    segmentName: "Official Old San Marcos Pass",
+    surfaceType: "road",
+  },
+  {
+    id: 2999914709365410720,
+    name: "Sam  Wise | LG",
+    athleteId: 1075670,
+    avatar:
+      "https://dgalywyr863hv.cloudfront.net/pictures/athletes/1075670/948003/4/medium.jpg",
+    activityId: 7729059578,
+    created: "0001-01-01T00:00:00",
+    elapsedTime: 1334,
+    segmentId: 813814,
+    segmentName: "Arroyo Burro to almost La Cumbre Peak",
+    surfaceType: "road",
+  },
+  {
+    id: 2999914709365022624,
+    name: "Sam  Wise | LG",
+    athleteId: 1075670,
+    avatar:
+      "https://dgalywyr863hv.cloudfront.net/pictures/athletes/1075670/948003/4/medium.jpg",
+    activityId: 7729059578,
+    created: "0001-01-01T00:00:00",
+    elapsedTime: 1839,
+    segmentId: 637362,
+    segmentName: "Painted Cave",
+    surfaceType: "road",
+  },
+];
+
 const AvatarBox = styled(Box)(({ theme }) => ({
   "& img": {
     borderRadius: 25,
