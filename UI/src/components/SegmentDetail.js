@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Paper, Typography } from "@mui/material";
+import { Paper, Typography, Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import {
   useLocation,
@@ -33,11 +33,15 @@ const Segments = (props) => {
 
   return (
     <MyBox>
-      <Typography variant="h4">Segment Detail {id}</Typography>
-
-      <div style={{ height: "80vh", width: "85vw" }}>
-        <SegmentDetailMap segment={segment} />
-      </div>
+      <Typography variant="h4">{segment.name}</Typography>
+      <Paper sx={{ display: "flex", width: "90vw" }}>
+        <Box sx={{ flex: 5 }}>
+          <Typography>{segment.name}</Typography>
+        </Box>
+        <Box style={{ height: "80vh", flex: 5 }}>
+          <SegmentDetailMap segment={segment} />
+        </Box>
+      </Paper>
     </MyBox>
   );
 };

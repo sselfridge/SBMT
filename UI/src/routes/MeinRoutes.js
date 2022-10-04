@@ -15,6 +15,11 @@ import UserSettings from "components/UserSettings";
 import HelpContact from "components/HelpContact";
 import Info from "components/Info";
 
+import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
+import keys from "config";
+
+mapboxgl.accessToken = keys.mapBox;
+
 const MeinRoutes = (props) => {
   console.info("MeinRoutes");
   return (

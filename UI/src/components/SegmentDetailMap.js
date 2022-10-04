@@ -3,12 +3,9 @@ import PropTypes from "prop-types";
 import _ from "lodash";
 import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { addSegmentToMap, getBounds } from "utils/mapUtils";
+import { addSegmentToMap, getBounds, getGeometry } from "utils/mapUtils";
 
-import keys from "config";
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
-
-mapboxgl.accessToken = keys.mapBox;
 
 const MyBox = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 
@@ -38,17 +35,19 @@ const SegmentDetailMap = (props) => {
   }, [map]);
 
   useEffect(() => {
-    const startEndPoints = console.info("segment: ", segment);
     if (_.isEmpty(segment) === false && isLoaded) {
       addSegmentToMap(map, segment);
-      const bounds = getBounds(
-        [
-          segment?.startLatlng.slice().reverse(),
-          segment?.endLatlng.slice().reverse(),
-        ],
-        0.003
-      );
-      map.fitBounds(bounds);
+      // const bounds = getBounds(
+      //   [
+      //     segment?.startLatlng.slice().reverse(),
+      //     segment?.endLatlng.slice().reverse(),
+      //   ],
+      //   0.003
+      // );
+      const geo = getGeometry(segment);
+      if (geo.coordinates) {
+        map.fitBounds(getBounds(geo.coordinates, 0.003));
+      }
     }
 
     return () => {

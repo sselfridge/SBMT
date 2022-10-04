@@ -5,6 +5,7 @@ export const addSegmentToMap = (map, segment, markerArr) => {
   const geometry = getGeometry(segment);
   const { id, startLatlng } = segment;
 
+  console.info("geometry: ", geometry);
   const startCoord = startLatlng.slice().reverse();
   if (markerArr) markerArr.push(startCoord);
 
@@ -77,7 +78,7 @@ export const addSegmentToMap = (map, segment, markerArr) => {
   });
 };
 
-const getGeometry = (segment) => {
+export const getGeometry = (segment) => {
   const polyline = segment?.polyline;
   let geoJson = {
     type: "lineString",
