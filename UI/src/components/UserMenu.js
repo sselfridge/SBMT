@@ -15,7 +15,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
-import stravaSvg from "assets/stravaLogo.svg";
+import stravaSvg from "assets/StravaLogoOrangeBack.svg";
 import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import Api, { ApiGet } from "api/api";

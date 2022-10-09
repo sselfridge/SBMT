@@ -3,10 +3,10 @@ export const genderList = ["ALL", "Male", "Female"];
 export const categoryList = [
   "ALL",
   "Pro",
-  "Cat 1/2",
-  "Cat 3",
-  "Cat 4",
-  "Cat 5",
+  "Cat 1/2 (Expert)",
+  "Cat 3 (Advanced)",
+  "Cat 4 (Intermediate)",
+  "Cat 5 (Beginner)",
 ];
 export const ageList = [
   "ALL",

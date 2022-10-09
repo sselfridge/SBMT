@@ -15,7 +15,7 @@ import {
   Button,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { ReactComponent as StravaLogo } from "assets/stravaLogo.svg";
+import { ReactComponent as StravaLogo } from "assets/StravaLogoOrangeBack.svg";
 
 const MyBox = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 
