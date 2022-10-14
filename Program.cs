@@ -41,6 +41,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IStravaService, StravaService>();
+builder.Services.AddSingleton(new StravaLimitService());
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

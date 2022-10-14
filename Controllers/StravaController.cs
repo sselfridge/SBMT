@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using TodoApi.Helpers;
 using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Models.stravaApi;
@@ -58,20 +59,30 @@ namespace TodoApi.Controllers
 
       var oAuth = await _stravaService.GetTokens(code);
 
-      StravaUser newUser = new StravaUser(oAuth);
+      var oAuthUser = new OauthStravaUser(oAuth);
 
-      var userExists = _userService.GetById(newUser.AthleteId);
+      var existingUser = _userService.GetById(oAuthUser.AthleteId);
 
-      if (userExists == null)
-      {
-        await _userService.Add(newUser);
-      }
-
-      var cookie = GenerateJwtToken(newUser.AthleteId);
+      var cookie = GenerateJwtToken(oAuthUser.AthleteId);
       HttpContext.Response.Cookies.Append("SBMT", cookie.ToString());
 
+      if (existingUser == null)
+      {
+        var meinUser = await StravaUtilities.OnBoardNewUser(oAuthUser, _userService, _stravaService, _dbContext);
+        return Redirect($"{Configuration["BaseURL"]}/register");
 
-      return Redirect("http://localhost:3000");
+      }
+      else if (oAuthUser.AccessToken != existingUser.AccessToken)
+      {
+        existingUser.AccessToken = oAuthUser.AccessToken;
+        existingUser.ExpiresAt = oAuthUser.ExpiresAt;
+        var savedUser = await _userService.Update(existingUser);
+      }
+
+
+
+
+      return Redirect($"{Configuration["BaseURL"]}");
     }
 
     //Verify push notifications subscription
@@ -106,8 +117,36 @@ namespace TodoApi.Controllers
       return Ok();
     }
 
+    [HttpGet("userRefresh/{athleteId}")]
+    public async Task<IActionResult> RefreshUser(int athleteId)
+    {
+      var user = _dbContext.StravaUsers.FirstOrDefault(u => u.AthleteId == athleteId);
+
+      if (user == null) return NotFound();
+
+      var profile = await _stravaService.GetProfile(athleteId, _dbContext);
+
+      if (profile == null) return NotFound();
+
+      user.Firstname = profile.Firstname;
+      user.Lastname = profile.Lastname;
+      user.Avatar = profile.ProfileMedium;
+      if (profile.Sex != null)
+      {
+        user.Sex = profile.Sex;
+      }
+      if (profile.Weight != null)
+      {
+        user.Weight = (double)profile.Weight;
+      }
+
+      await _userService.Update(user, _dbContext);
+
+      HttpContext.Items["User"] = user;
 
 
+      return Ok(user);
+    }
 
   }
 }

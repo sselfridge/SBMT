@@ -16,33 +16,59 @@ namespace TodoApi.Models.db
     public string AccessToken { get; set; }
     public long ExpiresAt { get; set; }
     public DateTime JoinDate { get; set; }
+    public string Sex { get; set; }
+    public double Weight { get; set; }
 
-    public StravaUser(int athleteId, string firstname, string lastname, string avatar, long expiresAt, string refreshToken, string accessToken)
+
+    public StravaUser(int athleteId, string firstname, string lastname, string avatar, long expiresAt, string refreshToken, string accessToken, string sex, double weight)
     {
       AthleteId = athleteId;
       Firstname = firstname;
       Lastname = lastname;
       Avatar = avatar;
-      JoinDate = DateTime.UtcNow;
       AccessToken = accessToken;
       RefreshToken = refreshToken;
       ExpiresAt = expiresAt;
+      Sex = sex;
+      Weight = weight;
+
+      JoinDate = DateTime.UtcNow;
     }
 
-    public StravaUser(StravaOAuthResponseDTO oAuth)
+    public StravaUser(OauthStravaUser oAuth, StravaAthleteProfile profile)
+    {
+      AccessToken = oAuth.AccessToken;
+      RefreshToken = oAuth.RefreshToken;
+      ExpiresAt = oAuth.ExpiresAt;
+
+      Firstname = profile.Firstname;
+      Lastname = profile.Lastname;
+      Avatar = profile.ProfileMedium;
+      AthleteId = profile.Id;
+      Sex = profile.Sex ?? "none";
+      Weight = profile.Weight ?? 0;
+
+      JoinDate = DateTime.UtcNow;
+    }
+
+
+  }
+
+  public class OauthStravaUser
+  {
+    public int AthleteId { get; set; }
+    public string RefreshToken { get; set; }
+    public string AccessToken { get; set; }
+    public long ExpiresAt { get; set; }
+
+
+    public OauthStravaUser(StravaOAuthResponseDTO oAuth)
     {
       var athlete = oAuth.Athlete;
-
-      Firstname = athlete.Firstname;
-      Lastname = athlete.Lastname;
-      Avatar = athlete.ProfileMedium;
       AthleteId = athlete.Id;
       AccessToken = oAuth.AccessToken;
       RefreshToken = oAuth.RefreshToken;
       ExpiresAt = oAuth.ExpiresAt;
-      JoinDate = DateTime.UtcNow;
-
     }
-
   }
 }

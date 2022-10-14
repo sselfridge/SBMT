@@ -5,7 +5,7 @@ namespace TodoApi.Models.stravaApi
   public class ActivitySummaryResponse
   {
     [JsonPropertyName("id")]
-    public long? Id { get; set; }
+    public long Id { get; set; }
 
     [JsonPropertyName("athlete")]
     public ActivitySummaryResAthlete? Athlete { get; set; }

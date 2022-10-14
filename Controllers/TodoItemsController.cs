@@ -5,6 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using TodoApi.Helpers;
 using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Services;
@@ -21,6 +22,7 @@ namespace TodoApi.Controllers
     private IUserService _userService;
     private IStravaService _stravaService;
     private readonly IConfiguration Configuration;
+    private StravaLimitService RateLimits;
 
 
     private string GenerateJwtToken(int id)
@@ -41,13 +43,14 @@ namespace TodoApi.Controllers
     }
     public TodoItemsController(TodoContext context,
       IUserService userService, IStravaService stravaService,
-      sbmtContext dbContext, IConfiguration configuration)
+      sbmtContext dbContext, IConfiguration configuration, StravaLimitService stravaLimitService)
     {
       _context = context;
       _userService = userService;
       _stravaService = stravaService;
       _dbContext = dbContext;
       Configuration = configuration;
+      RateLimits = stravaLimitService;
     }
 
     // GET: api/TodoItems
@@ -96,8 +99,11 @@ namespace TodoApi.Controllers
       _dbContext.SaveChanges();
       var newCookie = GenerateJwtToken(1234);
 
+      var result = RateLimits.GetUsage();
+
 
       //var activity = await _stravaService.GetActivity(6156488864, 1075670);
+      //var result = await _stravaService.GetProfile(1075670, _dbContext);
       //var efforts = StravaUtilities.PullEffortsFromActivity(activity);
       //Array.ForEach(efforts, (effort) =>
       //{
@@ -109,7 +115,7 @@ namespace TodoApi.Controllers
       //});
 
       //_dbContext.SaveChanges();
-
+      await StravaUtilities.KickOffInitialFetch(serviceScopeFactory);
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
       //Task.Run(async () =>
       //{
@@ -132,10 +138,10 @@ namespace TodoApi.Controllers
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
       //var seg = _dbContext.Segments.FirstOrDefault(s => s.Id == 746977);
-      var seg = _dbContext.Segments.ToList();
+      //var seg = _dbContext.Segments.ToList();
 
 
-      return Ok(seg);
+      return Ok(result);
 
       var possibleNulUser = HttpContext.Items["User"];
 

@@ -60,7 +60,8 @@
     {
       sbmtContext dbContext = scopeContext ?? _dbContext;
 
-      return dbContext.StravaUsers.FirstOrDefault(x => x.AthleteId == id);
+      var user = dbContext.StravaUsers.FirstOrDefault(x => x.AthleteId == id);
+      return user;
     }
 
     public async Task Add(StravaUser user)

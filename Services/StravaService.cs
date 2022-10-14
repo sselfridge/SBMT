@@ -8,20 +8,31 @@ namespace TodoApi.Services
   {
     Task<StravaOAuthResponseDTO> GetTokens(string code);
     Task<ActivitySummaryResponse> GetActivity(long id, int athleteId);
-
+    Task<ActivitySummaryResponse> GetActivity(long id, HttpClient client);
     Task<List<ActivitySummaryResponse>> GetActivities(int athleteId, sbmtContext context);
     Task<Segment> GetSegment(long segmentId);
+
+    Task<StravaAthleteProfile> GetProfile(int athleteId, sbmtContext context);
+
+    //GetInitialProfile - fetch profile information without hitting local DB
+    Task<StravaAthleteProfile> GetInitialProfile(string accessToken);
+
+    Task<HttpClient> GetClientForUser(int athleteId);
+
+
   }
   public class StravaService : IStravaService
   {
     private readonly IConfiguration Configuration;
     private IUserService UserService;
+    private StravaLimitService RateLimits;
     private sbmtContext? scopeContext;
 
-    public StravaService(IConfiguration configuration, IUserService userService)
+    public StravaService(IConfiguration configuration, IUserService userService, StravaLimitService rateLimites)
     {
       Configuration = configuration;
       UserService = userService;
+      RateLimits = rateLimites;
     }
 
     public async Task<StravaOAuthResponseDTO> GetTokens(string code)
@@ -59,149 +70,71 @@ namespace TodoApi.Services
 
     public async Task<ActivitySummaryResponse> GetActivity(long activityId, int athleteId)
     {
+      var client = await GetClientForUser(athleteId);
 
-      var user = UserService.GetById(athleteId);
-
-      if (user == null)
-      {
-        throw new Exception($"User with id {athleteId} not found");
-      }
-
-      var accessToken = await checkAccessTokenAsync(user);
-
-      var client = new HttpClient();
-      client.DefaultRequestHeaders.Authorization =
-          new AuthenticationHeaderValue("Bearer", accessToken);
-
-      var response = await client.GetAsync($"https://www.strava.com/api/v3/activities/{activityId}");
-      if (response.IsSuccessStatusCode)
-      {
-        try
-        {
-          ActivitySummaryResponse? result = await response.Content.ReadFromJsonAsync<ActivitySummaryResponse>();
-          if (result == null)
-          {
-            throw new Exception("Invalid Activity response");
-          }
-
-          return result;
-
-        }
-        catch (Exception e)
-        {
-          Console.WriteLine(e);
-          throw new Exception("Bad model!");
-        }
-
-
-      }
-      else
-      {
-
-        throw new Exception("Get Activity Failed");
-
-      }
-
+      return await GetActivity(activityId, client);
 
     }
+    public async Task<ActivitySummaryResponse> GetActivity(long activityId, HttpClient client)
+    {
+
+      var url = $"/activities/{activityId}";
+      return await GetStrava<ActivitySummaryResponse>(client, url);
+
+    }
+
+
 
     public async Task<Segment> GetSegment(long segmentId)
     {
 
-      var user = UserService.GetById(1);
+      var client = await GetClientForUser(1);
 
-      if (user == null)
-      {
-        throw new Exception($"User with id {1} not found");
-      }
+      var url = $"/segments/{segmentId}";
+      var segRes = await GetStrava<SegmentResponse>(client, url);
 
-      var accessToken = await checkAccessTokenAsync(user);
+      return new Segment(segRes);
 
-      var client = new HttpClient();
-      client.DefaultRequestHeaders.Authorization =
-          new AuthenticationHeaderValue("Bearer", accessToken);
-
-      var response = await client.GetAsync($"https://www.strava.com/api/v3/segments/{segmentId}");
-      if (response.IsSuccessStatusCode)
-      {
-        try
-        {
-          SegmentResponse? result = await response.Content.ReadFromJsonAsync<SegmentResponse>();
-          if (result == null)
-          {
-            throw new Exception("Invalid Activity response");
-          }
-
-          return new Segment(result);
-
-        }
-        catch (Exception e)
-        {
-          Console.WriteLine(e);
-          throw new Exception("Bad model!");
-        }
-
-
-      }
-      else
-      {
-
-        throw new Exception("Get Activity Failed");
-
-      }
 
     }
 
     public async Task<List<ActivitySummaryResponse>> GetActivities(int athleteId, sbmtContext context)
     {
-      scopeContext = context;
 
-      var user = UserService.GetById(athleteId, scopeContext);
+      var client = await GetClientForUser(athleteId, context);
 
-      if (user == null)
-      {
-        throw new Exception($"User with id {athleteId} not found");
-      }
+      var url = $"/athlete/activities" +
+        $"?before=1665372404" +
+         $"&after=1659324897" +
+        $"&page=1" +
+        $"&per_page=200";
 
-      var accessToken = await checkAccessTokenAsync(user);
+      var arrayResult = await GetStrava<ActivitySummaryResponse[]>(client, url);
+
+      return arrayResult.ToList();
+
+    }
+
+    public async Task<StravaAthleteProfile> GetProfile(int athleteId, sbmtContext context)
+    {
+
+      var client = await GetClientForUser(athleteId, context);
+      var url = "/athlete";
+
+      var result = await GetStrava<StravaAthleteProfile>(client, url);
+      return result;
+    }
+
+    public async Task<StravaAthleteProfile> GetInitialProfile(string accessToken)
+    {
 
       var client = new HttpClient();
       client.DefaultRequestHeaders.Authorization =
           new AuthenticationHeaderValue("Bearer", accessToken);
 
-      var response = await client.GetAsync(
-        $"https://www.strava.com/api/v3/athlete/activities" +
-        $"?before=1664077344" +
-        $"&after=1662003744" +
-        $"&page=1" +
-        $"&per_page=200");
-      if (response.IsSuccessStatusCode)
-      {
-        try
-        {
-          ActivitySummaryResponse[]? result = await response.Content.ReadFromJsonAsync<ActivitySummaryResponse[]>();
-          if (result == null)
-          {
-            throw new Exception("Invalid Activity response");
-          }
-
-          return result.ToList();
-
-        }
-        catch (Exception e)
-        {
-          Console.WriteLine(e);
-          throw new Exception("Bad model!");
-        }
-
-
-      }
-      else
-      {
-
-        throw new Exception("Get Activity Failed");
-
-      }
+      var url = "/athlete";
+      var result = await GetStrava<StravaAthleteProfile>(client, url);
+      return result;
     }
 
 
@@ -281,6 +214,69 @@ namespace TodoApi.Services
 
     }
 
+    public async Task<HttpClient> GetClientForUser(int athleteId)
+    {
+      return await GetClientForUser(athleteId, null);
+    }
+    private async Task<HttpClient> GetClientForUser(int athleteId, sbmtContext? context)
+    {
+      var user = UserService.GetById(athleteId, context);
+
+      if (user == null)
+      {
+        throw new Exception($"User with id {athleteId} not found");
+      }
+
+      var accessToken = await checkAccessTokenAsync(user);
+
+      var client = new HttpClient();
+      client.DefaultRequestHeaders.Authorization =
+          new AuthenticationHeaderValue("Bearer", accessToken);
+
+      return client;
+    }
+
+
+
+    /// <summary>
+    /// Method <c>GetStrava</c> performs GET operation on StravaAPI
+    /// </summary>
+    /// 
+    private async Task<T> GetStrava<T>(HttpClient client, string url)
+    {
+      var response = await client.GetAsync($"https://www.strava.com/api/v3{url}");
+      if (response.IsSuccessStatusCode)
+      {
+        try
+        {
+          T? result = await response.Content.ReadFromJsonAsync<T>();
+          var limit = response.Headers.GetValues("X-RateLimit-Limit");
+          var usage = response.Headers.GetValues("X-RateLimit-Usage");
+
+          RateLimits.UpdateUsage(usage);
+
+          if (result == null)
+          {
+            throw new Exception("Invalid response");
+          }
+
+          return result;
+
+        }
+        catch (Exception e)
+        {
+          throw new Exception("Bad model!");
+        }
+
+
+      }
+      else
+      {
+
+        throw new Exception("Strava Get Failed");
+
+      }
+    }
   }
 
 

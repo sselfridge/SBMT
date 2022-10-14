@@ -28,8 +28,10 @@ namespace TodoApi.Controllers
     public ActionResult<Effort> GetRecentEfforts(int id)
     {
 
-      var data = _dbContext.Efforts.OrderByDescending(u => u.CreatedAt).Take(50).
-        Join(_dbContext.StravaUsers,
+      var efforts = _dbContext.Efforts.OrderByDescending(u => u.CreatedAt).Take(50);
+
+
+      var data = efforts.Join(_dbContext.StravaUsers,
         effort => effort.AthleteId,
         user => user.AthleteId,
         (effort, user) => new
