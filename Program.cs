@@ -58,6 +58,7 @@ app.UseStaticFiles();
 app.UseAuthorization();
 
 app.UseMiddleware<JwtMiddleware>();
+app.UseMiddleware<ResponseHeaderMiddleware>();
 
 app.MapControllers();
 

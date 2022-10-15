@@ -253,7 +253,14 @@ namespace TodoApi.Services
           var limit = response.Headers.GetValues("X-RateLimit-Limit");
           var usage = response.Headers.GetValues("X-RateLimit-Usage");
 
-          RateLimits.UpdateUsage(usage);
+          foreach (string value in usage)
+          {
+            if (value != null)
+            {
+              RateLimits.UpdateUsage(value);
+            }
+          }
+
 
           if (result == null)
           {

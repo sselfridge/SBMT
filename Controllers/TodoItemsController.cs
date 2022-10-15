@@ -99,7 +99,10 @@ namespace TodoApi.Controllers
       _dbContext.SaveChanges();
       var newCookie = GenerateJwtToken(1234);
 
-      var result = RateLimits.GetUsage();
+      var fifteen = RateLimits.GetUsage15();
+      var daily = RateLimits.GetUsageDaily();
+
+      int[] result = new int[] { fifteen, daily };
 
 
       //var activity = await _stravaService.GetActivity(6156488864, 1075670);
