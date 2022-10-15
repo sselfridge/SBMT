@@ -67,7 +67,8 @@ const Filters = ({ onApplyFilters }) => {
         setValue={setGender}
         list={genderList}
       />
-      <LabeledSelect
+      {/* //TODO Register page isn't ready to take input yet */}
+      {/* <LabeledSelect
         label={"Category"}
         value={category}
         setValue={setCategory}
@@ -78,7 +79,7 @@ const Filters = ({ onApplyFilters }) => {
         value={age}
         setValue={setAge}
         list={ageList}
-      />
+      /> */}
 
       {/* <Button size="small" variant="contained" onClick={handleApplyChanges}>
         <DoubleArrowIcon fontSize="small" /> Apply

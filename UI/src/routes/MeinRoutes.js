@@ -24,7 +24,6 @@ import keys from "config";
 mapboxgl.accessToken = keys.mapBox;
 
 const MeinRoutes = (props) => {
-  console.info("MeinRoutes");
   return (
     <BrowserRouter>
       <Routes>

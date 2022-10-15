@@ -9,7 +9,7 @@ import Filters from "./Filters";
 
 import { formattedTime } from "utils/helperFuncs";
 
-import Api from "api/api";
+import { ApiGet } from "api/api";
 
 const MyBox = styled(Box)(({ theme }) => {
   return {
@@ -157,13 +157,14 @@ const Recent = (props) => {
   const [recentEfforts, setRecentEfforts] = useState([]);
 
   React.useEffect(() => {
-    Api.get("/api/recentEfforts")
-      .then((response) => {
-        if (response.status === 200) setRecentEfforts(response.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    // Api.get("/api/recentEfforts")
+    //   .then((response) => {
+    //     if (response.status === 200) setRecentEfforts(response.data);
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //   });
+    ApiGet("/api/recentEfforts", setRecentEfforts);
   }, []);
 
   return (

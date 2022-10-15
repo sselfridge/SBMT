@@ -22,7 +22,7 @@ LinkTab.propTypes = {
   to: PropTypes.string.isRequired,
 };
 
-const TitleLink = styled("a")(({ theme }) => ({
+const TitleLink = styled(Link)(({ theme }) => ({
   color: theme.palette.primary.contrastText,
   textDecoration: "none",
 }));
@@ -67,11 +67,11 @@ export default function AppHeader() {
               letterSpacing: -4,
             }}
           >
-            <TitleLink href="/">
+            <TitleLink to="/">
               <span className="sbmt">SBMT</span>
             </TitleLink>
             <AppContext.Consumer>
-              {(context) => <UserMenu context={context} />}
+              {(context) => <UserMenu {...context} />}
             </AppContext.Consumer>
           </Typography>{" "}
         </Toolbar>

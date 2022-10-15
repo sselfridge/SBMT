@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
-import _ from "lodash";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   IconButton,
@@ -12,14 +12,16 @@ import {
   Typography,
   Link,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
+
+//Icons
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import stravaSvg from "assets/stravaLogoOrangeBack.svg";
-import { styled } from "@mui/material/styles";
-import { useNavigate } from "react-router-dom";
-import Api, { ApiGet } from "api/api";
+
+import { ApiDelete, ApiGet } from "api/api";
 
 const UserMenuBox = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -31,8 +33,7 @@ const UserMenuBox = styled(Box)(({ theme }) => ({
 }));
 
 const UserMenu = (props) => {
-  const { context } = props;
-  const { dispatch, user: contextUser } = context;
+  const { dispatch, user: contextUser } = props;
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -49,6 +50,7 @@ const UserMenu = (props) => {
   };
 
   const [user, setUser] = useState(null);
+
   const onSetUser = React.useCallback(
     (user) => dispatch({ type: "setUser", user }),
     [dispatch]
@@ -62,17 +64,12 @@ const UserMenu = (props) => {
   useEffect(() => {
     if (fetchOnce.current) {
       fetchOnce.current = null;
-
       ApiGet("/api/athlete/id", onSetUser, true, {});
     }
   }, [onSetUser]);
 
   const onLogout = () => {
-    Api.delete("/api/logout")
-      .then((res) => {
-        onSetUser({});
-      })
-      .catch((err) => console.error(err));
+    ApiDelete("/api/logout", onSetUser, {});
   };
 
   if (user === null) {
