@@ -78,7 +78,7 @@ namespace TodoApi.Services
     public async Task<ActivitySummaryResponse> GetActivity(long activityId, HttpClient client)
     {
 
-      var url = $"/activities/{activityId}";
+      var url = $"/activities/{activityId}?include_all_efforts=true";
       return await GetStrava<ActivitySummaryResponse>(client, url);
 
     }
@@ -104,7 +104,7 @@ namespace TodoApi.Services
       var client = await GetClientForUser(athleteId, context);
 
       var url = $"/athlete/activities" +
-        $"?before=1665372404" +
+        $"?before=1665868100" +
          $"&after=1659324897" +
         $"&page=1" +
         $"&per_page=200";

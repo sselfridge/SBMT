@@ -1,4 +1,4 @@
-import { intervalToDuration } from "date-fns";
+import { intervalToDuration, format, parseISO, toDate } from "date-fns";
 
 export function formattedTime(seconds, showHours = false) {
   const out = intervalToDuration({ start: 0, end: seconds * 1000 });
@@ -7,6 +7,16 @@ export function formattedTime(seconds, showHours = false) {
   str += `${out.minutes}:`.padStart(3, 0);
   str += `${out.seconds}`.padStart(2, 0);
   return str;
+}
+
+export function formattedDate(dateString) {
+  try {
+    const date = parseISO(dateString);
+    const formatted = format(date, "MM/dd - hh:mm a");
+    return formatted;
+  } catch (error) {
+    return "";
+  }
 }
 
 export const deepFreeze = (obj1) => {

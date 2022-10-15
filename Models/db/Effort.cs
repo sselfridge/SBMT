@@ -11,13 +11,12 @@ namespace TodoApi.Models.db
     public int MovingTime { get; set; }
     public long SegmentId { get; set; }
     public DateTime CreatedAt { get; set; }
-    //public string? StartDate { get; set; }
+    public string StartDate { get; set; }
 
 
 
-    public Effort(long id, int athleteId, long activityId, int elapsedTime, int movingTime, long segmentId
-      //string startDate
-      )
+    public Effort(long id, int athleteId, long activityId,
+      int elapsedTime, int movingTime, long segmentId, string startDate)
     {
       Id = id;
       AthleteId = athleteId;
@@ -26,7 +25,7 @@ namespace TodoApi.Models.db
       MovingTime = movingTime;
       SegmentId = segmentId;
       CreatedAt = CreatedAt;
-      //StartDate = startDate;
+      StartDate = startDate;
     }
 
     public Effort(ActivitySumResEffort eff)
@@ -37,7 +36,7 @@ namespace TodoApi.Models.db
       ElapsedTime = eff.ElapsedTime;
       MovingTime = eff.MovingTime;
       SegmentId = eff.Segment.Id;
-      //StartDate = eff.StartDate;
+      StartDate = eff.StartDate ?? "";
       CreatedAt = DateTime.UtcNow;
     }
   }

@@ -44,6 +44,7 @@ namespace TodoApi.Controllers
           created = effort.CreatedAt,
           elapsedTime = effort.ElapsedTime,
           segmentId = effort.SegmentId,
+          startDate = effort.StartDate
         }).Join(_dbContext.Segments,
         effort => effort.segmentId,
           segment => segment.Id,
@@ -58,10 +59,9 @@ namespace TodoApi.Controllers
             elapsedTime = effort.elapsedTime,
             segmentId = effort.segmentId,
             SegmentName = segment.Name,
-            surfaceType = segment.SurfaceType
-          }
-
-          ).ToList();
+            surfaceType = segment.SurfaceType,
+            startDate = effort.startDate
+          }).ToList();
 
       return Ok(data);
     }

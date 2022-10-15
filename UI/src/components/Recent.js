@@ -3,11 +3,11 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 import { DataGrid } from "@mui/x-data-grid";
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Paper, Typography, Tooltip } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Filters from "./Filters";
 
-import { formattedTime } from "utils/helperFuncs";
+import { formattedDate, formattedTime } from "utils/helperFuncs";
 
 import { ApiGet } from "api/api";
 
@@ -151,19 +151,40 @@ const columns = [
     valueGetter: ({ row }) => ({ id: row.activityId, time: row.elapsedTime }),
     flex: 1,
   },
+  {
+    field: "created",
+    sortable: false,
+    headerName: "Date Uploaded",
+    flex: 1.5,
+    width: 75,
+    renderCell: ({ value }) => {
+      const title = (
+        <div>
+          <section>Effort Time:</section>
+          <section>{formattedDate(value.startDate)}</section>
+        </div>
+      );
+
+      return (
+        <Tooltip arrow title={title}>
+          <a href={`https://www.strava.com/activities/${value.id}`}>
+            {formattedDate(value.created)}
+          </a>
+        </Tooltip>
+      );
+    },
+    valueGetter: ({ row }) => ({
+      id: row.activityId,
+      startDate: row.startDate,
+      created: row.created,
+    }),
+  },
 ];
 
 const Recent = (props) => {
   const [recentEfforts, setRecentEfforts] = useState([]);
 
   React.useEffect(() => {
-    // Api.get("/api/recentEfforts")
-    //   .then((response) => {
-    //     if (response.status === 200) setRecentEfforts(response.data);
-    //   })
-    //   .catch((err) => {
-    //     console.error(err);
-    //   });
     ApiGet("/api/recentEfforts", setRecentEfforts);
   }, []);
 
