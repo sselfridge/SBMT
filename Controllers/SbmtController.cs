@@ -111,7 +111,7 @@ namespace TodoApi.Controllers
       HttpContext.Response.Cookies.Delete("SBMT");
 
 
-      return Ok();
+      return Ok("Cookie Deleted");
     }
 
     [HttpPost]

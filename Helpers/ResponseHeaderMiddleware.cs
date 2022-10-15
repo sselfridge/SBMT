@@ -23,8 +23,11 @@
     public async Task Invoke(HttpContext context, IUserService userService)
     {
 
-      var usage = RateLimits.GetUsage15();
-      context.Response.Headers.Add("X-Usage-15", $"{usage}");
+      var usage15 = RateLimits.GetUsage15();
+      context.Response.Headers.Add("X-Usage-15", $"{usage15}");
+
+      var usageDaily = RateLimits.GetUsageDaily();
+      context.Response.Headers.Add("X-Usage-Daily", $"{usageDaily}");
       await _next.Invoke(context);
     }
 

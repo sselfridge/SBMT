@@ -121,6 +121,20 @@ namespace TodoApi.Helpers
               }
             }
 
+            var newEfforts = new List<Effort>();
+
+
+            foreach (var effort in allEfforts)
+            {
+              var effortExists = context.Efforts.Any(e => e.Id == effort.Id);
+              if (effortExists == false)
+              {
+                newEfforts.Add(effort);
+              }
+            }
+
+            context.AddRange(newEfforts);
+            context.SaveChanges();
             Console.WriteLine("ALLO");
           }
           catch (Exception e)
