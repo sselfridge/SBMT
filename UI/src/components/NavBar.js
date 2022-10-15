@@ -5,7 +5,7 @@ import { styled } from "@mui/material/styles";
 
 import UserMenu from "./UserMenu";
 import { Link, useLocation } from "react-router-dom";
-
+import AppContext from "AppContext";
 function LinkTab(props) {
   return (
     <Tab
@@ -70,7 +70,9 @@ export default function AppHeader() {
             <TitleLink href="/">
               <span className="sbmt">SBMT</span>
             </TitleLink>
-            <UserMenu />
+            <AppContext.Consumer>
+              {(context) => <UserMenu context={context} />}
+            </AppContext.Consumer>
           </Typography>{" "}
         </Toolbar>
         <Toolbar sx={{ justifyContent: "flex-end" }}>

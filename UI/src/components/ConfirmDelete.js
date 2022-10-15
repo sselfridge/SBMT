@@ -15,7 +15,7 @@ import {
   Button,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { ReactComponent as StravaLogo } from "assets/StravaLogoOrangeBack.svg";
+import { ReactComponent as StravaLogo } from "assets/stravaLogoOrangeBack.svg";
 
 const MyBox = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 
@@ -84,9 +84,9 @@ const ConfirmDelete = (props) => {
           >
             <Typography variant="h4">Confirm Delete?</Typography>
             <Typography sx={{ margin: "24px" }}>
-              Click button to remove all data from SBMT.
+              Click Big Red Button to remove all data from SBMT.
             </Typography>
-            <StravaLogo />
+            <StravaLogo style={{ width: 40 }} />
             <Typography>Does not remove your data from strava</Typography>
             <Button
               variant="contained"

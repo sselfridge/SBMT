@@ -16,6 +16,8 @@ import HelpContact from "components/HelpContact";
 import Info from "components/Info";
 import Register from "components/Register";
 
+import AppContext from "AppContext";
+
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import keys from "config";
 
@@ -39,7 +41,16 @@ const MeinRoutes = (props) => {
           <Route path="settings" element={<UserSettings />} />
           <Route path="help" element={<HelpContact />} />
           <Route path="info" element={<Info />} />
-          <Route path="register" element={<Register />} />
+
+          <Route
+            path="register"
+            element={
+              <AppContext.Consumer>
+                {(context) => <Register {...context} />}
+              </AppContext.Consumer>
+            }
+          />
+
           <Route path="expenses" element={<Expenses />} />
           <Route path="invoices" element={<Invoices />}>
             <Route path="expenses" element={<Expenses />} />

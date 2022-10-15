@@ -10,7 +10,7 @@ import {
   useSearchParams,
 } from "react-router-dom";
 
-import { ReactComponent as StravaLogo } from "assets/StravaLogoOrangeBack.svg";
+import { ReactComponent as StravaLogo } from "assets/stravaLogoOrangeBack.svg";
 
 import SegmentDetailMap from "./SegmentDetailMap";
 import { ApiGet } from "api/api";

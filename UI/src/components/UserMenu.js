@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import _ from "lodash";
 import PropTypes from "prop-types";
 import {
   Box,
@@ -15,7 +16,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
-import stravaSvg from "assets/StravaLogoOrangeBack.svg";
+import stravaSvg from "assets/stravaLogoOrangeBack.svg";
 import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import Api, { ApiGet } from "api/api";
@@ -30,7 +31,9 @@ const UserMenuBox = styled(Box)(({ theme }) => ({
 }));
 
 const UserMenu = (props) => {
-  const { prop } = props;
+  const { context } = props;
+  const { dispatch, user: contextUser } = context;
+
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -46,28 +49,28 @@ const UserMenu = (props) => {
   };
 
   const [user, setUser] = useState(null);
+  const onSetUser = React.useCallback(
+    (user) => dispatch({ type: "setUser", user }),
+    [dispatch]
+  );
+
+  useEffect(() => {
+    setUser(contextUser);
+  }, [contextUser]);
 
   const fetchOnce = useRef(true);
   useEffect(() => {
     if (fetchOnce.current) {
       fetchOnce.current = null;
-      // Api.get()
-      //   .then((response) => {
-      //     if (response.status === 200) setUser(response.data);
-      //   })
-      //   .catch((err) => {
-      //     setUser({});
-      //     console.error(err);
-      //   });
-      ApiGet("/api/athlete/id", setUser, true, {});
+
+      ApiGet("/api/athlete/id", onSetUser, true, {});
     }
-  }, []);
+  }, [onSetUser]);
 
   const onLogout = () => {
     Api.delete("/api/logout")
       .then((res) => {
-        console.info(res);
-        setUser({});
+        onSetUser({});
       })
       .catch((err) => console.error(err));
   };
@@ -81,7 +84,7 @@ const UserMenu = (props) => {
       <UserMenuBox>
         {!user?.athleteId && (
           <Link
-            href="https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=https://localhost:5001/api/strava/callback&response_type=code&approval_prompt=auto&scope=read_all,activity:read_all"
+            href="https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=https://localhost:5001/api/strava/callback&response_type=code&approval_prompt=auto&scope=read_all,activity:read_all,profile:read_all"
             sx={{
               backgroundColor: "strava.main",
               padding: "10px 20px",
@@ -123,10 +126,10 @@ const UserMenu = (props) => {
               textOverflow: "ellipsis",
             }}
           >
-            {user.firstname} {user.lastname}
+            {user?.firstname} {user?.lastname}
           </Typography>
 
-          <Avatar sx={{ width: 32, height: 32 }} src={user.avatar} />
+          <Avatar sx={{ width: 32, height: 32 }} src={user?.avatar} />
         </IconButton>
       </UserMenuBox>
       <Menu
