@@ -1,4 +1,10 @@
-import { intervalToDuration, format, parseISO, toDate } from "date-fns";
+import {
+  intervalToDuration,
+  format,
+  parseISO,
+  toDate,
+  formatDistance,
+} from "date-fns";
 
 export function formattedTime(seconds, showHours = false) {
   const out = intervalToDuration({ start: 0, end: seconds * 1000 });
@@ -17,6 +23,12 @@ export function formattedDate(dateString) {
   } catch (error) {
     return "";
   }
+}
+
+export function formattedTimeAgo(dateString) {
+  const date = parseISO(dateString);
+  const string = formatDistance(date, new Date());
+  return `${string} ago`;
 }
 
 export const deepFreeze = (obj1) => {

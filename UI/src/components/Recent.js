@@ -7,7 +7,11 @@ import { Box, Paper, Typography, Tooltip } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Filters from "./Filters";
 
-import { formattedDate, formattedTime } from "utils/helperFuncs";
+import {
+  formattedDate,
+  formattedTime,
+  formattedTimeAgo,
+} from "utils/helperFuncs";
 
 import { ApiGet } from "api/api";
 
@@ -162,13 +166,15 @@ const columns = [
         <div>
           <section>Effort Time:</section>
           <section>{formattedDate(value.startDate)}</section>
+          <section>Uploaded at:</section>
+          <section>{formattedDate(value.created)}</section>
         </div>
       );
 
       return (
         <Tooltip arrow title={title}>
           <a href={`https://www.strava.com/activities/${value.id}`}>
-            {formattedDate(value.created)}
+            {formattedTimeAgo(value.created, { addSuffix: true })}
           </a>
         </Tooltip>
       );
