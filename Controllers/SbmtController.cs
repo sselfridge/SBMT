@@ -66,6 +66,48 @@ namespace TodoApi.Controllers
       return Ok(data);
     }
 
+    [HttpGet("leaderboard")]
+    public IActionResult GetLeaderboard()
+    {
+
+      var users = _dbContext.StravaUsers.ToList();
+
+      var data = users.Join(_dbContext.Efforts,
+        effort => effort.AthleteId,
+        user => user.AthleteId,
+        (user, effort) => new
+        {
+          ElapsedTime = effort.ElapsedTime,
+          SegmentId = effort.SegmentId,
+          AthleteId = effort.AthleteId,
+
+
+        }).ToList();
+
+      var effortGroup = new Dictionary<int, Dictionary<long, long>>();
+      var dict = new Dictionary<long, long>();
+
+      //foreach (var entry in data)
+      //{
+      //  var segId = entry.SegmentId;
+      //  var elapsedTime = entry.ElapsedTime;
+      //  var athleteId = entry.AthleteId;
+
+      //  if (dict.ContainsKey(athleteId))
+      //  {
+
+
+
+      //  } else
+      //  {
+      //    var newDict = new Dictionary<long, long>();
+      //    dict.Add(athleteId, newDict);
+      //  }
+      //}
+
+      return Ok(data);
+    }
+
 
     [HttpGet("segment")]
     [ResponseCache(Duration = 3600)]

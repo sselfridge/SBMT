@@ -85,28 +85,7 @@ namespace TodoApi.Helpers
 
           var allEfforts = new List<Effort>();
           var client = await stravaService.GetClientForUser(athleteId);
-          //activities.ForEach(async activity =>
-          //{
-          //  if (activity == null) return;
-          //  var activityId = activity.Id;
-          //  try
-          //  {
-          //    var fullActivity = await stravaService.GetActivity(activityId, 1075670);
 
-
-          //    var efforts = PullEffortsFromActivity(fullActivity);
-          //    if (efforts != null)
-          //    {
-          //      allEfforts.AddRange(efforts);
-          //    }
-
-          //  }
-          //  catch (Exception e)
-          //  {
-
-          //    throw e;
-          //  }
-          //});
           try
           {
 
