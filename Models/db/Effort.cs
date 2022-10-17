@@ -24,7 +24,7 @@ namespace TodoApi.Models.db
       ElapsedTime = elapsedTime;
       MovingTime = movingTime;
       SegmentId = segmentId;
-      CreatedAt = CreatedAt;
+      CreatedAt = DateTime.UtcNow;
       StartDate = startDate;
     }
 

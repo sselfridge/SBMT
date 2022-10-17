@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TodoApi.Models;
 using TodoApi.Models.db;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -84,28 +85,81 @@ namespace TodoApi.Controllers
 
         }).ToList();
 
-      var effortGroup = new Dictionary<int, Dictionary<long, long>>();
-      var dict = new Dictionary<long, long>();
+      //Effortgroup contains key of athleteID and value of a dict with <segId, EffortTime>
+      var effortGroup = new Dictionary<int, Dictionary<long, int>>();
 
-      //foreach (var entry in data)
-      //{
-      //  var segId = entry.SegmentId;
-      //  var elapsedTime = entry.ElapsedTime;
-      //  var athleteId = entry.AthleteId;
+      foreach (var entry in data)
+      {
+        var segId = entry.SegmentId;
+        var elapsedTime = entry.ElapsedTime;
+        var athleteId = entry.AthleteId;
 
-      //  if (dict.ContainsKey(athleteId))
-      //  {
+        if (effortGroup.ContainsKey(athleteId))
+        {
+          var segments = effortGroup[athleteId];
+
+          if (segments.ContainsKey(segId))
+          {
+            if (segments[segId] < elapsedTime)
+            {
+              segments[segId] = elapsedTime;
+            }
+          }
+          else
+          {
+            segments[segId] = elapsedTime;
+          }
+        }
+        else
+        {
+          var segments = new Dictionary<long, int> { [segId] = elapsedTime };
+          effortGroup.Add(athleteId, segments);
+        }
+      }
+
+      var leaderboard = new List<LeaderboardEntry>();
+
+      foreach (KeyValuePair<int, Dictionary<long, int>> entry in effortGroup)
+      {
+        var athleteId = entry.Key;
+        var efforts = entry.Value;
+
+        int completed = efforts.Count();
+        int totalTime = 0;
+
+        foreach (KeyValuePair<long, int> effort in efforts)
+        {
+          totalTime = totalTime + effort.Value;
+        }
+
+        var user = users.FirstOrDefault(u => u.AthleteId == athleteId);
+        var athleteName = $"{user.Firstname} {user.Lastname}";
+        var leaderboardEntry = new LeaderboardEntry(athleteId, athleteName, user.Avatar, completed, totalTime);
+
+        leaderboard.Add(leaderboardEntry);
 
 
+      }
 
-      //  } else
-      //  {
-      //    var newDict = new Dictionary<long, long>();
-      //    dict.Add(athleteId, newDict);
-      //  }
-      //}
+      leaderboard.Sort((a, b) =>
+      {
+        if (a.Completed > b.Completed) { return -1; }
 
-      return Ok(data);
+        else if (a.Completed < b.Completed) { return 1; }
+        else
+        {
+          if (a.TotalTime < b.TotalTime) { return -1; }
+          else { return 1; }
+        }
+      });
+
+      for (var i = 0; i < leaderboard.Count; i++)
+      {
+        var leaderboardEntry = leaderboard[i];
+        leaderboardEntry.rank = i + 1;
+      }
+
+      return Ok(leaderboard);
     }
 
 

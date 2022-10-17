@@ -6,12 +6,13 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import { DataGrid } from "@mui/x-data-grid";
-import { Box, Paper } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Filters from "./Filters";
 
 import { ALL_COLUMNS, MOBILE_COLUMNS } from "utils/constants";
 import { formattedTime } from "utils/helperFuncs";
+import { ApiGet } from "api/api";
 
 const MyBox = styled(Box)(({ theme }) => {
   return {
@@ -20,6 +21,14 @@ const MyBox = styled(Box)(({ theme }) => {
     borderRadius: 4,
   };
 });
+
+const AvatarBox = styled(Box)(({ theme }) => ({
+  "& img": {
+    borderRadius: 25,
+    width: 35,
+    marginRight: 8,
+  },
+}));
 
 const rows = [
   {
@@ -270,6 +279,31 @@ const columns = [
     field: "athlete",
     sortable: false,
     headerName: "Athlete",
+    // valueGetter: ({ row }) => {
+    //   console.info(row);
+    //   return { name: row.athleteName, avatar: row.avatar };
+    // },
+    renderCell: (props) => {
+      const { row } = props;
+      const { athleteName, avatar } = row;
+      console.info("props: ", props);
+      // return `${avatar} - ${athleteName}`;
+
+      return (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-evenly",
+          }}
+        >
+          <AvatarBox>
+            <img alt="avatar" src={avatar} />
+          </AvatarBox>
+          <Typography>{athleteName}</Typography>
+        </Box>
+      );
+    },
   },
   {
     flex: 13,
@@ -344,6 +378,13 @@ const Leaderboard = (props) => {
     setColumnVisible(newColumns);
   }, [isMobile]);
 
+  const [rows, setRows] = useState([]);
+  console.info("rows: ", rows);
+
+  React.useEffect(() => {
+    ApiGet("/api/leaderboard", setRows);
+  }, []);
+
   return (
     <MyBox sx={{ height: "95vh", width: "95vw", maxWidth: 1000 }}>
       <Paper
@@ -361,11 +402,11 @@ const Leaderboard = (props) => {
           disableColumnMenu
           hideFooter={true}
           columnVisibilityModel={columnVisible}
-          initialState={{
-            sorting: {
-              sortModel: [{ field: "rank", sort: "desc" }],
-            },
-          }}
+          // initialState={{
+          //   sorting: {
+          //     sortModel: [{ field: "rank", sort: "asc" }],
+          //   },
+          // }}
           sx={{
             boxShadow: 2,
             border: 2,
