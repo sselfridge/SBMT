@@ -19,7 +19,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
-import stravaSvg from "assets/stravaLogoOrangeBack.svg";
+import stravaSvg from "assets/stravaLogoOrange.svg";
 
 import { ApiDelete, ApiGet } from "api/api";
 
@@ -173,7 +173,7 @@ const UserMenu = (props) => {
         {user?.athleteId && (
           <a href={`https://www.strava.com/athletes/${user?.athleteId}`}>
             <MenuItem>
-              <Avatar src={stravaSvg} /> My Strava Profile
+              {/* <Avatar src={stravaSvg} /> My Strava Profile */}
             </MenuItem>
             <Divider />
           </a>

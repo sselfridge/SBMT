@@ -12,7 +12,7 @@ import {
 import _ from "lodash";
 import { styled } from "@mui/material/styles";
 
-// import { ReactComponent as StravaLogo } from "assets/stravaLogoOrangeBack.svg";
+// import { ReactComponent as StravaLogo } from "assets/stravaLogoOrange.svg";
 import { ReactComponent as StravaLogo } from "assets/stravaLogoTransparent.svg";
 
 import LabeledSelect from "./Shared/LabeledSelect";
