@@ -402,11 +402,12 @@ const Leaderboard = (props) => {
           disableColumnMenu
           hideFooter={true}
           columnVisibilityModel={columnVisible}
-          // initialState={{
-          //   sorting: {
-          //     sortModel: [{ field: "rank", sort: "asc" }],
-          //   },
-          // }}
+          initialState={
+            {
+              //need to sort by 2 fields, only supported by MDG pro so handling sort on server
+              //sorting: {sortModel: [{ field: "rank", sort: "asc" }],},
+            }
+          }
           sx={{
             boxShadow: 2,
             border: 2,

@@ -76,12 +76,18 @@ const UserMenu = (props) => {
     return null;
   }
 
+  let redirect_uri;
+  if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
+    redirect_uri = "https://localhost:5001";
+  } else {
+    redirect_uri = "https://www.sbmtchallenge.com";
+  }
   return (
     <React.Fragment>
       <UserMenuBox>
         {!user?.athleteId && (
           <Link
-            href="https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=https://localhost:5001/api/strava/callback&response_type=code&approval_prompt=auto&scope=read_all,activity:read_all,profile:read_all"
+            href={`https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirect_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read_all,activity:read_all,profile:read_all`}
             sx={{
               backgroundColor: "strava.main",
               padding: "10px 20px",
@@ -174,20 +180,20 @@ const UserMenu = (props) => {
         )}
 
         {user?.athleteId && (
-          <MenuItem onClick={() => navTo("/settings")}>
+          <MenuItem onClick={() => navTo("settings")}>
             <ListItemIcon>
               <Settings fontSize="small" />
             </ListItemIcon>
             Settings
           </MenuItem>
         )}
-        <MenuItem onClick={() => navTo("/info")}>
+        <MenuItem onClick={() => navTo("info")}>
           <ListItemIcon>
             <InfoOutlinedIcon fontSize="small" />
           </ListItemIcon>
           Info{" "}
         </MenuItem>
-        <MenuItem onClick={() => navTo("/help")}>
+        <MenuItem onClick={() => navTo("help")}>
           <ListItemIcon>
             <HelpOutlineIcon fontSize="small" />
           </ListItemIcon>

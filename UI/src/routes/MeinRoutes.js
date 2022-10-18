@@ -16,6 +16,8 @@ import HelpContact from "components/HelpContact";
 import Info from "components/Info";
 import Register from "components/Register";
 
+import LandingPage from "components/LandingPage/LandingPage";
+
 import AppContext from "AppContext";
 
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
@@ -28,8 +30,8 @@ const MeinRoutes = (props) => {
     <BrowserRouter>
       <Routes>
         {/* <NavBar /> */}
-        <Route path="/" element={<Navigate to="/recent" />} />
-        <Route path="/" element={<App />}>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/beta" element={<App />}>
           <Route path="recent" element={<Recent />} />
           <Route path="leaderboard" element={<Leaderboard />} />
           <Route path="segments" element={<Segments />} />

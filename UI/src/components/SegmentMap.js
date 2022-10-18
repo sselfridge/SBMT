@@ -27,7 +27,7 @@ const SegmentMap = (props) => {
       container: mapRef.current,
       style: "mapbox://styles/mapbox/streets-v11",
       center: [-119.6769, 34.46313],
-      zoom: 1.0,
+      zoom: 5.0,
     });
     newMap.addControl(new mapboxgl.NavigationControl());
     // newMap.scrollZoom.disable();
@@ -101,7 +101,7 @@ const SegmentMap = (props) => {
 };
 
 SegmentMap.propTypes = {
-  // prop: PropTypes.array.isRequired,
+  segments: PropTypes.array.isRequired,
 };
 
 export default SegmentMap;

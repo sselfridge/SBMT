@@ -453,8 +453,8 @@ const Segments = () => {
 
   React.useEffect(() => {
     console.info("Get Segments");
-    // ApiGet("api/segment", setAllSegments);
-    setAllSegments(CACHE);
+    ApiGet("api/segment", setAllSegments);
+    // setAllSegments(CACHE);
   }, []);
 
   React.useEffect(() => {
