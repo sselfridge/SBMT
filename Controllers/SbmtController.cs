@@ -133,11 +133,13 @@ namespace TodoApi.Controllers
         }
 
         var user = users.FirstOrDefault(u => u.AthleteId == athleteId);
-        var athleteName = $"{user.Firstname} {user.Lastname}";
-        var leaderboardEntry = new LeaderboardEntry(athleteId, athleteName, user.Avatar, completed, totalTime);
+        if (user != null)
+        {
+          var athleteName = $"{user.Firstname} {user.Lastname}";
+          var leaderboardEntry = new LeaderboardEntry(athleteId, athleteName, user.Avatar, completed, totalTime);
 
-        leaderboard.Add(leaderboardEntry);
-
+          leaderboard.Add(leaderboardEntry);
+        }
 
       }
 
@@ -186,7 +188,7 @@ namespace TodoApi.Controllers
     }
 
     [HttpGet("athlete/id")]
-    public async Task<IActionResult> GetAthleteIdAsync()
+    public IActionResult GetAthleteId()
     {
 
       var possibleNulUser = HttpContext.Items["User"];

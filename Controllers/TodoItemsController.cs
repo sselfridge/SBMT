@@ -146,21 +146,21 @@ namespace TodoApi.Controllers
 
       return Ok(result);
 
-      var possibleNulUser = HttpContext.Items["User"];
+      //var possibleNulUser = HttpContext.Items["User"];
 
-      if (possibleNulUser == null)
-      {
-        return Ok("Hello Null User");
+      //if (possibleNulUser == null)
+      //{
+      //  return Ok("Hello Null User");
 
-      }
-      StravaUser user = (StravaUser)possibleNulUser;
+      //}
+      //StravaUser user = (StravaUser)possibleNulUser;
 
 
-      var id = user.AthleteId;
+      //var id = user.AthleteId;
 
-      var cookie = GenerateJwtToken(id);
-      HttpContext.Response.Cookies.Append("SBMT", cookie);
-      return Ok("Hello there, cookie set");
+      //var cookie = GenerateJwtToken(id);
+      //HttpContext.Response.Cookies.Append("SBMT", cookie);
+      //return Ok("Hello there, cookie set");
 
     }
 

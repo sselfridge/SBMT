@@ -94,7 +94,7 @@ const Segments = (props) => {
 
   return (
     <MyBox>
-      <Typography variant="h4" sx={{ fontSize: "6vw" }}>
+      <Typography variant="h4" sx={{ fontSize: "min(50px,4vw)" }}>
         {segment.name}
       </Typography>
       <Grid container spacing={1} sx={{ width: "90vw" }}>
