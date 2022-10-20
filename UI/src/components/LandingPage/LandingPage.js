@@ -114,7 +114,7 @@ export default class App extends Component {
             <h2 className="h2Landing">
               Coming
               <br />
-              May 26th 2023
+              May 26th, 2023
             </h2>
           </div>
           <a className="landingLink" href="#segmentList">
