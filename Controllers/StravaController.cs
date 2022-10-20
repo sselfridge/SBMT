@@ -52,7 +52,6 @@ namespace TodoApi.Controllers
       _stravaService = stravaService;
     }
 
-    // GET: api/TodoItems
     [HttpGet("callback")]
     public async Task<ActionResult<IEnumerable<TodoItem>>> GetStravaCallback(string code, string scope)
     {
@@ -121,8 +120,18 @@ namespace TodoApi.Controllers
     public async Task<IActionResult> RefreshUser(int athleteId)
     {
       var user = _dbContext.StravaUsers.FirstOrDefault(u => u.AthleteId == athleteId);
-
       if (user == null) return NotFound();
+
+      var cookieUser = HttpContext.Items["User"];
+      if (cookieUser == null) return Unauthorized();
+
+      StravaUser currentUser = (StravaUser)cookieUser;
+
+      if (currentUser.AthleteId != user.AthleteId)
+      {
+        return Forbid();
+      }
+
 
       var profile = await _stravaService.GetProfile(athleteId, _dbContext);
 
