@@ -93,9 +93,13 @@ namespace TodoApi.Controllers
       string verify = HttpContext.Request.Query["hub.verify_token"];
 
       //TODO - Log verify code here
+      if (verify == Configuration["WebHookVerify"])
+      {
+        return Ok(new SubChallengeRepsonse(challenge));
 
-      return Ok(new SubChallengeRepsonse(challenge));
+      }
 
+      return BadRequest();
     }
 
     [HttpPost("push")]
