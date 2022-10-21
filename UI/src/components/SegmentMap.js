@@ -1,16 +1,15 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import { Box } from "@mui/material";
-import { useParams } from "react-router-dom";
-import { styled } from "@mui/material/styles";
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
-import { addSegmentToMap, getBounds } from "utils/mapUtils";
+import {
+  addSegmentToMap,
+  addSegmentPopupToMap,
+  getBounds,
+} from "utils/mapUtils";
 
 import keys from "config";
 
 mapboxgl.accessToken = keys.mapBox;
-
-const MyBox = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 
 const SegmentMap = (props) => {
   const { segments } = props;
@@ -40,43 +39,16 @@ const SegmentMap = (props) => {
       setIsLoaded(true);
     });
 
-    const popup = new mapboxgl.Popup({
-      closeButton: false,
-      closeOnClick: false,
-    });
-
-    // map.on("mouseenter", "places", (e) => {
-    //   // Change the cursor style as a UI indicator.
-    //   map.getCanvas().style.cursor = "pointer";
-
-    //   // Copy coordinates array.
-    //   const coordinates = e.features[0].geometry.coordinates.slice();
-    //   const description = e.features[0].properties.description;
-
-    //   // Ensure that if the map is zoomed out such that multiple
-    //   // copies of the feature are visible, the popup appears
-    //   // over the copy being pointed to.
-    //   while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-    //     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-    //   }
-
-    //   // Populate the popup and set its coordinates
-    //   // based on the feature found.
-    //   popup.setLngLat(coordinates).setHTML(description).addTo(map);
-    // });
-
-    // map.on("mouseleave", "places", () => {
-    //   map.getCanvas().style.cursor = "";
-    //   popup.remove();
-    // });
-
     setMap(newMap);
   }, []);
 
   useEffect(() => {
     const startMarkers = [];
     if (isLoaded) {
-      segments.forEach((seg) => addSegmentToMap(map, seg, startMarkers));
+      segments.forEach((seg) => {
+        addSegmentToMap(map, seg, startMarkers);
+        addSegmentPopupToMap(map, seg);
+      });
     }
 
     //TODO - this doesn't look great on mobile, maybe start from all then zoom in to DT area?

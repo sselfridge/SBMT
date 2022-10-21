@@ -1,11 +1,12 @@
+import React from "react";
 import { toGeoJSON } from "@mapbox/polyline";
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
+import * as ReactDOMServer from "react-dom/server";
 
 export const addSegmentToMap = (map, segment, markerArr) => {
   const geometry = getGeometry(segment);
   const { id, startLatlng } = segment;
 
-  console.info("geometry: ", geometry);
   const startCoord = startLatlng.slice().reverse();
   if (markerArr) markerArr.push(startCoord);
 
@@ -62,6 +63,10 @@ export const addSegmentToMap = (map, segment, markerArr) => {
   //   .addTo(map);
 
   // if (map.meinMarkers) map.meinMarkers.push(markerRed);
+  // const popup = new mapboxgl.Popup({
+  //   closeButton: false,
+  //   closeOnClick: false,
+  // });
 
   const markerGreen = new mapboxgl.Marker({
     id: idString,
@@ -73,8 +78,48 @@ export const addSegmentToMap = (map, segment, markerArr) => {
   markerGreen.setLngLat(startCoord).addTo(map);
 
   map.meinMarkers.markers.push(markerGreen);
-  map.on("mouseover", idString, () => {
-    console.info("mouse over seg id:", id);
+};
+
+export const addSegmentPopupToMap = (map, segment) => {
+  const { name, id } = segment;
+  console.info("name: ", name);
+  const idString = `${id}`;
+
+  const popup = new mapboxgl.Popup({
+    closeButton: false,
+    closeOnClick: false,
+  });
+
+  map.on("mouseenter", idString, (e) => {
+    // Change the cursor style as a UI indicator.
+    console.info(idString);
+    map.getCanvas().style.cursor = "pointer";
+
+    // Ensure that if the map is zoomed out such that multiple
+    // copies of the feature are visible, the popup appears
+    // over the copy being pointed to.
+    // while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+    //   coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+    // }
+
+    const popupHTML = (
+      <h4>
+        <a href={`/beta/segments/${idString}`}>{name}</a>
+      </h4>
+    );
+
+    popup
+      .setLngLat(e.lngLat)
+      .setHTML(ReactDOMServer.renderToStaticMarkup(popupHTML))
+      .addTo(map);
+  });
+
+  map.on("mouseleave", idString, () => {
+    map.getCanvas().style.cursor = "";
+    setTimeout(() => {
+      popup.remove();
+    }, 1500);
+    //TODO detect if cursor is over popup and keep alive
   });
 };
 

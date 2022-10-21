@@ -1,10 +1,4 @@
-import {
-  intervalToDuration,
-  format,
-  parseISO,
-  toDate,
-  formatDistance,
-} from "date-fns";
+import { intervalToDuration, format, parseISO, formatDistance } from "date-fns";
 
 export function formattedTime(seconds, showHours = false) {
   const out = intervalToDuration({ start: 0, end: seconds * 1000 });
@@ -37,4 +31,12 @@ export const deepFreeze = (obj1) => {
       deepFreeze(obj1[property]);
   });
   return Object.freeze(obj1);
+};
+
+export const metersToMiles = (meters) => {
+  return (meters * 0.000621371).toFixed(2);
+};
+
+export const metersToFeet = (meters) => {
+  return (meters * 3.28084).toFixed(2);
 };

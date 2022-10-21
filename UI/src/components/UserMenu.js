@@ -64,7 +64,7 @@ const UserMenu = (props) => {
   useEffect(() => {
     if (fetchOnce.current) {
       fetchOnce.current = null;
-      ApiGet("/api/athlete/id", onSetUser, true, {});
+      ApiGet("/api/athletes/id", onSetUser, true, {});
     }
   }, [onSetUser]);
 
@@ -173,7 +173,7 @@ const UserMenu = (props) => {
         {user?.athleteId && (
           <a href={`https://www.strava.com/athletes/${user?.athleteId}`}>
             <MenuItem>
-              {/* <Avatar src={stravaSvg} /> My Strava Profile */}
+              <Avatar src={stravaSvg} /> My Strava Profile
             </MenuItem>
             <Divider />
           </a>

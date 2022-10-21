@@ -7,6 +7,8 @@ import AppReducer, { INITIAL_STATE } from "./AppReducer";
 
 import AppContext from "AppContext";
 
+import "./global.css";
+
 function App(appProps) {
   const [state, dispatch] = useReducer(AppReducer, INITIAL_STATE);
 

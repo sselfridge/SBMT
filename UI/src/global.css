@@ -1,0 +1,7 @@
+.mapboxgl-popup {
+    color: black
+}
+
+.mapboxgl-popup-content>h4 {
+    margin: 3px 0px 0px 0px;
+}
