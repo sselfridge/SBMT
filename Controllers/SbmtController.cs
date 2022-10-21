@@ -165,7 +165,7 @@ namespace TodoApi.Controllers
     }
 
 
-    [HttpGet("segment")]
+    [HttpGet("segments")]
     [ResponseCache(Duration = 3600)]
 
     public List<Segment> GetSegments()
@@ -175,7 +175,7 @@ namespace TodoApi.Controllers
       return segments;
     }
 
-    [HttpGet("segment/{id}")]
+    [HttpGet("segments/{id}")]
     [ResponseCache(Duration = 3600)]
 
     public IActionResult GetSegment(long id)
@@ -187,7 +187,25 @@ namespace TodoApi.Controllers
       return Ok(segment);
     }
 
-    [HttpGet("athlete/id")]
+    [HttpGet("athletes")]
+    public IActionResult GetAllAthletes()
+    {
+      var dbUsers = _dbContext.StravaUsers.ToList();
+
+      var users = new List<StravaUserDTO>();
+
+      foreach (StravaUser user in dbUsers)
+      {
+        if (user.AthleteId != 1)
+        {
+          users.Add(new StravaUserDTO(user));
+        }
+      }
+
+      return Ok(users);
+    }
+
+    [HttpGet("athletes/id")]
     public IActionResult GetAthleteId()
     {
 
