@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   Box,
@@ -10,8 +10,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
-
-import { users } from "mockData/data";
+import { ApiGet } from "api/api";
 
 const MyBox = styled(Box)(({ theme }) => ({
   padding: 8,
@@ -20,21 +19,34 @@ const MyBox = styled(Box)(({ theme }) => ({
 }));
 
 const Athletes = (props) => {
+  const [athletes, setAthletes] = useState([]);
+
+  useEffect(() => {
+    ApiGet("/api/athletes", setAthletes);
+  }, []);
+
   return (
     <MyBox>
       <Table>
         <TableHead>
           <TableRow>
+            <TableCell />
             <TableCell>Name</TableCell>
             <TableCell>Sex</TableCell>
             <TableCell>Weight</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {users.map((user) => (
-            <TableRow key={`${user.id}`}>
+          {athletes.map((user) => (
+            <TableRow key={`${user.athleteId}`}>
               <TableCell>
-                {console.info(user)}
+                <img
+                  style={{ height: 40, borderRadius: "50px" }}
+                  src={user.avatar}
+                  alt="avatar"
+                />
+              </TableCell>
+              <TableCell>
                 <Link to={`${user.id}`}>
                   {user.firstname} {user.lastname}
                 </Link>

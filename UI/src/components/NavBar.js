@@ -67,7 +67,7 @@ export default function AppHeader() {
               letterSpacing: -4,
             }}
           >
-            <TitleLink to="recent">
+            <TitleLink to="segments">
               <span className="sbmt">SBMT</span>
             </TitleLink>
             <AppContext.Consumer>
@@ -78,7 +78,7 @@ export default function AppHeader() {
         <Toolbar sx={{ justifyContent: "flex-end" }}>
           <Tabs value={currentTabIdx} aria-label="nav tabs example">
             <LinkTab label="recent" to="recent" />
-            <LinkTab label="Leaderboard" to="leaderboard" />
+            {/* <LinkTab label="Leaderboard" to="leaderboard" /> */}
             <LinkTab label="Segments" to="segments" />
             <LinkTab label="Athletes" to="athletes" />
           </Tabs>

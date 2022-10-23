@@ -15,7 +15,7 @@ import UserSettings from "components/UserSettings";
 import HelpContact from "components/HelpContact";
 import Info from "components/Info";
 import Register from "components/Register";
-
+import Thanks from "components/Thanks";
 import LandingPage from "components/LandingPage/LandingPage";
 
 import AppContext from "AppContext";
@@ -31,7 +31,9 @@ const MeinRoutes = (props) => {
       <Routes>
         {/* <NavBar /> */}
         <Route path="/" element={<LandingPage />} />
+
         <Route path="/beta" element={<App />}>
+          <Route path="" element={<Navigate to="segments" />} />
           <Route path="recent" element={<Recent />} />
           <Route path="leaderboard" element={<Leaderboard />} />
           <Route path="segments" element={<Segments />} />
@@ -42,6 +44,7 @@ const MeinRoutes = (props) => {
           <Route path="settings" element={<UserSettings />} />
           <Route path="help" element={<HelpContact />} />
           <Route path="info" element={<Info />} />
+          <Route path="thanks" element={<Thanks />} />
 
           <Route
             path="register"

@@ -104,8 +104,8 @@ namespace TodoApi.Services
       var client = await GetClientForUser(athleteId, context);
 
       var url = $"/athlete/activities" +
-        $"?before=1665868100" +
-         $"&after=1659324897" +
+        $"?before=1965868100" +
+         $"&after=1666358514" +
         $"&page=1" +
         $"&per_page=200";
 

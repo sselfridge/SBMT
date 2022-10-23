@@ -17,7 +17,7 @@ import { styled } from "@mui/material/styles";
 //Icons
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import Settings from "@mui/icons-material/Settings";
+// import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import stravaSvg from "assets/stravaLogoOrange.svg";
 
@@ -179,14 +179,14 @@ const UserMenu = (props) => {
           </a>
         )}
 
-        {user?.athleteId && (
+        {/* {user?.athleteId && (
           <MenuItem onClick={() => navTo("settings")}>
             <ListItemIcon>
               <Settings fontSize="small" />
             </ListItemIcon>
             Settings
           </MenuItem>
-        )}
+        )} */}
         <MenuItem onClick={() => navTo("info")}>
           <ListItemIcon>
             <InfoOutlinedIcon fontSize="small" />

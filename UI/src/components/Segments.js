@@ -27,21 +27,21 @@ const MapBox = styled(Box)(({ theme }) => ({
 const columns = [
   {
     field: "name",
-    headerName: "Segment Name",
+    headerName: "Segment",
     flex: 4,
     renderCell: (props) => {
       const { value, id } = props;
       return <Link to={`${id}`}>{value}</Link>;
     },
   },
-  {
-    field: "effort_count",
-    headerName: "Attempts",
-    flex: 2,
-    renderCell: (props) => {
-      return props.value;
-    },
-  },
+  // {
+  //   field: "effort_count",
+  //   headerName: "Attempts",
+  //   flex: 2,
+  //   renderCell: (props) => {
+  //     return props.value;
+  //   },
+  // },
 ];
 
 const Segments = () => {
