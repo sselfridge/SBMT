@@ -77,7 +77,7 @@ export default function AppHeader() {
         </Toolbar>
         <Toolbar sx={{ justifyContent: "flex-end" }}>
           <Tabs value={currentTabIdx} aria-label="nav tabs example">
-            <LinkTab label="recent" to="recent" />
+            {/* <LinkTab label="recent" to="recent" /> */}
             {/* <LinkTab label="Leaderboard" to="leaderboard" /> */}
             <LinkTab label="Segments" to="segments" />
             <LinkTab label="Athletes" to="athletes" />
