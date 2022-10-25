@@ -33,7 +33,8 @@ const components = {
     styleOverrides: (themeParam) => `
     .App-Body {
       background-color: #282c34; 
-      min-height: 100vh;
+      // min-height: 100vh;
+      min-height: 91vh;
       display: flex;
       flex-direction: column;
       align-items: center;

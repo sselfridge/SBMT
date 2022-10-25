@@ -7,6 +7,7 @@ import React, { Component } from "react";
 
 // import './custom.css'
 import "./mein.css";
+import { Link } from "react-router-dom";
 
 import { ReactComponent as LogoV1 } from "./assets/logoV1.svg";
 import { ReactComponent as Insta } from "./assets/insta.svg";
@@ -117,9 +118,11 @@ export default class App extends Component {
               May 26th, 2023
             </h2>
           </div>
-          <a className="landingLink" href="#segmentList">
-            <div className="button segments">Segment List Announced!</div>
-          </a>
+          <Link to="/beta">
+            <div style={{ backgroundColor: "#FC4C02" }} class="button">
+              Join the beta!
+            </div>
+          </Link>
           <div id="infoBtn" className="button">
             Info
           </div>
@@ -170,7 +173,14 @@ export default class App extends Component {
             <br />I discovered the SMMT during COVID and really enjoyed it, plus
             it got me to some areas of the Santa Monicas I probably wouldn't
             have done otherwise. Hoping to bring something similar to SB!
+            <br />
+            <br />
+            <br />
+            <a className="landingLink" href="#segmentList">
+              <div className="button segments">Segment List Announced!</div>
+            </a>
           </article>
+
           <div id="contributeBtn2" className="button">
             Feedback / Contribute
           </div>

@@ -1,6 +1,6 @@
 import React from "react";
 import App from "../App";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Invoices from "routes/invoices";
 import Expenses from "routes/expenses";
 import DefaultRoute from "routes/DefaultRoute";
@@ -15,6 +15,7 @@ import UserSettings from "components/UserSettings";
 import HelpContact from "components/HelpContact";
 import Info from "components/Info";
 import Register from "components/Register";
+import Beta from "components/Beta";
 import Thanks from "components/Thanks";
 import LandingPage from "components/LandingPage/LandingPage";
 
@@ -33,7 +34,14 @@ const MeinRoutes = (props) => {
         <Route path="/" element={<LandingPage />} />
 
         <Route path="/beta" element={<App />}>
-          <Route path="" element={<Navigate to="segments" />} />
+          <Route
+            path="/beta"
+            element={
+              <AppContext.Consumer>
+                {(context) => <Beta {...context} />}
+              </AppContext.Consumer>
+            }
+          />
           <Route path="recent" element={<Recent />} />
           <Route path="leaderboard" element={<Leaderboard />} />
           <Route path="segments" element={<Segments />} />

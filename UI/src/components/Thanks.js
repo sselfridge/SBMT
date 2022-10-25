@@ -37,7 +37,8 @@ const Thanks = () => {
         announcements
       </Typography>
       <Typography variant="h5">
-        Hoping to launch a beta-leaderboard soon!
+        Before long your segment efforts should start showing up in the 'recent'
+        tab
       </Typography>
       <Typography variant="h5">
         In the meantime, let me know if anything is broken here and ride the

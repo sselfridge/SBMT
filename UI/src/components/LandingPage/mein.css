@@ -144,6 +144,8 @@ h1.h1Landing .sbmt {
     padding: 20px 40px;
     border-radius: 5px;
     background-color: #050505;
+    color: white;
+    text-align: center;
     cursor: pointer;
 }
 
