@@ -21,6 +21,7 @@ namespace TodoApi.Controllers
     private readonly IConfiguration Configuration;
     private IUserService _userService;
     private IStravaService _stravaService;
+    private IServiceScopeFactory _serviceScopeFactory;
 
     private string GenerateJwtToken(int id)
     {
@@ -43,13 +44,16 @@ namespace TodoApi.Controllers
     public StravaController(
       IConfiguration configuration,
       IUserService userService,
-      sbmtContext dbContext, IStravaService stravaService
+      sbmtContext dbContext,
+      IStravaService stravaService,
+      IServiceScopeFactory serviceScopeFactory
       )
     {
       _dbContext = dbContext;
       Configuration = configuration;
       _userService = userService;
       _stravaService = stravaService;
+      _serviceScopeFactory = serviceScopeFactory;
     }
 
     [HttpGet("callback")]
@@ -68,7 +72,7 @@ namespace TodoApi.Controllers
       if (existingUser == null)
       {
         var meinUser = await StravaUtilities.OnBoardNewUser(oAuthUser, _userService, _stravaService, _dbContext);
-        return Redirect($"{Configuration["BaseURL"]}/register");
+        return Redirect($"{Configuration["BaseURL"]}/beta/thanks");
 
       }
       else if (oAuthUser.AccessToken != existingUser.AccessToken)
@@ -81,7 +85,7 @@ namespace TodoApi.Controllers
 
 
 
-      return Redirect($"{Configuration["BaseURL"]}");
+      return Redirect($"{Configuration["BaseURL"]}/beta/thanks");
     }
 
     //Verify push notifications subscription
@@ -107,13 +111,34 @@ namespace TodoApi.Controllers
     {
       Stream req = Request.Body;
       var json = await new StreamReader(req).ReadToEndAsync();
-      StravaPushNotificationDTO? subRes = JsonSerializer.Deserialize<StravaPushNotificationDTO>(json);
+      StravaPushNotificationDTO? subRes = null;
+
+      subRes = JsonSerializer.Deserialize<StravaPushNotificationDTO>(json);
+
+
       if (subRes != null)
       {
         var pushNotification = new StravaPushNotification(subRes);
         //var updates = JsonSerializer.Deserialize<JsonObject>(pushNotification.Updates);
         _dbContext.StravaPushNotifications.Add(pushNotification);
         await _dbContext.SaveChangesAsync();
+
+        if (pushNotification.AspectType == "create")
+        {
+          var athleteId = (int)pushNotification.OwnerId;
+          if (_dbContext.StravaUsers.Any(u => u.AthleteId == athleteId))
+          {
+            var activityId = pushNotification.ObjectId;
+#pragma warning disable CS4014
+            StravaUtilities.WaitAndParseActivity(_serviceScopeFactory, athleteId, activityId);
+#pragma warning restore CS4014
+
+          }
+
+        }
+
+
+
         return Ok("Created");
 
       }

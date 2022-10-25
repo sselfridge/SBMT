@@ -15,7 +15,7 @@ namespace TodoApi.Models.db
     [JsonPropertyName("object_type")]
     public string? ObjectType { get; set; }
     [JsonPropertyName("owner_id")]
-    public long OwnerId { get; set; }
+    public int OwnerId { get; set; }
     [JsonPropertyName("subscription_id")]
     public long SubscriptionId { get; set; }
 

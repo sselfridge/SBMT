@@ -7,7 +7,7 @@ namespace TodoApi.Services
   public interface IStravaService
   {
     Task<StravaOAuthResponseDTO> GetTokens(string code);
-    Task<ActivitySummaryResponse> GetActivity(long id, int athleteId);
+    Task<ActivitySummaryResponse> GetActivity(long id, int athleteId, sbmtContext context);
     Task<ActivitySummaryResponse> GetActivity(long id, HttpClient client);
     Task<List<ActivitySummaryResponse>> GetActivities(int athleteId, sbmtContext context);
     Task<Segment> GetSegment(long segmentId);
@@ -68,9 +68,9 @@ namespace TodoApi.Services
       throw new Exception(response.StatusCode.ToString());
     }
 
-    public async Task<ActivitySummaryResponse> GetActivity(long activityId, int athleteId)
+    public async Task<ActivitySummaryResponse> GetActivity(long activityId, int athleteId, sbmtContext context)
     {
-      var client = await GetClientForUser(athleteId);
+      var client = await GetClientForUser(athleteId, context);
 
       return await GetActivity(activityId, client);
 
