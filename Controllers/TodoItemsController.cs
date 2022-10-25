@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
-using TodoApi.Helpers;
 using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Services;
@@ -68,6 +66,7 @@ namespace TodoApi.Controllers
     [HttpGet("{id}")]
     public async Task<ActionResult<TodoItem>> GetTodoItem(long id)
     {
+      return NotFound();
       if (_context.TodoItems == null)
       {
         return NotFound();
@@ -85,7 +84,7 @@ namespace TodoApi.Controllers
     [HttpGet()]
     public async Task<ActionResult<TodoItem>> TestThing([FromServices] IServiceScopeFactory serviceScopeFactory)
     {
-
+      return Ok();
 
 
       var students = _dbContext.Students.ToList();
@@ -105,6 +104,7 @@ namespace TodoApi.Controllers
       int[] result = new int[] { fifteen, daily };
 
 
+
       //var activity = await _stravaService.GetActivity(6156488864, 1075670);
       //var result = await _stravaService.GetProfile(1075670, _dbContext);
       //var efforts = StravaUtilities.PullEffortsFromActivity(activity);
@@ -118,7 +118,7 @@ namespace TodoApi.Controllers
       //});
 
       //_dbContext.SaveChanges();
-      await StravaUtilities.KickOffInitialFetch(serviceScopeFactory);
+      //await StravaUtilities.KickOffInitialFetch(serviceScopeFactory);
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
       //Task.Run(async () =>
       //{
@@ -171,6 +171,7 @@ namespace TodoApi.Controllers
     [HttpPost("strava")]
     public async Task<IActionResult> pushPost()
     {
+      return Ok();
       Stream req = Request.Body;
       var json = await new StreamReader(req).ReadToEndAsync();
       StravaPushNotificationDTO? subRes = JsonSerializer.Deserialize<StravaPushNotificationDTO>(json);
@@ -190,34 +191,34 @@ namespace TodoApi.Controllers
 
     // PUT: api/TodoItems/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutTodoItem(long id, TodoItem todoItem)
-    {
-      if (id != todoItem.Id)
-      {
-        return BadRequest();
-      }
+    //[HttpPut("{id}")]
+    //public async Task<IActionResult> PutTodoItem(long id, TodoItem todoItem)
+    //{
+    //  if (id != todoItem.Id)
+    //  {
+    //    return BadRequest();
+    //  }
 
-      _context.Entry(todoItem).State = EntityState.Modified;
+    //  _context.Entry(todoItem).State = EntityState.Modified;
 
-      try
-      {
-        await _context.SaveChangesAsync();
-      }
-      catch (DbUpdateConcurrencyException)
-      {
-        if (!TodoItemExists(id))
-        {
-          return NotFound();
-        }
-        else
-        {
-          throw;
-        }
-      }
+    //  try
+    //  {
+    //    await _context.SaveChangesAsync();
+    //  }
+    //  catch (DbUpdateConcurrencyException)
+    //  {
+    //    if (!TodoItemExists(id))
+    //    {
+    //      return NotFound();
+    //    }
+    //    else
+    //    {
+    //      throw;
+    //    }
+    //  }
 
-      return NoContent();
-    }
+    //  return NoContent();
+    //}
 
     // POST: api/TodoItems
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -234,40 +235,40 @@ namespace TodoApi.Controllers
     //  return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
     //}
 
-    [HttpPost]
-    public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
-    {
-      _context.TodoItems.Add(todoItem);
-      await _context.SaveChangesAsync();
+    //[HttpPost]
+    //public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
+    //{
+    //  _context.TodoItems.Add(todoItem);
+    //  await _context.SaveChangesAsync();
 
-      //return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
-      return CreatedAtAction(nameof(GetTodoItem), new { id = todoItem.Id }, todoItem);
-    }
+    //  //return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
+    //  return CreatedAtAction(nameof(GetTodoItem), new { id = todoItem.Id }, todoItem);
+    //}
 
-    // DELETE: api/TodoItems/5
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteTodoItem(long id)
-    {
-      if (_context.TodoItems == null)
-      {
-        return NotFound();
-      }
-      var todoItem = await _context.TodoItems.FindAsync(id);
-      if (todoItem == null)
-      {
-        return NotFound();
-      }
+    //// DELETE: api/TodoItems/5
+    //[HttpDelete("{id}")]
+    //public async Task<IActionResult> DeleteTodoItem(long id)
+    //{
+    //  if (_context.TodoItems == null)
+    //  {
+    //    return NotFound();
+    //  }
+    //  var todoItem = await _context.TodoItems.FindAsync(id);
+    //  if (todoItem == null)
+    //  {
+    //    return NotFound();
+    //  }
 
-      _context.TodoItems.Remove(todoItem);
-      await _context.SaveChangesAsync();
+    //  _context.TodoItems.Remove(todoItem);
+    //  await _context.SaveChangesAsync();
 
-      return NoContent();
-    }
+    //  return NoContent();
+    //}
 
-    private bool TodoItemExists(long id)
-    {
-      return (_context.TodoItems?.Any(e => e.Id == id)).GetValueOrDefault();
-    }
+    //private bool TodoItemExists(long id)
+    //{
+    //  return (_context.TodoItems?.Any(e => e.Id == id)).GetValueOrDefault();
+    //}
   }
 }
 
