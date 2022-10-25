@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import {
   Box,
@@ -9,13 +9,7 @@ import {
   TableBody,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import {
-  useLocation,
-  useMatch,
-  useParams,
-  useSearchParams,
-  Navigate,
-} from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { users } from "mockData/data";
 
 const MyBox = styled(Box)(({ theme }) => ({
@@ -35,7 +29,6 @@ const ProfileImg = styled("img")(({ theme }) => ({
 }));
 
 const Athletes = (props) => {
-  const { prop } = props;
   const params = useParams();
   const [user, setUser] = useState(undefined);
   React.useEffect(() => {
