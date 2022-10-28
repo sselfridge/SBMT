@@ -139,7 +139,7 @@ namespace TodoApi.Helpers
       return true;
     }
 
-    public static async Task<bool> WaitAndParseActivity(IServiceScopeFactory serviceScopeFactory, int athleteId, long activityId)
+    public static async Task<bool> ParseNewActivity(IServiceScopeFactory serviceScopeFactory, int athleteId, long activityId)
     {
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
       Task.Run(async () =>
@@ -150,103 +150,26 @@ namespace TodoApi.Helpers
          var stravaService = scope.ServiceProvider.GetRequiredService<IStravaService>();
 
          var activity = await stravaService.GetActivity(activityId, athleteId, context);
-         if (activity != null && activity.SegmentEfforts != null)
+
+         var segmentIds = context.Segments.ToList().Select(s => s.Id).ToArray();
+
+         var efforts = PullEffortsFromActivity(activity, segmentIds);
+
+         var newEfforts = new List<Effort>();
+
+         foreach (var effort in efforts)
          {
-           var segmentCount = activity.SegmentEfforts.Length;
-
-           var newStudent = new Student();
-           newStudent.Name = $"Immediate {activityId}";
-           newStudent.Age = (int)(activityId % 200);
-           newStudent.Grade = segmentCount;
-
-           context.Students.Add(newStudent);
-           context.SaveChanges();
-
+           if (context.Efforts.Any(e => e.Id == effort.Id) == false)
+           {
+             newEfforts.Add(effort);
+           }
          }
 
-         await Task.Delay(60 * 1000);
-
-         activity = await stravaService.GetActivity(activityId, athleteId, context);
-         if (activity != null && activity.SegmentEfforts != null)
+         if (newEfforts.Count > 0)
          {
-           var segmentCount = activity.SegmentEfforts.Length;
-
-           var newStudent = new Student();
-           newStudent.Name = $"1min {activityId}";
-           newStudent.Age = (int)(activityId % 200);
-           newStudent.Grade = segmentCount;
-
-           context.Students.Add(newStudent);
+           context.AddRange(newEfforts);
            context.SaveChanges();
-
          }
-         await Task.Delay(2 * 60 * 1000);
-
-         activity = await stravaService.GetActivity(activityId, athleteId, context);
-         if (activity != null && activity.SegmentEfforts != null)
-         {
-           var segmentCount = activity.SegmentEfforts.Length;
-
-           var newStudent = new Student();
-           newStudent.Name = $"2min {activityId}";
-           newStudent.Age = (int)(activityId % 200);
-           newStudent.Grade = segmentCount;
-
-           context.Students.Add(newStudent);
-           context.SaveChanges();
-
-         }
-
-         await Task.Delay(3 * 60 * 1000);
-
-         activity = await stravaService.GetActivity(activityId, athleteId, context);
-         if (activity != null && activity.SegmentEfforts != null)
-         {
-           var segmentCount = activity.SegmentEfforts.Length;
-
-           var newStudent = new Student();
-           newStudent.Name = $"3min {activityId}";
-           newStudent.Age = (int)(activityId % 200);
-           newStudent.Grade = segmentCount;
-
-           context.Students.Add(newStudent);
-           context.SaveChanges();
-
-         }
-
-         await Task.Delay(4 * 60 * 1000);
-
-         activity = await stravaService.GetActivity(activityId, athleteId, context);
-         if (activity != null && activity.SegmentEfforts != null)
-         {
-           var segmentCount = activity.SegmentEfforts.Length;
-
-           var newStudent = new Student();
-           newStudent.Name = $"4min {activityId}";
-           newStudent.Age = (int)(activityId % 200);
-           newStudent.Grade = segmentCount;
-
-           context.Students.Add(newStudent);
-           context.SaveChanges();
-
-         }
-         await Task.Delay(5 * 60 * 1000);
-
-         activity = await stravaService.GetActivity(activityId, athleteId, context);
-         if (activity != null && activity.SegmentEfforts != null)
-         {
-           var segmentCount = activity.SegmentEfforts.Length;
-
-           var newStudent = new Student();
-           newStudent.Name = $"5min {activityId}";
-           newStudent.Age = (int)(activityId % 200);
-           newStudent.Grade = segmentCount;
-
-           context.Students.Add(newStudent);
-           context.SaveChanges();
-
-         }
-
 
 
        }

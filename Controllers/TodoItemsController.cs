@@ -84,10 +84,15 @@ namespace TodoApi.Controllers
     [HttpGet()]
     public async Task<ActionResult<TodoItem>> TestThing([FromServices] IServiceScopeFactory serviceScopeFactory)
     {
-      return Ok();
+      //return Ok();
 
 
-      var students = _dbContext.Students.ToList();
+
+
+
+
+
+
 
       var newStudent = new Student();
       newStudent.Name = "Bobby";
@@ -104,7 +109,13 @@ namespace TodoApi.Controllers
       int[] result = new int[] { fifteen, daily };
 
 
+      var users = _dbContext.StravaUsers.ToList();
 
+      var pushes = _dbContext.StravaPushNotifications
+        .Where(p => p.AspectType == "create")
+        .ToList();
+
+      return Ok(pushes);
       //var activity = await _stravaService.GetActivity(6156488864, 1075670);
       //var result = await _stravaService.GetProfile(1075670, _dbContext);
       //var efforts = StravaUtilities.PullEffortsFromActivity(activity);

@@ -130,7 +130,7 @@ namespace TodoApi.Controllers
           {
             var activityId = pushNotification.ObjectId;
 #pragma warning disable CS4014
-            StravaUtilities.WaitAndParseActivity(_serviceScopeFactory, athleteId, activityId);
+            StravaUtilities.ParseNewActivity(_serviceScopeFactory, athleteId, activityId);
 #pragma warning restore CS4014
 
           }
