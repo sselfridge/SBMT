@@ -34,15 +34,15 @@ export default function AppHeader() {
 
   useEffect(() => {
     switch (pathname) {
-      case "/leaderboard":
+      // case "/beta/leaderboard":
+      //   setCurrentTabIdx(0);
+      //   break;
+      case "/beta/segments":
         setCurrentTabIdx(0);
-        break;
-      case "/segments":
-        setCurrentTabIdx(1);
 
         break;
-      case "/athletes":
-        setCurrentTabIdx(2);
+      case "/beta/athletes":
+        setCurrentTabIdx(1);
         break;
 
       default:
