@@ -57,7 +57,7 @@ namespace TodoApi.Controllers
     }
 
     [HttpGet("callback")]
-    public async Task<ActionResult<IEnumerable<TodoItem>>> GetStravaCallback(string code, string scope)
+    public async Task<ActionResult<IEnumerable<TodoItem>>> GetStravaCallback([FromServices] IServiceScopeFactory serviceScopeFactory, string code, string scope)
     {
 
       var oAuth = await _stravaService.GetTokens(code);
@@ -71,7 +71,7 @@ namespace TodoApi.Controllers
 
       if (existingUser == null)
       {
-        var meinUser = await StravaUtilities.OnBoardNewUser(oAuthUser, _userService, _stravaService, _dbContext);
+        var meinUser = await StravaUtilities.OnBoardNewUser(serviceScopeFactory, oAuthUser, _userService, _stravaService, _dbContext);
         return Redirect($"{Configuration["BaseURL"]}/beta/thanks");
 
       }
@@ -125,12 +125,12 @@ namespace TodoApi.Controllers
 
         if (pushNotification.AspectType == "create")
         {
-          var athleteId = (int)pushNotification.OwnerId;
+          var athleteId = pushNotification.OwnerId;
           if (_dbContext.StravaUsers.Any(u => u.AthleteId == athleteId))
           {
             var activityId = pushNotification.ObjectId;
 #pragma warning disable CS4014
-            StravaUtilities.WaitAndParseActivity(_serviceScopeFactory, athleteId, activityId);
+            StravaUtilities.ParseNewActivity(_serviceScopeFactory, athleteId, activityId);
 #pragma warning restore CS4014
 
           }

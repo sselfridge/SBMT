@@ -1,10 +1,12 @@
 ﻿
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using TodoApi.Models.stravaApi;
 
 namespace TodoApi.Models.db
 
 {
+  [Index(nameof(AthleteId), IsUnique = true)]
   public class StravaUser
   {
     [Key]

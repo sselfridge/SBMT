@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using TodoApi.Helpers;
 using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Services;
@@ -87,7 +88,12 @@ namespace TodoApi.Controllers
       return Ok();
 
 
-      var students = _dbContext.Students.ToList();
+
+
+
+
+
+
 
       var newStudent = new Student();
       newStudent.Name = "Bobby";
@@ -104,7 +110,10 @@ namespace TodoApi.Controllers
       int[] result = new int[] { fifteen, daily };
 
 
+      StravaUtilities.KickOffInitialFetch(serviceScopeFactory, 23746938);
 
+
+      return Ok(23746938);
       //var activity = await _stravaService.GetActivity(6156488864, 1075670);
       //var result = await _stravaService.GetProfile(1075670, _dbContext);
       //var efforts = StravaUtilities.PullEffortsFromActivity(activity);
