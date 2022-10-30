@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback } from "react";
 import PropTypes from "prop-types";
 import {
   Paper,
@@ -18,10 +18,10 @@ import { ReactComponent as StravaLogo } from "assets/stravaLogoTransparent.svg";
 import LabeledSelect from "./Shared/LabeledSelect";
 
 import {
-  ageList,
+  // ageList,
   categoryList,
-  genderList,
-  surfaceList,
+  // genderList,
+  // surfaceList,
 } from "utils/constants";
 import { ApiGet } from "api/api";
 
@@ -36,7 +36,7 @@ const categorySelect = categoryList.filter((c) => c !== "ALL");
 const Register = (props) => {
   const { user, dispatch } = props;
 
-  const [age, setAge] = useState("");
+  // const [age, setAge] = useState("");
   const [category, setCategory] = useState("");
   const [localUser, setLocalUser] = useState({});
 

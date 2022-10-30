@@ -85,7 +85,7 @@ namespace TodoApi.Controllers
     [HttpGet()]
     public async Task<ActionResult<TodoItem>> TestThing([FromServices] IServiceScopeFactory serviceScopeFactory)
     {
-      return Ok();
+      return Ok("loaded");
 
 
 

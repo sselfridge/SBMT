@@ -1,13 +1,10 @@
-import React, { useState, useCallback, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import _ from "lodash";
-import { Box } from "@mui/material";
-import { styled } from "@mui/material/styles";
+
 import { addSegmentToMap, getBounds, getGeometry } from "utils/mapUtils";
 
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
-
-const MyBox = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 
 const SegmentDetailMap = (props) => {
   const { segment } = props;
@@ -73,7 +70,7 @@ const SegmentDetailMap = (props) => {
 };
 
 SegmentDetailMap.propTypes = {
-  prop: PropTypes.string,
+  segment: PropTypes.object.isRequired,
 };
 
 export default SegmentDetailMap;

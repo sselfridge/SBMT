@@ -238,7 +238,7 @@ export const users = [
   },
 ];
 
-const segment_efforts = [
+export const segment_efforts = [
   {
     id: 2694697191668483757,
     resource_state: 2,

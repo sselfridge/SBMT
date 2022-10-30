@@ -1,21 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   Box,
-  MenuItem,
   FormGroup,
-  FormControl,
-  InputLabel,
-  Select,
   Button,
-  Paper,
   useMediaQuery,
-  Typography,
   Accordion,
   AccordionSummary,
   AccordionDetails,
 } from "@mui/material";
-import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import LabeledSelect from "./Shared/LabeledSelect";
 
@@ -25,8 +18,6 @@ import {
   genderList,
   surfaceList,
 } from "utils/constants";
-
-import ChipSelect from "./Shared/ChipSelect";
 
 const Filters = ({ onApplyFilters }) => {
   const [surface, setSurface] = useState(surfaceList[0]);

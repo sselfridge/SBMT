@@ -8,7 +8,6 @@ import { styled } from "@mui/material/styles";
 const MyBox = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 
 const Info = (props) => {
-  const { prop } = props;
   return (
     <MyBox>
       <Paper>

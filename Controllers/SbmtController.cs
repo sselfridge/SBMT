@@ -240,9 +240,38 @@ namespace TodoApi.Controllers
     {
     }
 
-    [HttpDelete("{id}")]
-    public void Delete(int id)
+    [HttpDelete("athletes/{id}")]
+    public async Task<IActionResult> Delete(int id)
     {
+      var cookieUser = HttpContext.Items["User"];
+
+      if (cookieUser == null) return NotFound();
+
+      StravaUser user = (StravaUser)cookieUser;
+
+      if (id != user.AthleteId) return Unauthorized();
+
+      var allEfforts = _dbContext.Efforts.Where(e => e.AthleteId == user.AthleteId).ToList();
+
+      var dbUser = _dbContext.StravaUsers.FirstOrDefault(u => u.AthleteId == user.AthleteId);
+      if (dbUser == null) return NotFound();
+      try
+      {
+        _dbContext.RemoveRange(allEfforts);
+        _dbContext.Remove(dbUser);
+        HttpContext.Response.Cookies.Delete("SBMT");
+
+        await _dbContext.SaveChangesAsync();
+
+      }
+      catch (Exception)
+      {
+
+        return BadRequest();
+      }
+
+
+      return Ok(user);
     }
   }
 }

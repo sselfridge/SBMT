@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import {
   Avatar,
@@ -10,9 +10,7 @@ import {
   ListItemText,
   Checkbox,
   IconButton,
-  Paper,
   Typography,
-  Button,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import clubs from "mockData/clubs";

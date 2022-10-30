@@ -1,28 +1,26 @@
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import {
-  Avatar,
-  Box,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Checkbox,
-  IconButton,
-  Paper,
-  Typography,
-  Button,
-} from "@mui/material";
 import { styled } from "@mui/material/styles";
+import AppContext from "AppContext";
+import { useNavigate } from "react-router-dom";
+
+import { Box, Paper, Typography, Button } from "@mui/material";
+
 import { ReactComponent as StravaLogo } from "assets/stravaLogoOrange.svg";
+
+import { ApiDelete } from "api/api";
 
 const MyBox = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 
 const ConfirmDelete = (props) => {
+  const { user, dispatch } = React.useContext(AppContext);
+
+  const navigate = useNavigate();
+
   const [deletePressed, setDeletePressed] = useState(false);
   const [deleteEnabledCount, setDeleteEnabledCount] = useState(3);
   const [deleteConfirmMsg, setDeleteConfirmMsg] = useState("");
+  const [deleteComplete, setDeleteComplete] = useState(false);
   const deleteRef = useRef(null);
   const countRef = useRef(null);
   useEffect(() => {
@@ -44,10 +42,28 @@ const ConfirmDelete = (props) => {
 
   const handleDelete = () => {
     setDeletePressed(false);
-    setTimeout(() => {
-      setDeleteConfirmMsg("Your data has been removed");
-    }, 750);
+    ApiDelete(`/api/athletes/${user.athleteId}`, setDeleteComplete, true);
+    // setTimeout(() => {
+    //   setDeleteConfirmMsg("Your data has been removed");
+    // }, 750);
   };
+
+  useEffect(() => {
+    if (deleteComplete) {
+      dispatch({ type: "setUser", user: {} });
+
+      setDeleteConfirmMsg(
+        <div>
+          <div>Your data has been removed</div>
+          <div>You will be redirected to the home page.</div>
+        </div>
+      );
+      setTimeout(() => {
+        navigate("/beta");
+      }, 5000);
+    }
+  }, [deleteComplete, dispatch, navigate]);
+
   return (
     <MyBox>
       <Paper

@@ -1,24 +1,17 @@
-import React, { useState, useCallback, useRef } from "react";
-import * as ReactDOM from "react-dom";
+import React, { useState, useRef } from "react";
 import PropTypes from "prop-types";
 import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import {
-  useLocation,
-  useMatch,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+import { useParams } from "react-router-dom";
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import { addSegmentToMap } from "utils/mapUtils";
 
 import { segments as datas } from "mockData/data";
 
-import markerSvg from "assets/maki/marker.svg";
+// import markerSvg from "assets/maki/marker.svg";
 
 import redMarkerSvg from "assets/hackyColors/redMarker.svg";
 import greenMarkerSvg from "assets/hackyColors/greenMarker.svg";
-import { ReactComponent as ReactLogo } from "assets/maki/marker.svg";
 import segments from "mockData/segments";
 import keys from "config";
 
