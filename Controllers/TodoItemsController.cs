@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using TodoApi.Helpers;
 using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Services;
@@ -84,7 +85,7 @@ namespace TodoApi.Controllers
     [HttpGet()]
     public async Task<ActionResult<TodoItem>> TestThing([FromServices] IServiceScopeFactory serviceScopeFactory)
     {
-      //return Ok();
+      return Ok();
 
 
 
@@ -109,13 +110,10 @@ namespace TodoApi.Controllers
       int[] result = new int[] { fifteen, daily };
 
 
-      var users = _dbContext.StravaUsers.ToList();
+      StravaUtilities.KickOffInitialFetch(serviceScopeFactory, 23746938);
 
-      var pushes = _dbContext.StravaPushNotifications
-        .Where(p => p.AspectType == "create")
-        .ToList();
 
-      return Ok(pushes);
+      return Ok(23746938);
       //var activity = await _stravaService.GetActivity(6156488864, 1075670);
       //var result = await _stravaService.GetProfile(1075670, _dbContext);
       //var efforts = StravaUtilities.PullEffortsFromActivity(activity);

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TodoApi.Models.db;
@@ -11,9 +12,10 @@ using TodoApi.Models.db;
 namespace TodoApi.Migrations
 {
     [DbContext(typeof(sbmtContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20221029020820_ownerUpdate")]
+    partial class ownerUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -206,9 +208,6 @@ namespace TodoApi.Migrations
                         .HasColumnType("double precision");
 
                     b.HasKey("AthleteId");
-
-                    b.HasIndex("AthleteId")
-                        .IsUnique();
 
                     b.ToTable("StravaUsers");
                 });

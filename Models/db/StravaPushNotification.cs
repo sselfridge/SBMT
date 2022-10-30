@@ -31,11 +31,11 @@ namespace TodoApi.Models.db
     public long EventTime { get; set; }
     public long ObjectId { get; set; }
     public string? ObjectType { get; set; }
-    public long OwnerId { get; set; }
+    public int OwnerId { get; set; }
     public long SubscriptionId { get; set; }
     public string? Updates { get; set; }
 
-    public StravaPushNotification(string? aspectType, long eventTime, long objectId, string? objectType, long ownerId, long subscriptionId)
+    public StravaPushNotification(string? aspectType, long eventTime, long objectId, string? objectType, int ownerId, long subscriptionId)
     {
       AspectType = aspectType;
       EventTime = eventTime;
