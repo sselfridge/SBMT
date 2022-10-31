@@ -8,8 +8,7 @@ import { ReactComponent as StravaLogo } from "assets/stravaLogoTransparent.svg";
 
 import SegmentDetailMap from "./SegmentDetailMap";
 import { ApiGet } from "api/api";
-import { deepFreeze, metersToMiles } from "utils/helperFuncs";
-import { metersToFeet } from "utils/helperFuncs";
+import { deepFreeze, metersToMiles, metersToFeet } from "utils/helperFuncs";
 
 const MyBox = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,

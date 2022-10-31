@@ -28,7 +28,6 @@ export default class App extends Component {
 
     const scrollToArea = (e) => {
       const id = targetMap[e.target.id];
-      console.info("id: ", id);
       document
         .getElementById(id)
         .scrollIntoView({ behavior: "smooth", block: "start" });
@@ -62,7 +61,6 @@ export default class App extends Component {
 
     const scrollToArea = (e) => {
       const id = targetMap[e.target.id];
-      console.info("id: ", id);
       document
         .getElementById(id)
         .scrollIntoView({ behavior: "smooth", block: "start" });
@@ -72,7 +70,6 @@ export default class App extends Component {
       const textArea = document.getElementById("textArea");
       const value = textArea.value;
       const sendVal = encodeURIComponent(value);
-      console.info("sendVal: ", sendVal);
       fetch(
         `https://www.mapper.bike/api/sbmt/submission/BikssesBeersBaby3a58a6bc3f6a?segment=${sendVal}`,
         { method: "GET", mode: "cors" }

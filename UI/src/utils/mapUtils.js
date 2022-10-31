@@ -82,7 +82,6 @@ export const addSegmentToMap = (map, segment, markerArr) => {
 
 export const addSegmentPopupToMap = (map, segment) => {
   const { name, id } = segment;
-  console.info("name: ", name);
   const idString = `${id}`;
 
   const popup = new mapboxgl.Popup({
@@ -92,7 +91,6 @@ export const addSegmentPopupToMap = (map, segment) => {
 
   map.on("mouseenter", idString, (e) => {
     // Change the cursor style as a UI indicator.
-    console.info(idString);
     map.getCanvas().style.cursor = "pointer";
 
     // Ensure that if the map is zoomed out such that multiple

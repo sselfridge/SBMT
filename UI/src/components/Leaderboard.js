@@ -10,7 +10,7 @@ import { styled } from "@mui/material/styles";
 import Filters from "./Filters";
 
 import { ALL_COLUMNS, MOBILE_COLUMNS } from "utils/constants";
-import { formattedTime } from "utils/helperFuncs";
+import { formattedTime, metersToMiles, metersToFeet } from "utils/helperFuncs";
 import { ApiGet } from "api/api";
 
 const MyBox = styled(Box)(({ theme }) => {
@@ -28,6 +28,8 @@ const AvatarBox = styled(Box)(({ theme }) => ({
     marginRight: 8,
   },
 }));
+
+const LEADERBOARD_URL = "/api/leaderboard";
 
 const columns = [
   {
@@ -80,19 +82,21 @@ const columns = [
   },
   {
     flex: 25,
-    field: "distance",
+    field: "totalDistance",
     sortable: false,
     headerName: "Distance Total",
     headerAlign: "right",
     align: "right",
+    renderCell: ({ value }) => metersToMiles(value),
   },
   {
-    field: "elevation",
+    field: "totalElevation",
     sortable: false,
     headerName: "Elevation Total",
     headerAlign: "right",
     align: "right",
     flex: 25,
+    renderCell: ({ value }) => metersToFeet(value),
   },
   {
     field: "totalTimeDesktop",
@@ -122,8 +126,6 @@ const columns = [
   },
 ];
 
-const onApplyFilters = (filters) => {};
-
 const Leaderboard = (props) => {
   const theme = useTheme();
   const isMobile = !useMediaQuery(theme.breakpoints.up("sm"));
@@ -135,10 +137,22 @@ const Leaderboard = (props) => {
   }, [isMobile]);
 
   const [rows, setRows] = useState([]);
-  console.info("rows: ", rows);
 
   React.useEffect(() => {
-    ApiGet("/api/leaderboard", setRows);
+    ApiGet(LEADERBOARD_URL, setRows);
+  }, []);
+
+  const onApplyFilters = React.useCallback((filters) => {
+    let url = LEADERBOARD_URL + "?";
+    if (filters?.surface && filters.surface !== "ALL") {
+      url += `&surface=${filters.surface}`;
+    }
+
+    if (filters?.gender && filters.gender !== "ALL") {
+      url += `&gender=${filters.gender}`;
+    }
+
+    ApiGet(url, setRows);
   }, []);
 
   return (

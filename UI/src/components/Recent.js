@@ -125,13 +125,13 @@ const Recent = (props) => {
   }, []);
 
   return (
-    <MyBox sx={{ height: "80vh", width: "95vw", maxWidth: 1000 }}>
+    <MyBox sx={{ width: "95vw", maxWidth: 1000 }}>
       <Paper
         sx={{
           height: "100%",
           width: "100%",
           boxShadow: "none",
-          overflow: "scroll",
+          overflow: "auto",
         }}
       >
         <Typography variant="h4">Recent Efforts</Typography>
@@ -143,6 +143,7 @@ const Recent = (props) => {
           sx={{
             boxShadow: 2,
             border: 2,
+            height: "80vh",
             borderColor: "primary.light",
             "& .MuiDataGrid-cell:hover": {
               color: "primary.main",

@@ -1,5 +1,5 @@
-export const surfaceList = ["ALL", "Road", "Gravel"];
-export const genderList = ["ALL", "Male", "Female"];
+export const surfaceList = ["ALL", "road", "gravel"];
+export const genderList = ["ALL", "M", "F"];
 export const categoryList = [
   "ALL",
   "Pro",

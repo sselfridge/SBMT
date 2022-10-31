@@ -15,9 +15,13 @@ const LabeledSelect = (props) => {
   return (
     <FormControl variant="standard">
       <InputLabel>{label}</InputLabel>
-      <Select value={value} onChange={onChange}>
+      <Select
+        value={value}
+        onChange={onChange}
+        sx={{ textTransform: "capitalize" }}
+      >
         {list.map((item, idx) => (
-          <MenuItem value={item} key={idx}>
+          <MenuItem value={item} key={idx} sx={{ textTransform: "capitalize" }}>
             {item}
           </MenuItem>
         ))}

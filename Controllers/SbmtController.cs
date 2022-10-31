@@ -71,25 +71,52 @@ namespace TodoApi.Controllers
     public IActionResult GetLeaderboard()
     {
 
+      string surfaceFilter = HttpContext.Request.Query["surface"];
+      string genderFilter = HttpContext.Request.Query["gender"];
+
+      var allSegment = _dbContext.Segments.ToList();
+      if (surfaceFilter != null &&
+          (surfaceFilter == "gravel" || surfaceFilter == "road"))
+      {
+        allSegment = allSegment.FindAll(s => s.SurfaceType == surfaceFilter).ToList();
+      }
+
       var users = _dbContext.StravaUsers.ToList();
+
+      if (genderFilter != null && (genderFilter == "M" || genderFilter == "F"))
+      {
+        users = users.FindAll(u => u.Sex == genderFilter);
+      }
+
 
       var data = users.Join(_dbContext.Efforts,
         effort => effort.AthleteId,
         user => user.AthleteId,
-        (user, effort) => new
+        (user, effort) =>
         {
-          ElapsedTime = effort.ElapsedTime,
-          SegmentId = effort.SegmentId,
-          AthleteId = effort.AthleteId,
-
-
+          if (allSegment.Find(s => s.Id == effort.SegmentId) != null)
+          {
+            return new
+            {
+              ElapsedTime = effort.ElapsedTime,
+              SegmentId = effort.SegmentId,
+              AthleteId = effort.AthleteId,
+              Sex = user.Sex
+            };
+          }
+          return null;
         }).ToList();
+
+
+
+
 
       //Effortgroup contains key of athleteID and value of a dict with <segId, EffortTime>
       var effortGroup = new Dictionary<int, Dictionary<long, int>>();
 
       foreach (var entry in data)
       {
+        if (entry == null) continue;
         var segId = entry.SegmentId;
         var elapsedTime = entry.ElapsedTime;
         var athleteId = entry.AthleteId;
@@ -126,17 +153,33 @@ namespace TodoApi.Controllers
 
         int completed = efforts.Count();
         int totalTime = 0;
+        double totalDistance = 0;
+        double totalElevation = 0;
 
         foreach (KeyValuePair<long, int> effort in efforts)
         {
           totalTime = totalTime + effort.Value;
+          var seg = allSegment.Find(s => s.Id == effort.Key);
+          if (seg != null)
+          {
+            totalDistance = totalDistance + seg.Distance;
+            totalElevation = totalElevation + seg.TotalElevationGain;
+          }
         }
 
         var user = users.FirstOrDefault(u => u.AthleteId == athleteId);
         if (user != null)
         {
           var athleteName = $"{user.Firstname} {user.Lastname}";
-          var leaderboardEntry = new LeaderboardEntry(athleteId, athleteName, user.Avatar, completed, totalTime);
+          var leaderboardEntry =
+            new LeaderboardEntry(
+                                  athleteId,
+                                  athleteName,
+                                  user.Avatar,
+                                  completed,
+                                  totalTime,
+                                  totalDistance,
+                                  totalElevation);
 
           leaderboard.Add(leaderboardEntry);
         }
