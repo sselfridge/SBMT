@@ -71,7 +71,7 @@ namespace TodoApi.Controllers
 
       if (existingUser == null)
       {
-        var meinUser = await StravaUtilities.OnBoardNewUser(serviceScopeFactory, oAuthUser, _userService, _stravaService, _dbContext);
+        await StravaUtilities.OnBoardNewUser(serviceScopeFactory, oAuthUser, _stravaService, _dbContext);
         return Redirect($"{Configuration["BaseURL"]}/beta/thanks");
 
       }

@@ -3,8 +3,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Text.Json;
-using TodoApi.Helpers;
 using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Services;
@@ -110,10 +108,6 @@ namespace TodoApi.Controllers
       int[] result = new int[] { fifteen, daily };
 
 
-      StravaUtilities.KickOffInitialFetch(serviceScopeFactory, 23746938);
-
-
-      return Ok(23746938);
       //var activity = await _stravaService.GetActivity(6156488864, 1075670);
       //var result = await _stravaService.GetProfile(1075670, _dbContext);
       //var efforts = StravaUtilities.PullEffortsFromActivity(activity);
@@ -144,7 +138,6 @@ namespace TodoApi.Controllers
 
       //    context.Students.Add(newStudent);
       //    await context.SaveChangesAsync();
-      //    Console.WriteLine("WAIT Saved!");
       //  }
       //});
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
@@ -177,25 +170,7 @@ namespace TodoApi.Controllers
 
 
 
-    [HttpPost("strava")]
-    public async Task<IActionResult> pushPost()
-    {
-      return Ok();
-      Stream req = Request.Body;
-      var json = await new StreamReader(req).ReadToEndAsync();
-      StravaPushNotificationDTO? subRes = JsonSerializer.Deserialize<StravaPushNotificationDTO>(json);
-      if (subRes != null)
-      {
-        var pushNotification = new StravaPushNotification(subRes);
-        //var updates = JsonSerializer.Deserialize<JsonObject>(pushNotification.Updates);
-        _dbContext.StravaPushNotifications.Add(pushNotification);
-        _dbContext.SaveChanges();
-        return Ok("Created");
 
-      }
-      return Ok();
-
-    }
 
 
     // PUT: api/TodoItems/5

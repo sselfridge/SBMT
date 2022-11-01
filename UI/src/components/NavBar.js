@@ -37,12 +37,15 @@ export default function AppHeader() {
       // case "/beta/leaderboard":
       //   setCurrentTabIdx(0);
       //   break;
-      case "/beta/segments":
+      case "/beta/recent":
         setCurrentTabIdx(0);
-
         break;
-      case "/beta/athletes":
+      case "/beta/segments":
         setCurrentTabIdx(1);
+        break;
+
+      case "/beta/athletes":
+        setCurrentTabIdx(2);
         break;
 
       default:
@@ -77,7 +80,7 @@ export default function AppHeader() {
         </Toolbar>
         <Toolbar sx={{ justifyContent: "flex-end" }}>
           <Tabs value={currentTabIdx} aria-label="nav tabs example">
-            {/* <LinkTab label="recent" to="recent" /> */}
+            <LinkTab label="recent" to="recent" />
             {/* <LinkTab label="Leaderboard" to="leaderboard" /> */}
             <LinkTab label="Segments" to="segments" />
             <LinkTab label="Athletes" to="athletes" />

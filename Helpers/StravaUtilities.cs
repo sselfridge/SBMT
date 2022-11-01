@@ -45,7 +45,11 @@ namespace TodoApi.Helpers
       return allEfforts;
     }
 
-    public static async Task<StravaUser> OnBoardNewUser(IServiceScopeFactory serviceScopeFactory, OauthStravaUser oauth, IUserService userService, IStravaService stravaService, sbmtContext context)
+    public static async Task<StravaUser> OnBoardNewUser(
+                                                        IServiceScopeFactory serviceScopeFactory,
+                                                        OauthStravaUser oauth,
+                                                        IStravaService stravaService,
+                                                        sbmtContext context)
     {
       var profile = await stravaService.GetInitialProfile(oauth.AccessToken);
 
@@ -59,9 +63,6 @@ namespace TodoApi.Helpers
 
       KickOffInitialFetch(serviceScopeFactory, newUser.AthleteId);
 
-
-
-
       return newUser;
     }
 
@@ -71,7 +72,7 @@ namespace TodoApi.Helpers
     }
 
 
-    public static async Task<bool> KickOffInitialFetch(IServiceScopeFactory serviceScopeFactory, int athleteId)
+    public static void KickOffInitialFetch(IServiceScopeFactory serviceScopeFactory, int athleteId)
     {
 
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
@@ -115,29 +116,20 @@ namespace TodoApi.Helpers
 
             context.AddRange(newEfforts);
             context.SaveChanges();
-            Console.WriteLine("ALLO 70544507");
-            var newStudent = new Student();
-            newStudent.Name = "WAIT FOR ME!!!!";
-            newStudent.Age = activities.Count;
-            newStudent.Grade = 10;
-
-            context.Students.Add(newStudent);
             await context.SaveChangesAsync();
           }
-          catch (Exception e)
+          catch (Exception)
           {
-
-            throw;
+            Console.WriteLine($"Error fetching data for AthleteId:{athleteId}");
           }
 
 
-          Console.WriteLine("WAIT Saved!");
         }
       });
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
 
-      return true;
+      return;
     }
 
     public static async Task<bool> ParseNewActivity(IServiceScopeFactory serviceScopeFactory, int athleteId, long activityId)
