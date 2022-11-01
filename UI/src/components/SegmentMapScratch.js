@@ -21,11 +21,11 @@ let addedIds = [];
 
 let redMarker = new Image(15, 15);
 redMarker.src = redMarkerSvg;
-console.info("redMarker: ", redMarker);
+console.log("redMarker: ", redMarker);
 
 let greenMarker = new Image(15, 15);
 greenMarker.src = greenMarkerSvg;
-console.info("greenMarker: ", greenMarker);
+console.log("greenMarker: ", greenMarker);
 
 const MyBox = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -42,7 +42,7 @@ const Segments = (props) => {
   const [dataIdx, setDataIdx] = useState(0);
   const [zoom, setZoom] = useState(11);
   const params = useParams();
-  console.info("params: ", params);
+  console.log("params: ", params);
 
   const markerRef = useRef(null);
 
@@ -59,7 +59,7 @@ const Segments = (props) => {
       layers: [],
       sources: [],
     };
-    console.info("map.current.meinMarkers: ", map.current.meinMarkers);
+    console.log("map.current.meinMarkers: ", map.current.meinMarkers);
     map.current.addImage("redMarker", redMarker);
     map.current.addImage("greenMarker", greenMarker);
     map.current.on("load", () => {
@@ -115,9 +115,9 @@ const Segments = (props) => {
         addSegmentToMap(map.current, segment);
         addedIds.push(segment.id);
       } else {
-        console.info("CLEAR!!");
+        console.log("CLEAR!!");
         if (map.current.meinMarkers) {
-          console.info(map.current.meinMarkers);
+          console.log(map.current.meinMarkers);
           map.current.meinMarkers.sources.forEach((m) => m.remove());
         }
         addedIds.forEach((id) => {
@@ -198,8 +198,8 @@ const Segments = (props) => {
         obj[f.sourceLayer] = 1;
       }
     });
-    console.info(obj);
-    console.info(set);
+    console.log(obj);
+    console.log(set);
 
     // Create a DOM element for each marker.
     // const el = document.createElement("div");

@@ -53,3 +53,5 @@ export const ALL_COLUMNS = {
   totalTimeDesktop: true,
   totalTimeMobile: false,
 };
+
+export const MAX_INT = 2147483647;

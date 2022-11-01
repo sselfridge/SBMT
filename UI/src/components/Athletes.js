@@ -7,9 +7,10 @@ import {
   TableHead,
   TableCell,
   TableBody,
+  Avatar,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-// import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ApiGet } from "api/api";
 
 const MyBox = styled(Box)(({ theme }) => ({
@@ -40,16 +41,14 @@ const Athletes = (props) => {
           {athletes.map((user) => (
             <TableRow key={`${user.athleteId}`}>
               <TableCell>
-                <img
-                  style={{ height: 40, borderRadius: "50px" }}
-                  src={user.avatar}
-                  alt="avatar"
-                />
+                <Link to={`${user.athleteId}`}>
+                  <Avatar src={user.avatar} />
+                </Link>
               </TableCell>
               <TableCell>
-                {/* <Link to={`${user.athleteId}`}> */}
-                {user.firstname} {user.lastname}
-                {/* </Link> */}
+                <Link to={`${user.athleteId}`}>
+                  {user.firstname} {user.lastname}
+                </Link>
               </TableCell>
               <TableCell>{user.sex}</TableCell>
               <TableCell>{(user.weight * 2.2).toFixed(2)}</TableCell>

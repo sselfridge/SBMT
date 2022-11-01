@@ -8,6 +8,6 @@ const theme = createTheme({
   palette,
 });
 
-// console.info("theme: ", JSON.stringify(theme.palette));
-// console.info("theme: ", theme);
+// console.log("theme: ", JSON.stringify(theme.palette));
+// console.log("theme: ", theme);
 export default theme;

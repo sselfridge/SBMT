@@ -57,7 +57,7 @@ const UserSettings = (props) => {
           }}
         >
           {clubs.map((club, idx) => {
-            console.info("club: ", club);
+            console.log("club: ", club);
             const labelId = `checkbox-list-label-${idx}`;
 
             return (

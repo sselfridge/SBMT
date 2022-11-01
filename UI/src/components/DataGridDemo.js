@@ -254,7 +254,7 @@ export default function FullFeaturedDemo() {
     editable: true,
   });
 
-  console.info("data: ", data);
+  
   const [pagination, setPagination] = React.useState({
     pagination: false,
     autoPageSize: false,
