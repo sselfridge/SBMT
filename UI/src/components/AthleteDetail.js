@@ -7,10 +7,11 @@ import {
   TableHead,
   TableCell,
   TableBody,
+  Avatar,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useParams } from "react-router-dom";
-import { users } from "mockData/data";
+import { ApiGet } from "api/api";
 
 const MyBox = styled(Box)(({ theme }) => ({
   padding: 8,
@@ -20,7 +21,7 @@ const MyBox = styled(Box)(({ theme }) => ({
 }));
 const ProfileImg = styled("img")(({ theme }) => ({
   padding: 8,
-  borderRadius: 4,
+  borderRadius: 50,
   height: 40,
   width: 40,
   color: theme.palette.common.black,
@@ -31,14 +32,12 @@ const ProfileImg = styled("img")(({ theme }) => ({
 const Athletes = (props) => {
   const params = useParams();
   const [user, setUser] = useState(undefined);
+
+  const [userSegments, setUserSegments] = useState([]);
+
   React.useEffect(() => {
-    console.info(params.id);
-    const result = users.find((u) => {
-      return `${u.id}` === `${params.id}`;
-    });
-    if (result) {
-      setUser(result);
-    }
+    ApiGet(`/api/athletes/${params.id}`, setUser);
+    ApiGet(`/api/athletes/${params.id}/efforts`, setUserSegments);
   }, [params]);
 
   if (user) {
@@ -48,7 +47,7 @@ const Athletes = (props) => {
           <TableHead>
             <TableRow>
               <TableCell sx={{ display: "flex" }}>
-                <ProfileImg src={user.profile} alt="profile_img" />{" "}
+                <Avatar src={user?.avatar} />
                 <div>
                   {user.firstname} {user.lastname}
                 </div>
@@ -69,6 +68,11 @@ const Athletes = (props) => {
             </TableRow>
           </TableBody>
         </Table>
+        {userSegments.map((u) => (
+          <Box sx={{ fontSize: 12 }} key={u.segmentId}>
+            {u.segmentName} -- {u.bestTime}{" "}
+          </Box>
+        ))}
       </MyBox>
     );
   } else {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TodoApi.Models;
 using TodoApi.Models.db;
+using TodoApi.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,10 +12,12 @@ namespace TodoApi.Controllers
   public class SbmtController : ControllerBase
   {
     private sbmtContext _dbContext;
+    private IUserService _userService;
 
-    public SbmtController(sbmtContext dbContext)
+    public SbmtController(sbmtContext dbContext, IUserService userService)
     {
       _dbContext = dbContext;
+      _userService = userService;
     }
 
 
@@ -78,7 +81,7 @@ namespace TodoApi.Controllers
       if (surfaceFilter != null &&
           (surfaceFilter == "gravel" || surfaceFilter == "road"))
       {
-        allSegment = allSegment.FindAll(s => s.SurfaceType == surfaceFilter).ToList();
+        allSegment = allSegment.FindAll(s => s.SurfaceType == surfaceFilter);
       }
 
       var users = _dbContext.StravaUsers.ToList();
@@ -248,8 +251,8 @@ namespace TodoApi.Controllers
       return Ok(users);
     }
 
-    [HttpGet("athletes/id")]
-    public IActionResult GetAthleteId()
+    [HttpGet("athletes/current")]
+    public IActionResult GetCurrentAthlete()
     {
 
       var possibleNulUser = HttpContext.Items["User"];
@@ -257,10 +260,24 @@ namespace TodoApi.Controllers
       if (possibleNulUser == null)
       {
         return NotFound();
-
       }
 
       return Ok(possibleNulUser);
+    }
+
+    [HttpGet("athletes/{id}")]
+    public IActionResult GetAthlete(int id)
+    {
+      var user = _userService.GetById(id);
+      if (user == null) return NotFound();
+      return Ok(new StravaUserDTO(user));
+    }
+
+    [HttpGet("athletes/{id}/efforts")]
+    public IActionResult GetAthleteEfforts(int id)
+    {
+      var result = _userService.GetUserEfforts(id);
+      return Ok(result);
     }
 
     [HttpDelete("logout")]

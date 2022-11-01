@@ -11,6 +11,10 @@
     Task Add(StravaUser user);
     //Task<StravaUser> Update(StravaUser user);
     Task<StravaUser> Update(StravaUser user, sbmtContext? scopeContext = null);
+
+    public List<UserSegment>? GetUserEfforts(int athleteId);
+
+
   }
 
   public class UserService : IUserService
@@ -70,10 +74,7 @@
       await _dbContext.SaveChangesAsync();
     }
 
-    //public async Task<StravaUser> Update(StravaUser user)
-    //{
-    //  return await Update(user, _dbContext);
-    //}
+
     public async Task<StravaUser> Update(StravaUser user, sbmtContext? scopeContext)
     {
       sbmtContext dbContext = scopeContext ?? _dbContext;
@@ -82,5 +83,53 @@
       await dbContext.SaveChangesAsync();
       return user;
     }
+
+
+    public List<UserSegment>? GetUserEfforts(int athleteId)
+    {
+
+      var user = GetById(athleteId, null);
+      if (user == null) return null;
+
+
+      var userEfforts = _dbContext.Efforts
+       .Where(e => e.AthleteId == athleteId)
+       .Join(_dbContext.Segments,
+       effort => effort.SegmentId,
+       segment => segment.Id,
+       (effort, segment) => new
+       {
+         ElapsedTime = effort.ElapsedTime,
+         SegmentId = effort.SegmentId,
+         SegmentName = segment.Name,
+         AthleteId = effort.AthleteId,
+         CreatedAt = effort.CreatedAt,
+       }
+       ).ToList();
+
+
+
+
+      //var userSegments = new List<UserSegment>();
+
+      var userSegments = _dbContext.Segments.ToList()
+        .Select(s => new UserSegment(athleteId, s.Id, s.Name, s.SurfaceType)).ToList();
+
+      foreach (var i in userEfforts)
+      {
+        var userSegment = userSegments.Find(u => u.SegmentId == i.SegmentId);
+        var effort = new UserSegmentEffort(i.CreatedAt, i.ElapsedTime);
+        if (userSegment == null) throw new Exception("Invalid SegmentID");
+
+        userSegment.AddEffort(effort);
+
+      }
+
+
+
+
+      return userSegments;
+    }
+
   }
 }

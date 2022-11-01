@@ -64,7 +64,7 @@ const UserMenu = (props) => {
   useEffect(() => {
     if (fetchOnce.current) {
       fetchOnce.current = null;
-      ApiGet("/api/athletes/id", onSetUser, true, {});
+      ApiGet("/api/athletes/current", onSetUser, true, {});
     }
   }, [onSetUser]);
 
@@ -132,7 +132,7 @@ const UserMenu = (props) => {
             {user?.firstname} {user?.lastname}
           </Typography>
 
-          <Avatar sx={{ width: 32, height: 32 }} src={user?.avatar} />
+          <Avatar src={user?.avatar} />
         </IconButton>
       </UserMenuBox>
       <Menu

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 import { DataGrid } from "@mui/x-data-grid";
-import { Box, Paper, Typography, Tooltip } from "@mui/material";
+import { Box, Paper, Typography, Tooltip, Avatar } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import {
@@ -36,9 +36,7 @@ const columns = [
     width: 55,
     renderCell: ({ value: v }) => (
       <a href={`https://www.strava.com/athletes/${v.athleteId}`}>
-        <AvatarBox>
-          <img alt="avatar" src={v.avatar} />
-        </AvatarBox>
+        <Avatar src={v?.avatar} />
       </a>
     ),
     valueGetter: ({ row }) => ({
