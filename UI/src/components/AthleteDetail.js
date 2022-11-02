@@ -10,6 +10,7 @@ import {
   Avatar,
   Typography,
   Button,
+  useMediaQuery,
 } from "@mui/material";
 import AppContext from "AppContext";
 
@@ -24,15 +25,6 @@ const MyBox = styled(Box)(({ theme }) => ({
   borderRadius: 4,
   color: theme.palette.common.black,
   backgroundColor: theme.palette.background.paper,
-}));
-const ProfileImg = styled("img")(({ theme }) => ({
-  padding: 8,
-  borderRadius: 50,
-  height: 40,
-  width: 40,
-  color: theme.palette.common.black,
-  backgroundColor: theme.palette.background.paper,
-  fontSize: 3,
 }));
 
 const Athletes = (props) => {
@@ -54,20 +46,24 @@ const Athletes = (props) => {
     (s) => s.efforts.length > 0
   ).length;
 
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+
   React.useEffect(() => {
-    ApiGet(`/api/athletes/${params.id}`, setUser);
+    ApiGet(`/api/athletes/${params.id}`, setUser, true, null);
     ApiGet(`/api/athletes/${params.id}/efforts`, setUserSegments);
   }, [params]);
 
   React.useEffect(() => {
     if (
+      // isMobile === false &&
       meinUser?.athleteId &&
       user?.athleteId &&
-      meinUser.athleteId !== user.athleteId
+      meinUser.athleteId !== user.athleteId &&
+      !meinSegments
     ) {
       ApiGet(`/api/athletes/${meinUser.athleteId}/efforts`, setMeinSegments);
     }
-  }, [meinUser, user]);
+  }, [isMobile, meinSegments, meinUser, user]);
 
   const makeSegmentRow = (segment, index) => {
     let meinSegment = null;
@@ -81,30 +77,45 @@ const Athletes = (props) => {
     const negStyle = { color: "red" };
     const posStyle = { color: "green" };
     return (
-      <TableRow key={index}>
-        <TableCell>{segment.segmentName}</TableCell>
-        <TableCell>{segment.efforts.length}</TableCell>
-        <TableCell>
-          {segment.bestTime === MAX_INT
-            ? "--"
-            : formattedTime(segment.bestTime)}
-        </TableCell>
-        {meinSegment && (
-          <React.Fragment>
-            <TableCell>
-              {meinSegment.bestTime === MAX_INT
-                ? "--"
-                : formattedTime(meinSegment.bestTime)}
+      <React.Fragment>
+        {isMobile && (
+          <TableRow>
+            <TableCell colSpan={5}>
+              <Typography textAlign={"center"}>
+                {segment.segmentName}
+              </Typography>
             </TableCell>
-            <TableCell
-              sx={timeDiff > 0 ? negStyle : timeDiff < 0 ? posStyle : {}}
-            >
-              {timeDiff > 0 ? "-" : timeDiff < 0 ? "+" : ""}
-              {timeDiff ? formattedTime(timeDiff) : "--"}
-            </TableCell>
-          </React.Fragment>
+          </TableRow>
         )}
-      </TableRow>
+        <TableRow key={index}>
+          {!isMobile && (
+            <React.Fragment>
+              <TableCell>{segment.segmentName}</TableCell>
+            </React.Fragment>
+          )}
+          <TableCell>{segment.efforts.length}</TableCell>
+          <TableCell>
+            {segment.bestTime === MAX_INT
+              ? "--"
+              : formattedTime(segment.bestTime)}
+          </TableCell>
+          {meinSegment && (
+            <React.Fragment>
+              <TableCell>
+                {meinSegment.bestTime === MAX_INT
+                  ? "--"
+                  : formattedTime(meinSegment.bestTime)}
+              </TableCell>
+              <TableCell
+                sx={timeDiff > 0 ? negStyle : timeDiff < 0 ? posStyle : {}}
+              >
+                {timeDiff > 0 ? "-" : timeDiff < 0 ? "+" : ""}
+                {timeDiff ? formattedTime(timeDiff) : "--"}
+              </TableCell>
+            </React.Fragment>
+          )}
+        </TableRow>
+      </React.Fragment>
     );
   };
 
@@ -136,7 +147,7 @@ const Athletes = (props) => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Segment Name</TableCell>
+              {!isMobile && <TableCell>Segment Name</TableCell>}
               <TableCell>Runs</TableCell>
               <TableCell>
                 <Avatar src={user.avatar} />
@@ -179,8 +190,10 @@ const Athletes = (props) => {
         </Table>
       </MyBox>
     );
-  } else {
+  } else if (user === null) {
     return <MyBox>Athlete Not found {params.id}</MyBox>;
+  } else {
+    return null;
   }
 };
 

@@ -11,6 +11,7 @@ import {
   MenuItem,
   Typography,
   Link,
+  useMediaQuery,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -36,6 +37,8 @@ const UserMenu = (props) => {
   const { dispatch, user: contextUser } = props;
 
   const [anchorEl, setAnchorEl] = useState(null);
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -93,7 +96,6 @@ const UserMenu = (props) => {
               padding: "10px 20px",
               borderRadius: 2,
               textDecoration: "none",
-
               "&:hover": {
                 backgroundColor: "strava.light",
               },
@@ -105,7 +107,7 @@ const UserMenu = (props) => {
                 fontWeight: 800,
                 letterSpacing: "0.05em",
               }}
-              variant="h6"
+              variant={isMobile ? undefined : "h6"}
             >
               Register / Login
             </Typography>
@@ -114,7 +116,7 @@ const UserMenu = (props) => {
         <IconButton
           onClick={handleClick}
           size="small"
-          sx={{ ml: 2 }}
+          // sx={{ ml: 2 }}
           aria-controls={open ? "account-menu" : undefined}
           aria-haspopup="true"
           aria-expanded={open ? "true" : undefined}
@@ -122,7 +124,7 @@ const UserMenu = (props) => {
           <Typography
             sx={{
               color: "primary.contrastText",
-              mr: "15px",
+              mr: user?.athleteId ? "15px" : undefined,
               maxWidth: "160px",
               whiteSpace: "nowrap",
               overflow: "hidden",

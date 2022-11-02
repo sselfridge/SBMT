@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TodoApi.Helpers;
 using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Services;
@@ -261,6 +262,8 @@ namespace TodoApi.Controllers
       {
         return NotFound();
       }
+      StravaUser user = (StravaUser)possibleNulUser;
+      Syslog.Write(Syslog.Level.Info, "MyAwesomeApp", $"{user.Firstname} {user.Lastname} fetched current");
 
       return Ok(possibleNulUser);
     }
