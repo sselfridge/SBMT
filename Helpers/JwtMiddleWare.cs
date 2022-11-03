@@ -31,9 +31,8 @@
         attachUserToContext(context, userService, token);
 
 
-      Console.WriteLine($"sbmtLog:{context.Request.Path}");
+      Console.WriteLine($"sbmtLog({context.Request.Headers["x-forwarded-for"]}):{context.Request.Path}");
       Console.WriteLine($"userAgent({context.Request.Headers["User-Agent"]}):{context.Request.Path}");
-      Console.WriteLine($"forward({context.Request.Headers["x-forwarded-for"]})");
       await _next(context);
     }
 
