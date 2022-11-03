@@ -71,6 +71,8 @@ namespace TodoApi.Controllers
     }
 
     [HttpGet("leaderboard")]
+    [ResponseCache(Duration = 3600)]
+
     public IActionResult GetLeaderboard()
     {
 
@@ -212,7 +214,7 @@ namespace TodoApi.Controllers
 
 
     [HttpGet("segments")]
-    [ResponseCache(Duration = 3600)]
+    [ResponseCache(Duration = 36000)]
 
     public List<Segment> GetSegments()
     {
@@ -222,7 +224,7 @@ namespace TodoApi.Controllers
     }
 
     [HttpGet("segments/{id}")]
-    [ResponseCache(Duration = 3600)]
+    [ResponseCache(Duration = 36000)]
 
     public IActionResult GetSegment(long id)
     {
@@ -234,6 +236,8 @@ namespace TodoApi.Controllers
     }
 
     [HttpGet("athletes")]
+    [ResponseCache(Duration = 360)]
+
     public IActionResult GetAllAthletes()
     {
       var dbUsers = _dbContext.StravaUsers.ToList();
@@ -266,6 +270,8 @@ namespace TodoApi.Controllers
     }
 
     [HttpGet("athletes/{id}")]
+    [ResponseCache(Duration = 360)]
+
     public IActionResult GetAthlete(int id)
     {
       var user = _userService.GetById(id);
@@ -274,6 +280,8 @@ namespace TodoApi.Controllers
     }
 
     [HttpGet("athletes/{id}/efforts")]
+    [ResponseCache(Duration = 3600)]
+
     public IActionResult GetAthleteEfforts(int id)
     {
       var result = _userService.GetUserEfforts(id);

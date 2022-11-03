@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 import { DataGrid } from "@mui/x-data-grid";
 import { Box, Paper, Typography, Tooltip, Avatar } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { Link } from "react-router-dom";
+import { isBefore } from "date-fns";
 
 import {
   formattedDate,
@@ -35,9 +37,10 @@ const columns = [
     headerName: "",
     width: 55,
     renderCell: ({ value: v }) => (
-      <a href={`https://www.strava.com/athletes/${v.athleteId}`}>
+      <Link to={`/beta/athletes/${v.athleteId}`}>
+        {" "}
         <Avatar src={v?.avatar} />
-      </a>
+      </Link>
     ),
     valueGetter: ({ row }) => ({
       avatar: row.avatar,
@@ -52,9 +55,7 @@ const columns = [
     flex: 2,
     renderCell: ({ value }) => value,
     valueGetter: ({ row }) => (
-      <a href={`https://www.strava.com/athletes/${row.athleteId}`}>
-        {row.name}
-      </a>
+      <Link to={`/beta/athletes/${row.athleteId}`}>{row.name}</Link>
     ),
   },
   {
@@ -63,9 +64,7 @@ const columns = [
     headerName: "Segment",
     renderCell: ({ value }) => value,
     valueGetter: ({ row }) => (
-      <a href={`https://www.strava.com/segments/${row.segmentId}`}>
-        {row.segmentName}
-      </a>
+      <Link to={`/beta/segments/${row.segmentId}`}>{row.segmentName}</Link>
     ),
 
     flex: 4,
@@ -83,10 +82,40 @@ const columns = [
     valueGetter: ({ row }) => ({ id: row.activityId, time: row.elapsedTime }),
     flex: 1,
   },
+  // {
+  //   field: "created",
+  //   sortable: false,
+  //   headerName: "Date Uploaded",
+  //   flex: 1.5,
+  //   width: 75,
+  //   renderCell: ({ value }) => {
+  //     const title = (
+  //       <div>
+  //         <section>Effort Time:</section>
+  //         <section>{formattedDate(value.startDate)}</section>
+  //         <section>Uploaded at:</section>
+  //         <section>{formattedDate(value.created)}</section>
+  //       </div>
+  //     );
+
+  //     return (
+  //       <Tooltip arrow title={title}>
+  //         <a href={`https://www.strava.com/activities/${value.id}`}>
+  //           {formattedTimeAgo(value.created, { addSuffix: true })}
+  //         </a>
+  //       </Tooltip>
+  //     );
+  //   },
+  //   valueGetter: ({ row }) => ({
+  //     id: row.activityId,
+  //     startDate: row.startDate,
+  //     created: row.created,
+  //   }),
+  // },
   {
-    field: "created",
+    field: "startDate",
     sortable: false,
-    headerName: "Date Uploaded",
+    headerName: "Date Ridden",
     flex: 1.5,
     width: 75,
     renderCell: ({ value }) => {
@@ -102,7 +131,7 @@ const columns = [
       return (
         <Tooltip arrow title={title}>
           <a href={`https://www.strava.com/activities/${value.id}`}>
-            {formattedTimeAgo(value.created, { addSuffix: true })}
+            {formattedTimeAgo(value.startDate, { addSuffix: true })}
           </a>
         </Tooltip>
       );
@@ -122,6 +151,17 @@ const Recent = (props) => {
     ApiGet("/api/recentEfforts", setRecentEfforts);
   }, []);
 
+  const sortedEfforts = recentEfforts.slice().sort((a, b) => {
+    const aDate = new Date(a.startDate);
+    const bDate = new Date(b.startDate);
+
+    if (isBefore(aDate, bDate)) {
+      return 1;
+    } else {
+      return -1;
+    }
+  });
+
   return (
     <MyBox sx={{ width: "95vw", maxWidth: 1000 }}>
       <Paper
@@ -134,7 +174,7 @@ const Recent = (props) => {
       >
         <Typography variant="h4">Recent Efforts</Typography>
         <DataGrid
-          rows={recentEfforts}
+          rows={sortedEfforts}
           columns={columns}
           disableColumnMenu
           hideFooter={true}
