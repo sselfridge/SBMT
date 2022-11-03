@@ -30,7 +30,7 @@
       if (token != null)
         attachUserToContext(context, userService, token);
 
-      Console.WriteLine($"sbmtLog:{context.Request.Path}");
+      Console.WriteLine($"sbmtLog({context.Connection.RemoteIpAddress}):{context.Request.Path}");
       await _next(context);
     }
 
