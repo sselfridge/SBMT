@@ -96,9 +96,11 @@ export default class App extends Component {
 
     const onTextChange = () => {
       const ta = document.getElementById("textArea");
-      const value = `${ta.value}`;
-      const count = value.length;
-      document.getElementById("textCount").innerText = 1000 - count;
+      if (ta) {
+        const value = `${ta.value}`;
+        const count = value.length;
+        document.getElementById("textCount").innerText = 1000 - count;
+      }
     };
 
     setInterval(onTextChange, 450);
@@ -116,7 +118,7 @@ export default class App extends Component {
             </h2>
           </div>
           <Link to="/beta">
-            <div style={{ backgroundColor: "#FC4C02" }} class="button">
+            <div style={{ backgroundColor: "#FC4C02" }} className="button">
               Join the beta!
             </div>
           </Link>

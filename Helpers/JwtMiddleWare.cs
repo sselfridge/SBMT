@@ -30,6 +30,7 @@
       if (token != null)
         attachUserToContext(context, userService, token);
 
+      Console.WriteLine($"sbmtLog:{context.Request.Path}");
       await _next(context);
     }
 
@@ -59,9 +60,10 @@
         if (user != null)
         {
           context.Items["User"] = user;
+          Console.WriteLine($"sbmtLog:user:{user.AthleteId} - {user.Firstname} {user.Lastname}");
+
         }
 
-        Console.WriteLine("check cont");
       }
       catch
       {
