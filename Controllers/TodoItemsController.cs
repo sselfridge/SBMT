@@ -83,7 +83,7 @@ namespace TodoApi.Controllers
     [HttpGet()]
     public async Task<ActionResult<TodoItem>> TestThing([FromServices] IServiceScopeFactory serviceScopeFactory)
     {
-      //return Ok("loaded");
+      return Ok("loaded");
 
 
       var effortList = _userService.GetUserEfforts(19340963);
