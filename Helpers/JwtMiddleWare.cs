@@ -30,7 +30,10 @@
       if (token != null)
         attachUserToContext(context, userService, token);
 
-      Console.WriteLine($"sbmtLog({context.Connection.RemoteIpAddress}):{context.Request.Path}");
+
+      Console.WriteLine($"sbmtLog:{context.Request.Path}");
+      Console.WriteLine($"userAgent({context.Request.Headers["User-Agent"]}):{context.Request.Path}");
+      Console.WriteLine($"forward({context.Request.Headers["x-forwarded-for"]})");
       await _next(context);
     }
 
