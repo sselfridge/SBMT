@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 // import PropTypes from "prop-types";
 import { Paper, Typography, Box, Grid } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -9,6 +9,9 @@ import { ReactComponent as StravaLogo } from "assets/stravaLogoTransparent.svg";
 import SegmentDetailMap from "./SegmentDetailMap";
 import { ApiGet } from "api/api";
 import { deepFreeze, metersToMiles, metersToFeet } from "utils/helperFuncs";
+import AppContext from "AppContext";
+import { MAX_INT } from "utils/constants";
+import { formattedTime } from "utils/helperFuncs";
 
 const MyBox = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -18,15 +21,30 @@ const MyBox = styled(Paper)(({ theme }) => ({
 
 const Segments = () => {
   const { id } = useParams();
+  const segmentId = Number(id);
   const [segment, setSegment] = useState({});
+  const [userEfforts, setUserEfforts] = useState(null);
+
+  const { user } = useContext(AppContext);
+  console.info("user: ", user);
 
   useEffect(() => {
-    const segId = Number(id);
-    // setSegment(CACHE);
-    if (!Number.isNaN(segId)) {
-      ApiGet(`/api/segments/${segId}`, setSegment);
+    if (!Number.isNaN(segmentId)) {
+      ApiGet(`/api/segments/${segmentId}`, setSegment);
     }
-  }, [id]);
+  }, [segmentId]);
+  useEffect(() => {
+    if (user && !userEfforts) {
+      ApiGet(`/api/athletes/${user.athleteId}/efforts`, setUserEfforts);
+    }
+  }, [user, userEfforts]);
+
+  console.info("userEfforts: ", userEfforts);
+  const segmentEfforts = !userEfforts
+    ? []
+    : userEfforts.filter(
+        (e) => e.segmentId === Number(segmentId) && e.bestTime !== MAX_INT
+      );
 
   const details = deepFreeze([
     {
@@ -89,6 +107,13 @@ const Segments = () => {
               </React.Fragment>
             ))}
           </Box>
+          {/* <Typography>Your efforts:</Typography>
+          {segmentEfforts.map((e) => (
+            <div>
+              {console.info(e.bestTime)}
+              {e.segmentName} - {formattedTime(e.bestTime)}
+            </div>
+          ))} */}
         </Grid>
         <Grid item xs={12} md={6} sx={{ height: "80vh" }}>
           <SegmentDetailMap segment={segment} />

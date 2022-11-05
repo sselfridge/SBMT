@@ -8,41 +8,32 @@ namespace TodoApi.Helpers
   {
 
 
-    public static Effort[] PullEffortsFromActivity(ActivitySummaryResponse activity)
+    public static List<Effort> PullEffortsFromActivity(ActivitySummaryResponse activity, sbmtContext context)
     {
-      var roadSegmentIds = new long[] {658277,1290381,637362,881465,631703,3596686,29015105,
-                                   618305,1313,1315,5106261,12039079,813814,751029,};
 
-      var gravelSegmentIds = new long[] {746977,
-                                        647251,
-                                        2622235,
-                                        641588 };
 
-      var segmentIds = new long[roadSegmentIds.Length + gravelSegmentIds.Length];
-      Array.Copy(roadSegmentIds, segmentIds, roadSegmentIds.Length);
-      Array.Copy(gravelSegmentIds, 0, segmentIds, roadSegmentIds.Length, gravelSegmentIds.Length);
+      var segmentIds = context.Segments.Select(s => s.Id).ToList();
+
+      if (segmentIds == null) return new List<Effort>();
 
       return PullEffortsFromActivity(activity, segmentIds);
     }
 
-    public static Effort[] PullEffortsFromActivity(ActivitySummaryResponse activity, long[] segmentIds)
+    public static List<Effort> PullEffortsFromActivity(ActivitySummaryResponse activity, List<long> segmentIds)
     {
-      var efforts = activity.SegmentEfforts;
+      var effortArray = activity.SegmentEfforts;
 
-      if (efforts == null) return new Effort[0];
-
-
-      var segmentEfforts = Array.FindAll(efforts, e =>
-      {
-        var result = Array.Find(segmentIds, s => s == e.Segment.Id);
-        return result != 0;
-      });
+      if (effortArray == null) return new List<Effort>();
+      var efforts = effortArray.ToList();
 
 
-      Effort[] allEfforts = Array.ConvertAll(segmentEfforts, new Converter<ActivitySumResEffort, Effort>(ConvertSummeryEffort));
+      var segmentEfforts = efforts
+        .FindAll(e => segmentIds.Contains(e.Segment.Id))
+        .ConvertAll(e => new Effort(e));
 
+      if (segmentEfforts == null) return new List<Effort>();
 
-      return allEfforts;
+      return segmentEfforts;
     }
 
     public static async Task<StravaUser> OnBoardNewUser(
@@ -95,7 +86,7 @@ namespace TodoApi.Helpers
             var result = await Task.WhenAll(tasks);
             foreach (var fullActivity in result)
             {
-              var efforts = PullEffortsFromActivity(fullActivity);
+              var efforts = PullEffortsFromActivity(fullActivity, context);
               if (efforts != null)
               {
                 allEfforts.AddRange(efforts);
@@ -148,7 +139,7 @@ namespace TodoApi.Helpers
 
            var activity = await stravaService.GetActivity(activityId, athleteId, context);
 
-           var segmentIds = context.Segments.ToList().Select(s => s.Id).ToArray();
+           var segmentIds = context.Segments.Select(s => s.Id).ToList();
 
            var efforts = PullEffortsFromActivity(activity, segmentIds);
 

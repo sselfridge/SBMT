@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using TodoApi.Helpers;
 using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Services;
@@ -83,15 +84,41 @@ namespace TodoApi.Controllers
     [HttpGet()]
     public async Task<ActionResult<TodoItem>> TestThing([FromServices] IServiceScopeFactory serviceScopeFactory)
     {
-      return Ok("loaded");
+      if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Development")
+      {
+        return Ok("loadked");
+      }
+
+      return Ok("loadked");
 
 
-      var effortList = _userService.GetUserEfforts(19340963);
+      var glennAnnieEfforts = new List<Effort>();
+      var count = 0;
+
+      var list = new List<long>() { 27851109 };
 
 
-      return Ok(effortList);
+      var users = _dbContext.StravaUsers.ToList();
+
+      foreach (var user in users)
+      {
+        if (user == null || user.AthleteId == 1) continue;
+
+        var actvities = await _stravaService.GetActivities(user.AthleteId, _dbContext);
+
+        foreach (var act in actvities)
+        {
+          var client = await _stravaService.GetClientForUser(user.AthleteId);
+          var fullActivity = await _stravaService.GetActivity(act.Id, client);
+          var efforts = StravaUtilities.PullEffortsFromActivity(fullActivity, list);
+          if (efforts != null) { glennAnnieEfforts.AddRange(efforts); }
+          count++;
+        }
 
 
+      }
+      Console.WriteLine($"Total Activites:{count}");
+      return Ok(glennAnnieEfforts);
 
       var newStudent = new Student();
       newStudent.Name = "Bobby";

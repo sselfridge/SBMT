@@ -279,12 +279,12 @@ namespace TodoApi.Controllers
       return Ok(new StravaUserDTO(user));
     }
 
-    [HttpGet("athletes/{id}/efforts")]
+    [HttpGet("athletes/{athleteId}/efforts")]
     [ResponseCache(Duration = 3600)]
 
-    public IActionResult GetAthleteEfforts(int id)
+    public IActionResult GetAthleteEfforts(int athleteId)
     {
-      var result = _userService.GetUserEfforts(id);
+      var result = _userService.GetUserEfforts(athleteId);
       return Ok(result);
     }
 

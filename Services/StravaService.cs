@@ -109,9 +109,19 @@ namespace TodoApi.Services
         $"&page=1" +
         $"&per_page=200";
 
-      var arrayResult = await GetStrava<ActivitySummaryResponse[]>(client, url);
+      try
+      {
+        var arrayResult = await GetStrava<ActivitySummaryResponse[]>(client, url);
 
-      return arrayResult.ToList();
+        return arrayResult.ToList();
+
+      }
+      catch (Exception)
+      {
+        Console.WriteLine($"Strava Get Failed for athlete:{athleteId}");
+
+        return new List<ActivitySummaryResponse>();
+      }
 
     }
 
@@ -166,7 +176,7 @@ namespace TodoApi.Services
 
       TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
       int secondsSinceEpoch = (int)t.TotalSeconds;
-      return true;
+      //return true;
       return secondsSinceEpoch + 10 > expiresAt;
 
     }
@@ -279,7 +289,7 @@ namespace TodoApi.Services
       }
       else
       {
-
+        Console.WriteLine($"Strava Get Failed for url:{url}");
         throw new Exception("Strava Get Failed");
 
       }
