@@ -223,12 +223,59 @@ namespace TodoApi.Controllers
       return segments;
     }
 
-    [HttpGet("segments/{id}")]
+    [HttpGet("segments/{segmentId}/leaderboard")]
+    [ResponseCache(Duration = 36000)]
+    public IActionResult GetSegmentLeaderboard(long segmentId)
+    {
+
+      var efforts = _dbContext.Efforts.Where(e => e.SegmentId == segmentId).ToList();
+
+      var bestEfforts = new Dictionary<int, Effort>();
+
+      foreach (var effort in efforts)
+      {
+        var athleteId = effort.AthleteId;
+        if (bestEfforts.ContainsKey(athleteId))
+        {
+          var bestTime = bestEfforts[athleteId].ElapsedTime;
+          if (bestTime > effort.ElapsedTime)
+          {
+            bestEfforts[athleteId] = effort;
+          }
+        }
+        else
+        {
+          bestEfforts[athleteId] = effort;
+        }
+      }
+
+      var bestList = bestEfforts.OrderBy(x => x.Value.ElapsedTime).ToList();
+
+
+      var data = bestList.Join(_dbContext.StravaUsers,
+      effort => effort.Key,
+      user => user.AthleteId,
+      (effort, user) => new
+      {
+        elapsedTime = effort.Value.ElapsedTime,
+        activityId = effort.Value.ActivityId,
+        athleteId = user.AthleteId,
+        firstname = user.Firstname,
+        lastname = user.Lastname,
+        avatar = user.Avatar,
+
+      }).ToList().OrderBy(x => x.elapsedTime);
+
+
+      return Ok(data);
+    }
+
+    [HttpGet("segments/{segmentId}")]
     [ResponseCache(Duration = 36000)]
 
-    public IActionResult GetSegment(long id)
+    public IActionResult GetSegment(long segmentId)
     {
-      var segment = _dbContext.Segments.FirstOrDefault(s => s.Id == id);
+      var segment = _dbContext.Segments.FirstOrDefault(s => s.Id == segmentId);
 
       if (segment == null) return NotFound();
 

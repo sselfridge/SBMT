@@ -105,7 +105,7 @@ namespace TodoApi.Services
 
       var url = $"/athlete/activities" +
         $"?before=1965868100" +
-         $"&after=1666358514" +
+         $"&after=1666342800" +
         $"&page=1" +
         $"&per_page=200";
 

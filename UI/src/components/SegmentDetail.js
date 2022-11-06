@@ -1,16 +1,27 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 // import PropTypes from "prop-types";
-import { Paper, Typography, Box, Grid } from "@mui/material";
+import {
+  Paper,
+  Typography,
+  Box,
+  Grid,
+  Table,
+  TableHead,
+  TableCell,
+  TableRow,
+  TableBody,
+  Avatar,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import { ReactComponent as StravaLogo } from "assets/stravaLogoTransparent.svg";
 
 import SegmentDetailMap from "./SegmentDetailMap";
 import { ApiGet } from "api/api";
 import { deepFreeze, metersToMiles, metersToFeet } from "utils/helperFuncs";
-import AppContext from "AppContext";
-import { MAX_INT } from "utils/constants";
+// import AppContext from "AppContext";
+// import { MAX_INT } from "utils/constants";
 import { formattedTime } from "utils/helperFuncs";
 
 const MyBox = styled(Paper)(({ theme }) => ({
@@ -21,30 +32,38 @@ const MyBox = styled(Paper)(({ theme }) => ({
 
 const Segments = () => {
   const { id } = useParams();
-  const segmentId = Number(id);
+  let segmentId = Number(id);
+  segmentId = Number.isNaN(segmentId) ? null : segmentId;
   const [segment, setSegment] = useState({});
-  const [userEfforts, setUserEfforts] = useState(null);
+  // const [userEfforts, setUserEfforts] = useState(null);
+  const [segmentLeaderboard, setSegmentLeaderboard] = useState(null);
 
-  const { user } = useContext(AppContext);
-  console.info("user: ", user);
+  // const { user } = useContext(AppContext);
 
   useEffect(() => {
-    if (!Number.isNaN(segmentId)) {
+    if (segmentId) {
       ApiGet(`/api/segments/${segmentId}`, setSegment);
     }
   }, [segmentId]);
-  useEffect(() => {
-    if (user && !userEfforts) {
-      ApiGet(`/api/athletes/${user.athleteId}/efforts`, setUserEfforts);
-    }
-  }, [user, userEfforts]);
+  // useEffect(() => {
+  //   if (user && !userEfforts) {
+  //     ApiGet(`/api/athletes/${user.athleteId}/efforts`, setUserEfforts);
+  //   }
+  // }, [user, userEfforts]);
 
-  console.info("userEfforts: ", userEfforts);
-  const segmentEfforts = !userEfforts
-    ? []
-    : userEfforts.filter(
-        (e) => e.segmentId === Number(segmentId) && e.bestTime !== MAX_INT
-      );
+  useEffect(() => {
+    if (!segmentLeaderboard && segmentId) {
+      ApiGet(`/api/segments/${segmentId}/leaderboard`, setSegmentLeaderboard);
+    }
+  }, [segmentId, segmentLeaderboard]);
+
+  console.info("segmentLeaderboard: ", segmentLeaderboard);
+
+  // const segmentEfforts = !userEfforts
+  //   ? []
+  //   : userEfforts.filter(
+  //       (e) => e.segmentId === Number(segmentId) && e.bestTime !== MAX_INT
+  //     );
 
   const details = deepFreeze([
     {
@@ -96,8 +115,8 @@ const Segments = () => {
               justifyContent: "center",
             }}
           >
-            {details.map((d) => (
-              <React.Fragment>
+            {details.map((d, i) => (
+              <React.Fragment key={i}>
                 <Box>
                   <Typography textAlign={"right"}>{d.label}</Typography>
                 </Box>
@@ -114,19 +133,48 @@ const Segments = () => {
               {e.segmentName} - {formattedTime(e.bestTime)}
             </div>
           ))} */}
+          {!!segmentLeaderboard?.length && (
+            <React.Fragment>
+              <Typography>Segment Leaderboard</Typography>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Rank</TableCell>
+                    <TableCell>Athlete</TableCell>
+                    <TableCell>Time</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {segmentLeaderboard.map((e, i) => {
+                    return (
+                      <TableRow key={i}>
+                        <TableCell>{i + 1}</TableCell>
+                        <TableCell>
+                          <Link
+                            style={{ display: "flex", alignItems: "center" }}
+                            to={`/beta/athletes/${e.athleteId}`}
+                          >
+                            <Avatar src={e.avatar} sx={{ mr: 1 }} />
+                            {e.firstname} {e.lastname}
+                          </Link>
+                        </TableCell>
+                        <TableCell>
+                          <a
+                            href={`http://www.strava.com/activities/${e.activityId}`}
+                          >
+                            {formattedTime(e.elapsedTime)}
+                          </a>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </React.Fragment>
+          )}
         </Grid>
         <Grid item xs={12} md={6} sx={{ height: "80vh" }}>
           <SegmentDetailMap segment={segment} />
-
-          {/* //TODO sort out behavior when mapGrid can't be reached?? */}
-          {/* <Box
-                      sx={{
-                        background:
-                          "repeating-linear-gradient(  45deg,  #606dbc,  #606dbc 10px,  #465298 10px,  #465298 20px)",
-                        height: "100%",
-                        width: "100%",
-                      }}
-                    />{" "} */}
         </Grid>
       </Grid>
     </MyBox>

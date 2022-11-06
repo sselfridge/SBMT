@@ -5,13 +5,14 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import { DataGrid } from "@mui/x-data-grid";
-import { Box, Paper, Typography } from "@mui/material";
+import { Avatar, Box, List, ListItem, Paper, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Filters from "./Filters";
 
 import { ALL_COLUMNS, MOBILE_COLUMNS } from "utils/constants";
 import { formattedTime, metersToMiles, metersToFeet } from "utils/helperFuncs";
 import { ApiGet } from "api/api";
+import { Link } from "react-router-dom";
 
 const MyBox = styled(Box)(({ theme }) => {
   return {
@@ -46,7 +47,7 @@ const columns = [
 
     renderCell: (props) => {
       const { row } = props;
-      const { athleteName, avatar } = row;
+      const { athleteName, avatar, id } = row;
       return (
         <Box
           sx={{
@@ -55,10 +56,13 @@ const columns = [
             justifyContent: "space-evenly",
           }}
         >
-          <AvatarBox>
-            <img alt="avatar" src={avatar} />
-          </AvatarBox>
-          <Typography>{athleteName}</Typography>
+          <Link
+            style={{ display: "flex", alignItems: "center" }}
+            to={`/beta/athletes/${id}`}
+          >
+            <Avatar src={avatar} />
+            <Typography>{athleteName}</Typography>
+          </Link>
         </Box>
       );
     },
@@ -156,7 +160,14 @@ const Leaderboard = (props) => {
   }, []);
 
   return (
-    <MyBox sx={{ height: "95vh", width: "95vw", maxWidth: 1000 }}>
+    <MyBox
+      sx={{
+        height: "90vh",
+        width: "95vw",
+        maxWidth: 1000,
+        overflow: "auto",
+      }}
+    >
       <Paper
         sx={{
           height: "100%",
@@ -185,8 +196,28 @@ const Leaderboard = (props) => {
             "& .MuiDataGrid-cell:hover": {
               color: "primary.main",
             },
+            // maxHeight: "85vh",
           }}
         />
+        <Paper sx={{ fontSize: ".8em" }}>
+          <Typography variant="h4">Current Leaderboard Rules</Typography>
+          <ul>
+            <li>
+              All efforts on{" "}
+              <Link style={{ margin: "4px 0" }} to="/beta/segments">
+                {" "}
+                SBMT segments{" "}
+              </Link>{" "}
+              from Friday Oct 21st to onward
+            </li>
+            <li>
+              Ranking is based first on total segments completed and second on
+              lowest total time.
+            </li>
+            <li>Each segment only counts once, lowest total time is taken</li>
+            <li>Sub-leaderboards based on segment surface + gender</li>
+          </ul>
+        </Paper>
       </Paper>
     </MyBox>
   );
