@@ -34,12 +34,12 @@ export default function AppHeader() {
 
   useEffect(() => {
     switch (pathname) {
-      // case "/beta/leaderboard":
-      //   setCurrentTabIdx(0);
-      //   break;
-      case "/beta/recent":
+      case "/beta/leaderboard":
         setCurrentTabIdx(0);
         break;
+      // case "/beta/recent":
+      //   setCurrentTabIdx(1);
+      //   break;
       case "/beta/segments":
         setCurrentTabIdx(1);
         break;
@@ -80,8 +80,8 @@ export default function AppHeader() {
         </Toolbar>
         <Toolbar sx={{ justifyContent: "flex-end" }}>
           <Tabs value={currentTabIdx} aria-label="nav tabs example">
-            <LinkTab label="recent" to="recent" />
-            {/* <LinkTab label="Leaderboard" to="leaderboard" /> */}
+            {/* <LinkTab label="recent" to="recent" /> */}
+            <LinkTab label="Leaderboard" to="leaderboard" />
             <LinkTab label="Segments" to="segments" />
             <LinkTab label="Athletes" to="athletes" />
           </Tabs>

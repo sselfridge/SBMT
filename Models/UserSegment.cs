@@ -6,6 +6,7 @@
     public long SegmentId { get; set; }
     public string SegmentName { get; set; }
     public int BestTime { get; set; }
+    public long BestActId { get; set; }
     public string SurfaceType { get; set; }
 
     public List<UserSegmentEffort> Efforts { get; set; }
@@ -17,12 +18,17 @@
       SegmentName = segmentName;
       Efforts = new List<UserSegmentEffort>();
       BestTime = int.MaxValue;
+      BestActId = 0;
       SurfaceType = surfaceType;
     }
 
     public void AddEffort(UserSegmentEffort effort)
     {
-      if (effort.ElapsedTime < BestTime) BestTime = effort.ElapsedTime;
+      if (effort.ElapsedTime < BestTime)
+      {
+        BestActId = effort.ActivityId;
+        BestTime = effort.ElapsedTime;
+      }
       Efforts.Add(effort);
     }
 
@@ -32,11 +38,13 @@
   {
     public DateTime CreatedAt { get; set; }
     public int ElapsedTime { get; set; }
+    public long ActivityId { get; set; }
 
-    public UserSegmentEffort(DateTime createdAt, int elapsedTime)
+    public UserSegmentEffort(DateTime createdAt, int elapsedTime, long activityId)
     {
       CreatedAt = createdAt;
       ElapsedTime = elapsedTime;
+      ActivityId = activityId;
     }
   }
 

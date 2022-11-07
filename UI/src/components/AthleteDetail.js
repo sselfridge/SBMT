@@ -20,6 +20,8 @@ import { ApiGet } from "api/api";
 import { formattedTime } from "utils/helperFuncs";
 import { MAX_INT } from "utils/constants";
 
+import { ReactComponent as StravaLogo } from "assets/stravaLogoTransparent.svg";
+
 const MyBox = styled(Box)(({ theme }) => ({
   padding: 8,
   borderRadius: 4,
@@ -66,16 +68,21 @@ const Athletes = (props) => {
   }, [isMobile, meinSegments, meinUser, user]);
 
   const makeSegmentRow = (segment, index) => {
-    let meinSegment = null;
     let timeDiff = 0;
+    let bestActLink = "";
+    let meinSegment = null;
+    let meinActLink = null;
     if (meinSegments) {
       meinSegment = meinSegments.find((s) => s.segmentId === segment.segmentId);
       if (meinSegment.bestTime !== MAX_INT && segment.bestTime !== MAX_INT) {
         timeDiff = meinSegment.bestTime - segment.bestTime;
       }
+      console.info("meinSegment: ", meinSegment);
+      meinActLink = meinSegment.bestActId;
     }
     const negStyle = { color: "red" };
     const posStyle = { color: "green" };
+
     return (
       <React.Fragment>
         {isMobile && (
@@ -95,16 +102,26 @@ const Athletes = (props) => {
           )}
           <TableCell>{segment.efforts.length}</TableCell>
           <TableCell>
-            {segment.bestTime === MAX_INT
-              ? "--"
-              : formattedTime(segment.bestTime)}
+            {segment.bestTime === MAX_INT ? (
+              "--"
+            ) : (
+              <a
+                href={`https://www.strava.com/activities/${segment.bestActId}`}
+              >
+                {formattedTime(segment.bestTime)}
+              </a>
+            )}
           </TableCell>
           {meinSegment && (
             <React.Fragment>
               <TableCell>
-                {meinSegment.bestTime === MAX_INT
-                  ? "--"
-                  : formattedTime(meinSegment.bestTime)}
+                {meinSegment.bestTime === MAX_INT ? (
+                  "--"
+                ) : (
+                  <a href={`https://www.strava.com/activities/${meinActLink}`}>
+                    {formattedTime(meinSegment.bestTime)}
+                  </a>
+                )}
               </TableCell>
               <TableCell
                 sx={timeDiff > 0 ? negStyle : timeDiff < 0 ? posStyle : {}}
@@ -140,6 +157,21 @@ const Athletes = (props) => {
           <Avatar src={user.avatar} sx={{ height: "100px", width: "100px" }} />
           {user.firstname} {user.lastname}{" "}
         </Typography>
+        <Box
+          sx={{ display: "flex", justifyContent: "right", fontSize: "0.8em" }}
+        >
+          <a
+            style={{
+              display: "flex",
+              alignItems: "center",
+              whiteSpace: "nowrap",
+            }}
+            href={`https://www.strava.com/athletes/${user.athleteId}`}
+          >
+            <StravaLogo style={{ height: 40 }} />
+            View on Strava
+          </a>
+        </Box>
         <Typography variant="h4">Segment Efforts</Typography>
         <Button onClick={() => setHideIncomplete((v) => !v)}>
           {hideIncomplete ? "Show" : "Hide"} uncompleted segments
@@ -150,7 +182,7 @@ const Athletes = (props) => {
               {!isMobile && <TableCell>Segment Name</TableCell>}
               <TableCell>Runs</TableCell>
               <TableCell>
-                <Avatar src={user.avatar} />
+                <Avatar src={user.avatar} alt={user.firstname} />
               </TableCell>
               {meinSegments && (
                 <React.Fragment>

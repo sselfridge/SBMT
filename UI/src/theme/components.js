@@ -29,6 +29,13 @@ const components = {
       align: "center",
     },
   },
+  MuiAvatar: {
+    styleOverrides: {
+      root: {
+        marginRight: 8,
+      },
+    },
+  },
   MuiCssBaseline: {
     styleOverrides: (themeParam) => `
     .App-Body {

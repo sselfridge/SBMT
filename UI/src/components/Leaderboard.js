@@ -5,7 +5,7 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import { DataGrid } from "@mui/x-data-grid";
-import { Avatar, Box, List, ListItem, Paper, Typography } from "@mui/material";
+import { Avatar, Box, Paper, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Filters from "./Filters";
 
@@ -21,14 +21,6 @@ const MyBox = styled(Box)(({ theme }) => {
     borderRadius: 4,
   };
 });
-
-const AvatarBox = styled(Box)(({ theme }) => ({
-  "& img": {
-    borderRadius: 25,
-    width: 35,
-    marginRight: 8,
-  },
-}));
 
 const LEADERBOARD_URL = "/api/leaderboard";
 
@@ -49,21 +41,18 @@ const columns = [
       const { row } = props;
       const { athleteName, avatar, id } = row;
       return (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-evenly",
-          }}
-        >
-          <Link
-            style={{ display: "flex", alignItems: "center" }}
-            to={`/beta/athletes/${id}`}
+        <Link to={`/beta/athletes/${id}`}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-evenly",
+            }}
           >
             <Avatar src={avatar} />
             <Typography>{athleteName}</Typography>
-          </Link>
-        </Box>
+          </Box>
+        </Link>
       );
     },
   },

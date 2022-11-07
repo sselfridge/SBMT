@@ -104,6 +104,7 @@
          SegmentName = segment.Name,
          AthleteId = effort.AthleteId,
          CreatedAt = effort.CreatedAt,
+         ActivityId = effort.ActivityId,
        }
        ).ToList();
 
@@ -118,7 +119,7 @@
       foreach (var i in userEfforts)
       {
         var userSegment = userSegments.Find(u => u.SegmentId == i.SegmentId);
-        var effort = new UserSegmentEffort(i.CreatedAt, i.ElapsedTime);
+        var effort = new UserSegmentEffort(i.CreatedAt, i.ElapsedTime, i.ActivityId);
         if (userSegment == null) throw new Exception("Invalid SegmentID");
 
         userSegment.AddEffort(effort);
