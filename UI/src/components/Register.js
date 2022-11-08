@@ -139,7 +139,8 @@ const Register = (props) => {
 };
 
 Register.propTypes = {
-  prop: PropTypes.string,
+  user: PropTypes.object,
+  dispatch: PropTypes.func.isRequired,
 };
 
 export default Register;

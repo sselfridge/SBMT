@@ -26,10 +26,11 @@ const LEADERBOARD_URL = "/api/leaderboard";
 
 const columns = [
   {
-    flex: 8,
+    minWidth: 30,
+    flex: 4,
     field: "rank",
     sortable: false,
-    headerName: "Rank",
+    headerName: "",
   },
   {
     flex: 35,
@@ -50,7 +51,7 @@ const columns = [
             }}
           >
             <Avatar src={avatar} />
-            <Typography>{athleteName}</Typography>
+            <>{athleteName}</>
           </Box>
         </Link>
       );
@@ -65,7 +66,8 @@ const columns = [
     valueGetter: ({ row }) => row.completed,
   },
   {
-    flex: 5,
+    flex: 4,
+    minWidth: 30,
     field: "completedMobile",
     sortable: false,
     headerName: "#",
@@ -110,7 +112,7 @@ const columns = [
     headerName: "Total Time",
     align: "right",
     headerAlign: "right",
-    flex: 30,
+    flex: 18,
     valueGetter: ({ row }) => row.totalTime,
     renderCell: (props) => {
       const { value } = props;
@@ -119,11 +121,12 @@ const columns = [
   },
 ];
 
-const Leaderboard = (props) => {
+const Leaderboard = () => {
   const theme = useTheme();
   const isMobile = !useMediaQuery(theme.breakpoints.up("sm"));
 
   const [columnVisible, setColumnVisible] = React.useState(ALL_COLUMNS);
+
   React.useEffect(() => {
     const newColumns = isMobile ? MOBILE_COLUMNS : ALL_COLUMNS;
     setColumnVisible(newColumns);

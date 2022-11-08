@@ -17,7 +17,7 @@ const Beta = ({ user }) => {
   const navigate = useNavigate();
   React.useEffect(() => {
     if (user !== null && !_.isEmpty(user)) {
-      navigate("segments");
+      navigate("recent");
     }
   }, [navigate, user]);
 

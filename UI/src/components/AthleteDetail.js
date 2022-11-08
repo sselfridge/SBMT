@@ -1,5 +1,4 @@
 import React, { useState, useContext } from "react";
-import PropTypes from "prop-types";
 import {
   Box,
   Table,
@@ -29,7 +28,7 @@ const MyBox = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
 }));
 
-const Athletes = (props) => {
+const Athletes = () => {
   const params = useParams();
   const [user, setUser] = useState(undefined);
   const [userSegments, setUserSegments] = useState([]);
@@ -51,8 +50,8 @@ const Athletes = (props) => {
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
   React.useEffect(() => {
-    ApiGet(`/api/athletes/${params.id}`, setUser, true, null);
-    ApiGet(`/api/athletes/${params.id}/efforts`, setUserSegments);
+    ApiGet(`/api/athletes/${params.athleteId}`, setUser, true, null);
+    ApiGet(`/api/athletes/${params.athleteId}/efforts`, setUserSegments);
   }, [params]);
 
   React.useEffect(() => {
@@ -69,7 +68,6 @@ const Athletes = (props) => {
 
   const makeSegmentRow = (segment, index) => {
     let timeDiff = 0;
-    let bestActLink = "";
     let meinSegment = null;
     let meinActLink = null;
     if (meinSegments) {
@@ -77,7 +75,6 @@ const Athletes = (props) => {
       if (meinSegment.bestTime !== MAX_INT && segment.bestTime !== MAX_INT) {
         timeDiff = meinSegment.bestTime - segment.bestTime;
       }
-      console.info("meinSegment: ", meinSegment);
       meinActLink = meinSegment.bestActId;
     }
     const negStyle = { color: "red" };
@@ -152,6 +149,10 @@ const Athletes = (props) => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            borderBottomColor: "secondary.main",
+            borderBottomWidth: 4,
+            borderBottomStyle: "solid",
+            mb: 1,
           }}
         >
           <Avatar src={user.avatar} sx={{ height: "100px", width: "100px" }} />
@@ -223,14 +224,10 @@ const Athletes = (props) => {
       </MyBox>
     );
   } else if (user === null) {
-    return <MyBox>Athlete Not found {params.id}</MyBox>;
+    return <MyBox>Athlete Not found {params.athleteId}</MyBox>;
   } else {
     return null;
   }
-};
-
-Athletes.propTypes = {
-  prop: PropTypes.string,
 };
 
 export default Athletes;

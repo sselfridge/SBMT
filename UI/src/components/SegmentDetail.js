@@ -31,8 +31,8 @@ const MyBox = styled(Paper)(({ theme }) => ({
 }));
 
 const Segments = () => {
-  const { id } = useParams();
-  let segmentId = Number(id);
+  let { segmentId } = useParams();
+  segmentId = Number(segmentId);
   segmentId = Number.isNaN(segmentId) ? null : segmentId;
   const [segment, setSegment] = useState({});
   // const [userEfforts, setUserEfforts] = useState(null);
@@ -56,8 +56,6 @@ const Segments = () => {
       ApiGet(`/api/segments/${segmentId}/leaderboard`, setSegmentLeaderboard);
     }
   }, [segmentId, segmentLeaderboard]);
-
-  console.info("segmentLeaderboard: ", segmentLeaderboard);
 
   // const segmentEfforts = !userEfforts
   //   ? []
@@ -102,7 +100,16 @@ const Segments = () => {
 
   return (
     <MyBox>
-      <Typography variant="h4" sx={{ fontSize: "min(50px,4vw)" }}>
+      <Typography
+        variant="h4"
+        sx={{
+          fontSize: "min(50px,4vw)",
+          borderBottomColor: "secondary.main",
+          borderBottomWidth: 4,
+          borderBottomStyle: "solid",
+          mb: 1,
+        }}
+      >
         {segment.name}
       </Typography>
       <Grid container spacing={1} sx={{ width: "90vw" }}>
@@ -129,13 +136,14 @@ const Segments = () => {
           {/* <Typography>Your efforts:</Typography>
           {segmentEfforts.map((e) => (
             <div>
-              {console.info(e.bestTime)}
               {e.segmentName} - {formattedTime(e.bestTime)}
             </div>
           ))} */}
           {!!segmentLeaderboard?.length && (
             <React.Fragment>
-              <Typography>Segment Leaderboard</Typography>
+              <Typography sx={{ mt: 3 }} variant="h5">
+                Segment Leaderboard
+              </Typography>
               <Table>
                 <TableHead>
                   <TableRow>

@@ -45,9 +45,9 @@ const MeinRoutes = (props) => {
           <Route path="recent" element={<Recent />} />
           <Route path="leaderboard" element={<Leaderboard />} />
           <Route path="segments" element={<Segments />} />
-          <Route path="segments/:id" element={<SegmentDetails />} />
+          <Route path="segments/:segmentId" element={<SegmentDetails />} />
           <Route path="athletes" element={<Athletes />} />
-          <Route path="athletes/:id" element={<AthleteDetails />} />
+          <Route path="athletes/:athleteId" element={<AthleteDetails />} />
           <Route path="demo" element={<FullFeaturedDemo />} />
           <Route path="settings" element={<UserSettings />} />
           <Route path="help" element={<HelpContact />} />

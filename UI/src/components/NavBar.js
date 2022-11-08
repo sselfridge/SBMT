@@ -1,26 +1,18 @@
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { AppBar, Box, Toolbar, Typography, Tab, Tabs } from "@mui/material";
+import {
+  AppBar,
+  Box,
+  Toolbar,
+  Typography,
+  Tab,
+  Tabs,
+  useMediaQuery,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import UserMenu from "./UserMenu";
 import { Link, useLocation } from "react-router-dom";
 import AppContext from "AppContext";
-function LinkTab(props) {
-  return (
-    <Tab
-      component={Link}
-      sx={{
-        color: "white",
-        "&.Mui-selected": { color: "white", fontWeight: 800 },
-      }}
-      {...props}
-    />
-  );
-}
-LinkTab.propTypes = {
-  to: PropTypes.string.isRequired,
-};
 
 const TitleLink = styled(Link)(({ theme }) => ({
   color: theme.palette.primary.contrastText,
@@ -34,18 +26,11 @@ export default function AppHeader() {
 
   useEffect(() => {
     switch (pathname) {
-      case "/beta/leaderboard":
-        setCurrentTabIdx(0);
-        break;
-      // case "/beta/recent":
-      //   setCurrentTabIdx(1);
-      //   break;
       case "/beta/segments":
-        setCurrentTabIdx(1);
-        break;
-
+      case "/beta/leaderboard":
+      case "/beta/recent":
       case "/beta/athletes":
-        setCurrentTabIdx(2);
+        setCurrentTabIdx(pathname);
         break;
 
       default:
@@ -53,6 +38,12 @@ export default function AppHeader() {
         break;
     }
   }, [pathname]);
+
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+
+  const tabs = ["leaderboard", "segments", "athletes"];
+
+  if (!isMobile) tabs.unshift("recent");
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -70,7 +61,7 @@ export default function AppHeader() {
               letterSpacing: -4,
             }}
           >
-            <TitleLink to="segments">
+            <TitleLink to="recent">
               <span className="sbmt">SBMT</span>
             </TitleLink>
             <AppContext.Consumer>
@@ -80,10 +71,18 @@ export default function AppHeader() {
         </Toolbar>
         <Toolbar sx={{ justifyContent: "flex-end" }}>
           <Tabs value={currentTabIdx} aria-label="nav tabs example">
-            {/* <LinkTab label="recent" to="recent" /> */}
-            <LinkTab label="Leaderboard" to="leaderboard" />
-            <LinkTab label="Segments" to="segments" />
-            <LinkTab label="Athletes" to="athletes" />
+            {tabs.map((tabName) => (
+              <Tab
+                value={`/beta/${tabName}`}
+                label={tabName}
+                to={tabName}
+                component={Link}
+                sx={{
+                  color: "white",
+                  "&.Mui-selected": { color: "white", fontWeight: 800 },
+                }}
+              />
+            ))}
           </Tabs>
         </Toolbar>
       </AppBar>

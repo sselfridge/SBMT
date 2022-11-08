@@ -215,7 +215,8 @@ const UserMenu = (props) => {
 };
 
 UserMenu.propTypes = {
-  prop: PropTypes.string,
+  user: PropTypes.object,
+  dispatch: PropTypes.func.isRequired,
 };
 
 export default UserMenu;

@@ -38,8 +38,8 @@ export const MOBILE_COLUMNS = {
   athlete: true,
   completedDesktop: false,
   completedMobile: true,
-  distance: false,
-  elevation: false,
+  totalDistance: false,
+  totalElevation: false,
   totalTimeDesktop: false,
   totalTimeMobile: true,
 };
@@ -48,8 +48,8 @@ export const ALL_COLUMNS = {
   athlete: true,
   completedDesktop: true,
   completedMobile: false,
-  distance: true,
-  elevation: true,
+  totalDistance: true,
+  totalElevation: true,
   totalTimeDesktop: true,
   totalTimeMobile: false,
 };

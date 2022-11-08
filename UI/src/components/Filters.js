@@ -19,11 +19,12 @@ import {
   surfaceList,
 } from "utils/constants";
 
-const Filters = ({ onApplyFilters }) => {
-  const [surface, setSurface] = useState(surfaceList[0]);
+const Filters = (props) => {
+  const { onApplyFilters } = props;
+  const [surface, setSurface] = useState(surfaceList[1]);
   const [gender, setGender] = useState(genderList[0]);
-  const [age, setAge] = useState(ageList[0]);
-  const [category, setCategory] = useState(categoryList[0]);
+  const [age] = useState(ageList[0]);
+  const [category] = useState(categoryList[0]);
 
   useEffect(() => {
     onApplyFilters({ surface, gender, age, category });
@@ -80,7 +81,7 @@ const Filters = ({ onApplyFilters }) => {
 };
 
 Filters.propTypes = {
-  prop: PropTypes.string,
+  onApplyFilters: PropTypes.func.isRequired,
 };
 
 const FiltersWithMobile = (props) => {

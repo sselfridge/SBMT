@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 
 import { DataGrid } from "@mui/x-data-grid";
 import { Box, Paper, Typography, Tooltip, Avatar } from "@mui/material";
@@ -22,13 +21,6 @@ const MyBox = styled(Box)(({ theme }) => {
     borderRadius: 4,
   };
 });
-
-const AvatarBox = styled(Box)(({ theme }) => ({
-  "& img": {
-    borderRadius: 25,
-    width: 35,
-  },
-}));
 
 const columns = [
   {
@@ -144,7 +136,7 @@ const columns = [
   },
 ];
 
-const Recent = (props) => {
+const Recent = () => {
   const [recentEfforts, setRecentEfforts] = useState([]);
 
   React.useEffect(() => {
@@ -191,10 +183,6 @@ const Recent = (props) => {
       </Paper>
     </MyBox>
   );
-};
-
-Recent.propTypes = {
-  prop: PropTypes.string,
 };
 
 export default Recent;
