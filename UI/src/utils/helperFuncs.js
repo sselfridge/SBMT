@@ -38,5 +38,5 @@ export const metersToMiles = (meters) => {
 };
 
 export const metersToFeet = (meters) => {
-  return (meters * 3.28084).toFixed(2);
+  return (meters * 3.28084).toFixed(0);
 };

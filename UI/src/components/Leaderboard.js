@@ -82,7 +82,7 @@ const columns = [
     headerName: "Distance Total",
     headerAlign: "right",
     align: "right",
-    renderCell: ({ value }) => metersToMiles(value),
+    renderCell: ({ value }) => `${metersToMiles(value)} mi`,
   },
   {
     field: "totalElevation",
@@ -91,7 +91,7 @@ const columns = [
     headerAlign: "right",
     align: "right",
     flex: 25,
-    renderCell: ({ value }) => metersToFeet(value),
+    renderCell: ({ value }) => `${metersToFeet(value)} ft`,
   },
   {
     field: "totalTimeDesktop",
