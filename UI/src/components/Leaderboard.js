@@ -134,10 +134,6 @@ const Leaderboard = () => {
 
   const [rows, setRows] = useState([]);
 
-  React.useEffect(() => {
-    ApiGet(LEADERBOARD_URL, setRows);
-  }, []);
-
   const onApplyFilters = React.useCallback((filters) => {
     let url = LEADERBOARD_URL + "?";
     if (filters?.surface && filters.surface !== "ALL") {
