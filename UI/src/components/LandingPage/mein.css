@@ -76,8 +76,8 @@ th.landingTh, td.landingTd {
 
 #logo {
     margin-top: 5%;
-    width: 55%;
-    height: 55%;
+    width: 50vh;
+    height: 50vh;
 }
 
 #contributeBtn2 {
@@ -116,6 +116,7 @@ h1.h1Landing {
 h2.h2Landing {
     font-size: 35px;
     text-align: center;
+    margin-top: 0;
 }
 
 article.articleLanding {
@@ -219,7 +220,7 @@ h1.h1Landing .sbmt {
 
     #logo {
         margin-top: 5%;
-        width: 80%;
+        width: 95vw;
         /* height: 70%; */
     }
 }

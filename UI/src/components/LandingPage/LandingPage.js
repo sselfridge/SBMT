@@ -14,8 +14,8 @@ import { ReactComponent as Insta } from "./assets/insta.svg";
 import { ReactComponent as StravaLogo } from "./assets/stravaLogo.svg";
 
 const targetMap = {
-  infoBtn: "infoSection",
-  contributeBtn: "contributeSection",
+  // infoBtn: "infoSection",
+  // contributeBtn: "contributeSection",
   contributeBtn2: "contributeSection",
   letMeKnow: "contributeSection",
 };
@@ -118,16 +118,22 @@ export default class App extends Component {
             </h2>
           </div>
           <Link to="/beta">
-            <div style={{ backgroundColor: "#FC4C02" }} className="button">
-              Join the beta!
+            <div
+              style={{
+                backgroundColor: "#FC4C02",
+                textDecoration: "underline",
+              }}
+              className="button"
+            >
+              Now in Beta testing! Join here.
             </div>
           </Link>
-          <div id="infoBtn" className="button">
+          {/* <div id="infoBtn" className="button">
             Info
           </div>
           <div id="contributeBtn" className="button">
             Feedback / Contribute
-          </div>
+          </div> */}
           <a
             className="landingLink"
             href="https://www.instagram.com/sbmtchallenge/"

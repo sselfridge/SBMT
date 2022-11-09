@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import {
-  Avatar,
+  // Avatar,
   Box,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Checkbox,
-  IconButton,
+  // List,
+  // ListItem,
+  // ListItemButton,
+  // ListItemIcon,
+  // ListItemText,
+  // Checkbox,
+  // IconButton,
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import clubs from "mockData/clubs";
+// import clubs from "mockData/clubs";
 import ConfirmDelete from "./ConfirmDelete";
 
 const MyBox = styled(Box)(({ theme }) => ({
@@ -27,26 +27,35 @@ const MyBox = styled(Box)(({ theme }) => ({
 }));
 
 const UserSettings = (props) => {
-  const [checked, setChecked] = useState([0]);
+  // const [checked, setChecked] = useState([0]);
 
-  const handleToggle = (value) => () => {
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
+  // const handleToggle = (value) => () => {
+  //   const currentIndex = checked.indexOf(value);
+  //   const newChecked = [...checked];
 
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
+  //   if (currentIndex === -1) {
+  //     newChecked.push(value);
+  //   } else {
+  //     newChecked.splice(currentIndex, 1);
+  //   }
 
-    setChecked(newChecked);
-  };
+  //   setChecked(newChecked);
+  // };
 
   return (
     <MyBox>
-      <Typography variant="h3">User Settings</Typography>
+      <Typography
+        variant="h3"
+        sx={{
+          borderBottomColor: "secondary.main",
+          borderBottomWidth: 4,
+          borderBottomStyle: "solid",
+        }}
+      >
+        User Settings
+      </Typography>
 
-      <section>
+      {/* <section>
         <List
           sx={{
             color: "text.primary",
@@ -104,7 +113,7 @@ const UserSettings = (props) => {
             );
           })}
         </List>
-      </section>
+      </section> */}
       <section>
         <ConfirmDelete />
       </section>

@@ -14,7 +14,7 @@ import {
 import AppContext from "AppContext";
 
 import { styled } from "@mui/material/styles";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { ApiGet } from "api/api";
 import { formattedTime } from "utils/helperFuncs";
 import { MAX_INT } from "utils/constants";
@@ -86,7 +86,7 @@ const Athletes = () => {
           <TableRow>
             <TableCell colSpan={5}>
               <Typography textAlign={"center"}>
-                {segment.segmentName}
+                <Link to={segment.segmentId}>{segment.segmentName}</Link>
               </Typography>
             </TableCell>
           </TableRow>
@@ -94,7 +94,12 @@ const Athletes = () => {
         <TableRow key={index}>
           {!isMobile && (
             <React.Fragment>
-              <TableCell>{segment.segmentName}</TableCell>
+              <TableCell>
+                {" "}
+                <Link to={`/beta/segments/${segment.segmentId}`}>
+                  {segment.segmentName}
+                </Link>
+              </TableCell>
             </React.Fragment>
           )}
           <TableCell>{segment.efforts.length}</TableCell>

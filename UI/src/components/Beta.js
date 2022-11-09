@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import _ from "lodash";
 import { Box, Typography, Link } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -35,9 +36,8 @@ const Beta = ({ user }) => {
     >
       <Typography variant="h3">Open for early beta!</Typography>
       <Typography variant="h5">
-        At first just getting user reg running smoothly. Next up will be getting
-        segment efforts from rides when they're uploaded then next will pulling
-        all efforts from recent ride history.
+        Now with working Leaderboard!! <br />
+        Segments are taken from Oct 21st (day before the SB100) onwards.
       </Typography>
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         <Link
@@ -65,17 +65,16 @@ const Beta = ({ user }) => {
         </Link>
       </Box>
 
-      <Typography variant="h5">
-        Data Use: No data is sold and the minimal amount is stored. The 'delete
-        my data' button doesn't work yet, but if you want out send me an email
-        or instagram DM and I'll delete you.
+      <Typography variant="h6">
+        Data Use Notification: No data is sold and the minimal amount is stored.
+        You can remove yourself at anytime in User Profile -{">"} Settings
       </Typography>
     </MyPaper>
   );
 };
 
 Beta.propTypes = {
-  //   prop: PropTypes.string,
+  user: PropTypes.object,
 };
 
 export default Beta;

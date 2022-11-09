@@ -72,6 +72,7 @@ const ConfirmDelete = (props) => {
           flexDirection: "column",
           alignItems: "center",
           paddingBottom: "24px",
+          minWidth: "500px",
         }}
       >
         <Typography variant="h4" textAlign={"center"}>
