@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import {
   Box,
   Table,
@@ -19,7 +18,7 @@ const MyBox = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
 }));
 
-const Athletes = (props) => {
+const Athletes = () => {
   const [athletes, setAthletes] = useState([]);
 
   useEffect(() => {
@@ -34,7 +33,7 @@ const Athletes = (props) => {
             <TableCell />
             <TableCell>Name</TableCell>
             <TableCell>Sex</TableCell>
-            <TableCell>Weight</TableCell>
+            {/* <TableCell>Weight</TableCell> */}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -51,17 +50,13 @@ const Athletes = (props) => {
                 </Link>
               </TableCell>
               <TableCell>{user.sex}</TableCell>
-              <TableCell>{(user.weight * 2.2).toFixed(2)}</TableCell>
+              {/* <TableCell>{(user.weight * 2.2).toFixed(2)}</TableCell> */}
             </TableRow>
           ))}
         </TableBody>
       </Table>
     </MyBox>
   );
-};
-
-Athletes.propTypes = {
-  prop: PropTypes.string,
 };
 
 export default Athletes;
