@@ -160,10 +160,12 @@ namespace TodoApi.Services
       string accessToken;
       if (isExpired)
       {
+        Console.WriteLine($"sbmtLog:Access Token Expired for user:{user.AthleteId} Refreshing");
         accessToken = await refreshTokenAsync(user);
       }
       else
       {
+        Console.WriteLine($"sbmtLog:Access Token still good for user {user.AthleteId}");
         accessToken = user.AccessToken;
       }
 
@@ -219,7 +221,8 @@ namespace TodoApi.Services
 
         return user.AccessToken;
       }
-
+      Console.WriteLine($"sbmtLog:ERROR Token Refresh Failed with status code");
+      Console.WriteLine($"sbmtLog:ERROR status code:{response.StatusCode.ToString()}");
       throw new Exception(response.StatusCode.ToString());
 
     }
@@ -274,6 +277,7 @@ namespace TodoApi.Services
 
           if (result == null)
           {
+            Console.WriteLine($"sbmtLog:ERROR GetStrava Invalid Response url:{url}");
             throw new Exception("Invalid response");
           }
 
@@ -282,6 +286,7 @@ namespace TodoApi.Services
         }
         catch (Exception e)
         {
+          Console.WriteLine($"sbmtLog:ERROR GetStrava Bad Model url:{url}");
           throw new Exception("Bad model!");
         }
 

@@ -30,8 +30,14 @@
       if (token != null)
         attachUserToContext(context, userService, token);
 
+      var date = DateTime.UtcNow;
 
-      Console.WriteLine($"sbmtLog({context.Request.Headers["x-forwarded-for"]}):{context.Request.Path}");
+      TimeZoneInfo tzi = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+
+      // it's a simple one-liner
+      DateTime pacific = TimeZoneInfo.ConvertTimeFromUtc(date, tzi);
+
+      Console.WriteLine($"sbmtLog({context.Request.Headers["x-forwarded-for"]}):{context.Request.Path}\t\t{pacific.ToString()}");
       Console.WriteLine($"userAgent({context.Request.Headers["User-Agent"]}):{context.Request.Path}");
       await _next(context);
     }

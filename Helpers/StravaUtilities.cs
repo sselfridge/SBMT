@@ -132,12 +132,20 @@ namespace TodoApi.Helpers
        {
          try
          {
-
+           Console.WriteLine($"sbmtLog: parsing new activity {activityId} for athlete:{athleteId}");
 
            var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
            var stravaService = scope.ServiceProvider.GetRequiredService<IStravaService>();
 
-           var activity = await stravaService.GetActivity(activityId, athleteId, context);
+           ActivitySummaryResponse activity = await stravaService.GetActivity(activityId, athleteId, context);
+
+           if (activity.SegmentEfforts == null)
+           {
+             Console.WriteLine($"sbmtLog:  activity {activityId} has no efforts on it (efforts were null)");
+             return;
+           }
+
+           Console.WriteLine($"sbmtLog:  activity {activityId} has {activity.SegmentEfforts.Length} efforts on it");
 
            var segmentIds = context.Segments.Select(s => s.Id).ToList();
 
@@ -162,6 +170,8 @@ namespace TodoApi.Helpers
          }
          catch (Exception e)
          {
+           Console.WriteLine($"sbmtLog:ERROR parsing activity {activityId} for athlete:{athleteId} ");
+           Console.WriteLine(e.Message);
 
          }
 

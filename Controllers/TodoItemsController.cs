@@ -100,23 +100,23 @@ namespace TodoApi.Controllers
 
       var users = _dbContext.StravaUsers.ToList();
 
-      foreach (var user in users)
-      {
-        if (user == null || user.AthleteId == 1) continue;
+      //foreach (var user in users)
+      //{
+      //  if (user == null || user.AthleteId == 1) continue;
 
-        var actvities = await _stravaService.GetActivities(user.AthleteId, _dbContext);
+      //  var actvities = await _stravaService.GetActivities(user.AthleteId, _dbContext);
 
-        foreach (var act in actvities)
-        {
-          var client = await _stravaService.GetClientForUser(user.AthleteId);
-          var fullActivity = await _stravaService.GetActivity(act.Id, client);
-          var efforts = StravaUtilities.PullEffortsFromActivity(fullActivity, list);
-          if (efforts != null) { glennAnnieEfforts.AddRange(efforts); }
-          count++;
-        }
+      //  foreach (var act in actvities)
+      //  {
+      //    var client = await _stravaService.GetClientForUser(user.AthleteId);
+      //    var fullActivity = await _stravaService.GetActivity(act.Id, client);
+      //    var efforts = StravaUtilities.PullEffortsFromActivity(fullActivity, list);
+      //    if (efforts != null) { glennAnnieEfforts.AddRange(efforts); }
+      //    count++;
+      //  }
 
 
-      }
+      //}
       Console.WriteLine($"Total Activites:{count}");
       return Ok(glennAnnieEfforts);
 
