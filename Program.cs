@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using TodoApi.Helpers;
 using TodoApi.Models;
@@ -42,6 +43,29 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IStravaService, StravaService>();
 builder.Services.AddSingleton(new StravaLimitService());
+
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<IAuthorizationHandler, AdminAuthHandler>();
+
+builder.Services.AddAuthorization(options =>
+{
+  options.AddPolicy("UserIsAdminPolicy", policy =>
+    {
+      //policy.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
+      policy.Requirements.Add(new UserIsAdminRequirement());
+    }
+  );
+});
+
+/*
+ so getting closer...it works properly, just doesn't fail gracefully..
+Think I might need to set up an authentication handler?
+but very close...
+ 
+ 
+ */
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -55,9 +79,9 @@ if (app.Environment.IsDevelopment())
 
 //app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseAuthorization();
 
 app.UseMiddleware<JwtMiddleware>();
+app.UseAuthorization();
 app.UseMiddleware<ResponseHeaderMiddleware>();
 
 app.MapControllers();
