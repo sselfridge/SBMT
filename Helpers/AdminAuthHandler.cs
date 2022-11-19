@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using TodoApi.Models.db;
 
 namespace TodoApi.Helpers
 {
@@ -7,41 +6,52 @@ namespace TodoApi.Helpers
   {
 
     IHttpContextAccessor _httpContextAccessor;
-
     public AdminAuthHandler(IHttpContextAccessor httpContextAccessor)
     {
       _httpContextAccessor = httpContextAccessor;
     }
 
     protected override Task HandleRequirementAsync(
-        AuthorizationHandlerContext context, UserIsAdminRequirement requirement)
+        AuthorizationHandlerContext authContext, UserIsAdminRequirement requirement)
     {
-      HttpContext? httpContext = _httpContextAccessor.HttpContext;
+      var cookieUser = authContext.User;
 
-      if (httpContext != null)
+      var isSam = cookieUser.HasClaim("AthleteId", $"{1075670}");
+
+      if (isSam == true)
       {
-
-        var contextUser = httpContext.Items["User"];
-
-        if (contextUser != null)
+        authContext.Succeed(requirement);
+      }
+      else
+      {
+        HttpContext? httpContext = _httpContextAccessor.HttpContext;
+        if (httpContext != null)
         {
-          StravaUser user = (StravaUser)contextUser;
-          if (user.AthleteId == requirement.AdminAthleteId)
-          {
-            context.Succeed(requirement);
-          }
-          else
-          {
-            context.Fail();
-          }
-
+          httpContext.Response.StatusCode = 403;
         }
       }
 
-
-
-
       return Task.CompletedTask;
+
+      // way of working this with old Items["User"] setup
+      //HttpContext? httpContext = _httpContextAccessor.HttpContext;
+      //if (httpContext != null)
+      //{
+      //  var contextUser = httpContext.Items["User"];
+      //  if (contextUser != null)
+      //  {
+      //    StravaUser user = (StravaUser)contextUser;
+      //    if (user.AthleteId == requirement.AdminAthleteId)
+      //    {
+      //      context.Succeed(requirement);
+      //    }
+      //  }
+      //}
+
+
+
+
+      //return Task.CompletedTask;
     }
 
   }

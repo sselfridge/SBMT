@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using TodoApi.Helpers;
@@ -47,6 +48,33 @@ builder.Services.AddSingleton(new StravaLimitService());
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IAuthorizationHandler, AdminAuthHandler>();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+      options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+      options.SlidingExpiration = true;
+      options.Events = new CookieAuthenticationEvents()
+      {
+        OnRedirectToLogin = (ctx) =>
+        {
+          if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
+          {
+            ctx.Response.StatusCode = 401;
+          }
+
+          return Task.CompletedTask;
+        },
+        OnRedirectToAccessDenied = (ctx) =>
+        {
+          if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
+          {
+            ctx.Response.StatusCode = 403;
+          }
+
+          return Task.CompletedTask;
+        }
+      };
+    });
 
 builder.Services.AddAuthorization(options =>
 {
@@ -58,13 +86,7 @@ builder.Services.AddAuthorization(options =>
   );
 });
 
-/*
- so getting closer...it works properly, just doesn't fail gracefully..
-Think I might need to set up an authentication handler?
-but very close...
- 
- 
- */
+
 
 var app = builder.Build();
 
@@ -80,6 +102,7 @@ if (app.Environment.IsDevelopment())
 //app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+app.UseAuthentication();
 app.UseMiddleware<JwtMiddleware>();
 app.UseAuthorization();
 app.UseMiddleware<ResponseHeaderMiddleware>();

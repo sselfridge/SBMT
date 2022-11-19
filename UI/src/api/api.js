@@ -18,6 +18,13 @@ Api.interceptors.response.use(
   }
 );
 
+/**
+ *
+ * @param {string} url
+ * @param {func} setValue
+ * @param {bool} setOnError
+ * @param {any} onError
+ */
 export const ApiGet = (url, setValue, setOnError, onError) => {
   Api.get(url)
     .then((response) => {
