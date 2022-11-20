@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from "react";
-import PropTypes from "prop-types";
+import React, { useState, useCallback, useContext } from "react";
+import _ from "lodash";
 import {
   Paper,
   Link,
@@ -9,10 +9,9 @@ import {
   Typography,
   Button,
 } from "@mui/material";
-import _ from "lodash";
 import { styled } from "@mui/material/styles";
+import AppContext from "AppContext";
 
-// import { ReactComponent as StravaLogo } from "assets/stravaLogoOrange.svg";
 import { ReactComponent as StravaLogo } from "assets/stravaLogoTransparent.svg";
 
 import LabeledSelect from "./Shared/LabeledSelect";
@@ -34,7 +33,7 @@ const MyPaper = styled(Paper)(({ theme }) => ({
 const categorySelect = categoryList.filter((c) => c !== "ALL");
 
 const Register = (props) => {
-  const { user, dispatch } = props;
+  const { user, dispatch } = useContext(AppContext);
 
   // const [age, setAge] = useState("");
   const [category, setCategory] = useState("");
@@ -136,11 +135,6 @@ const Register = (props) => {
       </Grid>
     </MyPaper>
   );
-};
-
-Register.propTypes = {
-  user: PropTypes.object,
-  dispatch: PropTypes.func.isRequired,
 };
 
 export default Register;

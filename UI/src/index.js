@@ -7,12 +7,15 @@ import CssBaseline from "@mui/material/CssBaseline";
 import reportWebVitals from "./reportWebVitals";
 
 import MeinRoutes from "./routes/MeinRoutes";
+import ContextProvider from "ContextProvider";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <MeinRoutes />
+      <ContextProvider>
+        <MeinRoutes />
+      </ContextProvider>
     </ThemeProvider>
   </React.StrictMode>
 );
