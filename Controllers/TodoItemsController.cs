@@ -89,16 +89,14 @@ namespace TodoApi.Controllers
         return Ok("loadked");
       }
 
-      return Ok("loadked");
 
 
-      var glennAnnieEfforts = new List<Effort>();
-      var count = 0;
+      var client = await _stravaService.GetClientForUser(10645041);
 
-      var list = new List<long>() { 27851109 };
+      var fullActivity = await _stravaService.GetActivity(8090349829, client);
 
+      var efforts = StravaUtilities.PullEffortsFromActivity(fullActivity, _dbContext);
 
-      var users = _dbContext.StravaUsers.ToList();
 
       //foreach (var user in users)
       //{
@@ -117,8 +115,7 @@ namespace TodoApi.Controllers
 
 
       //}
-      Console.WriteLine($"Total Activites:{count}");
-      return Ok(glennAnnieEfforts);
+
 
       var newStudent = new Student();
       newStudent.Name = "Bobby";

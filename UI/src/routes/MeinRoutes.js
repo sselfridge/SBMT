@@ -22,9 +22,9 @@ import LandingPage from "components/LandingPage/LandingPage";
 import AppContext from "AppContext";
 
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
-import keys from "config";
+import config from "config";
 
-mapboxgl.accessToken = keys.mapBox;
+mapboxgl.accessToken = config.mapBox;
 
 const MeinRoutes = (props) => {
   return (
