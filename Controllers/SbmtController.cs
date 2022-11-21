@@ -312,8 +312,8 @@ namespace TodoApi.Controllers
       {
         return NotFound();
       }
-
-      return Ok(possibleNulUser);
+      StravaUser user = (StravaUser)possibleNulUser;
+      return Ok(new StravaUserDTO(user));
     }
 
     [HttpGet("athletes/{id}")]
