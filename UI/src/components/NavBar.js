@@ -22,24 +22,30 @@ const TitleLink = styled(Link)(({ theme }) => ({
 export default function NavBar() {
   const [currentTabIdx, setCurrentTabIdx] = useState(false);
 
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const { pathname } = useLocation();
 
   useEffect(() => {
     switch (pathname) {
       case "/beta/segments":
       case "/beta/leaderboard":
-      case "/beta/recent":
       case "/beta/athletes":
         setCurrentTabIdx(pathname);
+        break;
+
+      case "/beta/recent":
+        if (isMobile) {
+          setCurrentTabIdx(false);
+        } else {
+          setCurrentTabIdx(pathname);
+        }
         break;
 
       default:
         setCurrentTabIdx(false);
         break;
     }
-  }, [pathname]);
-
-  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  }, [isMobile, pathname]);
 
   const tabs = ["leaderboard", "segments", "athletes"];
 

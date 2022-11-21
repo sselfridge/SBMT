@@ -5,7 +5,7 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import { DataGrid } from "@mui/x-data-grid";
-import { Avatar, Box, Paper, Typography } from "@mui/material";
+import { Avatar, Box, Paper, Typography, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Filters from "./Filters";
 
@@ -26,7 +26,7 @@ const LEADERBOARD_URL = "/api/leaderboard";
 
 const columns = [
   {
-    minWidth: 30,
+    minWidth: 40,
     flex: 4,
     field: "rank",
     sortable: false,
@@ -67,7 +67,7 @@ const columns = [
   },
   {
     flex: 4,
-    minWidth: 30,
+    minWidth: 40,
     field: "completedMobile",
     sortable: false,
     headerName: "#",
@@ -188,6 +188,9 @@ const Leaderboard = () => {
           }}
         />
         <Paper sx={{ fontSize: ".8em" }}>
+          <Link to="../recent">
+            <Button sx={{ mb: 3 }}>View Recent Efforts</Button>
+          </Link>
           <Typography variant="h4">Current Leaderboard Rules</Typography>
           <ul>
             <li>
