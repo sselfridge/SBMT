@@ -12,7 +12,6 @@ import { styled } from "@mui/material/styles";
 
 import UserMenu from "./UserMenu";
 import { Link, useLocation } from "react-router-dom";
-import AppContext from "AppContext";
 
 const TitleLink = styled(Link)(({ theme }) => ({
   color: theme.palette.primary.contrastText,
@@ -64,10 +63,8 @@ export default function AppHeader() {
             <TitleLink to="recent">
               <span className="sbmt">SBMT</span>
             </TitleLink>
-            <AppContext.Consumer>
-              {(context) => <UserMenu {...context} />}
-            </AppContext.Consumer>
-          </Typography>{" "}
+            <UserMenu />
+          </Typography>
         </Toolbar>
         <Toolbar sx={{ justifyContent: "flex-end" }}>
           <Tabs value={currentTabIdx} aria-label="nav tabs example">

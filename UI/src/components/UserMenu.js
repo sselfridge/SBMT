@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
-import PropTypes from "prop-types";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -22,6 +21,7 @@ import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import stravaSvg from "assets/stravaLogoOrange.svg";
 
+import AppContext from "AppContext";
 import { ApiDelete, ApiGet } from "api/api";
 
 const UserMenuBox = styled(Box)(({ theme }) => ({
@@ -33,8 +33,8 @@ const UserMenuBox = styled(Box)(({ theme }) => ({
   right: "8px",
 }));
 
-const UserMenu = (props) => {
-  const { dispatch, user: contextUser } = props;
+const UserMenu = () => {
+  const { dispatch, user: contextUser } = useContext(AppContext);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
@@ -216,11 +216,6 @@ const UserMenu = (props) => {
       </Menu>
     </React.Fragment>
   );
-};
-
-UserMenu.propTypes = {
-  user: PropTypes.object,
-  dispatch: PropTypes.func.isRequired,
 };
 
 export default UserMenu;
