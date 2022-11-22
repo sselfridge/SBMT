@@ -41,7 +41,7 @@ const Beta = ({ user }) => {
       </Typography>
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         <Link
-          href={`https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirect_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read,activity:read,profile:read_all`}
+          href={`https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirect_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read,activity:read`}
           sx={{
             backgroundColor: "strava.main",
             padding: "10px 20px",
