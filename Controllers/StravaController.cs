@@ -10,7 +10,6 @@ using TodoApi.Models.db;
 using TodoApi.Models.stravaApi;
 using TodoApi.Services;
 
-
 namespace TodoApi.Controllers
 {
   [Route("api/[controller]")]
@@ -18,9 +17,13 @@ namespace TodoApi.Controllers
   public class StravaController : ControllerBase
   {
     private sbmtContext _dbContext;
+
     private readonly IConfiguration Configuration;
+
     private IUserService _userService;
+
     private IStravaService _stravaService;
+
     private IServiceScopeFactory _serviceScopeFactory;
 
     private string GenerateJwtToken(int id)
@@ -29,25 +32,28 @@ namespace TodoApi.Controllers
       var tokenHandler = new JwtSecurityTokenHandler();
       var jwtKey = Configuration["jwtKey"];
       var key = Encoding.ASCII.GetBytes(jwtKey);
-      var tokenDescriptor = new SecurityTokenDescriptor
-      {
-        Subject = new ClaimsIdentity(new[] { new Claim("id", id.ToString()) }),
-        Expires = DateTime.UtcNow.AddDays(300),
-        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-      };
+      var tokenDescriptor =
+          new SecurityTokenDescriptor
+          {
+            Subject =
+                  new ClaimsIdentity(new[]
+                      { new Claim("id", id.ToString()) }),
+            Expires = DateTime.UtcNow.AddDays(300),
+            SigningCredentials =
+                  new SigningCredentials(new SymmetricSecurityKey(key),
+                      SecurityAlgorithms.HmacSha256Signature)
+          };
       var token = tokenHandler.CreateToken(tokenDescriptor);
       return tokenHandler.WriteToken(token);
     }
 
-
-
     public StravaController(
-      IConfiguration configuration,
-      IUserService userService,
-      sbmtContext dbContext,
-      IStravaService stravaService,
-      IServiceScopeFactory serviceScopeFactory
-      )
+        IConfiguration configuration,
+        IUserService userService,
+        sbmtContext dbContext,
+        IStravaService stravaService,
+        IServiceScopeFactory serviceScopeFactory
+    )
     {
       _dbContext = dbContext;
       Configuration = configuration;
@@ -57,33 +63,50 @@ namespace TodoApi.Controllers
     }
 
     [HttpGet("callback")]
-    public async Task<ActionResult<IEnumerable<TodoItem>>> GetStravaCallback([FromServices] IServiceScopeFactory serviceScopeFactory, string code, string scope)
+    public async Task<ActionResult<IEnumerable<TodoItem>>>
+    GetStravaCallback(
+        [FromServices] IServiceScopeFactory serviceScopeFactory,
+        string code,
+        string scope
+    )
     {
+      var scopeHasRead = scope.IndexOf("read,") == 0;
+      var scopeHasActivityRead = scope.IndexOf("activity:read,") != -1;
+      var scopeHasProfileAll = scope.IndexOf("profile:read_all") != -1;
 
       var oAuth = await _stravaService.GetTokens(code);
 
-      var oAuthUser = new OauthStravaUser(oAuth);
+      var oAuthUser = new OauthStravaUser(oAuth, scope);
 
-      var existingUser = _userService.GetById(oAuthUser.AthleteId);
 
       var cookie = GenerateJwtToken(oAuthUser.AthleteId);
       HttpContext.Response.Cookies.Append("SBMT", cookie.ToString());
 
+      var existingUser = _userService.GetById(oAuthUser.AthleteId);
       if (existingUser == null)
       {
-        await StravaUtilities.OnBoardNewUser(serviceScopeFactory, oAuthUser, _stravaService, _dbContext);
-        return Redirect($"{Configuration["BaseURL"]}/beta/thanks");
-
+        await StravaUtilities
+            .OnBoardNewUser(serviceScopeFactory,
+            oAuthUser,
+            _stravaService,
+            _dbContext);
+        return Redirect($"{Configuration["BaseURL"]}/beta/thanks?{scope}");
       }
-      else if (oAuthUser.AccessToken != existingUser.AccessToken)
+      else if ((oAuthUser.AccessToken != existingUser.AccessToken) || (existingUser.Scope != scope))
       {
-        existingUser.AccessToken = oAuthUser.AccessToken;
-        existingUser.ExpiresAt = oAuthUser.ExpiresAt;
+
+        if ((oAuthUser.AccessToken != existingUser.AccessToken))
+        {
+          existingUser.AccessToken = oAuthUser.AccessToken;
+          existingUser.ExpiresAt = oAuthUser.ExpiresAt;
+        }
+
+        if (existingUser.Scope != scope)
+        {
+          existingUser.Scope = scope;
+        }
         var savedUser = await _userService.Update(existingUser);
       }
-
-
-
 
       return Redirect($"{Configuration["BaseURL"]}/beta/thanks");
     }
@@ -100,7 +123,6 @@ namespace TodoApi.Controllers
       if (verify == Configuration["WebHookVerify"])
       {
         return Ok(new SubChallengeRepsonse(challenge));
-
       }
 
       return BadRequest();
@@ -113,12 +135,13 @@ namespace TodoApi.Controllers
       var json = await new StreamReader(req).ReadToEndAsync();
       StravaPushNotificationDTO? subRes = null;
 
-      subRes = JsonSerializer.Deserialize<StravaPushNotificationDTO>(json);
-
+      subRes =
+          JsonSerializer.Deserialize<StravaPushNotificationDTO>(json);
 
       if (subRes != null)
       {
         var pushNotification = new StravaPushNotification(subRes);
+
         //var updates = JsonSerializer.Deserialize<JsonObject>(pushNotification.Updates);
         _dbContext.StravaPushNotifications.Add(pushNotification);
         await _dbContext.SaveChangesAsync();
@@ -126,21 +149,31 @@ namespace TodoApi.Controllers
         if (pushNotification.AspectType == "create")
         {
           var athleteId = pushNotification.OwnerId;
-          if (_dbContext.StravaUsers.Any(u => u.AthleteId == athleteId))
+          if (
+              _dbContext
+                  .StravaUsers
+                  .Any(u => u.AthleteId == athleteId)
+          )
           {
             var activityId = pushNotification.ObjectId;
+
 #pragma warning disable CS4014
-            StravaUtilities.ParseNewActivity(_serviceScopeFactory, athleteId, activityId);
+            StravaUtilities.ParseNewActivity(
+                _serviceScopeFactory,
+                athleteId,
+                activityId
+            );
 #pragma warning restore CS4014
 
           }
-
         }
 
-
-
+        //TODO - if we get a response that user has unauthorized the app, need to delete their data.
+        //AspectType, EventTime,  ObjectId, ObjectType ,  OwnerId,  SubscriptionId, Updates
+        //update      1669003547  10645041  athlete       10645041  227851          { "authorized": "false" }
+        //TODO handle delete activity notification
+        //delete  1668977815  8146456392  activity  19340963  227851  { }
         return Ok("Created");
-
       }
       return Ok();
     }
@@ -148,7 +181,10 @@ namespace TodoApi.Controllers
     [HttpGet("userRefresh/{athleteId}")]
     public async Task<IActionResult> RefreshUser(int athleteId)
     {
-      var user = _dbContext.StravaUsers.FirstOrDefault(u => u.AthleteId == athleteId);
+      var user =
+          _dbContext
+              .StravaUsers
+              .FirstOrDefault(u => u.AthleteId == athleteId);
       if (user == null) return NotFound();
 
       var cookieUser = HttpContext.Items["User"];
@@ -161,8 +197,8 @@ namespace TodoApi.Controllers
         return Forbid();
       }
 
-
-      var profile = await _stravaService.GetProfile(athleteId, _dbContext);
+      var profile =
+          await _stravaService.GetProfile(athleteId, _dbContext);
 
       if (profile == null) return NotFound();
 
@@ -182,9 +218,7 @@ namespace TodoApi.Controllers
 
       HttpContext.Items["User"] = user;
 
-
       return Ok(user);
     }
-
   }
 }

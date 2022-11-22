@@ -20,9 +20,10 @@ namespace TodoApi.Models.db
     public DateTime JoinDate { get; set; }
     public string Sex { get; set; }
     public double Weight { get; set; }
+    public string Scope { get; set; }
 
 
-    public StravaUser(int athleteId, string firstname, string lastname, string avatar, long expiresAt, string refreshToken, string accessToken, string sex, double weight)
+    public StravaUser(int athleteId, string firstname, string lastname, string avatar, long expiresAt, string refreshToken, string accessToken, string sex, double weight, string? scope)
     {
       AthleteId = athleteId;
       Firstname = firstname;
@@ -33,7 +34,7 @@ namespace TodoApi.Models.db
       ExpiresAt = expiresAt;
       Sex = sex;
       Weight = weight;
-
+      Scope = scope ?? "";
       JoinDate = DateTime.UtcNow;
     }
 
@@ -62,15 +63,17 @@ namespace TodoApi.Models.db
     public string RefreshToken { get; set; }
     public string AccessToken { get; set; }
     public long ExpiresAt { get; set; }
+    public string Scope { get; set; }
 
 
-    public OauthStravaUser(StravaOAuthResponseDTO oAuth)
+    public OauthStravaUser(StravaOAuthResponseDTO oAuth, string scope)
     {
       var athlete = oAuth.Athlete;
       AthleteId = athlete.Id;
       AccessToken = oAuth.AccessToken;
       RefreshToken = oAuth.RefreshToken;
       ExpiresAt = oAuth.ExpiresAt;
+      Scope = scope;
     }
   }
 }

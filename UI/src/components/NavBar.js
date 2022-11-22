@@ -12,15 +12,14 @@ import { styled } from "@mui/material/styles";
 
 import UserMenu from "./UserMenu";
 import { Link, useLocation } from "react-router-dom";
-import AppContext from "AppContext";
 
 const TitleLink = styled(Link)(({ theme }) => ({
   color: theme.palette.primary.contrastText,
   textDecoration: "none",
 }));
 
-export default function AppHeader() {
-  const [currentTabIdx, setCurrentTabIdx] = useState(0);
+export default function NavBar() {
+  const [currentTabIdx, setCurrentTabIdx] = useState(false);
 
   const { pathname } = useLocation();
 
@@ -64,16 +63,15 @@ export default function AppHeader() {
             <TitleLink to="recent">
               <span className="sbmt">SBMT</span>
             </TitleLink>
-            <AppContext.Consumer>
-              {(context) => <UserMenu {...context} />}
-            </AppContext.Consumer>
-          </Typography>{" "}
+            <UserMenu />
+          </Typography>
         </Toolbar>
         <Toolbar sx={{ justifyContent: "flex-end" }}>
           <Tabs value={currentTabIdx} aria-label="nav tabs example">
             {tabs.map((tabName) => (
               <Tab
                 value={`/beta/${tabName}`}
+                key={tabName}
                 label={tabName}
                 to={tabName}
                 component={Link}
