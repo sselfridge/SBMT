@@ -93,7 +93,7 @@ namespace TodoApi.Controllers
 
       var client = await _stravaService.GetClientForUser(10645041);
 
-      var fullActivity = await _stravaService.GetActivity(8090349829, client);
+      var fullActivity = await _stravaService.GetActivity(8151280461, client);
 
       var efforts = StravaUtilities.PullEffortsFromActivity(fullActivity, _dbContext);
 

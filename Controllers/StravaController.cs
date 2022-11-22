@@ -76,7 +76,7 @@ namespace TodoApi.Controllers
 
       var oAuth = await _stravaService.GetTokens(code);
 
-      var oAuthUser = new OauthStravaUser(oAuth);
+      var oAuthUser = new OauthStravaUser(oAuth, scope);
 
 
       var cookie = GenerateJwtToken(oAuthUser.AthleteId);
@@ -92,10 +92,19 @@ namespace TodoApi.Controllers
             _dbContext);
         return Redirect($"{Configuration["BaseURL"]}/beta/thanks?{scope}");
       }
-      else if (oAuthUser.AccessToken != existingUser.AccessToken)
+      else if ((oAuthUser.AccessToken != existingUser.AccessToken) || (existingUser.Scope != scope))
       {
-        existingUser.AccessToken = oAuthUser.AccessToken;
-        existingUser.ExpiresAt = oAuthUser.ExpiresAt;
+
+        if ((oAuthUser.AccessToken != existingUser.AccessToken))
+        {
+          existingUser.AccessToken = oAuthUser.AccessToken;
+          existingUser.ExpiresAt = oAuthUser.ExpiresAt;
+        }
+
+        if (existingUser.Scope != scope)
+        {
+          existingUser.Scope = scope;
+        }
         var savedUser = await _userService.Update(existingUser);
       }
 
