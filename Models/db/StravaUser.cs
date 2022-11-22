@@ -43,6 +43,7 @@ namespace TodoApi.Models.db
       AccessToken = oAuth.AccessToken;
       RefreshToken = oAuth.RefreshToken;
       ExpiresAt = oAuth.ExpiresAt;
+      Scope = oAuth.Scope;
 
       Firstname = profile.Firstname;
       Lastname = profile.Lastname;
