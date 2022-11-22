@@ -18,8 +18,8 @@ const TitleLink = styled(Link)(({ theme }) => ({
   textDecoration: "none",
 }));
 
-export default function AppHeader() {
-  const [currentTabIdx, setCurrentTabIdx] = useState(0);
+export default function NavBar() {
+  const [currentTabIdx, setCurrentTabIdx] = useState(false);
 
   const { pathname } = useLocation();
 
@@ -71,6 +71,7 @@ export default function AppHeader() {
             {tabs.map((tabName) => (
               <Tab
                 value={`/beta/${tabName}`}
+                key={tabName}
                 label={tabName}
                 to={tabName}
                 component={Link}
