@@ -53,4 +53,15 @@ export const ApiDelete = (
     });
 };
 
+export const ApiPost = (url, body, setValue, onError, setErrorUndefined) => {
+  Api.post(url, body)
+    .then((response) => {
+      if (response.status === 201) setValue(deepFreeze(response.data));
+    })
+    .catch((err) => {
+      if (onError !== undefined || setErrorUndefined) setValue(onError);
+      console.error(err);
+    });
+};
+
 export default Api;

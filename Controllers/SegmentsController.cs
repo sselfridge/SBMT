@@ -77,13 +77,15 @@ namespace TodoApi.Controllers
 
     // POST: api/Segments
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-    [HttpPost("{id")]
+    [HttpPost("{id}")]
     public async Task<ActionResult<Segment>> PostSegment(long id)
     {
 
       var segment = await _stravaService.GetSegment(id);
 
       if (segment == null) return NotFound();
+
+      if (SegmentExists(id)) return Conflict("Segment already exists");
 
       _context.Segments.Add(segment);
       await _context.SaveChangesAsync();

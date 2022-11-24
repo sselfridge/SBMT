@@ -1,6 +1,12 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, {
+  useState,
+  useContext,
+  useEffect,
+  useRef,
+  useCallback,
+} from "react";
 import PropTypes from "prop-types";
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, Paper, TextField, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { DataGrid } from "@mui/x-data-grid";
 import { ApiGet } from "api/api";
@@ -8,53 +14,44 @@ import { useNavigate, Link } from "react-router-dom";
 
 import AppContext from "AppContext";
 import StravaButton from "components/Shared/StravaButton";
+import { ApiPost } from "api/api";
+import { metersToMiles } from "utils/helperFuncs";
+import { ApiDelete } from "api/api";
 
 const MyBox = styled(Box)(({ theme }) => ({
   width: "80vw",
   backgroundColor: theme.palette.background.paper,
 }));
 
-const columns = [
-  {
-    field: "name",
-    headerName: "Segment",
-    flex: 20,
-    renderCell: (props) => {
-      const { value, id } = props;
-      return <Link to={`${id}`}>{value}</Link>;
-    },
-  },
-  {
-    field: "usage",
-    headerName: "Total Efforts",
-    flex: 20,
-    renderCell: (props) => {
-      const { value, id } = props;
-      return 0;
-    },
-  },
-  {
-    field: "id",
-    headerName: "Action",
-    // flex: 4,
-    minWidth: 4,
-    renderCell: (props) => {
-      const { value, id } = props;
-      return <Button sx={{ backgroundColor: "red" }}>Delete</Button>;
-    },
-  },
-];
-
 const AdminSegments = (props) => {
+  const { user } = useContext(AppContext);
   const [segments, setSegments] = useState([]);
-  // console.info("segments: ", segments);
 
+  const [newSegment, setNewSegment] = useState(null);
+  console.info("newSegment: ", newSegment);
   const navigate = useNavigate();
-  useEffect(() => {
+
+  const textFieldValRef = useRef("");
+
+  const refreshSegments = useCallback(() => {
     ApiGet("/api/admin/segments", setSegments, null);
   }, []);
 
-  const { user } = useContext(AppContext);
+  useEffect(() => {
+    refreshSegments();
+  }, [refreshSegments]);
+
+  const addSegment = () => {
+    ApiPost(
+      `/api/admin/segments/${textFieldValRef.current}`,
+      {},
+      (newSeg) => {
+        setNewSegment(newSeg);
+        refreshSegments();
+      },
+      { name: "Segment Already exists" }
+    );
+  };
 
   useEffect(() => {
     console.info("user?.athleteId: ", user?.athleteId);
@@ -62,6 +59,46 @@ const AdminSegments = (props) => {
       navigate("/beta");
     }
   }, [navigate, user?.athleteId]);
+
+  const columns = [
+    {
+      field: "name",
+      headerName: "Segment",
+      flex: 20,
+      renderCell: (props) => {
+        const { value, id } = props;
+        return <Link to={`${id}`}>{value}</Link>;
+      },
+    },
+    {
+      field: "usage",
+      headerName: "Total Efforts",
+      flex: 20,
+      renderCell: (props) => {
+        const { value, id } = props;
+        return 0;
+      },
+    },
+    {
+      field: "id",
+      headerName: "Action",
+      // flex: 4,
+      minWidth: 4,
+      renderCell: (props) => {
+        const { id } = props;
+        return (
+          <Button
+            onClick={() => {
+              ApiDelete(`/api/admin/segments/${id}`, refreshSegments);
+            }}
+            sx={{ backgroundColor: "red" }}
+          >
+            Delete
+          </Button>
+        );
+      },
+    },
+  ];
 
   if (!user) {
     return null;
@@ -71,9 +108,20 @@ const AdminSegments = (props) => {
     <MyBox>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box>
-          <TextField />
-          <Button>Add Segment</Button>
+          <TextField
+            onChange={(e) => (textFieldValRef.current = e.target.value)}
+          />
+          <Button onClick={addSegment}>Add Segment</Button>
+          {newSegment && (
+            <Paper>
+              <Typography>Name: {newSegment?.name}</Typography>
+              <Typography>
+                Distance: {metersToMiles(newSegment?.distance)}mi
+              </Typography>
+            </Paper>
+          )}
         </Box>
+
         {segments === null && <StravaButton text={"Refresh Admin Cookie"} />}
       </Box>
       <DataGrid
