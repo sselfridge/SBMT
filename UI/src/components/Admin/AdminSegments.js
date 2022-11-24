@@ -7,6 +7,7 @@ import { ApiGet } from "api/api";
 import { useNavigate, Link } from "react-router-dom";
 
 import AppContext from "AppContext";
+import StravaButton from "components/Shared/StravaButton";
 
 const MyBox = styled(Box)(({ theme }) => ({
   width: "80vw",
@@ -46,16 +47,14 @@ const columns = [
 
 const AdminSegments = (props) => {
   const [segments, setSegments] = useState([]);
-  console.info("segments: ", segments);
+  // console.info("segments: ", segments);
 
   const navigate = useNavigate();
   useEffect(() => {
-    ApiGet("/api/admin/segments", setSegments);
+    ApiGet("/api/admin/segments", setSegments, null);
   }, []);
 
   const { user } = useContext(AppContext);
-
-  console.info("user: ", user);
 
   useEffect(() => {
     console.info("user?.athleteId: ", user?.athleteId);
@@ -70,10 +69,15 @@ const AdminSegments = (props) => {
 
   return (
     <MyBox>
-      <TextField />
-      <Button>Add Segment</Button>
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Box>
+          <TextField />
+          <Button>Add Segment</Button>
+        </Box>
+        {segments === null && <StravaButton text={"Refresh Admin Cookie"} />}
+      </Box>
       <DataGrid
-        rows={segments}
+        rows={segments || []}
         columns={columns}
         disableColumnMenu
         hideFooter={true}

@@ -25,13 +25,13 @@ Api.interceptors.response.use(
  * @param {bool} setOnError
  * @param {any} onError
  */
-export const ApiGet = (url, setValue, setOnError, onError) => {
+export const ApiGet = (url, setValue, onError, setErrorUndefined) => {
   Api.get(url)
     .then((response) => {
       if (response.status === 200) setValue(deepFreeze(response.data));
     })
     .catch((err) => {
-      if (setOnError) setValue(onError);
+      if (onError !== undefined || setErrorUndefined) setValue(onError);
       console.error(err);
     });
 };

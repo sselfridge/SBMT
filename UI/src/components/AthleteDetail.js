@@ -50,7 +50,7 @@ const Athletes = () => {
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
   React.useEffect(() => {
-    ApiGet(`/api/athletes/${params.athleteId}`, setUser, true, null);
+    ApiGet(`/api/athletes/${params.athleteId}`, setUser, null);
     ApiGet(`/api/athletes/${params.athleteId}/efforts`, setUserSegments);
   }, [params]);
 

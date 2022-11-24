@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TodoApi.Models.db;
+using TodoApi.Services;
+
 
 namespace TodoApi.Controllers
 {
@@ -11,10 +13,12 @@ namespace TodoApi.Controllers
   public class SegmentsController : ControllerBase
   {
     private readonly sbmtContext _context;
+    private IStravaService _stravaService;
 
-    public SegmentsController(sbmtContext context)
+    public SegmentsController(sbmtContext context, IStravaService stravaService)
     {
       _context = context;
+      _stravaService = stravaService;
     }
 
     // GET: api/Segments
@@ -43,6 +47,8 @@ namespace TodoApi.Controllers
     [HttpPut("{id}")]
     public async Task<IActionResult> PutSegment(long id, Segment segment)
     {
+
+
       if (id != segment.Id)
       {
         return BadRequest();
@@ -71,9 +77,14 @@ namespace TodoApi.Controllers
 
     // POST: api/Segments
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-    [HttpPost]
-    public async Task<ActionResult<Segment>> PostSegment(Segment segment)
+    [HttpPost("{id")]
+    public async Task<ActionResult<Segment>> PostSegment(long id)
     {
+
+      var segment = await _stravaService.GetSegment(id);
+
+      if (segment == null) return NotFound();
+
       _context.Segments.Add(segment);
       await _context.SaveChangesAsync();
 

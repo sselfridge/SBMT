@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import {
@@ -10,7 +10,7 @@ import {
   Divider,
   MenuItem,
   Typography,
-  Link,
+  Link as MuiLink,
   useMediaQuery,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -23,6 +23,7 @@ import Logout from "@mui/icons-material/Logout";
 import stravaSvg from "assets/stravaLogoOrange.svg";
 
 import { ApiDelete, ApiGet } from "api/api";
+import AppContext from "AppContext";
 
 const UserMenuBox = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -34,7 +35,7 @@ const UserMenuBox = styled(Box)(({ theme }) => ({
 }));
 
 const UserMenu = (props) => {
-  const { dispatch, user: contextUser } = props;
+  const { dispatch, user: contextUser } = useContext(AppContext);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
@@ -67,7 +68,7 @@ const UserMenu = (props) => {
   useEffect(() => {
     if (fetchOnce.current) {
       fetchOnce.current = null;
-      ApiGet("/api/athletes/current", onSetUser, true, {});
+      ApiGet("/api/athletes/current", onSetUser, {});
     }
   }, [onSetUser]);
 
@@ -89,7 +90,7 @@ const UserMenu = (props) => {
     <React.Fragment>
       <UserMenuBox>
         {!user?.athleteId && (
-          <Link
+          <MuiLink
             href={`https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirect_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read_all,activity:read_all,profile:read_all`}
             sx={{
               backgroundColor: "strava.main",
@@ -111,7 +112,7 @@ const UserMenu = (props) => {
             >
               Register / Login
             </Typography>
-          </Link>
+          </MuiLink>
         )}
         <IconButton
           onClick={handleClick}
@@ -180,7 +181,14 @@ const UserMenu = (props) => {
             <Divider />
           </a>
         )}
-
+        {user?.athleteId === 1075670 && (
+          <MenuItem onClick={() => navTo("admin")}>
+            <ListItemIcon>
+              <Settings fontSize="small" />
+            </ListItemIcon>
+            Admin
+          </MenuItem>
+        )}
         {user?.athleteId && (
           <MenuItem onClick={() => navTo("settings")}>
             <ListItemIcon>
