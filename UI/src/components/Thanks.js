@@ -16,6 +16,7 @@ const Thanks = () => {
       sx={{
         maxWidth: 500,
         height: "80vh",
+        minHeight: 400,
         display: "flex",
         flexDirection: "column",
         alignContent: "center",
