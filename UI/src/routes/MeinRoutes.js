@@ -1,8 +1,6 @@
 import React from "react";
 import App from "../App";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Invoices from "routes/invoices";
-import Expenses from "routes/expenses";
 import DefaultRoute from "routes/DefaultRoute";
 import Recent from "components/Recent";
 import Leaderboard from "components/Leaderboard";
@@ -14,34 +12,28 @@ import FullFeaturedDemo from "components/DataGridDemo";
 import UserSettings from "components/UserSettings";
 import HelpContact from "components/HelpContact";
 import Info from "components/Info";
+import InfoScopes from "components/InfoScopes";
 import Register from "components/Register";
 import Beta from "components/Beta";
+import BetaRedirect from "./BetaRedirect";
 import Thanks from "components/Thanks";
 import LandingPage from "components/LandingPage/LandingPage";
-
-import AppContext from "AppContext";
 
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import config from "config";
 
 mapboxgl.accessToken = config.mapBox;
 
-const MeinRoutes = (props) => {
+const MeinRoutes = () => {
   return (
     <BrowserRouter>
       <Routes>
         {/* <NavBar /> */}
         <Route path="/" element={<LandingPage />} />
 
-        <Route path="/beta" element={<App />}>
-          <Route
-            path="/beta"
-            element={
-              <AppContext.Consumer>
-                {(context) => <Beta {...context} />}
-              </AppContext.Consumer>
-            }
-          />
+        <Route path="/" element={<App />}>
+          <Route path="beta" element={<Beta />} />
+          <Route path="beta/*" element={<BetaRedirect />} />
           <Route path="recent" element={<Recent />} />
           <Route path="leaderboard" element={<Leaderboard />} />
           <Route path="segments" element={<Segments />} />
@@ -51,22 +43,14 @@ const MeinRoutes = (props) => {
           <Route path="demo" element={<FullFeaturedDemo />} />
           <Route path="settings" element={<UserSettings />} />
           <Route path="help" element={<HelpContact />} />
-          <Route path="info" element={<Info />} />
+          <Route path="info">
+            <Route path="" element={<Info />} />
+            <Route path="scopes" element={<InfoScopes />} />
+          </Route>
           <Route path="thanks" element={<Thanks />} />
 
-          <Route
-            path="register"
-            element={
-              <AppContext.Consumer>
-                {(context) => <Register {...context} />}
-              </AppContext.Consumer>
-            }
-          />
+          <Route path="register" element={<Register />} />
 
-          <Route path="expenses" element={<Expenses />} />
-          <Route path="invoices" element={<Invoices />}>
-            <Route path="expenses" element={<Expenses />} />
-          </Route>
           <Route path="*" element={<DefaultRoute />} />
         </Route>
       </Routes>

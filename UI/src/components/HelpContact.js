@@ -14,6 +14,7 @@ import { styled } from "@mui/material/styles";
 import * as DOMPurify from "dompurify";
 
 import { ReactComponent as Insta } from "assets/insta.svg";
+import { Link } from "react-router-dom";
 
 const MyBox = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 
@@ -151,7 +152,8 @@ const HelpContact = (props) => {
           FAQ
         </Typography>
         <Typography variant="h5">
-          No questions yet....be among the first to submit one!!
+          Interested in what the strava permissions we ask for are?{" "}
+          <Link to="/info/scopes">Check out my explanation here.</Link>
         </Typography>
       </Paper>
     </MyBox>
