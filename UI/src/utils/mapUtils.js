@@ -102,7 +102,7 @@ export const addSegmentPopupToMap = (map, segment) => {
 
     const popupHTML = (
       <h4>
-        <a href={`/beta/segments/${idString}`}>{name}</a>
+        <a href={`/segments/${idString}`}>{name}</a>
       </h4>
     );
 

@@ -25,10 +25,10 @@ export default function NavBar() {
 
   useEffect(() => {
     switch (pathname) {
-      case "/beta/segments":
-      case "/beta/leaderboard":
-      case "/beta/recent":
-      case "/beta/athletes":
+      case "/segments":
+      case "/leaderboard":
+      case "/recent":
+      case "/athletes":
         setCurrentTabIdx(pathname);
         break;
 
@@ -70,7 +70,7 @@ export default function NavBar() {
           <Tabs value={currentTabIdx} aria-label="nav tabs example">
             {tabs.map((tabName) => (
               <Tab
-                value={`/beta/${tabName}`}
+                value={`/${tabName}`}
                 key={tabName}
                 label={tabName}
                 to={tabName}

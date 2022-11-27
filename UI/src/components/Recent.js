@@ -29,7 +29,7 @@ const columns = [
     headerName: "",
     width: 55,
     renderCell: ({ value: v }) => (
-      <Link to={`/beta/athletes/${v.athleteId}`}>
+      <Link to={`/athletes/${v.athleteId}`}>
         {" "}
         <Avatar src={v?.avatar} />
       </Link>
@@ -47,7 +47,7 @@ const columns = [
     flex: 2,
     renderCell: ({ value }) => value,
     valueGetter: ({ row }) => (
-      <Link to={`/beta/athletes/${row.athleteId}`}>{row.name}</Link>
+      <Link to={`/athletes/${row.athleteId}`}>{row.name}</Link>
     ),
   },
   {
@@ -56,7 +56,7 @@ const columns = [
     headerName: "Segment",
     renderCell: ({ value }) => value,
     valueGetter: ({ row }) => (
-      <Link to={`/beta/segments/${row.segmentId}`}>{row.segmentName}</Link>
+      <Link to={`/segments/${row.segmentId}`}>{row.segmentName}</Link>
     ),
 
     flex: 4,

@@ -69,7 +69,7 @@ const Leaderboard = () => {
           const { row } = props;
           const { athleteName, avatar, id } = row;
           return (
-            <Link to={`/beta/athletes/${id}`}>
+            <Link to={`/athletes/${id}`}>
               <Box
                 sx={{
                   display: "flex",
@@ -196,7 +196,7 @@ const Leaderboard = () => {
           <ul>
             <li>
               All efforts on{" "}
-              <Link style={{ margin: "4px 0" }} to="/beta/segments">
+              <Link style={{ margin: "4px 0" }} to="/segments">
                 {" "}
                 SBMT segments{" "}
               </Link>{" "}
