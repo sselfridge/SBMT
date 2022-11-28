@@ -21,7 +21,8 @@ const TitleLink = styled(Link)(({ theme }) => ({
 export default function NavBar() {
   const [currentTabIdx, setCurrentTabIdx] = useState(false);
 
-  const { pathname } = useLocation();
+  const location = useLocation();
+  const { pathname } = location;
 
   useEffect(() => {
     switch (pathname) {
@@ -36,6 +37,10 @@ export default function NavBar() {
         setCurrentTabIdx(false);
         break;
     }
+
+    let title = pathname.replace("/", "");
+    title = title[0].toUpperCase() + title.slice(1);
+    document.title = `SBMT - ${title}`;
   }, [pathname]);
 
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
