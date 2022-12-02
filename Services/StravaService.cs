@@ -257,6 +257,7 @@ namespace TodoApi.Services
     /// 
     private async Task<T> GetStrava<T>(HttpClient client, string url)
     {
+      Console.WriteLine($"sbmtLog:Making StravaCall:{url}");
       var response = await client.GetAsync($"https://www.strava.com/api/v3{url}");
       if (response.IsSuccessStatusCode)
       {
