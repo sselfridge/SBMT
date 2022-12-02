@@ -21,6 +21,7 @@ namespace TodoApi.Controllers
     private IStravaService _stravaService;
     private readonly IConfiguration Configuration;
     private StravaLimitService RateLimits;
+    private IServiceScopeFactory _serviceScopeFactory;
 
 
     private string GenerateJwtToken(int id)
@@ -39,9 +40,99 @@ namespace TodoApi.Controllers
       var token = tokenHandler.CreateToken(tokenDescriptor);
       return tokenHandler.WriteToken(token);
     }
+
+    private async Task<List<Effort>> FetchEffortsForUser(StravaUser user, List<long> list)
+    {
+      using (var scope = _serviceScopeFactory.CreateScope())
+      {
+        var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
+        var count = 0;
+        try
+        {
+          var actvities = await _stravaService.GetActivities(user.AthleteId, context);
+          var newEfforts = new List<Effort>();
+          foreach (var act in actvities)
+          {
+            count++;
+            var fullActivity = await _stravaService.GetActivity(act.Id, user.AthleteId, context);
+            var efforts = StravaUtilities.PullEffortsFromActivity(fullActivity, list);
+            if (efforts.Count > 0)
+            {
+              newEfforts.AddRange(efforts);
+            }
+          }
+
+          var newStudent = new Student();
+          newStudent.Name = "Bobby";
+          newStudent.Age = count;
+          newStudent.Grade = 12344596;
+
+          _dbContext.Students.Add(newStudent);
+          _dbContext.SaveChanges();
+
+          return newEfforts;
+        }
+        catch (Exception e)
+        {
+          Console.WriteLine($"Error with user:{user.Firstname} {user.Lastname}");
+          Console.WriteLine(e.ToString());
+          return new List<Effort>();
+          throw;
+        }
+      }
+      return new List<Effort>();
+    }
+
+    private async Task<List<Effort>> ScanAllAthletesForSegments()
+    {
+      var count = 0;
+
+      var list = new List<long>() { 647488 };
+
+
+      var users = _dbContext.StravaUsers.ToList();
+      var realUsers = new List<StravaUser>();
+
+      foreach (var user in users)
+      {
+        if (user == null || user.AthleteId == 1) continue;
+        // for 504 activites was ~7min
+        // 40.81 - running in parellel no DB calls
+        // 
+        realUsers.Add(user);
+      }
+      _dbContext.ChangeTracker.Clear();
+
+      var taskList = realUsers.Select(user => FetchEffortsForUser(user, list));
+
+      var bigArray = await Task.WhenAll(taskList);
+      var bigList = bigArray.ToList();
+
+      var newEfforts = bigList.SelectMany(x => x).ToList();
+
+      var newSegmentEfforts = new List<Effort>();
+
+      foreach (var effort in newEfforts)
+      {
+        var effortExists = _dbContext.Efforts.Any(e => e.Id == effort.Id);
+        if (effortExists == false)
+        {
+          newSegmentEfforts.Add(effort);
+        }
+      }
+
+      _dbContext.AddRange(newSegmentEfforts);
+      _dbContext.SaveChanges();
+
+
+      Console.WriteLine($"Total Activites:{count}");
+      return newSegmentEfforts;
+    }
+
     public TodoItemsController(TodoContext context,
       IUserService userService, IStravaService stravaService,
-      sbmtContext dbContext, IConfiguration configuration, StravaLimitService stravaLimitService)
+      sbmtContext dbContext, IConfiguration configuration,
+      StravaLimitService stravaLimitService, IServiceScopeFactory serviceScopeFactory)
     {
       _context = context;
       _userService = userService;
@@ -49,6 +140,7 @@ namespace TodoApi.Controllers
       _dbContext = dbContext;
       Configuration = configuration;
       RateLimits = stravaLimitService;
+      _serviceScopeFactory = serviceScopeFactory;
     }
 
     // GET: api/TodoItems
@@ -92,33 +184,10 @@ namespace TodoApi.Controllers
       return Ok("loadked");
 
 
-      var glennAnnieEfforts = new List<Effort>();
-      var count = 0;
-
-      var list = new List<long>() { 27851109 };
 
 
-      var users = _dbContext.StravaUsers.ToList();
-
-      //foreach (var user in users)
-      //{
-      //  if (user == null || user.AthleteId == 1) continue;
-
-      //  var actvities = await _stravaService.GetActivities(user.AthleteId, _dbContext);
-
-      //  foreach (var act in actvities)
-      //  {
-      //    var client = await _stravaService.GetClientForUser(user.AthleteId);
-      //    var fullActivity = await _stravaService.GetActivity(act.Id, client);
-      //    var efforts = StravaUtilities.PullEffortsFromActivity(fullActivity, list);
-      //    if (efforts != null) { glennAnnieEfforts.AddRange(efforts); }
-      //    count++;
-      //  }
 
 
-      //}
-      Console.WriteLine($"Total Activites:{count}");
-      return Ok(glennAnnieEfforts);
 
       var newStudent = new Student();
       newStudent.Name = "Bobby";
