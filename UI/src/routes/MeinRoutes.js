@@ -13,8 +13,10 @@ import FullFeaturedDemo from "components/DataGridDemo";
 import UserSettings from "components/UserSettings";
 import HelpContact from "components/HelpContact";
 import Info from "components/Info";
+import InfoScopes from "components/InfoScopes";
 import Register from "components/Register";
 import Beta from "components/Beta";
+import BetaRedirect from "./BetaRedirect";
 import Thanks from "components/Thanks";
 import LandingPage from "components/LandingPage/LandingPage";
 
@@ -24,11 +26,11 @@ import AdminSegments from "components/Admin/AdminSegments";
 import AppContext from "AppContext";
 
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
-import keys from "config";
+import config from "config";
 
-mapboxgl.accessToken = keys.mapBox;
+mapboxgl.accessToken = config.mapBox;
 
-const MeinRoutes = (props) => {
+const MeinRoutes = () => {
   const { user } = useContext(AppContext);
 
   const isAdmin = user?.athleteId === 1075670;
@@ -39,15 +41,9 @@ const MeinRoutes = (props) => {
         {/* <NavBar /> */}
         <Route path="/" element={<LandingPage />} />
 
-        <Route path="/beta" element={<App />}>
-          <Route
-            path="/beta"
-            element={
-              <AppContext.Consumer>
-                {(context) => <Beta {...context} />}
-              </AppContext.Consumer>
-            }
-          />
+        <Route path="/" element={<App />}>
+          <Route path="beta" element={<Beta />} />
+          <Route path="beta/*" element={<BetaRedirect />} />
           <Route path="recent" element={<Recent />} />
           <Route path="leaderboard" element={<Leaderboard />} />
           <Route path="segments" element={<Segments />} />
@@ -57,7 +53,10 @@ const MeinRoutes = (props) => {
           <Route path="demo" element={<FullFeaturedDemo />} />
           <Route path="settings" element={<UserSettings />} />
           <Route path="help" element={<HelpContact />} />
-          <Route path="info" element={<Info />} />
+          <Route path="info">
+            <Route path="" element={<Info />} />
+            <Route path="scopes" element={<InfoScopes />} />
+          </Route>
           <Route path="thanks" element={<Thanks />} />
 
           <Route path="register" element={<Register />} />

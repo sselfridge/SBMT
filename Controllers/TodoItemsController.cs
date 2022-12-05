@@ -181,13 +181,30 @@ namespace TodoApi.Controllers
         return Ok("loadked");
       }
 
-      return Ok("loadked");
+
+
+<<<<<<< HEAD
+=======
+      var client = await _stravaService.GetClientForUser(10645041);
+
+      var fullActivity = await _stravaService.GetActivity(8151280461, client);
+
+      var efforts = StravaUtilities.PullEffortsFromActivity(fullActivity, _dbContext);
+
+
+      //foreach (var user in users)
+      //{
+      //  if (user == null || user.AthleteId == 1) continue;
+>>>>>>> main
 
 
 
 
+<<<<<<< HEAD
+=======
+      //}
 
-
+>>>>>>> main
 
       var newStudent = new Student();
       newStudent.Name = "Bobby";

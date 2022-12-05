@@ -7,9 +7,9 @@ import {
   getBounds,
 } from "utils/mapUtils";
 
-import keys from "config";
+import config from "config";
 
-mapboxgl.accessToken = keys.mapBox;
+mapboxgl.accessToken = config.mapBox;
 
 const SegmentMap = (props) => {
   const { segments } = props;

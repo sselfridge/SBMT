@@ -1,13 +1,13 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React, { useContext } from "react";
 import _ from "lodash";
 import { Box, Typography, Link } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
+import AppContext from "AppContext";
 
 const MyPaper = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 
-const Beta = ({ user }) => {
+const Beta = () => {
   let redirect_uri;
   if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
     redirect_uri = "https://localhost:5001";
@@ -16,6 +16,7 @@ const Beta = ({ user }) => {
   }
 
   const navigate = useNavigate();
+  const { user } = useContext(AppContext);
   React.useEffect(() => {
     if (user !== null && !_.isEmpty(user)) {
       navigate("recent");
@@ -37,11 +38,11 @@ const Beta = ({ user }) => {
       <Typography variant="h3">Open for early beta!</Typography>
       <Typography variant="h5">
         Now with working Leaderboard!! <br />
-        Segments are taken from Oct 21st (day before the SB100) onwards.
+        Segments are taken from Oct 21st onwards.
       </Typography>
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         <Link
-          href={`https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirect_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read_all,activity:read_all,profile:read_all`}
+          href={`https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirect_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read,activity:read`}
           sx={{
             backgroundColor: "strava.main",
             padding: "10px 20px",
@@ -71,10 +72,6 @@ const Beta = ({ user }) => {
       </Typography>
     </MyPaper>
   );
-};
-
-Beta.propTypes = {
-  user: PropTypes.object,
 };
 
 export default Beta;

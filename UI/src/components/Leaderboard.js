@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 
 import { useTheme } from "@mui/material/styles";
@@ -23,103 +23,6 @@ const MyBox = styled(Box)(({ theme }) => {
 });
 
 const LEADERBOARD_URL = "/api/leaderboard";
-
-const columns = [
-  {
-    minWidth: 40,
-    flex: 4,
-    field: "rank",
-    sortable: false,
-    headerName: "",
-  },
-  {
-    flex: 35,
-    field: "athlete",
-    sortable: false,
-    headerName: "Athlete",
-
-    renderCell: (props) => {
-      const { row } = props;
-      const { athleteName, avatar, id } = row;
-      return (
-        <Link to={`/beta/athletes/${id}`}>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-evenly",
-            }}
-          >
-            <Avatar src={avatar} />
-            <>{athleteName}</>
-          </Box>
-        </Link>
-      );
-    },
-  },
-  {
-    flex: 13,
-    field: "completedDesktop",
-    sortable: false,
-    headerName: "Completed",
-    align: "right",
-    valueGetter: ({ row }) => row.completed,
-  },
-  {
-    flex: 4,
-    minWidth: 40,
-    field: "completedMobile",
-    sortable: false,
-    headerName: "#",
-    headerAlign: "right",
-    align: "right",
-    valueGetter: ({ row }) => row.completed,
-  },
-  {
-    flex: 25,
-    field: "totalDistance",
-    sortable: false,
-    headerName: "Distance Total",
-    headerAlign: "right",
-    align: "right",
-    renderCell: ({ value }) => `${metersToMiles(value)} mi`,
-  },
-  {
-    field: "totalElevation",
-    sortable: false,
-    headerName: "Elevation Total",
-    headerAlign: "right",
-    align: "right",
-    flex: 25,
-    renderCell: ({ value }) => `${metersToFeet(value)} ft`,
-  },
-  {
-    field: "totalTimeDesktop",
-    sortable: false,
-    headerName: "Total Time",
-    align: "center",
-    headerAlign: "center",
-    flex: 30,
-    valueGetter: ({ row }) => row.totalTime,
-    renderCell: (props) => {
-      const { value } = props;
-      return formattedTime(value);
-    },
-  },
-  {
-    field: "totalTimeMobile",
-    sortable: false,
-    headerName: "Total Time",
-    align: "right",
-    headerAlign: "right",
-    flex: 18,
-    valueGetter: ({ row }) => row.totalTime,
-    renderCell: (props) => {
-      const { value } = props;
-      return formattedTime(value, true);
-    },
-  },
-];
 
 const Leaderboard = () => {
   const theme = useTheme();
@@ -146,6 +49,107 @@ const Leaderboard = () => {
 
     ApiGet(url, setRows);
   }, []);
+
+  const columns = useMemo(
+    () => [
+      {
+        minWidth: 30,
+        flex: 4,
+        field: "rank",
+        sortable: false,
+        headerName: "",
+      },
+      {
+        flex: 35,
+        field: "athlete",
+        sortable: false,
+        headerName: "Athlete",
+
+        renderCell: (props) => {
+          const { row } = props;
+          const { athleteName, avatar, id } = row;
+          return (
+            <Link to={`/athletes/${id}`}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-evenly",
+                }}
+              >
+                <Avatar src={avatar} />
+                <>{athleteName}</>
+              </Box>
+            </Link>
+          );
+        },
+      },
+      {
+        flex: 13,
+        field: "completedDesktop",
+        sortable: false,
+        headerName: "Completed",
+        align: "right",
+        valueGetter: ({ row }) => `${row.completed}`,
+        //TODO - Add progress bar?
+      },
+      {
+        flex: 4,
+        minWidth: 30,
+        field: "completedMobile",
+        sortable: false,
+        headerName: "#",
+        headerAlign: "right",
+        align: "right",
+        valueGetter: ({ row }) => `${row.completed}`,
+      },
+      {
+        flex: 25,
+        field: "totalDistance",
+        sortable: false,
+        headerName: "Distance Total",
+        headerAlign: "right",
+        align: "right",
+        renderCell: ({ value }) => `${metersToMiles(value)} mi`,
+      },
+      {
+        field: "totalElevation",
+        sortable: false,
+        headerName: "Elevation Total",
+        headerAlign: "right",
+        align: "right",
+        flex: 25,
+        renderCell: ({ value }) => `${metersToFeet(value)} ft`,
+      },
+      {
+        field: "totalTimeDesktop",
+        sortable: false,
+        headerName: "Total Time",
+        align: "center",
+        headerAlign: "center",
+        flex: 30,
+        valueGetter: ({ row }) => row.totalTime,
+        renderCell: (props) => {
+          const { value } = props;
+          return formattedTime(value);
+        },
+      },
+      {
+        field: "totalTimeMobile",
+        sortable: false,
+        headerName: "Total Time",
+        align: "right",
+        headerAlign: "right",
+        flex: 18,
+        valueGetter: ({ row }) => row.totalTime,
+        renderCell: (props) => {
+          const { value } = props;
+          return formattedTime(value, true);
+        },
+      },
+    ],
+    []
+  );
 
   return (
     <MyBox
@@ -195,7 +199,7 @@ const Leaderboard = () => {
           <ul>
             <li>
               All efforts on{" "}
-              <Link style={{ margin: "4px 0" }} to="/beta/segments">
+              <Link style={{ margin: "4px 0" }} to="/segments">
                 {" "}
                 SBMT segments{" "}
               </Link>{" "}

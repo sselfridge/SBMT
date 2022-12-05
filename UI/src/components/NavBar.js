@@ -12,7 +12,6 @@ import { styled } from "@mui/material/styles";
 
 import UserMenu from "./UserMenu";
 import { Link, useLocation } from "react-router-dom";
-import AppContext from "AppContext";
 
 const TitleLink = styled(Link)(({ theme }) => ({
   color: theme.palette.primary.contrastText,
@@ -22,14 +21,16 @@ const TitleLink = styled(Link)(({ theme }) => ({
 export default function NavBar() {
   const [currentTabIdx, setCurrentTabIdx] = useState(false);
 
+  const location = useLocation();
+  const { pathname } = location;
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
-  const { pathname } = useLocation();
 
   useEffect(() => {
     switch (pathname) {
-      case "/beta/segments":
-      case "/beta/leaderboard":
-      case "/beta/athletes":
+      case "/segments":
+      case "/leaderboard":
+      case "/recent":
+      case "/athletes":
         setCurrentTabIdx(pathname);
         break;
 
@@ -45,6 +46,10 @@ export default function NavBar() {
         setCurrentTabIdx(false);
         break;
     }
+
+    let title = pathname.replace("/", "");
+    title = title[0].toUpperCase() + title.slice(1);
+    document.title = `SBMT - ${title}`;
   }, [isMobile, pathname]);
 
   const tabs = ["leaderboard", "segments", "athletes"];
@@ -70,19 +75,17 @@ export default function NavBar() {
             <TitleLink to="recent">
               <span className="sbmt">SBMT</span>
             </TitleLink>
-            <AppContext.Consumer>
-              {(context) => <UserMenu {...context} />}
-            </AppContext.Consumer>
-          </Typography>{" "}
+            <UserMenu />
+          </Typography>
         </Toolbar>
         <Toolbar sx={{ justifyContent: "flex-end" }}>
           <Tabs value={currentTabIdx} aria-label="nav tabs example">
             {tabs.map((tabName) => (
               <Tab
-                value={`/beta/${tabName}`}
+                value={`/${tabName}`}
+                key={tabName}
                 label={tabName}
                 to={tabName}
-                key={tabName}
                 component={Link}
                 sx={{
                   color: "white",

@@ -17,7 +17,6 @@ const targetMap = {
   // infoBtn: "infoSection",
   // contributeBtn: "contributeSection",
   contributeBtn2: "contributeSection",
-  letMeKnow: "contributeSection",
 };
 
 export default class App extends Component {
@@ -42,6 +41,7 @@ export default class App extends Component {
     btns.forEach((btn) =>
       document.getElementById(btn).addEventListener("click", scrollToArea)
     );
+
     document
       .getElementById("textArea")
       .addEventListener("keydown", onTextChange);
@@ -109,13 +109,10 @@ export default class App extends Component {
       <div className="root">
         <section className="landingSection">
           <div className="logo">
-            {/* <img alt="rabble" id="logo" src="./assets/logoV1.svg" /> */}
-            <LogoV1 id="logo" />
-            <h2 className="h2Landing">
-              Coming
-              <br />
-              May 26th, 2023
-            </h2>
+            <Link to="/beta">
+              <LogoV1 id="logo" />
+            </Link>
+            <h2 className="h2Landing">Coming May 26th, 2023</h2>
           </div>
           <Link to="/beta">
             <div
@@ -128,12 +125,9 @@ export default class App extends Component {
               Now in Beta testing! Join here.
             </div>
           </Link>
-          {/* <div id="infoBtn" className="button">
+          <div id="infoBtn" className="button">
             Info
           </div>
-          <div id="contributeBtn" className="button">
-            Feedback / Contribute
-          </div> */}
           <a
             className="landingLink"
             href="https://www.instagram.com/sbmtchallenge/"
@@ -181,9 +175,6 @@ export default class App extends Component {
             <br />
             <br />
             <br />
-            <a className="landingLink" href="#segmentList">
-              <div className="button segments">Segment List Announced!</div>
-            </a>
           </article>
 
           <div id="contributeBtn2" className="button">
@@ -238,7 +229,7 @@ export default class App extends Component {
             </div>
           </article>
         </section>
-        <section className="landingSection" id="segmentList">
+        {/* <section className="landingSection" id="segmentList">
           <h1 className="h1Landing">Segments</h1>
 
           <article className="articleLanding">
@@ -530,7 +521,7 @@ export default class App extends Component {
               </div>
             </div>
           </article>
-        </section>
+        </section> */}
       </div>
     );
   }

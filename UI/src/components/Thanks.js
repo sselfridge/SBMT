@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Box, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { ReactComponent as Insta } from "assets/insta.svg";
@@ -9,11 +9,14 @@ import AppContext from "AppContext";
 const MyPaper = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 
 const Thanks = () => {
+  const { user } = useContext(AppContext);
+
   return (
     <MyPaper
       sx={{
         maxWidth: 500,
         height: "80vh",
+        minHeight: 400,
         display: "flex",
         flexDirection: "column",
         alignContent: "center",
@@ -22,14 +25,9 @@ const Thanks = () => {
       }}
     >
       <Box>
-        <AppContext.Consumer>
-          {({ user }) => {
-            if (user?.firstname)
-              return (
-                <Typography variant="h3">Hey {user.firstname},</Typography>
-              );
-          }}
-        </AppContext.Consumer>
+        {user?.firstname && (
+          <Typography variant="h3">Hey {user.firstname},</Typography>
+        )}
         thanks for signing up!
       </Box>
       <Typography variant="h5">

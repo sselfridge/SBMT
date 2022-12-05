@@ -96,7 +96,7 @@ const Athletes = () => {
             <React.Fragment>
               <TableCell>
                 {" "}
-                <Link to={`/beta/segments/${segment.segmentId}`}>
+                <Link to={`/segments/${segment.segmentId}`}>
                   {segment.segmentName}
                 </Link>
               </TableCell>

@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useContext } from "react";
-import _ from "lodash";
 import {
   Paper,
   Link,
@@ -23,6 +22,7 @@ import {
   // surfaceList,
 } from "utils/constants";
 import { ApiGet } from "api/api";
+import AppContext from "AppContext";
 
 const MyPaper = styled(Paper)(({ theme }) => ({
   padding: 8,
@@ -32,9 +32,8 @@ const MyPaper = styled(Paper)(({ theme }) => ({
 
 const categorySelect = categoryList.filter((c) => c !== "ALL");
 
-const Register = (props) => {
+const Register = () => {
   const { user, dispatch } = useContext(AppContext);
-
   // const [age, setAge] = useState("");
   const [category, setCategory] = useState("");
   const [localUser, setLocalUser] = useState({});

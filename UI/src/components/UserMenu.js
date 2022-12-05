@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
-import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -22,6 +21,7 @@ import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import stravaSvg from "assets/stravaLogoOrange.svg";
 
+import AppContext from "AppContext";
 import { ApiDelete, ApiGet } from "api/api";
 import AppContext from "AppContext";
 
@@ -34,7 +34,7 @@ const UserMenuBox = styled(Box)(({ theme }) => ({
   right: "8px",
 }));
 
-const UserMenu = (props) => {
+const UserMenu = () => {
   const { dispatch, user: contextUser } = useContext(AppContext);
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -90,8 +90,12 @@ const UserMenu = (props) => {
     <React.Fragment>
       <UserMenuBox>
         {!user?.athleteId && (
-          <MuiLink
-            href={`https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirect_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read_all,activity:read_all,profile:read_all`}
+          <Link
+            // href={`https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirect_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read,read_all,activity:read,activity:read_all`}
+            // href={`https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirect_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read,read_all,activity:read,activity:read_all,profile:read_all`}
+            // href={`https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirect_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read_all,activity:read_all,profile:read_all`}
+            // href={`https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirect_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read,activity:read,profile:read_all`}
+            href={`https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirect_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read,activity:read`}
             sx={{
               backgroundColor: "strava.main",
               padding: "10px 20px",
@@ -220,11 +224,6 @@ const UserMenu = (props) => {
       </Menu>
     </React.Fragment>
   );
-};
-
-UserMenu.propTypes = {
-  user: PropTypes.object,
-  dispatch: PropTypes.func.isRequired,
 };
 
 export default UserMenu;

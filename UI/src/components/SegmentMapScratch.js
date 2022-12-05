@@ -13,9 +13,9 @@ import { segments as datas } from "mockData/data";
 import redMarkerSvg from "assets/hackyColors/redMarker.svg";
 import greenMarkerSvg from "assets/hackyColors/greenMarker.svg";
 import segments from "mockData/segments";
-import keys from "config";
+import config from "config";
 
-mapboxgl.accessToken = keys.mapBox;
+mapboxgl.accessToken = config.mapBox;
 
 let addedIds = [];
 

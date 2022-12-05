@@ -160,7 +160,7 @@ const Segments = () => {
                         <TableCell>
                           <Link
                             style={{ display: "flex", alignItems: "center" }}
-                            to={`/beta/athletes/${e.athleteId}`}
+                            to={`/athletes/${e.athleteId}`}
                           >
                             <Avatar src={e.avatar} sx={{ mr: 1 }} />
                             {e.firstname} {e.lastname}
