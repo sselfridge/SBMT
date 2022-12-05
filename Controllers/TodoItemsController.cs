@@ -180,11 +180,11 @@ namespace TodoApi.Controllers
       {
         return Ok("loadked");
       }
-      return Ok("Ready to go commander");
+      //return Ok("Ready to go commander");
 
-      var client = await _stravaService.GetClientForUser(10645041);
+      var client = await _stravaService.GetClientForUser(318480);
 
-      var fullActivity = await _stravaService.GetActivity(8151280461, client);
+      var fullActivity = await _stravaService.GetActivity(8203814989, client);
 
       var efforts = StravaUtilities.PullEffortsFromActivity(fullActivity, _dbContext);
 

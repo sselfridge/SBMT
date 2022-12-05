@@ -98,6 +98,7 @@ namespace TodoApi.Controllers
       var existingUser = _userService.GetById(oAuthUser.AthleteId);
       if (existingUser == null)
       {
+        Console.WriteLine($"sbmtLog: On boarding new athleteId: {oAuthUser.AthleteId} with scope '{scope}'");
         await StravaUtilities.OnBoardNewUser(serviceScopeFactory, oAuthUser, _stravaService, _dbContext);
         return Redirect($"{Configuration["BaseURL"]}/beta/thanks");
 

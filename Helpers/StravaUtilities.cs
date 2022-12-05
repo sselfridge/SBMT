@@ -78,6 +78,8 @@ namespace TodoApi.Helpers
             var stravaService = scope.ServiceProvider.GetRequiredService<IStravaService>();
             var activities = await stravaService.GetActivities(athleteId, context);
 
+            Console.WriteLine($"sbmtLog: athleteId:{athleteId} onboarding with {activities.Count} activities");
+
             var allEfforts = new List<Effort>();
             var client = await stravaService.GetClientForUser(athleteId);
 
@@ -94,6 +96,7 @@ namespace TodoApi.Helpers
             }
 
             var newEfforts = new List<Effort>();
+            Console.WriteLine($"sbmtLog: athleteId:{athleteId} onboarding with {allEfforts.Count} total efforts");
 
 
             foreach (var effort in allEfforts)
@@ -104,6 +107,7 @@ namespace TodoApi.Helpers
                 newEfforts.Add(effort);
               }
             }
+            Console.WriteLine($"sbmtLog: athleteId:{athleteId} onboarding with {newEfforts.Count} newEfforts");
 
             context.AddRange(newEfforts);
             context.SaveChanges();
