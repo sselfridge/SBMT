@@ -23,7 +23,6 @@ import stravaSvg from "assets/stravaLogoOrange.svg";
 
 import AppContext from "AppContext";
 import { ApiDelete, ApiGet } from "api/api";
-import AppContext from "AppContext";
 
 const UserMenuBox = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -90,7 +89,7 @@ const UserMenu = () => {
     <React.Fragment>
       <UserMenuBox>
         {!user?.athleteId && (
-          <Link
+          <MuiLink
             // href={`https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirect_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read,read_all,activity:read,activity:read_all`}
             // href={`https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirect_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read,read_all,activity:read,activity:read_all,profile:read_all`}
             // href={`https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirect_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read_all,activity:read_all,profile:read_all`}
