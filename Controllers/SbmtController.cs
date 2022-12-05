@@ -13,11 +13,14 @@ namespace TodoApi.Controllers
   {
     private sbmtContext _dbContext;
     private IUserService _userService;
+    private readonly IConfiguration Configuration;
 
-    public SbmtController(sbmtContext dbContext, IUserService userService)
+
+    public SbmtController(sbmtContext dbContext, IUserService userService, IConfiguration configuration)
     {
       _dbContext = dbContext;
       _userService = userService;
+      Configuration = configuration;
     }
 
 
@@ -305,14 +308,16 @@ namespace TodoApi.Controllers
     [HttpGet("athletes/current")]
     public IActionResult GetCurrentAthlete()
     {
+      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
 
-      var possibleNulUser = HttpContext.Items["User"];
+      if (userId == null) return NotFound();
 
-      if (possibleNulUser == null)
-      {
-        return NotFound();
-      }
-      StravaUser user = (StravaUser)possibleNulUser;
+      var athleteId = Int32.Parse(userId);
+      var possibleNullUser = _dbContext.StravaUsers.FirstOrDefault(u => u.AthleteId == athleteId);
+
+      if (possibleNullUser == null) return NotFound();
+
+      StravaUser user = (StravaUser)possibleNullUser;
       return Ok(new StravaUserDTO(user));
     }
 
@@ -339,7 +344,7 @@ namespace TodoApi.Controllers
     public IActionResult Logout()
     {
 
-      HttpContext.Response.Cookies.Delete("SBMT");
+      HttpContext.Response.Cookies.Delete(Configuration["CookieName"]);
 
 
       return Ok("Cookie Deleted");
@@ -358,23 +363,22 @@ namespace TodoApi.Controllers
     [HttpDelete("athletes/{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-      var cookieUser = HttpContext.Items["User"];
+      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
+      if (userId == null) return NotFound();
+      var athleteId = Int32.Parse(userId);
 
-      if (cookieUser == null) return NotFound();
 
-      StravaUser user = (StravaUser)cookieUser;
+      if (id != athleteId) return Unauthorized();
 
-      if (id != user.AthleteId) return Unauthorized();
+      var allEfforts = _dbContext.Efforts.Where(e => e.AthleteId == athleteId).ToList();
 
-      var allEfforts = _dbContext.Efforts.Where(e => e.AthleteId == user.AthleteId).ToList();
-
-      var dbUser = _dbContext.StravaUsers.FirstOrDefault(u => u.AthleteId == user.AthleteId);
+      var dbUser = _dbContext.StravaUsers.FirstOrDefault(u => u.AthleteId == athleteId);
       if (dbUser == null) return NotFound();
       try
       {
         _dbContext.RemoveRange(allEfforts);
         _dbContext.Remove(dbUser);
-        HttpContext.Response.Cookies.Delete("SBMT");
+        HttpContext.Response.Cookies.Delete(Configuration["CookieName"]);
 
         await _dbContext.SaveChangesAsync();
 
@@ -385,8 +389,8 @@ namespace TodoApi.Controllers
         return BadRequest();
       }
 
-
-      return Ok(user);
+      var deletedUserDTO = new StravaUserDTO(dbUser);
+      return Ok(deletedUserDTO);
     }
   }
 }

@@ -22,36 +22,11 @@ namespace TodoApi.Helpers
       {
         authContext.Succeed(requirement);
       }
-      else
-      {
-        HttpContext? httpContext = _httpContextAccessor.HttpContext;
-        if (httpContext != null)
-        {
-          httpContext.Response.StatusCode = 403;
-        }
-      }
+
 
       return Task.CompletedTask;
 
-      // way of working this with old Items["User"] setup
-      //HttpContext? httpContext = _httpContextAccessor.HttpContext;
-      //if (httpContext != null)
-      //{
-      //  var contextUser = httpContext.Items["User"];
-      //  if (contextUser != null)
-      //  {
-      //    StravaUser user = (StravaUser)contextUser;
-      //    if (user.AthleteId == requirement.AdminAthleteId)
-      //    {
-      //      context.Succeed(requirement);
-      //    }
-      //  }
-      //}
 
-
-
-
-      //return Task.CompletedTask;
     }
 
   }

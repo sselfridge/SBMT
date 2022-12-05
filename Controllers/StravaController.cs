@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using System.Text.Json;
 using TodoApi.Helpers;
 using TodoApi.Models;
@@ -25,21 +22,7 @@ namespace TodoApi.Controllers
     private IStravaService _stravaService;
     private IServiceScopeFactory _serviceScopeFactory;
 
-    private string GenerateJwtToken(int id)
-    {
-      // generate token that is valid for 30 days
-      var tokenHandler = new JwtSecurityTokenHandler();
-      var jwtKey = Configuration["jwtKey"];
-      var key = Encoding.ASCII.GetBytes(jwtKey);
-      var tokenDescriptor = new SecurityTokenDescriptor
-      {
-        Subject = new ClaimsIdentity(new[] { new Claim("id", id.ToString()) }),
-        Expires = DateTime.UtcNow.AddDays(300),
-        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-      };
-      var token = tokenHandler.CreateToken(tokenDescriptor);
-      return tokenHandler.WriteToken(token);
-    }
+
 
 
 
@@ -66,16 +49,18 @@ namespace TodoApi.Controllers
 
       var oAuthUser = new OauthStravaUser(oAuth);
 
-      var cookie = GenerateJwtToken(oAuthUser.AthleteId);
-      HttpContext.Response.Cookies.Append("SBMT", cookie.ToString());
-
-
       var claims = new List<Claim>
         {
             //new Claim(ClaimTypes.Name, oAuthUser.AthleteId),
             new Claim("AthleteId", $"{oAuthUser.AthleteId}"),
-            new Claim(ClaimTypes.Role, "Administrator"),
         };
+
+      if (oAuthUser.AthleteId == 1075670)
+      {
+        var adminClaim = new Claim(ClaimTypes.Role, "Administrator");
+        claims.Add(adminClaim);
+      }
+
 
       var claimsIdentity = new ClaimsIdentity(
           claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -85,12 +70,12 @@ namespace TodoApi.Controllers
         //AllowRefresh = < bool >,
         // Refreshing the authentication session should be allowed.
 
-        //ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
+        ExpiresUtc = DateTimeOffset.UtcNow.AddDays(10),
         // The time at which the authentication ticket expires. A 
         // value set here overrides the ExpireTimeSpan option of 
         // CookieAuthenticationOptions set with AddCookie.
 
-        //IsPersistent = true,
+        IsPersistent = true,
         // Whether the authentication session is persisted across 
         // multiple requests. When used with cookies, controls
         // whether the cookie's lifetime is absolute (matching the
@@ -193,16 +178,16 @@ namespace TodoApi.Controllers
       var user = _dbContext.StravaUsers.FirstOrDefault(u => u.AthleteId == athleteId);
       if (user == null) return NotFound();
 
-      var cookieUser = HttpContext.Items["User"];
-      if (cookieUser == null) return Unauthorized();
+      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
 
-      StravaUser currentUser = (StravaUser)cookieUser;
+      if (userId == null) return NotFound();
 
-      if (currentUser.AthleteId != user.AthleteId)
+      var cookieAthleteId = Int32.Parse(userId);
+
+      if (cookieAthleteId != user.AthleteId)
       {
         return Forbid();
       }
-
 
       var profile = await _stravaService.GetProfile(athleteId, _dbContext);
 
@@ -221,9 +206,6 @@ namespace TodoApi.Controllers
       }
 
       await _userService.Update(user, _dbContext);
-
-      HttpContext.Items["User"] = user;
-
 
       return Ok(user);
     }
