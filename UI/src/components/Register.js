@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useContext } from "react";
+import _ from "lodash";
 import {
   Paper,
   Link,
@@ -8,10 +9,9 @@ import {
   Typography,
   Button,
 } from "@mui/material";
-import _ from "lodash";
 import { styled } from "@mui/material/styles";
+import AppContext from "AppContext";
 
-// import { ReactComponent as StravaLogo } from "assets/stravaLogoOrange.svg";
 import { ReactComponent as StravaLogo } from "assets/stravaLogoTransparent.svg";
 
 import LabeledSelect from "./Shared/LabeledSelect";
@@ -23,7 +23,6 @@ import {
   // surfaceList,
 } from "utils/constants";
 import { ApiGet } from "api/api";
-import AppContext from "AppContext";
 
 const MyPaper = styled(Paper)(({ theme }) => ({
   padding: 8,

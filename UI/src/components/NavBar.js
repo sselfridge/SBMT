@@ -23,6 +23,7 @@ export default function NavBar() {
 
   const location = useLocation();
   const { pathname } = location;
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
   useEffect(() => {
     switch (pathname) {
@@ -33,6 +34,14 @@ export default function NavBar() {
         setCurrentTabIdx(pathname);
         break;
 
+      case "/beta/recent":
+        if (isMobile) {
+          setCurrentTabIdx(false);
+        } else {
+          setCurrentTabIdx(pathname);
+        }
+        break;
+
       default:
         setCurrentTabIdx(false);
         break;
@@ -41,9 +50,7 @@ export default function NavBar() {
     let title = pathname.replace("/", "");
     title = title[0].toUpperCase() + title.slice(1);
     document.title = `SBMT - ${title}`;
-  }, [pathname]);
-
-  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  }, [isMobile, pathname]);
 
   const tabs = ["leaderboard", "segments", "athletes"];
 

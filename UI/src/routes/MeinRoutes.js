@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import App from "../App";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import DefaultRoute from "routes/DefaultRoute";
+
+import NotFound from "routes/NotFound";
 import Recent from "components/Recent";
 import Leaderboard from "components/Leaderboard";
 import Segments from "components/Segments";
@@ -19,12 +20,21 @@ import BetaRedirect from "./BetaRedirect";
 import Thanks from "components/Thanks";
 import LandingPage from "components/LandingPage/LandingPage";
 
+import Admin from "components/Admin/Admin";
+import AdminSegments from "components/Admin/AdminSegments";
+
+import AppContext from "AppContext";
+
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import config from "config";
 
 mapboxgl.accessToken = config.mapBox;
 
 const MeinRoutes = () => {
+  const { user } = useContext(AppContext);
+
+  const isAdmin = user?.athleteId === 1075670;
+
   return (
     <BrowserRouter>
       <Routes>
@@ -51,7 +61,14 @@ const MeinRoutes = () => {
 
           <Route path="register" element={<Register />} />
 
-          <Route path="*" element={<DefaultRoute />} />
+          {isAdmin && (
+            <Route path="admin">
+              <Route path="" element={<Admin />} />
+              <Route path="segments" element={<AdminSegments />} />
+            </Route>
+          )}
+
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </BrowserRouter>

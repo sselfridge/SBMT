@@ -9,7 +9,7 @@ import {
   Divider,
   MenuItem,
   Typography,
-  Link,
+  Link as MuiLink,
   useMediaQuery,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -67,7 +67,7 @@ const UserMenu = () => {
   useEffect(() => {
     if (fetchOnce.current) {
       fetchOnce.current = null;
-      ApiGet("/api/athletes/current", onSetUser, true, {});
+      ApiGet("/api/athletes/current", onSetUser, {});
     }
   }, [onSetUser]);
 
@@ -89,7 +89,7 @@ const UserMenu = () => {
     <React.Fragment>
       <UserMenuBox>
         {!user?.athleteId && (
-          <Link
+          <MuiLink
             // href={`https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirect_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read,read_all,activity:read,activity:read_all`}
             // href={`https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirect_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read,read_all,activity:read,activity:read_all,profile:read_all`}
             // href={`https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirect_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read_all,activity:read_all,profile:read_all`}
@@ -115,7 +115,7 @@ const UserMenu = () => {
             >
               Register / Login
             </Typography>
-          </Link>
+          </MuiLink>
         )}
         <IconButton
           onClick={handleClick}
@@ -184,7 +184,14 @@ const UserMenu = () => {
             <Divider />
           </a>
         )}
-
+        {user?.athleteId === 1075670 && (
+          <MenuItem onClick={() => navTo("admin")}>
+            <ListItemIcon>
+              <Settings fontSize="small" />
+            </ListItemIcon>
+            Admin
+          </MenuItem>
+        )}
         {user?.athleteId && (
           <MenuItem onClick={() => navTo("settings")}>
             <ListItemIcon>

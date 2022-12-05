@@ -11,7 +11,7 @@ import {
 import { ReactComponent as Logo } from "assets/logoV1.svg";
 
 import { styled } from "@mui/material/styles";
-
+import { ApiGet } from "api/api";
 const MyBox = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 const ArticleBox = styled(Box)(({ theme }) => ({ margin: "0 15%" }));
 const TitleTypography = styled(Typography)(({ theme }) => ({
@@ -25,6 +25,14 @@ const SubTiltleTypo = styled(Typography)(({ theme }) => ({
 }));
 
 const Info = (props) => {
+  const [segments, setSegments] = React.useState([]);
+
+  console.info("segments: ", segments);
+
+  React.useEffect(() => {
+    ApiGet("/api/admin/segments", setSegments);
+  }, []);
+
   return (
     <MyBox>
       <Paper
@@ -77,6 +85,23 @@ const Info = (props) => {
         </ArticleBox>
         <ArticleBox sx={{ margin: "0 15%" }}>
           <TitleTypography variant="h2">Beta Updates</TitleTypography>
+          <SubTiltleTypo variant="h4"></SubTiltleTypo>
+          <List sx={{ fontSize: ".8em" }}>
+            <ListItem>
+              Switched over to dotnet authenticate / authorize instead of using
+              home brewed JWT
+            </ListItem>
+            <ListItem>
+              Added Admin page for me so I don't have to do things manually in
+              SQL, because I have to look up syntax for every query every
+              time...
+            </ListItem>
+            <ListItem>
+              Tweaked a few segments. Casitas climb west bound starts from the
+              fire station, Toro canyon starts from Via Real, and Tunnel Road
+              ends at the gate.
+            </ListItem>
+          </List>
           <SubTiltleTypo variant="h4">Thanksgiving Update</SubTiltleTypo>
           <List sx={{ fontSize: ".8em" }}>
             <ListItem>
