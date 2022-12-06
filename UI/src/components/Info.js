@@ -85,7 +85,14 @@ const Info = (props) => {
         </ArticleBox>
         <ArticleBox sx={{ margin: "0 15%" }}>
           <TitleTypography variant="h2">Beta Updates</TitleTypography>
-          <SubTiltleTypo variant="h4"></SubTiltleTypo>
+          <SubTiltleTypo variant="h4">Second update of December</SubTiltleTypo>
+          <List sx={{ fontSize: ".8em" }}>
+            <ListItem>
+              Implemented strava push responses, so efforts should go away when
+              you delete or make them private etc.
+            </ListItem>
+          </List>
+          <SubTiltleTypo variant="h4">First update of December</SubTiltleTypo>
           <List sx={{ fontSize: ".8em" }}>
             <ListItem>
               Switched over to dotnet authenticate / authorize instead of using

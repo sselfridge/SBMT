@@ -144,6 +144,7 @@ namespace TodoApi.Controllers
       subRes = JsonSerializer.Deserialize<StravaPushNotificationDTO>(json);
 
 
+
       if (subRes != null)
       {
         var pushNotification = new StravaPushNotification(subRes);
@@ -151,7 +152,21 @@ namespace TodoApi.Controllers
         _dbContext.StravaPushNotifications.Add(pushNotification);
         await _dbContext.SaveChangesAsync();
 
-        if (pushNotification.AspectType == "create")
+        var outStr = $"sbmtlog: New Strava Push-----" +
+        $"Aspect:{pushNotification.AspectType} -----" +
+        $"owner:{pushNotification.OwnerId} -----" +
+        $"object:{pushNotification.ObjectId} -----" +
+        $"owner:{pushNotification.Updates} -----";
+        Console.WriteLine(outStr);
+
+        if ((pushNotification.AspectType == "create" &&
+              pushNotification.ObjectType == "activity"
+              ) || (
+              pushNotification.AspectType == "update" &&
+              pushNotification.ObjectType == "activity" &&
+              pushNotification.Updates != null &&
+              pushNotification.Updates.Contains("private") &&
+              pushNotification.Updates.Contains("false")))
         {
           var athleteId = pushNotification.OwnerId;
           if (_dbContext.StravaUsers.Any(u => u.AthleteId == athleteId))
@@ -160,14 +175,46 @@ namespace TodoApi.Controllers
 #pragma warning disable CS4014
             StravaUtilities.ParseNewActivity(_serviceScopeFactory, athleteId, activityId);
 #pragma warning restore CS4014
-
           }
+
+        }
+        //User has canceled their auth via strava, remove from DB
+        else if (pushNotification.AspectType == "update" &&
+                  pushNotification.ObjectType == "athlete" &&
+                  pushNotification.Updates != null &&
+                  pushNotification.Updates.Contains("authorized") &&
+                  pushNotification.Updates.Contains("false")
+                  )
+        {
+          var athleteId = pushNotification.OwnerId;
+          await _userService.DeleteUser(athleteId);
+        }
+        //Either activity was deleted or made private, either way remove from the efforts table
+        else if ((pushNotification.AspectType == "delete" &&
+                  pushNotification.ObjectType == "activity") ||
+
+                  (pushNotification.AspectType == "update" &&
+                  pushNotification.ObjectType == "activity" &&
+                  pushNotification.Updates != null &&
+                  pushNotification.Updates.Contains("private") &&
+                  pushNotification.Updates.Contains("true")))
+        {
+          var effortsToDelete = _dbContext.Efforts.Where(effort => effort.ActivityId == pushNotification.ObjectId).ToList();
+          _dbContext.Efforts.RemoveRange(effortsToDelete);
+          _dbContext.SaveChanges();
+        }
+        else if (pushNotification.AspectType == "update" &&
+                  pushNotification.ObjectType == "activity" &&
+                  pushNotification.Updates != null &&
+                  pushNotification.Updates.Contains("private") &&
+                  pushNotification.Updates.Contains("false"))
+        {
 
         }
 
 
 
-        return Ok("Created");
+        return Ok("Done and Done");
 
       }
       return Ok();

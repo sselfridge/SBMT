@@ -14,6 +14,7 @@
 
     public List<UserSegment>? GetUserEfforts(int athleteId);
 
+    public Task<bool> DeleteUser(int athleteId);
 
   }
 
@@ -108,11 +109,6 @@
        }
        ).ToList();
 
-
-
-
-      //var userSegments = new List<UserSegment>();
-
       var userSegments = _dbContext.Segments.ToList()
         .Select(s => new UserSegment(athleteId, s.Id, s.Name, s.SurfaceType)).ToList();
 
@@ -125,11 +121,19 @@
         userSegment.AddEffort(effort);
 
       }
-
-
-
-
       return userSegments;
+    }
+
+    public async Task<bool> DeleteUser(int athleteId)
+    {
+      var dbUser = _dbContext.StravaUsers.FirstOrDefault(u => u.AthleteId == athleteId);
+      if (dbUser == null) throw new Exception("User not found");
+
+      var allEfforts = _dbContext.Efforts.Where(e => e.AthleteId == athleteId).ToList();
+      _dbContext.RemoveRange(allEfforts);
+      _dbContext.Remove(dbUser);
+      await _dbContext.SaveChangesAsync();
+      return true;
     }
 
   }

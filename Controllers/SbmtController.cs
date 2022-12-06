@@ -370,17 +370,13 @@ namespace TodoApi.Controllers
 
       if (id != athleteId) return Unauthorized();
 
-      var allEfforts = _dbContext.Efforts.Where(e => e.AthleteId == athleteId).ToList();
 
       var dbUser = _dbContext.StravaUsers.FirstOrDefault(u => u.AthleteId == athleteId);
       if (dbUser == null) return NotFound();
+
       try
       {
-        _dbContext.RemoveRange(allEfforts);
-        _dbContext.Remove(dbUser);
-        HttpContext.Response.Cookies.Delete(Configuration["CookieName"]);
-
-        await _dbContext.SaveChangesAsync();
+        await _userService.DeleteUser(athleteId);
 
       }
       catch (Exception)
@@ -389,6 +385,7 @@ namespace TodoApi.Controllers
         return BadRequest();
       }
 
+      HttpContext.Response.Cookies.Delete(Configuration["CookieName"]);
       var deletedUserDTO = new StravaUserDTO(dbUser);
       return Ok(deletedUserDTO);
     }

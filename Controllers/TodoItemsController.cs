@@ -180,15 +180,18 @@ namespace TodoApi.Controllers
       {
         return Ok("loadked");
       }
-      //return Ok("Ready to go commander");
-
-      var client = await _stravaService.GetClientForUser(318480);
-
-      var fullActivity = await _stravaService.GetActivity(8203814989, client);
-
-      var efforts = StravaUtilities.PullEffortsFromActivity(fullActivity, _dbContext);
+      return Ok("Ready to go commander");
 
 
+      var push = new StravaPushNotification("create", 123456, 123456, "activity", 431, 1234);
+
+      var outStr = $"sbmtlog: New Strava Push-----" +
+        $"Aspect:{push.AspectType} -----" +
+        $"owner:{push.OwnerId} -----" +
+        $"object:{push.ObjectId} -----" +
+        $"owner:{push.Updates} -----";
+
+      Console.WriteLine(outStr);
 
       var newStudent = new Student();
       newStudent.Name = "Bobby";
