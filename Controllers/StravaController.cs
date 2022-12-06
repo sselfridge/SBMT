@@ -156,7 +156,7 @@ namespace TodoApi.Controllers
         $"Aspect:{pushNotification.AspectType} -----" +
         $"owner:{pushNotification.OwnerId} -----" +
         $"object:{pushNotification.ObjectId} -----" +
-        $"owner:{pushNotification.Updates} -----";
+        $"updates:{pushNotification.Updates} -----";
         Console.WriteLine(outStr);
 
         if ((pushNotification.AspectType == "create" &&
@@ -203,15 +203,6 @@ namespace TodoApi.Controllers
           _dbContext.Efforts.RemoveRange(effortsToDelete);
           _dbContext.SaveChanges();
         }
-        else if (pushNotification.AspectType == "update" &&
-                  pushNotification.ObjectType == "activity" &&
-                  pushNotification.Updates != null &&
-                  pushNotification.Updates.Contains("private") &&
-                  pushNotification.Updates.Contains("false"))
-        {
-
-        }
-
 
 
         return Ok("Done and Done");
