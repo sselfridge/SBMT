@@ -53,7 +53,7 @@ const Leaderboard = () => {
   const columns = useMemo(
     () => [
       {
-        minWidth: 30,
+        minWidth: 35,
         flex: 4,
         field: "rank",
         sortable: false,
