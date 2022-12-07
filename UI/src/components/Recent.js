@@ -74,36 +74,36 @@ const columns = [
     valueGetter: ({ row }) => ({ id: row.activityId, time: row.elapsedTime }),
     flex: 1,
   },
-  {
-    field: "created",
-    sortable: true,
-    headerName: "Date Uploaded",
-    flex: 1.5,
-    width: 75,
-    renderCell: ({ value }) => {
-      const title = (
-        <div>
-          <section>Effort Time:</section>
-          <section>{formattedDate(value.startDate)}</section>
-          <section>Uploaded at:</section>
-          <section>{formattedDate(value.created)}</section>
-        </div>
-      );
+  // {
+  //   field: "created",
+  //   sortable: true,
+  //   headerName: "Date Uploaded",
+  //   flex: 1.5,
+  //   width: 75,
+  //   renderCell: ({ value }) => {
+  //     const title = (
+  //       <div>
+  //         <section>Effort Time:</section>
+  //         <section>{formattedDate(value.startDate)}</section>
+  //         <section>Uploaded at:</section>
+  //         <section>{formattedDate(value.created)}</section>
+  //       </div>
+  //     );
 
-      return (
-        <Tooltip arrow title={title}>
-          <a href={`https://www.strava.com/activities/${value.id}`}>
-            {formattedTimeAgo(value.created, { addSuffix: true })}
-          </a>
-        </Tooltip>
-      );
-    },
-    valueGetter: ({ row }) => ({
-      id: row.activityId,
-      startDate: row.startDate,
-      created: row.created,
-    }),
-  },
+  //     return (
+  //       <Tooltip arrow title={title}>
+  //         <a href={`https://www.strava.com/activities/${value.id}`}>
+  //           {formattedTimeAgo(value.created, { addSuffix: true })}
+  //         </a>
+  //       </Tooltip>
+  //     );
+  //   },
+  //   valueGetter: ({ row }) => ({
+  //     id: row.activityId,
+  //     startDate: row.startDate,
+  //     created: row.created,
+  //   }),
+  // },
   {
     field: "startDate",
     sortable: false,
