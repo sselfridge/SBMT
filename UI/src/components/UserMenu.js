@@ -19,7 +19,8 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
-import stravaSvg from "assets/stravaLogoOrange.svg";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 
 import AppContext from "AppContext";
 import { ApiDelete, ApiGet } from "api/api";
@@ -177,17 +178,18 @@ const UserMenu = () => {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         {user?.athleteId && (
-          <a href={`https://www.strava.com/athletes/${user?.athleteId}`}>
-            <MenuItem>
-              <Avatar src={stravaSvg} /> My Strava Profile
-            </MenuItem>
+          <MenuItem onClick={() => navTo(`athletes/${user?.athleteId}`)}>
+            <ListItemIcon>
+              <AccountBoxIcon fontSize="small" />
+            </ListItemIcon>{" "}
+            My Profile
             <Divider />
-          </a>
+          </MenuItem>
         )}
         {user?.athleteId === 1075670 && (
           <MenuItem onClick={() => navTo("admin")}>
             <ListItemIcon>
-              <Settings fontSize="small" />
+              <AdminPanelSettingsIcon fontSize="small" />
             </ListItemIcon>
             Admin
           </MenuItem>
