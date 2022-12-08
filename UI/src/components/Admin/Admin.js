@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { Paper, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -7,12 +7,11 @@ import { Link } from "react-router-dom";
 const MyPaper = styled(Paper)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 
 const Admin = (props) => {
-  const { prop } = props;
-
   return (
-    <MyPaper>
+    <MyPaper sx={{ display: "flex", flexDirection: "column" }}>
       <Typography variant={"h3"}>Admin Utilities</Typography>
       <Link to="segments">Segments</Link>
+      <Link to="users">Users</Link>
     </MyPaper>
   );
 };

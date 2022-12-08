@@ -22,6 +22,7 @@ import LandingPage from "components/LandingPage/LandingPage";
 
 import Admin from "components/Admin/Admin";
 import AdminSegments from "components/Admin/AdminSegments";
+import AdminUsers from "components/Admin/AdminUsers";
 
 import AppContext from "AppContext";
 
@@ -65,6 +66,7 @@ const MeinRoutes = () => {
             <Route path="admin">
               <Route path="" element={<Admin />} />
               <Route path="segments" element={<AdminSegments />} />
+              <Route path="users" element={<AdminUsers />} />
             </Route>
           )}
 

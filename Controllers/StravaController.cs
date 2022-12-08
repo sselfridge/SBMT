@@ -107,6 +107,7 @@ namespace TodoApi.Controllers
       {
         existingUser.AccessToken = oAuthUser.AccessToken;
         existingUser.ExpiresAt = oAuthUser.ExpiresAt;
+        existingUser.Scope = oAuthUser.Scope;
         var savedUser = await _userService.Update(existingUser);
       }
 

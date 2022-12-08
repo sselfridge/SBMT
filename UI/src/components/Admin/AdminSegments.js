@@ -56,7 +56,7 @@ const AdminSegments = (props) => {
   useEffect(() => {
     console.info("user?.athleteId: ", user?.athleteId);
     if (user?.athleteId && user.athleteId !== 1075670) {
-      navigate("/beta");
+      navigate("/");
     }
   }, [navigate, user?.athleteId]);
 
@@ -70,15 +70,15 @@ const AdminSegments = (props) => {
         return <Link to={`${id}`}>{value}</Link>;
       },
     },
-    {
-      field: "usage",
-      headerName: "Total Efforts",
-      flex: 20,
-      renderCell: (props) => {
-        const { value, id } = props;
-        return 0;
-      },
-    },
+    // {
+    //   field: "usage",
+    //   headerName: "Total Efforts",
+    //   flex: 20,
+    //   renderCell: (props) => {
+    //     const { value, id } = props;
+    //     return 0;
+    //   },
+    // },
     {
       field: "id",
       headerName: "Action",
