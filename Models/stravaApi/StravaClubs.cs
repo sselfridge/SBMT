@@ -4,7 +4,7 @@ namespace TodoApi.Models.stravaApi
 {
   //More reminder/shame files to see about getting clubs implmented
   //  But also a reminder that I should get the base functions working first...
-  public class StravaClubs
+  public class StravaClubResponse
   {
     [JsonPropertyName("id")]
     public int Id { get; set; }
