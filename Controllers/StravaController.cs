@@ -247,7 +247,27 @@ namespace TodoApi.Controllers
 
       await _userService.Update(user, _dbContext);
 
-      return Ok(user);
+      var clubs = Array.ConvertAll(profile.Clubs,
+        new Converter<StravaClubResponse, StravaClub>(clubRes => new StravaClub(clubRes)));
+
+      var retVal = new
+      {
+        AthleteId = user.AthleteId,
+        Firstname = user.Firstname,
+        Lastname = user.Lastname,
+        Avatar = user.Avatar,
+        RefreshToken = user.RefreshToken,
+        AccessToken = user.AccessToken,
+        ExpiresAt = user.ExpiresAt,
+        JoinDate = user.JoinDate,
+        Sex = user.Sex,
+        Weight = user.Weight,
+        Scope = user.Scope,
+        Clubs = clubs,
+      };
+
+
+      return Ok(retVal);
     }
 
   }

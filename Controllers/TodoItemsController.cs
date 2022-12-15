@@ -180,18 +180,18 @@ namespace TodoApi.Controllers
       {
         return Ok("loadked");
       }
+
+
+
+
       return Ok("Ready to go commander");
 
 
-      var push = new StravaPushNotification("create", 123456, 123456, "activity", 431, 1234);
+      var segments = _dbContext.Segments.ToList();
 
-      var outStr = $"sbmtlog: New Strava Push-----" +
-        $"Aspect:{push.AspectType} -----" +
-        $"owner:{push.OwnerId} -----" +
-        $"object:{push.ObjectId} -----" +
-        $"owner:{push.Updates} -----";
+      var segmentIds = segments.Select(x => x.Id).ToList();
 
-      Console.WriteLine(outStr);
+      return Ok(segmentIds);
 
       var newStudent = new Student();
       newStudent.Name = "Bobby";
@@ -253,8 +253,72 @@ namespace TodoApi.Controllers
     }
 
 
+    [HttpGet("init")]
+    public async Task<ActionResult> InitApp()
+    {
+      //var systemUIser = new StravaUser(1,
+      //  "App",
+      //  "Root",
+      //  "https://dgalywyr863hv.cloudfront.net/pictures/athletes/10645041/16052758/1/medium.jpg",
+      //  1669890293,
+      //  "de9e59f05d5e69aca8bbfd9bc29b279080e15347",
+      //  "7aa35e2d132e10e664b7edf4e8742187cb9bf079",
+      //  "M",
+      //  0.0,
+      //  "allScope");
+
+      //_dbContext.StravaUsers.Add(systemUIser);
+      //await _dbContext.SaveChangesAsync();
 
 
+      //var segmentIds = new List<long>(){
+      //  1313,
+      //  1315,
+      //  631703,
+      //  637362,
+      //  658277,
+      //  751029,
+      //  813814,
+      //  1290381,
+      //  12039079,
+      //  29015105,
+      //  647251,
+      //  746977,
+      //  2622235,
+      //  881465,
+      //  694014,
+      //  641588,
+      //  6639717,
+      //  785113,
+      //  647488,
+      //};
+
+
+      //for (int i = 0; i < segmentIds.Count; i++)
+      //{
+      //  var segmentId = segmentIds[i];
+      //  var segment = await _stravaService.GetSegment(segmentId);
+
+      //  if (segment == null) return NotFound();
+
+      //  if (_dbContext.Segments.Any(s => s.Id == segmentId))
+      //  {
+      //    return Conflict("segment exists");
+      //  }
+
+      //  _dbContext.Segments.Add(segment);
+      //  await _dbContext.SaveChangesAsync();
+      //}
+
+
+
+
+
+
+
+      return Ok();
+
+    }
 
 
 

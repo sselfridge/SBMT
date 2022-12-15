@@ -48,5 +48,8 @@ namespace TodoApi.Models.stravaApi
 
     [JsonPropertyName("ftp")]
     public int? Ftp { get; set; }
+
+    [JsonPropertyName("clubs")]
+    public StravaClubResponse[] Clubs { get; set; }
   }
 }

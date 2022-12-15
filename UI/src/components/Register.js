@@ -8,6 +8,7 @@ import {
   FormGroup,
   Typography,
   Button,
+  Avatar,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import AppContext from "AppContext";
@@ -76,21 +77,14 @@ const Register = () => {
             />
           </Box>
         </Grid>
-        <Grid item xs={2} />
-        <Grid item xs={4}>
-          Age
-        </Grid>
-        <Grid item xs={4}>
-          38
-        </Grid>
-        <Grid item xs={2} />
+
         {/* line break */}
         <Grid item xs={2} />
         <Grid item xs={4}>
           Weight
         </Grid>
         <Grid item xs={4}>
-          185
+          {localUser?.weight}
         </Grid>
         <Grid item xs={2} />
         {/* line break */}
@@ -99,7 +93,28 @@ const Register = () => {
           Sex
         </Grid>
         <Grid item xs={4}>
-          M
+          {localUser?.sex}
+        </Grid>
+        <Grid item xs={2} />
+        {/* line break */}
+        <Grid item xs={2} />
+        <Grid item xs={4}>
+          Clubs
+        </Grid>
+        <Grid item xs={4}>
+          {localUser?.clubs?.map((club) => {
+            return (
+              <Box sx={{ display: "flex" }}>
+                <Avatar src={club.profileMedium} />{" "}
+                <Typography
+                  sx={{ display: "flex", alignItems: "center" }}
+                  variant="body1"
+                >
+                  {club.name}
+                </Typography>
+              </Box>
+            );
+          })}
         </Grid>
         <Grid item xs={2} />
         <Grid item xs={12}>

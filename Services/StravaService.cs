@@ -19,6 +19,8 @@ namespace TodoApi.Services
 
     Task<HttpClient> GetClientForUser(int athleteId);
 
+    Task<Segment?> AddSegment(long segmentId, sbmtContext context);
+
 
   }
   public class StravaService : IStravaService
@@ -249,6 +251,23 @@ namespace TodoApi.Services
       return client;
     }
 
+    public async Task<Segment?> AddSegment(long segmentId, sbmtContext context)
+    {
+      var segment = await GetSegment(segmentId);
+
+
+      if (segment == null) return null;
+
+      if (context.Segments.Any(s => s.Id == segmentId))
+      {
+        return null;
+      }
+
+      context.Segments.Add(segment);
+      await context.SaveChangesAsync();
+
+      return segment;
+    }
 
 
     /// <summary>
@@ -300,6 +319,9 @@ namespace TodoApi.Services
 
       }
     }
+
+
+
   }
 
 

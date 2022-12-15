@@ -11,7 +11,6 @@ import {
 import { ReactComponent as Logo } from "assets/logoV1.svg";
 
 import { styled } from "@mui/material/styles";
-import { ApiGet } from "api/api";
 const MyBox = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 const ArticleBox = styled(Box)(({ theme }) => ({ margin: "0 15%" }));
 const TitleTypography = styled(Typography)(({ theme }) => ({
@@ -25,14 +24,6 @@ const SubTiltleTypo = styled(Typography)(({ theme }) => ({
 }));
 
 const Info = (props) => {
-  const [segments, setSegments] = React.useState([]);
-
-  console.info("segments: ", segments);
-
-  React.useEffect(() => {
-    ApiGet("/api/admin/segments", setSegments);
-  }, []);
-
   return (
     <MyBox>
       <Paper

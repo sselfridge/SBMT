@@ -6,8 +6,13 @@ using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Services;
 
+
+var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
 IConfiguration configuration = new ConfigurationBuilder()
                             .AddJsonFile("appsettings.json")
+                            //.AddJsonFile($"appsettings.Production.json")
+                            .AddJsonFile($"appsettings.{env}.json")
                             .Build();
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,15 +20,15 @@ builder.WebHost.UseUrls("http://*:5000", "https://*:5001");
 
 // Add services to the container.
 
-
 builder.Services.AddControllers();
 
+string dbServer = configuration["DbConfig:dbServer"];
 string dbPass = configuration["DbConfig:dbPass"];
 string dbUser = configuration["DbConfig:dbUser"];
 string dbName = configuration["DbConfig:dbName"];
 
 string connectionString = $"" +
-  $"Server=sbmt.postgres.database.azure.com;" +
+  $"Server={dbServer};" +
   $"Database={dbName};" +
   $"Port=5432;" +
   $"User Id={dbUser};" +
