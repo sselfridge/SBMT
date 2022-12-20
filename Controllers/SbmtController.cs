@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Services;
@@ -82,6 +83,11 @@ namespace TodoApi.Controllers
       string surfaceFilter = HttpContext.Request.Query["surface"];
       string genderFilter = HttpContext.Request.Query["gender"];
 
+      long clubFilter = 0;
+      long.TryParse(HttpContext.Request.Query["club"], out clubFilter);
+
+
+
       var allSegment = _dbContext.Segments.ToList();
       if (surfaceFilter != null &&
           (surfaceFilter == "gravel" || surfaceFilter == "road"))
@@ -89,13 +95,17 @@ namespace TodoApi.Controllers
         allSegment = allSegment.FindAll(s => s.SurfaceType == surfaceFilter);
       }
 
-      var users = _dbContext.StravaUsers.ToList();
+      var users = _dbContext.StravaUsers.Include(x => x.StravaClubs).ToList();
 
       if (genderFilter != null && (genderFilter == "M" || genderFilter == "F"))
       {
         users = users.FindAll(u => u.Sex == genderFilter);
       }
 
+      if (clubFilter != 0)
+      {
+        users = users.FindAll(u => u.StravaClubs.Any(club => club.Id == clubFilter));
+      }
 
       var data = users.Join(_dbContext.Efforts,
         effort => effort.AthleteId,

@@ -15,6 +15,7 @@ namespace TodoApi.Models.db
     public DbSet<StravaPushNotification> StravaPushNotifications { get; set; }
     public DbSet<Effort> Efforts { get; set; }
     public DbSet<Segment> Segments { get; set; }
+    public DbSet<StravaClub> StravaClubs { get; set; }
 
   }
 

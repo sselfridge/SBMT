@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Net.Http.Headers;
 using TodoApi.Models.db;
 using TodoApi.Models.stravaApi;
 
@@ -21,6 +22,8 @@ namespace TodoApi.Services
 
     Task<Segment?> AddSegment(long segmentId, sbmtContext context);
 
+    StravaUser UpdateUserClubs(StravaUser user, List<StravaClub> newClubs, sbmtContext context);
+    StravaUser UpdateUserClubs(StravaUser user, StravaClubResponse[] newClubs, sbmtContext context);
 
   }
   public class StravaService : IStravaService
@@ -267,6 +270,48 @@ namespace TodoApi.Services
       await context.SaveChangesAsync();
 
       return segment;
+    }
+
+    public StravaUser UpdateUserClubs(StravaUser user, StravaClubResponse[] newClubs, sbmtContext context)
+    {
+      var clubsList = Array.ConvertAll(newClubs,
+                      new Converter<StravaClubResponse, StravaClub>
+                      (clubRes => new StravaClub(clubRes))).ToList();
+      return UpdateUserClubs(user, clubsList, context);
+    }
+    public StravaUser UpdateUserClubs(StravaUser user, List<StravaClub> newClubs, sbmtContext context)
+    {
+      var newDbClubs = new List<StravaClub>();
+      foreach (var club in newClubs)
+      {
+        var existsAlready = context.StravaClubs.Any(c => c.Id == club.Id);
+        if (existsAlready == false)
+        {
+          newDbClubs.Add(club);
+        }
+
+      }
+      context.StravaClubs.AddRange(newDbClubs);
+
+
+      foreach (var club in newClubs)
+      {
+        var userIds = user.StravaClubs.Select(x => x.Id);
+        if (userIds.Contains(club.Id) == false)
+        {
+          user.StravaClubs.Add(club);
+        }
+      }
+
+      foreach (var userClub in user.StravaClubs.Where
+        (c => newClubs.Select(x => x.Id).Contains(c.Id) == false)
+        .ToList())
+      {
+        user.StravaClubs.Remove(userClub);
+      }
+
+
+      return user;
     }
 
 

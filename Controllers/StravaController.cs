@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.Text.Json;
 using TodoApi.Helpers;
@@ -215,8 +216,8 @@ namespace TodoApi.Controllers
     [HttpGet("userRefresh/{athleteId}")]
     public async Task<IActionResult> RefreshUser(int athleteId)
     {
-      var user = _dbContext.StravaUsers.FirstOrDefault(u => u.AthleteId == athleteId);
-      if (user == null) return NotFound();
+
+
 
       var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
 
@@ -224,14 +225,17 @@ namespace TodoApi.Controllers
 
       var cookieAthleteId = Int32.Parse(userId);
 
+      var profile = await _stravaService.GetProfile(athleteId, _dbContext);
+
+      if (profile == null) return NotFound();
+
+      var user = _dbContext.StravaUsers.Include(x => x.StravaClubs).FirstOrDefault(u => u.AthleteId == athleteId);
+
+      if (user == null) return NotFound();
       if (cookieAthleteId != user.AthleteId)
       {
         return Forbid();
       }
-
-      var profile = await _stravaService.GetProfile(athleteId, _dbContext);
-
-      if (profile == null) return NotFound();
 
       user.Firstname = profile.Firstname;
       user.Lastname = profile.Lastname;
@@ -245,10 +249,10 @@ namespace TodoApi.Controllers
         user.Weight = (double)profile.Weight;
       }
 
-      await _userService.Update(user, _dbContext);
+      user = _stravaService.UpdateUserClubs(user, profile.Clubs, _dbContext);
 
-      var clubs = Array.ConvertAll(profile.Clubs,
-        new Converter<StravaClubResponse, StravaClub>(clubRes => new StravaClub(clubRes)));
+      _dbContext.Update(user);
+      _dbContext.SaveChanges();
 
       var retVal = new
       {
@@ -263,7 +267,7 @@ namespace TodoApi.Controllers
         Sex = user.Sex,
         Weight = user.Weight,
         Scope = user.Scope,
-        Clubs = clubs,
+        Clubs = user.StravaClubs
       };
 
 

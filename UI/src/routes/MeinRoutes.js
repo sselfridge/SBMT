@@ -14,7 +14,7 @@ import UserSettings from "components/UserSettings";
 import HelpContact from "components/HelpContact";
 import Info from "components/Info";
 import InfoScopes from "components/InfoScopes";
-import Register from "components/Register";
+import UserInfo from "components/UserInfo";
 import Beta from "components/Beta";
 import BetaRedirect from "./BetaRedirect";
 import Thanks from "components/Thanks";
@@ -60,7 +60,7 @@ const MeinRoutes = () => {
           </Route>
           <Route path="thanks" element={<Thanks />} />
 
-          <Route path="register" element={<Register />} />
+          <Route path="UserInfo" element={<UserInfo />} />
 
           {isAdmin && (
             <Route path="admin">

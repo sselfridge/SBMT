@@ -33,7 +33,7 @@ const MyPaper = styled(Paper)(({ theme }) => ({
 
 const categorySelect = categoryList.filter((c) => c !== "ALL");
 
-const Register = () => {
+const UserInfo = () => {
   const { user, dispatch } = useContext(AppContext);
   // const [age, setAge] = useState("");
   const [category, setCategory] = useState("");
@@ -41,6 +41,11 @@ const Register = () => {
 
   const fetchProfile = useCallback((athleteId) => {
     ApiGet(`/api/strava/userRefresh/${athleteId}`, setLocalUser);
+  }, []);
+
+  React.useEffect(() => {
+    setLocalUser(user);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   React.useEffect(() => {
@@ -57,7 +62,7 @@ const Register = () => {
 
   return (
     <MyPaper>
-      <Typography variant="h3">Register For things</Typography>
+      <Typography variant="h3">User Info</Typography>
 
       <FormGroup sx={{}}>
         <Typography variant="h5">Non-Strava Info we need from you</Typography>
@@ -151,4 +156,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default UserInfo;

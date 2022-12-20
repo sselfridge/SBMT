@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -185,13 +186,55 @@ namespace TodoApi.Controllers
 
 
       return Ok("Ready to go commander");
+      var athleteId = 1075670;
+      //var newClub = _dbContext.StravaClubs.Include(x => x.StravaUsers).FirstOrDefault(x => x.Id == 1703);
+      var newClub = new StravaClub(444, "four four four,", "http:pick.com", "meinUrl");
+
+      var user = _dbContext.StravaUsers.Include(x => x.StravaClubs).FirstOrDefault(x => x.AthleteId == athleteId);
+
+      var profile = await _stravaService.GetProfile(athleteId, _dbContext);
+
+      if (user == null) return NotFound();
 
 
-      var segments = _dbContext.Segments.ToList();
+      user = _stravaService.UpdateUserClubs(user, profile.Clubs, _dbContext);
 
-      var segmentIds = segments.Select(x => x.Id).ToList();
+      //var newDbClubs = new List<StravaClub>();
+      //foreach (var club in newClubs)
+      //{
+      //  var existsAlready = _dbContext.StravaClubs.Any(c => c.Id == club.Id);
+      //  if (existsAlready == false)
+      //  {
+      //    newDbClubs.Add(club);
+      //  }
 
-      return Ok(segmentIds);
+      //}
+      //_dbContext.StravaClubs.AddRange(newDbClubs);
+
+
+      //foreach (var club in newClubs)
+      //{
+      //  var userIds = user.StravaClubs.Select(x => x.Id);
+      //  if (userIds.Contains(club.Id) == false)
+      //  {
+      //    user.StravaClubs.Add(club);
+      //  }
+      //}
+
+      //foreach (var userClub in user.StravaClubs.Where
+      //  (c => newClubs.Select(x => x.Id).Contains(c.Id) == false)
+      //  .ToList())
+      //{
+      //  user.StravaClubs.Remove(userClub);
+      //}
+
+
+
+      _dbContext.Update(user);
+      _dbContext.SaveChanges();
+
+      return Ok(user);
+
 
       var newStudent = new Student();
       newStudent.Name = "Bobby";

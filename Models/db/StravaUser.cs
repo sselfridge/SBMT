@@ -21,6 +21,7 @@ namespace TodoApi.Models.db
     public string Sex { get; set; }
     public double Weight { get; set; }
     public string Scope { get; set; }
+    public ICollection<StravaClub> StravaClubs { get; set; }
 
 
     public StravaUser(int athleteId, string firstname, string lastname, string avatar, long expiresAt, string refreshToken, string accessToken, string sex, double weight, string? scope)
@@ -36,6 +37,7 @@ namespace TodoApi.Models.db
       Weight = weight;
       Scope = scope ?? "";
       JoinDate = DateTime.UtcNow;
+      StravaClubs = new List<StravaClub>();
     }
 
     public StravaUser(OauthStravaUser oAuth, StravaAthleteProfile profile)
@@ -53,6 +55,7 @@ namespace TodoApi.Models.db
       Weight = profile.Weight ?? 0;
 
       JoinDate = DateTime.UtcNow;
+      StravaClubs = new List<StravaClub>();
     }
 
 
