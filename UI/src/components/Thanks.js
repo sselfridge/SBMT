@@ -6,10 +6,20 @@ import { ReactComponent as StravaLogo } from "assets/stravaLogoOrange.svg";
 
 import AppContext from "AppContext";
 
+import StravaButton from "components/Shared/StravaButton";
+
 const MyPaper = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 
 const Thanks = () => {
   const { user } = useContext(AppContext);
+  const [noClubScope, setNoClubScope] = React.useState(false);
+  console.info("user: ", user);
+
+  React.useEffect(() => {
+    if (user?.scope?.includes("profile:read_all") === false) {
+      setNoClubScope(true);
+    }
+  }, [user?.scope]);
 
   return (
     <MyPaper
@@ -30,6 +40,11 @@ const Thanks = () => {
         )}
         thanks for signing up!
       </Box>
+      {noClubScope && (
+        <>
+          <StravaButton text='Add "Access Profile" scope' />
+        </>
+      )}
       <Typography variant="h5">
         Keep an eye on the instagram feed and strava club, for more
         announcements

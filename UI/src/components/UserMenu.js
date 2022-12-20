@@ -9,7 +9,6 @@ import {
   Divider,
   MenuItem,
   Typography,
-  Link as MuiLink,
   useMediaQuery,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -24,6 +23,7 @@ import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 
 import AppContext from "AppContext";
 import { ApiDelete, ApiGet } from "api/api";
+import StravaButton from "./Shared/StravaButton";
 
 const UserMenuBox = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -80,45 +80,10 @@ const UserMenu = () => {
     return null;
   }
 
-  let redirect_uri;
-  if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
-    redirect_uri = "https://localhost:5001";
-  } else {
-    redirect_uri = "https://www.sbmtchallenge.com";
-  }
   return (
     <React.Fragment>
       <UserMenuBox>
-        {!user?.athleteId && (
-          <MuiLink
-            // href={`https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirect_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read,read_all,activity:read,activity:read_all`}
-            // href={`https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirect_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read,read_all,activity:read,activity:read_all,profile:read_all`}
-            // href={`https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirect_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read_all,activity:read_all,profile:read_all`}
-            // href={`https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirect_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read,activity:read,profile:read_all`}
-            // href={`https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirect_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read,activity:read`}
-            href={`https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirect_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read,activity:read,profile:read_all`}
-            sx={{
-              backgroundColor: "strava.main",
-              padding: "10px 20px",
-              borderRadius: 2,
-              textDecoration: "none",
-              "&:hover": {
-                backgroundColor: "strava.light",
-              },
-            }}
-          >
-            <Typography
-              sx={{
-                color: "strava.contrastText",
-                fontWeight: 800,
-                letterSpacing: "0.05em",
-              }}
-              variant={isMobile ? undefined : "h6"}
-            >
-              Register / Login
-            </Typography>
-          </MuiLink>
-        )}
+        {!user?.athleteId && <StravaButton text={"Register / Login"} />}
         <IconButton
           onClick={handleClick}
           size="small"
