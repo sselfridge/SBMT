@@ -22,21 +22,30 @@ builder.WebHost.UseUrls("http://*:5000", "https://*:5001");
 
 builder.Services.AddControllers();
 
+string dbServer = configuration["DbConfig:dbServer"];
 string dbPass = configuration["DbConfig:dbPass"];
 string dbUser = configuration["DbConfig:dbUser"];
 string dbName = configuration["DbConfig:dbName"];
+bool includeError = bool.Parse(configuration["DbConfig:includeError"]);
+bool enableSensitiveDataLogging = bool.Parse(configuration["DbConfig:enableSensitiveDataLogging"]);
+
 
 string connectionString = $"" +
-  $"Server=sbmt.postgres.database.azure.com;" +
+  $"Server={dbServer};" +
   $"Database={dbName};" +
   $"Port=5432;" +
   $"User Id={dbUser};" +
   $"Password={dbPass};" +
   $"Ssl Mode=Require;" +
-  $"Trust Server Certificate=true";
+  $"Trust Server Certificate=true;" +
+  $"Include Error Detail={includeError};";
 
-builder.Services.AddDbContext<sbmtContext>(opt => opt.UseNpgsql(connectionString));
-
+builder.Services.AddDbContext<sbmtContext>(opt =>
+{
+  opt.UseNpgsql(connectionString);
+  opt.EnableSensitiveDataLogging(enableSensitiveDataLogging);
+}
+);
 
 
 builder.Services.AddDbContext<TodoContext>(opt =>
