@@ -53,7 +53,7 @@ const UserSettings = (props) => {
           borderBottomStyle: "solid",
         }}
       >
-        User Settings
+        Settings
       </Typography>
 
       <UserInfo />

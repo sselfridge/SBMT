@@ -13,7 +13,6 @@ const MyPaper = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 const Thanks = () => {
   const { user } = useContext(AppContext);
   const [noClubScope, setNoClubScope] = React.useState(false);
-  console.info("user: ", user);
 
   React.useEffect(() => {
     if (user?.scope?.includes("profile:read_all") === false) {

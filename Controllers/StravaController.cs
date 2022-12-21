@@ -254,24 +254,10 @@ namespace TodoApi.Controllers
       _dbContext.Update(user);
       _dbContext.SaveChanges();
 
-      var retVal = new
-      {
-        AthleteId = user.AthleteId,
-        Firstname = user.Firstname,
-        Lastname = user.Lastname,
-        Avatar = user.Avatar,
-        RefreshToken = user.RefreshToken,
-        AccessToken = user.AccessToken,
-        ExpiresAt = user.ExpiresAt,
-        JoinDate = user.JoinDate,
-        Sex = user.Sex,
-        Weight = user.Weight,
-        Scope = user.Scope,
-        Clubs = user.StravaClubs
-      };
 
+      var returnUser = new StravaUserDTO(user);
 
-      return Ok(retVal);
+      return Ok(returnUser);
     }
 
   }

@@ -28,7 +28,7 @@ const AdminSegments = (props) => {
   const [segments, setSegments] = useState([]);
 
   const [newSegment, setNewSegment] = useState(null);
-  console.info("newSegment: ", newSegment);
+  console.log("newSegment: ", newSegment);
   const navigate = useNavigate();
 
   const textFieldValRef = useRef("");
@@ -54,7 +54,7 @@ const AdminSegments = (props) => {
   };
 
   useEffect(() => {
-    console.info("user?.athleteId: ", user?.athleteId);
+    console.log("user?.athleteId: ", user?.athleteId);
     if (user?.athleteId && user.athleteId !== 1075670) {
       navigate("/");
     }

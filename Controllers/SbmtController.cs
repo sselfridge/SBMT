@@ -323,7 +323,9 @@ namespace TodoApi.Controllers
       if (userId == null) return NotFound();
 
       var athleteId = Int32.Parse(userId);
-      var possibleNullUser = _dbContext.StravaUsers.FirstOrDefault(u => u.AthleteId == athleteId);
+      var possibleNullUser = _dbContext.StravaUsers
+                              .Include(x => x.StravaClubs)
+                              .FirstOrDefault(u => u.AthleteId == athleteId);
 
       if (possibleNullUser == null) return NotFound();
 

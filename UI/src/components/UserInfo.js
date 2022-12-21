@@ -46,7 +46,7 @@ const UserInfo = () => {
   React.useEffect(() => {
     setLocalUser(user);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user]);
 
   React.useEffect(() => {
     if (
@@ -107,9 +107,9 @@ const UserInfo = () => {
           Clubs
         </Grid>
         <Grid item xs={4}>
-          {localUser?.clubs?.map((club) => {
+          {localUser?.stravaClubs?.map((club) => {
             return (
-              <Box sx={{ display: "flex" }}>
+              <Box key={club.id} sx={{ display: "flex" }}>
                 <Avatar src={club.profileMedium} />{" "}
                 <Typography
                   sx={{ display: "flex", alignItems: "center" }}

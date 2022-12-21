@@ -47,6 +47,10 @@ const Leaderboard = () => {
       url += `&gender=${filters.gender}`;
     }
 
+    if (filters?.club) {
+      url += `&club=${filters.club}`;
+    }
+
     ApiGet(url, setRows);
   }, []);
 

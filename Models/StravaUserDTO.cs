@@ -11,8 +11,8 @@ namespace TodoApi.Models
     public DateTime JoinDate { get; set; }
     public string Sex { get; set; }
     public double Weight { get; set; }
-
     public string Scope { get; set; }
+    public ICollection<StravaClub> StravaClubs { get; set; }
 
     public StravaUserDTO(StravaUser user)
     {
@@ -24,6 +24,7 @@ namespace TodoApi.Models
       Sex = user.Sex;
       Weight = user.Weight;
       Scope = user.Scope;
+      StravaClubs = user.StravaClubs;
     }
 
   }

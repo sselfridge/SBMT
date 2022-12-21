@@ -28,7 +28,7 @@ const AdminUsers = (props) => {
   }, [refreshUsers]);
 
   useEffect(() => {
-    console.info("user?.athleteId: ", user?.athleteId);
+    console.log("user?.athleteId: ", user?.athleteId);
     if (user?.athleteId && user.athleteId !== 1075670) {
       navigate("/");
     }
