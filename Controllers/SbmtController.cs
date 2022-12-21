@@ -153,6 +153,7 @@ namespace TodoApi.Controllers
       }
 
       var leaderboard = new List<LeaderboardEntry>();
+      var segmentCount = allSegment.Count;
 
       foreach (KeyValuePair<int, Dictionary<long, int>> entry in effortGroup)
       {
@@ -187,7 +188,8 @@ namespace TodoApi.Controllers
                                   completed,
                                   totalTime,
                                   totalDistance,
-                                  totalElevation);
+                                  totalElevation,
+                                  segmentCount);
 
           leaderboard.Add(leaderboardEntry);
         }
