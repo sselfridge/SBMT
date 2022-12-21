@@ -6,8 +6,12 @@ using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Services;
 
+var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
 IConfiguration configuration = new ConfigurationBuilder()
                             .AddJsonFile("appsettings.json")
+                            //.AddJsonFile($"appsettings.Production.json")
+                            .AddJsonFile($"appsettings.{env}.json")
                             .Build();
 
 var builder = WebApplication.CreateBuilder(args);
