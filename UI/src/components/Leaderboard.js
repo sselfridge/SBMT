@@ -90,18 +90,100 @@ const Leaderboard = () => {
         sortable: false,
         headerName: "Completed",
         align: "right",
-        valueGetter: ({ row }) => `${row.completed}`,
-        //TODO - Add progress bar?
+        // valueGetter: ({ row }) => `${row.completed}`,
+        renderCell: (props) => {
+          const { row } = props;
+          const { completed, segmentCount } = row;
+
+          const completedTotalPercent = Math.floor(
+            (completed / segmentCount) * 100
+          );
+
+          return (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-evenly",
+                flexDirection: "column",
+                flexGrow: 50,
+              }}
+            >
+              {completed}
+              <Box sx={{ display: "flex", width: "100%" }}>
+                <Box
+                  sx={{
+                    width: `${completedTotalPercent}%`,
+                    backgroundColor: "secondary.main",
+                    height: "5px",
+                  }}
+                />
+                <Box
+                  sx={{
+                    width: `${100 - completedTotalPercent}%`,
+                    backgroundColor: "primary.main",
+                    height: "5px",
+                  }}
+                />
+              </Box>
+            </Box>
+          );
+        },
       },
       {
-        flex: 4,
+        flex: 8,
         minWidth: 30,
         field: "completedMobile",
         sortable: false,
         headerName: "#",
         headerAlign: "right",
         align: "right",
-        valueGetter: ({ row }) => `${row.completed}`,
+        renderCell: (props) => {
+          const { row } = props;
+          const { completed, segmentCount } = row;
+
+          const completedTotalPercent = Math.floor(
+            (completed / segmentCount) * 100
+          );
+
+          return (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                flexDirection: "row",
+                flexGrow: 50,
+              }}
+            >
+              <Box>{completed}</Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-end",
+                  height: "40px",
+                  width: "100%",
+                }}
+              >
+                <Box
+                  sx={{
+                    width: `5px`,
+                    backgroundColor: "primary.main",
+                    height: `${100 - completedTotalPercent}%`,
+                  }}
+                />
+                <Box
+                  sx={{
+                    width: "5px",
+                    backgroundColor: "secondary.main",
+                    height: `${completedTotalPercent}%`,
+                  }}
+                />
+              </Box>
+            </Box>
+          );
+        },
       },
       {
         flex: 25,

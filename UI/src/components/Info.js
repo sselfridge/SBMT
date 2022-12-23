@@ -25,14 +25,6 @@ const SubTiltleTypo = styled(Typography)(({ theme }) => ({
 }));
 
 const Info = (props) => {
-  const [segments, setSegments] = React.useState([]);
-
-  console.info("segments: ", segments);
-
-  React.useEffect(() => {
-    ApiGet("/api/admin/segments", setSegments);
-  }, []);
-
   return (
     <MyBox>
       <Paper
