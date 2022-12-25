@@ -1,0 +1,3 @@
+#!/bin/bash
+
+scp -i ~/.ssh/sbmtServer_key.pem azureuser@20.25.149.27:$1 $2
