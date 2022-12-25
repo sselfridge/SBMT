@@ -40,7 +40,7 @@ const Filters = (props) => {
   }, [surface, gender, age, category, onApplyFilters, clubNode]);
 
   useEffect(() => {
-    if (user?.stravaClubs.length > 0) {
+    if (user?.stravaClubs?.length > 0) {
       const emptyClub = (
         <Box id={0} key={0} sx={{ display: "flex" }}>
           {"None"}
