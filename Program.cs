@@ -20,7 +20,7 @@ Console.WriteLine($"sbmtlog: Current ENV2 var is:{env2}------------------");
 IConfiguration configuration = new ConfigurationBuilder()
                             .AddJsonFile("appsettings.json")
                             //.AddJsonFile($"appsettings.Production.json")
-                            .AddJsonFile($"appsettings.{env}.json")
+                            //.AddJsonFile($"appsettings.{env}.json")
                             .Build();
 
 var builder = WebApplication.CreateBuilder(args);
