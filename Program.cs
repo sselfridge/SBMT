@@ -8,6 +8,8 @@ using TodoApi.Services;
 
 var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
+Console.WriteLine($"sbmtlog: Current ENV var is:{env}------------------");
+
 IConfiguration configuration = new ConfigurationBuilder()
                             .AddJsonFile("appsettings.json")
                             //.AddJsonFile($"appsettings.Production.json")
