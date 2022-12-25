@@ -9,18 +9,18 @@ using TodoApi.Services;
 var env1 = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 var env2 = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
 
-var env = env1 ?? env2;
+var env = env1 ?? env2 ?? "Production";
 
 
 
-Console.WriteLine($"sbmtlog: Current ENV var is:{env}------------------");
 Console.WriteLine($"sbmtlog: Current ENV1 var is:{env1}------------------");
 Console.WriteLine($"sbmtlog: Current ENV2 var is:{env2}------------------");
+Console.WriteLine($"sbmtlog: Current ENV var is:{env}------------------");
 
 IConfiguration configuration = new ConfigurationBuilder()
                             .AddJsonFile("appsettings.json")
                             //.AddJsonFile($"appsettings.Production.json")
-                            //.AddJsonFile($"appsettings.{env}.json")
+                            .AddJsonFile($"appsettings.{env}.json")
                             .Build();
 
 var builder = WebApplication.CreateBuilder(args);
