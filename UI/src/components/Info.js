@@ -12,13 +12,14 @@ import { ReactComponent as Logo } from "assets/logoV1.svg";
 
 import { styled } from "@mui/material/styles";
 import { ApiGet } from "api/api";
+import Updates from "./Updates";
 const MyBox = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 const ArticleBox = styled(Box)(({ theme }) => ({ margin: "0 15%" }));
 const TitleTypography = styled(Typography)(({ theme }) => ({
   borderBottom: `3px solid`,
   borderColor: theme.palette.secondary.main,
 }));
-const SubTiltleTypo = styled(Typography)(({ theme }) => ({
+const SubTitleTypo = styled(Typography)(({ theme }) => ({
   borderBottom: `3px solid`,
   borderColor: theme.palette.secondary.main,
   margin: "0 20%",
@@ -75,65 +76,11 @@ const Info = (props) => {
           <br />
           <br />
         </ArticleBox>
-        <ArticleBox sx={{ margin: "0 15%" }}>
-          <TitleTypography variant="h2">Beta Updates</TitleTypography>
-          <SubTiltleTypo variant="h4">Second update of December</SubTiltleTypo>
-          <List sx={{ fontSize: ".8em" }}>
-            <ListItem>
-              Implemented strava push responses, so efforts should go away when
-              you delete or make them private etc.
-            </ListItem>
-          </List>
-          <SubTiltleTypo variant="h4">First update of December</SubTiltleTypo>
-          <List sx={{ fontSize: ".8em" }}>
-            <ListItem>
-              Switched over to dotnet authenticate / authorize instead of using
-              home brewed JWT
-            </ListItem>
-            <ListItem>
-              Added Admin page for me so I don't have to do things manually in
-              SQL, because I have to look up syntax for every query every
-              time...
-            </ListItem>
-            <ListItem>
-              Tweaked a few segments. Casitas climb west bound starts from the
-              fire station, Toro canyon starts from Via Real, and Tunnel Road
-              ends at the gate.
-            </ListItem>
-          </List>
-          <SubTiltleTypo variant="h4">Thanksgiving Update</SubTiltleTypo>
-          <List sx={{ fontSize: ".8em" }}>
-            <ListItem>
-              Removed BETA from most URLs, now only goes to the beta explanation
-              page
-            </ListItem>
-            <ListItem>
-              Ported this info page over from the landing page as well as adding
-              this BETA progress list.
-            </ListItem>
-            <ListItem>
-              Reduced scope of requested strava permissions. Might need more to
-              add in other functionality later on, but looks like the core way
-              the app works will be good with just read,activity_read
-              permissions. Planning to add in a page that explains everything
-              that is needed for each of the additional permissions.
-            </ListItem>
-          </List>
-          <SubTiltleTypo variant="h4">Pre-This list</SubTiltleTypo>
-          <List sx={{ fontSize: ".8em" }}>
-            <ListItem>
-              Most of the core functionality is implemented already.
-              <br /> Only unknown issue is 1 time I got a push notification for
-              a ride creation but that ride never got processed. I've added more
-              logging since then, so hopefully that will be able to analyze it
-              more if/when it happens again.
-            </ListItem>
-            <ListItem>
-              BE TODOs are to switch over fully to using dotnet auth cookies
-              instead of my homebrew JWT one that is currently powering auth.
-            </ListItem>
-          </List>
-        </ArticleBox>
+        <Updates
+          ArticleBox={ArticleBox}
+          TitleTypography={TitleTypography}
+          SubTitleTypo={SubTitleTypo}
+        />
       </Paper>
     </MyBox>
   );
