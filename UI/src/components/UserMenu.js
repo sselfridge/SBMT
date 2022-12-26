@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Box,
   IconButton,
@@ -49,6 +49,7 @@ const UserMenu = () => {
   };
 
   let navigate = useNavigate();
+  let { pathname } = useLocation();
   const navTo = (path) => {
     navigate(path);
   };
@@ -62,7 +63,16 @@ const UserMenu = () => {
 
   useEffect(() => {
     setUser(contextUser);
-  }, [contextUser]);
+    console.info("contextUser: ", contextUser);
+    if (
+      contextUser?.scope &&
+      contextUser.scope.includes("activity:read") === false &&
+      pathname !== "/settings"
+    ) {
+      navigate("/thanks");
+      console.info("Navigate!!!", pathname);
+    }
+  }, [contextUser, navigate, pathname]);
 
   const fetchOnce = useRef(true);
   useEffect(() => {

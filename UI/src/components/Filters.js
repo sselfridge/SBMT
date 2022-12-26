@@ -9,6 +9,7 @@ import {
   AccordionSummary,
   AccordionDetails,
   Avatar,
+  Tooltip,
 } from "@mui/material";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import LabeledSelect from "./Shared/LabeledSelect";
@@ -98,7 +99,17 @@ const Filters = (props) => {
           list={clubList}
         />
       )}
-      {noClubScope && <StravaButton text={"Enable Filter By Clubs"} />}
+      {noClubScope && (
+        <Tooltip
+          arrow
+          position="left"
+          title="Enable 'View Complete Profile' so we can see your club information"
+        >
+          <Box>
+            <StravaButton text={"Enable Filter By Clubs"} />
+          </Box>
+        </Tooltip>
+      )}
       {/* //TODO Register page isn't ready to take input yet */}
       {/* <LabeledSelect
         label={"Category"}
