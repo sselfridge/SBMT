@@ -40,7 +40,10 @@ const Filters = (props) => {
   }, [surface, gender, age, category, onApplyFilters, clubNode]);
 
   useEffect(() => {
-    if (user?.stravaClubs?.length > 0) {
+    if (user?.scope?.includes("profile:read_all") === false) {
+      setClubList([]);
+      setNoClubScope(true);
+    } else if (user?.stravaClubs?.length > 0) {
       const emptyClub = (
         <Box id={0} key={0} sx={{ display: "flex" }}>
           {"None"}
@@ -55,9 +58,6 @@ const Filters = (props) => {
       clubs.unshift(emptyClub);
       setClubList(clubs);
       setClubNode(clubs[0]);
-    }
-    if (user?.scope?.includes("profile:read_all") === false) {
-      setNoClubScope(true);
     }
   }, [user]);
 
