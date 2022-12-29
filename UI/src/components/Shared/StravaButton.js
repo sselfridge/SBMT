@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { Typography, useMediaQuery, Link as MuiLink, Box } from "@mui/material";
 import {} from "react-router-dom";
@@ -18,7 +18,7 @@ const StravaButton = (props) => {
   return (
     <Box sx={{ display: "flex" }}>
       <MuiLink
-        href={`https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirect_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read_all,activity:read_all,profile:read_all`}
+        href={`https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirect_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read,activity:read,profile:read_all`}
         sx={{
           display: "flex",
           backgroundColor: "strava.main",

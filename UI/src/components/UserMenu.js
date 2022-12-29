@@ -38,7 +38,6 @@ const UserMenu = () => {
   const { dispatch, user: contextUser } = useContext(AppContext);
 
   const [anchorEl, setAnchorEl] = useState(null);
-  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
   const open = Boolean(anchorEl);
   const handleClick = (event) => {

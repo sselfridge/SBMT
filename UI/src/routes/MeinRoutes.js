@@ -28,6 +28,7 @@ import AppContext from "AppContext";
 
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import config from "config";
+import StravaOops from "components/StravaOops";
 
 mapboxgl.accessToken = config.mapBox;
 
@@ -61,6 +62,7 @@ const MeinRoutes = () => {
           <Route path="thanks" element={<Thanks />} />
 
           <Route path="register" element={<Register />} />
+          <Route path="StravaOops" element={<StravaOops />} />
 
           {isAdmin && (
             <Route path="admin">

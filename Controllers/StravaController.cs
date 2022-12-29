@@ -42,8 +42,13 @@ namespace TodoApi.Controllers
     }
 
     [HttpGet("callback")]
-    public async Task<ActionResult<IEnumerable<TodoItem>>> GetStravaCallback([FromServices] IServiceScopeFactory serviceScopeFactory, string code, string scope)
+    public async Task<ActionResult<IEnumerable<TodoItem>>> GetStravaCallback([FromServices] IServiceScopeFactory serviceScopeFactory, string? code, string? scope, string? error)
     {
+
+      if ((error != null) || (code == null || scope == null))
+      {
+        return Redirect($"{Configuration["BaseURL"]}/stravaoops?error={error}");
+      }
 
       var oAuth = await _stravaService.GetTokens(code);
 
@@ -100,7 +105,7 @@ namespace TodoApi.Controllers
       {
         Console.WriteLine($"sbmtLog: On boarding new athleteId: {oAuthUser.AthleteId} with scope '{scope}'");
         await StravaUtilities.OnBoardNewUser(serviceScopeFactory, oAuthUser, _stravaService, _dbContext);
-        return Redirect($"{Configuration["BaseURL"]}/beta/thanks");
+        return Redirect($"{Configuration["BaseURL"]}/thanks");
 
       }
       else if (oAuthUser.AccessToken != existingUser.AccessToken)
@@ -114,7 +119,7 @@ namespace TodoApi.Controllers
 
 
 
-      return Redirect($"{Configuration["BaseURL"]}/beta/thanks");
+      return Redirect($"{Configuration["BaseURL"]}/thanks");
     }
 
     //Verify push notifications subscription
