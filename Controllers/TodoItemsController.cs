@@ -175,17 +175,18 @@ namespace TodoApi.Controllers
     }
 
     [HttpGet()]
-    public async Task<ActionResult<TodoItem>> TestThing([FromServices] IServiceScopeFactory serviceScopeFactory)
+    public async Task<ActionResult<long>> TestThing([FromServices] IServiceScopeFactory serviceScopeFactory)
     {
       if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Development")
       {
         return Ok("loadked");
       }
 
+      long bob = 3029159949833121256;
 
+      var outVal = Ok(bob);
 
-
-      return Ok("Ready to go commander");
+      return outVal;
       var athleteId = 1075670;
       //var newClub = _dbContext.StravaClubs.Include(x => x.StravaUsers).FirstOrDefault(x => x.Id == 1703);
       var newClub = new StravaClub(444, "four four four,", "http:pick.com", "meinUrl");

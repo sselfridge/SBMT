@@ -63,14 +63,12 @@ const UserMenu = () => {
 
   useEffect(() => {
     setUser(contextUser);
-    console.info("contextUser: ", contextUser);
     if (
       contextUser?.scope &&
       contextUser.scope.includes("activity:read") === false &&
       pathname !== "/settings"
     ) {
       navigate("/thanks");
-      console.info("Navigate!!!", pathname);
     }
   }, [contextUser, navigate, pathname]);
 

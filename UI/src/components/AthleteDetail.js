@@ -75,7 +75,7 @@ const Athletes = () => {
       if (meinSegment.bestTime !== MAX_INT && segment.bestTime !== MAX_INT) {
         timeDiff = meinSegment.bestTime - segment.bestTime;
       }
-      meinActLink = meinSegment.bestActId;
+      meinActLink = `${meinSegment.bestActId}/segments/${meinSegment.bestEffortId}`;
     }
     const negStyle = { color: "red" };
     const posStyle = { color: "green" };
@@ -108,7 +108,7 @@ const Athletes = () => {
               "--"
             ) : (
               <a
-                href={`https://www.strava.com/activities/${segment.bestActId}`}
+                href={`https://www.strava.com/activities/${segment.bestActId}/segments/${segment.bestEffortId}`}
               >
                 {formattedTime(segment.bestTime)}
               </a>

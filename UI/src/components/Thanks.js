@@ -13,7 +13,6 @@ const MyPaper = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 
 const Thanks = () => {
   const { user } = useContext(AppContext);
-  console.info("user: ", user);
   const [noClubScope, setNoClubScope] = useState(false);
   const [noActivityScope, setNoActivityScope] = useState(false);
 

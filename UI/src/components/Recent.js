@@ -66,12 +66,18 @@ const columns = [
     sortable: true,
     headerName: "Time",
     width: 75,
+    valueGetter: ({ row }) => ({
+      id: row.id,
+      activityId: row.activityId,
+      time: row.elapsedTime,
+    }),
     renderCell: ({ value }) => (
-      <a href={`https://www.strava.com/activities/${value.id}`}>
+      <a
+        href={`https://www.strava.com/activities/${value.activityId}/segments/${value.id}`}
+      >
         {formattedTime(value.time)}
       </a>
     ),
-    valueGetter: ({ row }) => ({ id: row.activityId, time: row.elapsedTime }),
     flex: 1,
   },
   // {
@@ -122,9 +128,7 @@ const columns = [
 
       return (
         <Tooltip arrow title={title}>
-          <a href={`https://www.strava.com/activities/${value.id}`}>
-            {formattedTimeAgo(value.startDate, { addSuffix: true })}
-          </a>
+          <Box>{formattedTimeAgo(value.startDate, { addSuffix: true })}</Box>
         </Tooltip>
       );
     },

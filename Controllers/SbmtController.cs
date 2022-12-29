@@ -58,14 +58,14 @@ namespace TodoApi.Controllers
           segment => segment.Id,
           (effort, segment) => new
           {
-            id = effort.id,
+            id = $"{effort.id}",
             name = effort.name,
             athleteId = effort.athleteId,
             avatar = effort.avatar,
-            activityId = effort.activityId,
+            activityId = $"{effort.activityId}",
             created = effort.created,
             elapsedTime = effort.elapsedTime,
-            segmentId = effort.segmentId,
+            segmentId = $"{effort.segmentId}",
             SegmentName = segment.Name,
             surfaceType = segment.SurfaceType,
             startDate = effort.startDate
@@ -274,7 +274,7 @@ namespace TodoApi.Controllers
       {
         id = $"{effort.Value.Id}",
         elapsedTime = effort.Value.ElapsedTime,
-        activityId = effort.Value.ActivityId,
+        activityId = $"{effort.Value.ActivityId}",
         athleteId = user.AthleteId,
         firstname = user.Firstname,
         lastname = user.Lastname,
@@ -351,7 +351,12 @@ namespace TodoApi.Controllers
 
     public IActionResult GetAthleteEfforts(int athleteId)
     {
-      var result = _userService.GetUserEfforts(athleteId);
+      var userSegments = _userService.GetUserEfforts(athleteId);
+
+      if (userSegments == null) return Ok(null);
+
+      var result = userSegments.Select(x => new UserSegmentDTO(x)).ToList();
+
       return Ok(result);
     }
 
