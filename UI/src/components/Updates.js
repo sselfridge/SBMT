@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Paper, List, ListItem } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { List, ListItem } from "@mui/material";
 
 const Updates = (props) => {
   const { TitleTypography, ArticleBox, SubTitleTypo } = props;
@@ -9,6 +8,13 @@ const Updates = (props) => {
   return (
     <ArticleBox sx={{ margin: "0 15%" }}>
       <TitleTypography variant="h2">Beta Updates</TitleTypography>
+      <SubTitleTypo variant="h4">PostChistmas-preNew years</SubTitleTypo>
+      <List sx={{ fontSize: ".8em" }}>
+        <ListItem>
+          Discovered that I'm not handling the case where people click, cancel
+          on the strava auth request...oops.
+        </ListItem>
+      </List>
       <SubTitleTypo variant="h4">Christmas Update</SubTitleTypo>
       <List sx={{ fontSize: ".8em" }}>
         <ListItem>
