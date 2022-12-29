@@ -272,6 +272,7 @@ namespace TodoApi.Controllers
       user => user.AthleteId,
       (effort, user) => new
       {
+        id = $"{effort.Value.Id}",
         elapsedTime = effort.Value.ElapsedTime,
         activityId = effort.Value.ActivityId,
         athleteId = user.AthleteId,

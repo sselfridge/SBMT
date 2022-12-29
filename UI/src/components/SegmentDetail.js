@@ -168,7 +168,7 @@ const Segments = () => {
                         </TableCell>
                         <TableCell>
                           <a
-                            href={`http://www.strava.com/activities/${e.activityId}`}
+                            href={`https://www.strava.com/activities/${e.activityId}/segments/${e.id}`}
                           >
                             {formattedTime(e.elapsedTime)}
                           </a>
