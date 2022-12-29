@@ -7,6 +7,7 @@ import { ReactComponent as StravaLogo } from "assets/stravaLogoOrange.svg";
 import AppContext from "AppContext";
 
 import StravaButton from "components/Shared/StravaButton";
+import { Link } from "react-router-dom";
 
 const MyPaper = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 
@@ -96,8 +97,8 @@ const Thanks = () => {
             announcements
           </Typography>
           <Typography variant="h5">
-            Before long your segment efforts should start showing up in the
-            'recent' tab
+            All your efforts up to this point should be on the{" "}
+            <Link to="/leaderboard">leaderboard</Link>
           </Typography>
           <Typography variant="h5">
             In the meantime, let me know if anything is broken here and ride the
