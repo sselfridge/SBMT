@@ -10,7 +10,6 @@ import {
   MenuItem,
   Typography,
   Link as MuiLink,
-  useMediaQuery,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -111,7 +110,7 @@ const UserMenu = () => {
                 fontWeight: 800,
                 letterSpacing: "0.05em",
               }}
-              variant={isMobile ? undefined : "h6"}
+              variant={"h6"}
             >
               Register / Login
             </Typography>
