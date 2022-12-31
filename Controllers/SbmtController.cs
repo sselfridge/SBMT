@@ -320,6 +320,7 @@ namespace TodoApi.Controllers
       if (possibleNullUser == null) return NotFound();
 
       StravaUser user = (StravaUser)possibleNullUser;
+
       return Ok(new StravaUserDTO(user));
     }
 
