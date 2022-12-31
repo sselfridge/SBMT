@@ -17,13 +17,13 @@ const StravaOops = (props) => {
     >
       OOPS!
       <Typography>
-        Looks like there was a problem authenticating with strava.
+        Looks like there was a problem authenticating with Strava.
       </Typography>
       <StravaButton text={"Try again here"} />
       <Typography sx={{ marginTop: "25px" }}>
         If you continue to have issues, please let me know.
       </Typography>
-      <Link to="/help">Help Page</Link>
+      <Link to="/help">Contact Info</Link>
     </MyPaper>
   );
 };

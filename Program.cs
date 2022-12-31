@@ -8,7 +8,7 @@ using TodoApi.Services;
 
 var env1 = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
-var env = env1 ?? env2 ?? "Production";
+var env = env1 ?? "Production";
 
 
 Console.WriteLine($"sbmtlog: Current ENV1 var is:{env1}------------------");
