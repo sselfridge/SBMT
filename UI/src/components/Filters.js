@@ -106,7 +106,7 @@ const Filters = (props) => {
           title="Enable 'View Complete Profile' so we can see your club information"
         >
           <Box>
-            <StravaButton text={"Enable Filter By Clubs"} />
+            <StravaButton text={"Enable Clubs"} />
           </Box>
         </Tooltip>
       )}
