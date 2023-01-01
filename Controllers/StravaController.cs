@@ -117,7 +117,19 @@ namespace TodoApi.Controllers
         var savedUser = await _userService.Update(existingUser);
       }
 
+      if (oAuthUser.Scope.Contains("profile:read_all"))
+      {
+        // this needs to be after the DB update since we probably need the new accesstoken
+        // Could pass the token down if this becomes an issue.
+        var userWithClubs = _dbContext.StravaUsers.Include(x => x.StravaClubs).FirstOrDefault(x => x.AthleteId == oAuthUser.AthleteId);
+        if (userWithClubs != null)
+        {
 
+          var profile = await _stravaService.GetProfile(oAuthUser.AthleteId, _dbContext);
+          userWithClubs = _stravaService.UpdateUserClubs(userWithClubs, profile.Clubs, _dbContext);
+          var savedUser = await _userService.Update(userWithClubs);
+        }
+      }
 
 
       return Redirect($"{Configuration["BaseURL"]}/thanks");
@@ -221,9 +233,6 @@ namespace TodoApi.Controllers
     [HttpGet("userRefresh/{athleteId}")]
     public async Task<IActionResult> RefreshUser(int athleteId)
     {
-
-
-
       var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
 
       if (userId == null) return NotFound();
