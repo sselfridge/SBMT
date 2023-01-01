@@ -5,3 +5,4 @@
 Models/stravaApi/Strava.NET
 /appsettings.Development.json
 /appsettings.Production.json
+/appsettings.Staging.json
