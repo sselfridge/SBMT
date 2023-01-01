@@ -139,7 +139,7 @@ const FiltersWithMobile = (props) => {
   const hidden = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   return hidden ? (
     <Box>
-      <Accordion>
+      <Accordion defaultExpanded>
         <AccordionSummary>
           <Button sx={{ width: "100%" }}>
             Show Filters <FilterListIcon />
