@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TodoApi.Models.db;
@@ -11,9 +12,10 @@ using TodoApi.Models.db;
 namespace TodoApi.Migrations
 {
     [DbContext(typeof(sbmtContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20221215043102_testManyClubs")]
+    partial class testManyClubs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -169,7 +171,7 @@ namespace TodoApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("StravaClubs");
+                    b.ToTable("StravaClub");
                 });
 
             modelBuilder.Entity("TodoApi.Models.db.StravaPushNotification", b =>

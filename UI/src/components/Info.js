@@ -11,7 +11,6 @@ import {
 import { ReactComponent as Logo } from "assets/logoV1.svg";
 
 import { styled } from "@mui/material/styles";
-import { ApiGet } from "api/api";
 import Updates from "./Updates";
 const MyBox = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 const ArticleBox = styled(Box)(({ theme }) => ({ margin: "0 15%" }));

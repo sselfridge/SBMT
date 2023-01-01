@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Services;
@@ -57,14 +58,14 @@ namespace TodoApi.Controllers
           segment => segment.Id,
           (effort, segment) => new
           {
-            id = effort.id,
+            id = $"{effort.id}",
             name = effort.name,
             athleteId = effort.athleteId,
             avatar = effort.avatar,
-            activityId = effort.activityId,
+            activityId = $"{effort.activityId}",
             created = effort.created,
             elapsedTime = effort.elapsedTime,
-            segmentId = effort.segmentId,
+            segmentId = $"{effort.segmentId}",
             SegmentName = segment.Name,
             surfaceType = segment.SurfaceType,
             startDate = effort.startDate
@@ -82,6 +83,11 @@ namespace TodoApi.Controllers
       string surfaceFilter = HttpContext.Request.Query["surface"];
       string genderFilter = HttpContext.Request.Query["gender"];
 
+      long clubFilter = 0;
+      long.TryParse(HttpContext.Request.Query["club"], out clubFilter);
+
+
+
       var allSegment = _dbContext.Segments.ToList();
       if (surfaceFilter != null &&
           (surfaceFilter == "gravel" || surfaceFilter == "road"))
@@ -89,13 +95,17 @@ namespace TodoApi.Controllers
         allSegment = allSegment.FindAll(s => s.SurfaceType == surfaceFilter);
       }
 
-      var users = _dbContext.StravaUsers.ToList();
+      var users = _dbContext.StravaUsers.Include(x => x.StravaClubs).ToList();
 
       if (genderFilter != null && (genderFilter == "M" || genderFilter == "F"))
       {
         users = users.FindAll(u => u.Sex == genderFilter);
       }
 
+      if (clubFilter != 0)
+      {
+        users = users.FindAll(u => u.StravaClubs.Any(club => club.Id == clubFilter));
+      }
 
       var data = users.Join(_dbContext.Efforts,
         effort => effort.AthleteId,
@@ -262,8 +272,9 @@ namespace TodoApi.Controllers
       user => user.AthleteId,
       (effort, user) => new
       {
+        id = $"{effort.Value.Id}",
         elapsedTime = effort.Value.ElapsedTime,
-        activityId = effort.Value.ActivityId,
+        activityId = $"{effort.Value.ActivityId}",
         athleteId = user.AthleteId,
         firstname = user.Firstname,
         lastname = user.Lastname,
@@ -315,7 +326,9 @@ namespace TodoApi.Controllers
       if (userId == null) return NotFound();
 
       var athleteId = Int32.Parse(userId);
-      var possibleNullUser = _dbContext.StravaUsers.FirstOrDefault(u => u.AthleteId == athleteId);
+      var possibleNullUser = _dbContext.StravaUsers
+                              .Include(x => x.StravaClubs)
+                              .FirstOrDefault(u => u.AthleteId == athleteId);
 
       if (possibleNullUser == null) return NotFound();
 
@@ -339,7 +352,12 @@ namespace TodoApi.Controllers
 
     public IActionResult GetAthleteEfforts(int athleteId)
     {
-      var result = _userService.GetUserEfforts(athleteId);
+      var userSegments = _userService.GetUserEfforts(athleteId);
+
+      if (userSegments == null) return Ok(null);
+
+      var result = userSegments.Select(x => new UserSegmentDTO(x)).ToList();
+
       return Ok(result);
     }
 

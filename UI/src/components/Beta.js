@@ -4,17 +4,11 @@ import { Box, Typography, Link } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import AppContext from "AppContext";
+import StravaButton from "./Shared/StravaButton";
 
 const MyPaper = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 
 const Beta = () => {
-  let redirect_uri;
-  if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
-    redirect_uri = "https://localhost:5001";
-  } else {
-    redirect_uri = "https://www.sbmtchallenge.com";
-  }
-
   const navigate = useNavigate();
   const { user } = useContext(AppContext);
   React.useEffect(() => {
@@ -41,29 +35,7 @@ const Beta = () => {
         Segments are taken from Oct 21st onwards.
       </Typography>
       <Box sx={{ display: "flex", justifyContent: "center" }}>
-        <Link
-          href={`https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirect_uri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read,activity:read`}
-          sx={{
-            backgroundColor: "strava.main",
-            padding: "10px 20px",
-            borderRadius: 2,
-            textDecoration: "none",
-            "&:hover": {
-              backgroundColor: "strava.light",
-            },
-          }}
-        >
-          <Typography
-            sx={{
-              color: "strava.contrastText",
-              fontWeight: 800,
-              letterSpacing: "0.05em",
-            }}
-            variant="h6"
-          >
-            Register for Beta
-          </Typography>
-        </Link>
+        <StravaButton text={"Register for Beta"} />
       </Box>
 
       <Typography variant="h6">

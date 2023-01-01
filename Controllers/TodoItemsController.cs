@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -174,24 +175,72 @@ namespace TodoApi.Controllers
     }
 
     [HttpGet()]
-    public async Task<ActionResult<TodoItem>> TestThing([FromServices] IServiceScopeFactory serviceScopeFactory)
+    public async Task<ActionResult<long>> TestThing([FromServices] IServiceScopeFactory serviceScopeFactory)
     {
+
+      var count = _dbContext.StravaUsers.Count();
+      Console.WriteLine($"sbmtLog {count} users in DB");
+
+
       if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Development")
       {
         return Ok("loadked");
       }
-      return Ok("Ready to go commander");
+
+      long bob = 3029159949833121256;
+
+      var outVal = Ok(bob);
+
+      return outVal;
+      var athleteId = 1075670;
+      //var newClub = _dbContext.StravaClubs.Include(x => x.StravaUsers).FirstOrDefault(x => x.Id == 1703);
+      var newClub = new StravaClub(444, "four four four,", "http:pick.com", "meinUrl");
+
+      var user = _dbContext.StravaUsers.Include(x => x.StravaClubs).FirstOrDefault(x => x.AthleteId == athleteId);
+
+      var profile = await _stravaService.GetProfile(athleteId, _dbContext);
+
+      if (user == null) return NotFound();
 
 
-      var push = new StravaPushNotification("create", 123456, 123456, "activity", 431, 1234);
+      user = _stravaService.UpdateUserClubs(user, profile.Clubs, _dbContext);
 
-      var outStr = $"sbmtlog: New Strava Push-----" +
-        $"Aspect:{push.AspectType} -----" +
-        $"owner:{push.OwnerId} -----" +
-        $"object:{push.ObjectId} -----" +
-        $"owner:{push.Updates} -----";
+      //var newDbClubs = new List<StravaClub>();
+      //foreach (var club in newClubs)
+      //{
+      //  var existsAlready = _dbContext.StravaClubs.Any(c => c.Id == club.Id);
+      //  if (existsAlready == false)
+      //  {
+      //    newDbClubs.Add(club);
+      //  }
 
-      Console.WriteLine(outStr);
+      //}
+      //_dbContext.StravaClubs.AddRange(newDbClubs);
+
+
+      //foreach (var club in newClubs)
+      //{
+      //  var userIds = user.StravaClubs.Select(x => x.Id);
+      //  if (userIds.Contains(club.Id) == false)
+      //  {
+      //    user.StravaClubs.Add(club);
+      //  }
+      //}
+
+      //foreach (var userClub in user.StravaClubs.Where
+      //  (c => newClubs.Select(x => x.Id).Contains(c.Id) == false)
+      //  .ToList())
+      //{
+      //  user.StravaClubs.Remove(userClub);
+      //}
+
+
+
+      _dbContext.Update(user);
+      _dbContext.SaveChanges();
+
+      return Ok(user);
+
 
       var newStudent = new Student();
       newStudent.Name = "Bobby";
@@ -253,8 +302,72 @@ namespace TodoApi.Controllers
     }
 
 
+    [HttpGet("init")]
+    public async Task<ActionResult> InitApp()
+    {
+      //var systemUIser = new StravaUser(1,
+      //  "App",
+      //  "Root",
+      //  "https://dgalywyr863hv.cloudfront.net/pictures/athletes/10645041/16052758/1/medium.jpg",
+      //  1669890293,
+      //  "de9e59f05d5e69aca8bbfd9bc29b279080e15347",
+      //  "7aa35e2d132e10e664b7edf4e8742187cb9bf079",
+      //  "M",
+      //  0.0,
+      //  "allScope");
+
+      //_dbContext.StravaUsers.Add(systemUIser);
+      //await _dbContext.SaveChangesAsync();
 
 
+      //var segmentIds = new List<long>(){
+      //  1313,
+      //  1315,
+      //  631703,
+      //  637362,
+      //  658277,
+      //  751029,
+      //  813814,
+      //  1290381,
+      //  12039079,
+      //  29015105,
+      //  647251,
+      //  746977,
+      //  2622235,
+      //  881465,
+      //  694014,
+      //  641588,
+      //  6639717,
+      //  785113,
+      //  647488,
+      //};
+
+
+      //for (int i = 0; i < segmentIds.Count; i++)
+      //{
+      //  var segmentId = segmentIds[i];
+      //  var segment = await _stravaService.GetSegment(segmentId);
+
+      //  if (segment == null) return NotFound();
+
+      //  if (_dbContext.Segments.Any(s => s.Id == segmentId))
+      //  {
+      //    return Conflict("segment exists");
+      //  }
+
+      //  _dbContext.Segments.Add(segment);
+      //  await _dbContext.SaveChangesAsync();
+      //}
+
+
+
+
+
+
+
+      return Ok();
+
+    }
 
 
 

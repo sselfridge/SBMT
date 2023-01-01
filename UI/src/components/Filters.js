@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import {
   Box,
@@ -8,6 +8,8 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  Avatar,
+  Tooltip,
 } from "@mui/material";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import LabeledSelect from "./Shared/LabeledSelect";
@@ -18,17 +20,47 @@ import {
   genderList,
   surfaceList,
 } from "utils/constants";
+import AppContext from "AppContext";
+import StravaButton from "./Shared/StravaButton";
 
 const Filters = (props) => {
   const { onApplyFilters } = props;
+  const { user } = useContext(AppContext);
+
   const [surface, setSurface] = useState(surfaceList[1]);
   const [gender, setGender] = useState(genderList[0]);
   const [age] = useState(ageList[0]);
   const [category] = useState(categoryList[0]);
+  const [clubList, setClubList] = useState([]);
+  const [clubNode, setClubNode] = useState("");
+  const [noClubScope, setNoClubScope] = React.useState(false);
 
   useEffect(() => {
-    onApplyFilters({ surface, gender, age, category });
-  }, [surface, gender, age, category, onApplyFilters]);
+    const club = clubNode?.key || 0;
+    onApplyFilters({ surface, gender, age, club, category });
+  }, [surface, gender, age, category, onApplyFilters, clubNode]);
+
+  useEffect(() => {
+    if (user?.scope?.includes("profile:read_all") === false) {
+      setClubList([]);
+      setNoClubScope(true);
+    } else if (user?.stravaClubs?.length > 0) {
+      const emptyClub = (
+        <Box id={0} key={0} sx={{ display: "flex" }}>
+          {"None"}
+        </Box>
+      );
+      const clubs = user.stravaClubs.map((club) => (
+        <Box id={club.id} key={club.id} sx={{ display: "flex" }}>
+          <Avatar src={club.profileMedium} />
+          {club.name}
+        </Box>
+      ));
+      clubs.unshift(emptyClub);
+      setClubList(clubs);
+      setClubNode(clubs[0]);
+    }
+  }, [user]);
 
   return (
     <FormGroup
@@ -59,6 +91,25 @@ const Filters = (props) => {
         setValue={setGender}
         list={genderList}
       />
+      {clubList.length > 0 && (
+        <LabeledSelect
+          label={"Club"}
+          value={clubNode}
+          setValue={setClubNode}
+          list={clubList}
+        />
+      )}
+      {noClubScope && (
+        <Tooltip
+          arrow
+          position="left"
+          title="Enable 'View Complete Profile' so we can see your club information"
+        >
+          <Box>
+            <StravaButton text={"Enable Filter By Clubs"} />
+          </Box>
+        </Tooltip>
+      )}
       {/* //TODO Register page isn't ready to take input yet */}
       {/* <LabeledSelect
         label={"Category"}

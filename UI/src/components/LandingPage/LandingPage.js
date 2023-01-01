@@ -14,7 +14,7 @@ import { ReactComponent as Insta } from "./assets/insta.svg";
 import { ReactComponent as StravaLogo } from "./assets/stravaLogo.svg";
 
 const targetMap = {
-  // infoBtn: "infoSection",
+  infoBtn: "infoSection",
   // contributeBtn: "contributeSection",
   contributeBtn2: "contributeSection",
 };

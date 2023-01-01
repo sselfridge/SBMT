@@ -49,12 +49,22 @@ namespace TodoApi.Helpers
       context.Add(newUser);
       context.SaveChanges();
 
-      // get clubs
-      // get other stats for user?
-
       KickOffInitialFetch(serviceScopeFactory, newUser.AthleteId);
 
-      return newUser;
+      if (profile.Clubs != null)
+      {
+        var user = context.StravaUsers.First(x => x.AthleteId == newUser.AthleteId);
+        user = stravaService.UpdateUserClubs(user, profile.Clubs, context);
+        context.Update(user);
+        await context.SaveChangesAsync();
+        return user;
+      }
+      else
+      {
+        return newUser;
+
+      }
+      // get other stats for user?
     }
 
     private static Effort ConvertSummeryEffort(ActivitySumResEffort segEffort)

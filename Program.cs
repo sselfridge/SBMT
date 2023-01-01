@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 using TodoApi.Helpers;
 using TodoApi.Models;
 using TodoApi.Models.db;
@@ -8,11 +9,12 @@ using TodoApi.Services;
 
 var env1 = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
-var env = env1 ?? "Production";
+var env2 = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
 
+var env = env1 ?? env2 ?? "Production";
+//var env = "Staging";
 
-Console.WriteLine($"sbmtlog: Current ENV1 var is:{env1}------------------");
-Console.WriteLine($"sbmtlog: Current ENV var is:{env}------------------");
+Console.WriteLine($"sbmtLog: Current ENV var is:{env}------------------");
 
 IConfiguration configuration = new ConfigurationBuilder()
                             .AddJsonFile("appsettings.json")
@@ -24,8 +26,9 @@ builder.WebHost.UseUrls("http://*:5000", "https://*:5001");
 
 // Add services to the container.
 
-
-builder.Services.AddControllers();
+//https://gavilan.blog/2021/05/19/fixing-the-error-a-possible-object-cycle-was-detected-in-different-versions-of-asp-net-core/
+builder.Services.AddControllers().AddJsonOptions(x =>
+x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 string dbServer = configuration["DbConfig:dbServer"];
 string dbPass = configuration["DbConfig:dbPass"];
@@ -45,11 +48,13 @@ string connectionString = $"" +
   $"Trust Server Certificate=true;" +
   $"Include Error Detail={includeError};";
 
+
+
 builder.Services.AddDbContext<sbmtContext>(opt =>
-{
-  opt.UseNpgsql(connectionString);
-  opt.EnableSensitiveDataLogging(enableSensitiveDataLogging);
-}
+  {
+    opt.UseNpgsql(connectionString);
+    opt.EnableSensitiveDataLogging(enableSensitiveDataLogging);
+  }
 );
 
 

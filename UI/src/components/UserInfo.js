@@ -8,6 +8,7 @@ import {
   FormGroup,
   Typography,
   Button,
+  Avatar,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import AppContext from "AppContext";
@@ -32,7 +33,7 @@ const MyPaper = styled(Paper)(({ theme }) => ({
 
 const categorySelect = categoryList.filter((c) => c !== "ALL");
 
-const Register = () => {
+const UserInfo = () => {
   const { user, dispatch } = useContext(AppContext);
   // const [age, setAge] = useState("");
   const [category, setCategory] = useState("");
@@ -41,6 +42,11 @@ const Register = () => {
   const fetchProfile = useCallback((athleteId) => {
     ApiGet(`/api/strava/userRefresh/${athleteId}`, setLocalUser);
   }, []);
+
+  React.useEffect(() => {
+    setLocalUser(user);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   React.useEffect(() => {
     if (
@@ -56,7 +62,7 @@ const Register = () => {
 
   return (
     <MyPaper>
-      <Typography variant="h3">Register For things</Typography>
+      <Typography variant="h3">User Info</Typography>
 
       <FormGroup sx={{}}>
         <Typography variant="h5">Non-Strava Info we need from you</Typography>
@@ -76,21 +82,14 @@ const Register = () => {
             />
           </Box>
         </Grid>
-        <Grid item xs={2} />
-        <Grid item xs={4}>
-          Age
-        </Grid>
-        <Grid item xs={4}>
-          38
-        </Grid>
-        <Grid item xs={2} />
+
         {/* line break */}
         <Grid item xs={2} />
         <Grid item xs={4}>
           Weight
         </Grid>
         <Grid item xs={4}>
-          185
+          {localUser?.weight}
         </Grid>
         <Grid item xs={2} />
         {/* line break */}
@@ -99,7 +98,28 @@ const Register = () => {
           Sex
         </Grid>
         <Grid item xs={4}>
-          M
+          {localUser?.sex}
+        </Grid>
+        <Grid item xs={2} />
+        {/* line break */}
+        <Grid item xs={2} />
+        <Grid item xs={4}>
+          Clubs
+        </Grid>
+        <Grid item xs={4}>
+          {localUser?.stravaClubs?.map((club) => {
+            return (
+              <Box key={club.id} sx={{ display: "flex" }}>
+                <Avatar src={club.profileMedium} />{" "}
+                <Typography
+                  sx={{ display: "flex", alignItems: "center" }}
+                  variant="body1"
+                >
+                  {club.name}
+                </Typography>
+              </Box>
+            );
+          })}
         </Grid>
         <Grid item xs={2} />
         <Grid item xs={12}>
@@ -136,4 +156,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default UserInfo;

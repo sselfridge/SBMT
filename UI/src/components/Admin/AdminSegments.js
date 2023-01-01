@@ -54,6 +54,7 @@ const AdminSegments = (props) => {
   };
 
   useEffect(() => {
+    console.log("user?.athleteId: ", user?.athleteId);
     if (user?.athleteId && user.athleteId !== 1075670) {
       navigate("/");
     }

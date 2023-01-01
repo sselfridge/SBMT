@@ -15,6 +15,7 @@ import {
 import { styled } from "@mui/material/styles";
 // import clubs from "mockData/clubs";
 import ConfirmDelete from "./ConfirmDelete";
+import UserInfo from "./UserInfo";
 
 const MyBox = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -52,8 +53,10 @@ const UserSettings = (props) => {
           borderBottomStyle: "solid",
         }}
       >
-        User Settings
+        Settings
       </Typography>
+
+      <UserInfo />
 
       {/* <section>
         <List

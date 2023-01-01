@@ -45,7 +45,7 @@ const components = {
       display: flex;
       flex-direction: column;
       align-items: center;
-      font-size: calc(10px + 2vmin);
+      font-size: calc(10px + 1vmin);
       color: white;
     }
     `,
