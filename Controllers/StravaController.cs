@@ -109,7 +109,9 @@ namespace TodoApi.Controllers
         return Redirect($"{Configuration["BaseURL"]}/thanks");
 
       }
-      else if (oAuthUser.AccessToken != existingUser.AccessToken)
+      else if (
+        oAuthUser.AccessToken != existingUser.AccessToken ||
+        oAuthUser.Scope != existingUser.Scope)
       {
         existingUser.AccessToken = oAuthUser.AccessToken;
         existingUser.ExpiresAt = oAuthUser.ExpiresAt;
