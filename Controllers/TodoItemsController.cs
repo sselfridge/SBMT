@@ -177,6 +177,11 @@ namespace TodoApi.Controllers
     [HttpGet()]
     public async Task<ActionResult<long>> TestThing([FromServices] IServiceScopeFactory serviceScopeFactory)
     {
+
+      var count = _dbContext.StravaUsers.Count();
+      Console.WriteLine($"sbmtLog {count} users in DB");
+
+
       if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Development")
       {
         return Ok("loadked");

@@ -12,7 +12,7 @@ var env2 = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
 
 var env = env1 ?? env2 ?? "Production";
 
-Console.WriteLine($"sbmtlog: Current ENV var is:{env}------------------");
+Console.WriteLine($"sbmtLog: Current ENV var is:{env}------------------");
 
 IConfiguration configuration = new ConfigurationBuilder()
                             .AddJsonFile("appsettings.json")

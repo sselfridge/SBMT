@@ -159,7 +159,7 @@ namespace TodoApi.Controllers
         _dbContext.StravaPushNotifications.Add(pushNotification);
         await _dbContext.SaveChangesAsync();
 
-        var outStr = $"sbmtlog: New Strava Push-----" +
+        var outStr = $"sbmtLog: New Strava Push-----" +
         $"Aspect:{pushNotification.AspectType} -----" +
         $"owner:{pushNotification.OwnerId} -----" +
         $"object:{pushNotification.ObjectId} -----" +
