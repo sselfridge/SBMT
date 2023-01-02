@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
+import _ from "lodash";
 import {
   Box,
   FormGroup,
@@ -33,7 +34,9 @@ const Filters = (props) => {
   const [category] = useState(categoryList[0]);
   const [clubList, setClubList] = useState([]);
   const [clubNode, setClubNode] = useState("");
-  const [noClubScope, setNoClubScope] = React.useState(false);
+  const [stravaBtnText, setStravaBtnText] = useState("");
+
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
   useEffect(() => {
     const club = clubNode?.key || 0;
@@ -43,7 +46,7 @@ const Filters = (props) => {
   useEffect(() => {
     if (user?.scope?.includes("profile:read_all") === false) {
       setClubList([]);
-      setNoClubScope(true);
+      setStravaBtnText("Enable Clubs");
     } else if (user?.stravaClubs?.length > 0) {
       const emptyClub = (
         <Box id={0} key={0} sx={{ display: "flex" }}>
@@ -59,7 +62,11 @@ const Filters = (props) => {
       clubs.unshift(emptyClub);
       setClubList(clubs);
       setClubNode(clubs[0]);
+      setStravaBtnText("");
+    } else if (_.isEmpty(user)) {
+      setStravaBtnText("Login to filter by Club");
     }
+    console.info(user);
   }, [user]);
 
   return (
@@ -99,14 +106,14 @@ const Filters = (props) => {
           list={clubList}
         />
       )}
-      {noClubScope && (
+      {!!stravaBtnText && (
         <Tooltip
           arrow
           position="left"
           title="Enable 'View Complete Profile' so we can see your club information"
         >
-          <Box>
-            <StravaButton text={"Enable Clubs"} />
+          <Box sx={{ margin: isMobile ? "15px" : "0px 0px 10px" }}>
+            <StravaButton text={stravaBtnText} />
           </Box>
         </Tooltip>
       )}
@@ -136,8 +143,9 @@ Filters.propTypes = {
 };
 
 const FiltersWithMobile = (props) => {
-  const hidden = useMediaQuery((theme) => theme.breakpoints.down("sm"));
-  return hidden ? (
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+
+  return isMobile ? (
     <Box>
       <Accordion defaultExpanded>
         <AccordionSummary>
@@ -145,7 +153,7 @@ const FiltersWithMobile = (props) => {
             Show Filters <FilterListIcon />
           </Button>
         </AccordionSummary>
-        <AccordionDetails>
+        <AccordionDetails sx={{ paddingBottom: "6px" }}>
           <Filters {...props} />
         </AccordionDetails>
       </Accordion>
