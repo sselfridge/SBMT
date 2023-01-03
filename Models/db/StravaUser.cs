@@ -21,6 +21,10 @@ namespace TodoApi.Models.db
     public string Sex { get; set; }
     public double Weight { get; set; }
     public string Scope { get; set; }
+    //public int Age { get; set; }
+    //public int RecentDistance { get; set; }
+    //public int RecentElevation { get; set; }
+
     public ICollection<StravaClub> StravaClubs { get; set; }
 
 

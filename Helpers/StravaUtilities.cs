@@ -10,8 +10,6 @@ namespace TodoApi.Helpers
 
     public static List<Effort> PullEffortsFromActivity(ActivitySummaryResponse activity, sbmtContext context)
     {
-
-
       var segmentIds = context.Segments.Select(s => s.Id).ToList();
 
       if (segmentIds == null) return new List<Effort>();
@@ -86,7 +84,7 @@ namespace TodoApi.Helpers
           {
             var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
             var stravaService = scope.ServiceProvider.GetRequiredService<IStravaService>();
-            var activities = await stravaService.GetActivities(athleteId, context);
+            var activities = await stravaService.GetActivities(athleteId);
 
             Console.WriteLine($"sbmtLog: athleteId:{athleteId} onboarding with {activities.Count} activities");
 
@@ -151,7 +149,8 @@ namespace TodoApi.Helpers
            var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
            var stravaService = scope.ServiceProvider.GetRequiredService<IStravaService>();
 
-           ActivitySummaryResponse activity = await stravaService.GetActivity(activityId, athleteId, context);
+           var activity = await stravaService.GetActivity(activityId, athleteId);
+
 
            if (activity.SegmentEfforts == null)
            {

@@ -127,7 +127,7 @@ namespace TodoApi.Controllers
         if (userWithClubs != null)
         {
 
-          var profile = await _stravaService.GetProfile(oAuthUser.AthleteId, _dbContext);
+          var profile = await _stravaService.GetProfile(oAuthUser.AthleteId);
           userWithClubs = _stravaService.UpdateUserClubs(userWithClubs, profile.Clubs, _dbContext);
           var savedUser = await _userService.Update(userWithClubs);
         }
@@ -241,7 +241,7 @@ namespace TodoApi.Controllers
 
       var cookieAthleteId = Int32.Parse(userId);
 
-      var profile = await _stravaService.GetProfile(athleteId, _dbContext);
+      var profile = await _stravaService.GetProfile(athleteId);
 
       if (profile == null) return NotFound();
 
