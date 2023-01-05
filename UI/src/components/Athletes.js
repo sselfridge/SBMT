@@ -1,61 +1,90 @@
 import React, { useState, useEffect } from "react";
 import {
   Box,
-  Table,
-  TableRow,
-  TableHead,
-  TableCell,
-  TableBody,
   Avatar,
+  Grid,
+  Paper,
+  TextField,
+  Typography,
+  InputAdornment,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 import { ApiGet } from "api/api";
-
-const MyBox = styled(Box)(({ theme }) => ({
-  padding: 8,
-  borderRadius: 4,
-  backgroundColor: theme.palette.background.paper,
-}));
+import { FilterList } from "@mui/icons-material";
 
 const Athletes = () => {
   const [athletes, setAthletes] = useState([]);
 
+  const [filter, setFilter] = useState("");
   useEffect(() => {
     ApiGet("/api/athletes", setAthletes);
   }, []);
 
+  const filteredAthletes = athletes
+    .filter((a) => {
+      const lowerFilter = `${filter}`.toLowerCase();
+      const fullName = `${a.firstname} ${a.lastname}`.toLowerCase();
+      return fullName.includes(lowerFilter);
+    })
+    .sort((a, b) => {
+      if (a.firstname > b.firstname) return 1;
+      else return -1;
+    });
+
   return (
-    <MyBox>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell />
-            <TableCell>Name</TableCell>
-            <TableCell>Sex</TableCell>
-            {/* <TableCell>Weight</TableCell> */}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {athletes.map((user) => (
-            <TableRow key={`${user.athleteId}`}>
-              <TableCell>
-                <Link to={`${user.athleteId}`}>
-                  <Avatar src={user.avatar} />
-                </Link>
-              </TableCell>
-              <TableCell>
-                <Link to={`${user.athleteId}`}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        maxWidth: {
+          sm: "95vw",
+          md: "80vw",
+        },
+        justifyContent: "space-evenly",
+        alignContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Box sx={{ backgroundColor: "background.paper", borderRadius: 5 }}>
+        <TextField
+          onChange={(e) => {
+            setFilter(e.target.value);
+          }}
+          placeholder="Filter"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <FilterList color={"primary"} />
+              </InputAdornment>
+            ),
+          }}
+        />
+      </Box>
+      <Grid container sx={{ justifyContent: "center" }}>
+        {filteredAthletes.map((user) => (
+          <Grid sx={{ margin: "5px" }}>
+            <Paper
+              sx={{
+                display: "flex",
+                padding: 2,
+                height: "80px",
+                width: "200px",
+                alignItems: "center",
+              }}
+            >
+              <Link to={`${user.athleteId}`}>
+                <Avatar src={user.avatar} />
+              </Link>
+              <Link to={`${user.athleteId}`}>
+                <Typography>
                   {user.firstname} {user.lastname}
-                </Link>
-              </TableCell>
-              <TableCell>{user.sex}</TableCell>
-              {/* <TableCell>{(user.weight * 2.2).toFixed(2)}</TableCell> */}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </MyBox>
+                </Typography>
+              </Link>
+            </Paper>
+          </Grid>
+        ))}
+      </Grid>
+    </Box>
   );
 };
 
