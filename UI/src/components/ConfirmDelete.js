@@ -10,7 +10,11 @@ import { ReactComponent as StravaLogo } from "assets/stravaLogoOrange.svg";
 
 import { ApiDelete } from "api/api";
 
-const MyBox = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
+const MyBox = styled(Box)(({ theme }) => ({
+  padding: 8,
+  borderRadius: 4,
+  minHeight: "600px",
+}));
 
 const ConfirmDelete = (props) => {
   const { user, dispatch } = React.useContext(AppContext);
@@ -110,6 +114,7 @@ const ConfirmDelete = (props) => {
               color="error"
               disabled={deleteEnabledCount > 0}
               onClick={handleDelete}
+              sx={{ height: "150px" }}
             >
               {deleteEnabledCount > 0 ? (
                 <Typography>

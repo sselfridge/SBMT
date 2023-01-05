@@ -58,65 +58,6 @@ const UserSettings = (props) => {
 
       <UserInfo />
 
-      {/* <section>
-        <List
-          sx={{
-            color: "text.primary",
-            maxWidth: 650,
-            width: "95vw",
-
-            bgcolor: "background.paper",
-          }}
-        >
-          {clubs.map((club, idx) => {
-            console.log("club: ", club);
-            const labelId = `checkbox-list-label-${idx}`;
-
-            return (
-              <ListItem
-                key={idx}
-                secondaryAction={
-                  <IconButton edge="end" aria-label="comments">
-                    <Avatar src={club.avatar} />
-                  </IconButton>
-                }
-                disablePadding
-              >
-                <ListItemButton
-                  role={undefined}
-                  onClick={handleToggle(club.id)}
-                  dense
-                >
-                  <ListItemIcon>
-                    <Checkbox
-                      edge="start"
-                      checked={checked.indexOf(club.id) !== -1}
-                      tabIndex={-1}
-                      disableRipple
-                      inputProps={{ "aria-labelledby": labelId }}
-                    />
-                  </ListItemIcon>
-                  <ListItemText
-                    sx={{
-                      // whiteSpace: "nowrap",
-                      // overflow: "hidden",
-                      // textOverflow: "ellipsis",
-                      "& > span": {
-                        width: "95%",
-                        overflow: "hidden",
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                      },
-                    }}
-                    id={labelId}
-                    primary={club.name}
-                  />
-                </ListItemButton>
-              </ListItem>
-            );
-          })}
-        </List>
-      </section> */}
       <section>
         <ConfirmDelete />
       </section>
