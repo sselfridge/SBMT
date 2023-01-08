@@ -311,6 +311,7 @@ namespace TodoApi.Controllers
       {
         if (user.AthleteId != 1)
         {
+          user.Scope = ""; //Not everyone needs to know everyones scopes
           users.Add(new StravaUserDTO(user));
         }
       }
@@ -344,6 +345,7 @@ namespace TodoApi.Controllers
     {
       var user = _userService.GetById(id);
       if (user == null) return NotFound();
+      user.Scope = "";
       return Ok(new StravaUserDTO(user));
     }
 

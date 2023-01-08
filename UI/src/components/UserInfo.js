@@ -77,9 +77,7 @@ const UserInfo = () => {
         <Grid item xs={12}>
           <Typography variant="h5">Info we pulled from Strava</Typography>
           <Box sx={{ width: 100, height: 100 }}>
-            <StravaLogo
-            // style={{ height: 40 }}
-            />
+            <StravaLogo />
           </Box>
         </Grid>
 
