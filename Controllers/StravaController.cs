@@ -128,7 +128,7 @@ namespace TodoApi.Controllers
         {
 
           var profile = await _stravaService.GetProfile(oAuthUser.AthleteId);
-          userWithClubs = _stravaService.UpdateUserClubs(userWithClubs, profile.Clubs, _dbContext);
+          userWithClubs = _stravaService.UpdateUserClubs(userWithClubs, profile.Clubs);
           var savedUser = await _userService.Update(userWithClubs);
         }
       }
@@ -265,7 +265,7 @@ namespace TodoApi.Controllers
         user.Weight = (double)profile.Weight;
       }
 
-      user = _stravaService.UpdateUserClubs(user, profile.Clubs, _dbContext);
+      user = _stravaService.UpdateUserClubs(user, profile.Clubs);
 
       _dbContext.Update(user);
       _dbContext.SaveChanges();

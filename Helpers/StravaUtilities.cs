@@ -52,7 +52,7 @@ namespace TodoApi.Helpers
       if (profile.Clubs != null)
       {
         var user = context.StravaUsers.First(x => x.AthleteId == newUser.AthleteId);
-        user = stravaService.UpdateUserClubs(user, profile.Clubs, context);
+        user = stravaService.UpdateUserClubs(user, profile.Clubs);
         context.Update(user);
         await context.SaveChangesAsync();
         return user;
