@@ -335,6 +335,12 @@ namespace TodoApi.Controllers
 
       StravaUser user = (StravaUser)possibleNullUser;
 
+      //remove users from clubs (more data leaks)
+      foreach (var club in user.StravaClubs)
+      {
+        club.StravaUsers = new List<StravaUser>();
+      }
+
       return Ok(new StravaUserDTO(user));
     }
 
