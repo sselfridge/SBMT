@@ -21,14 +21,15 @@ namespace TodoApi.Models.db
     public string Sex { get; set; }
     public double Weight { get; set; }
     public string Scope { get; set; }
-    //public int Age { get; set; }
-    //public int RecentDistance { get; set; }
-    //public int RecentElevation { get; set; }
+    public int Age { get; set; }
+    public string Category { get; set; }
+    public int RecentDistance { get; set; }
+    public int RecentElevation { get; set; }
 
     public ICollection<StravaClub> StravaClubs { get; set; }
 
 
-    public StravaUser(int athleteId, string firstname, string lastname, string avatar, long expiresAt, string refreshToken, string accessToken, string sex, double weight, string? scope)
+    public StravaUser(int athleteId, string firstname, string lastname, string avatar, long expiresAt, string refreshToken, string accessToken, string sex, double weight, string? scope, int age, string category, int recentDistance, int recentElevation)
     {
       AthleteId = athleteId;
       Firstname = firstname;
@@ -42,6 +43,10 @@ namespace TodoApi.Models.db
       Scope = scope ?? "";
       JoinDate = DateTime.UtcNow;
       StravaClubs = new List<StravaClub>();
+      Age = age;
+      Category = category;
+      RecentDistance = recentDistance;
+      RecentElevation = recentElevation;
     }
 
     public StravaUser(OauthStravaUser oAuth, StravaAthleteProfile profile)
@@ -60,6 +65,12 @@ namespace TodoApi.Models.db
 
       JoinDate = DateTime.UtcNow;
       StravaClubs = new List<StravaClub>();
+
+      Age = 0;
+      Category = "None";
+      RecentDistance = 0;
+      RecentElevation = 0;
+
     }
 
 

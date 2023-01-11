@@ -335,7 +335,37 @@ namespace TodoApi.Controllers
 
       StravaUser user = (StravaUser)possibleNullUser;
 
+      foreach (var club in user.StravaClubs)
+      {
+        club.StravaUsers = new List<StravaUser>();
+      }
+
       return Ok(new StravaUserDTO(user));
+    }
+
+    [HttpPost("athletes/current")]
+    public async Task<IActionResult> UpdateCurrentAthleteAsync([FromBody] StravaUserDTO newUser)
+    {
+      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
+
+      if (userId == null) return NotFound();
+
+      var athleteId = Int32.Parse(userId);
+      var dbUser = _dbContext.StravaUsers
+                              .Include(x => x.StravaClubs)
+                              .FirstOrDefault(u => u.AthleteId == athleteId);
+
+      if (dbUser == null) return NotFound();
+
+      if (dbUser.AthleteId != newUser.AthleteId) return Unauthorized();
+
+      dbUser.Age = newUser.Age;
+      dbUser.Category = newUser.Category;
+      _dbContext.Update(dbUser);
+      await _dbContext.SaveChangesAsync();
+
+
+      return Ok(newUser);
     }
 
     [HttpGet("athletes/{id}")]

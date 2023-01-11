@@ -7,6 +7,7 @@ export const categoryList = [
   "Cat 3 (Advanced)",
   "Cat 4 (Intermediate)",
   "Cat 5 (Beginner)",
+  "None",
 ];
 export const ageList = [
   "ALL",

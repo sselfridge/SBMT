@@ -198,7 +198,7 @@ namespace TodoApi.Controllers
 
 
 
-      return Ok();
+      return Ok("Ready to go");
 
 
       var newStudent = new Student();
