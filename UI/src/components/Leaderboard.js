@@ -12,7 +12,7 @@ import Filters from "./Filters";
 import { ALL_COLUMNS, MOBILE_COLUMNS } from "utils/constants";
 import { formattedTime, metersToMiles, metersToFeet } from "utils/helperFuncs";
 import { ApiGet } from "api/api";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 const MyBox = styled(Box)(({ theme }) => {
   return {
@@ -27,6 +27,7 @@ const LEADERBOARD_URL = "/api/leaderboard";
 const Leaderboard = () => {
   const theme = useTheme();
   const isMobile = !useMediaQuery(theme.breakpoints.up("sm"));
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [columnVisible, setColumnVisible] = React.useState(ALL_COLUMNS);
 
@@ -37,22 +38,39 @@ const Leaderboard = () => {
 
   const [rows, setRows] = useState([]);
 
-  const onApplyFilters = React.useCallback((filters) => {
-    let url = LEADERBOARD_URL + "?";
-    if (filters?.surface && filters.surface !== "ALL") {
-      url += `&surface=${filters.surface}`;
-    }
+  const onApplyFilters = React.useCallback(
+    (filters) => {
+      let url = LEADERBOARD_URL + "?";
+      const params = {};
+      if (filters?.surface && filters.surface !== "ALL") {
+        url += `&surface=${filters.surface}`;
+        params.surface = filters.surface;
+      }
 
-    if (filters?.gender && filters.gender !== "ALL") {
-      url += `&gender=${filters.gender}`;
-    }
+      if (filters?.gender && filters.gender !== "ALL") {
+        url += `&gender=${filters.gender}`;
+        params.gender = filters.gender;
+      }
 
-    if (filters?.club) {
-      url += `&club=${filters.club}`;
-    }
+      if (filters?.club !== "0") {
+        url += `&club=${filters.club}`;
+        params.club = filters.club;
+      }
+      if (filters?.age && filters.age !== "ALL") {
+        url += `&age=${filters.age}`;
+        params.age = filters.age;
+      }
+      if (filters?.category && filters.category !== "ALL") {
+        url += `&category=${filters.category}`;
+        params.category = filters.category;
+      }
 
-    ApiGet(url, setRows);
-  }, []);
+      setSearchParams(params);
+
+      ApiGet(url, setRows);
+    },
+    [setSearchParams]
+  );
 
   const columns = useMemo(
     () => [

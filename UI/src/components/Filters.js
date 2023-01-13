@@ -13,6 +13,9 @@ import {
   Tooltip,
 } from "@mui/material";
 import FilterListIcon from "@mui/icons-material/FilterList";
+
+import { useSearchParams } from "react-router-dom";
+
 import LabeledSelect from "./Shared/LabeledSelect";
 
 import {
@@ -28,15 +31,47 @@ const Filters = (props) => {
   const { onApplyFilters } = props;
   const { user } = useContext(AppContext);
 
+  const [searchParams] = useSearchParams();
   const [surface, setSurface] = useState(surfaceList[1]);
   const [gender, setGender] = useState(genderList[0]);
-  const [age] = useState(ageList[0]);
-  const [category] = useState(categoryList[0]);
+  const [age, setAge] = useState(ageList[0]);
+  const [category, setCategory] = useState(categoryList[0]);
   const [clubList, setClubList] = useState([]);
   const [clubNode, setClubNode] = useState("");
+  const [clubId, setClubId] = useState(null);
   const [stravaBtnText, setStravaBtnText] = useState("");
 
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+
+  // const didMount = React.useRef(false);
+  useEffect(() => {
+    // if (didMount.current === false) {
+    for (const [key, value] of searchParams) {
+      console.info(key, value);
+      switch (key) {
+        case "surface":
+          setSurface(value);
+          break;
+        case "gender":
+          setGender(value);
+          break;
+        case "club":
+          setClubId(value);
+          break;
+        case "category":
+          setCategory(value);
+          break;
+        case "age":
+          setAge(value);
+          break;
+
+        default:
+          break;
+      }
+    }
+    // didMount.current = true;
+    // }
+  }, [searchParams]);
 
   useEffect(() => {
     const club = clubNode?.key || 0;
@@ -44,6 +79,7 @@ const Filters = (props) => {
   }, [surface, gender, age, category, onApplyFilters, clubNode]);
 
   useEffect(() => {
+    console.info("USER EFFECT");
     if (user?.scope?.includes("profile:read_all") === false) {
       setClubList([]);
       setStravaBtnText("Enable Clubs");
@@ -61,7 +97,12 @@ const Filters = (props) => {
       ));
       clubs.unshift(emptyClub);
       setClubList(clubs);
-      setClubNode(clubs[0]);
+      if (clubId) {
+        const club = clubs.find((c) => c.key === `${clubId}`);
+        setClubNode(club || clubs[0]);
+      } else {
+        setClubNode(clubs[0]);
+      }
       setStravaBtnText("");
     } else if (_.isEmpty(user)) {
       setStravaBtnText("Login to filter by Club");
@@ -116,8 +157,7 @@ const Filters = (props) => {
           </Box>
         </Tooltip>
       )}
-      {/* //TODO Register page isn't ready to take input yet */}
-      {/* <LabeledSelect
+      <LabeledSelect
         label={"Category"}
         value={category}
         setValue={setCategory}
@@ -128,11 +168,19 @@ const Filters = (props) => {
         value={age}
         setValue={setAge}
         list={ageList}
+      />
+      {/* <LabeledSelect
+        label={"Recent Distance"}
+        value={age}
+        setValue={setAge}
+        list={ageList}
+      />
+      <LabeledSelect
+        label={"Recent Elevation"}
+        value={age}
+        setValue={setAge}
+        list={ageList}
       /> */}
-
-      {/* <Button size="small" variant="contained" onClick={handleApplyChanges}>
-        <DoubleArrowIcon fontSize="small" /> Apply
-      </Button> */}
     </FormGroup>
   );
 };
