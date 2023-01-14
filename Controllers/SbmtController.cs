@@ -1,6 +1,6 @@
-﻿using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Services;
@@ -112,6 +112,16 @@ namespace TodoApi.Controllers
 
       var users = _dbContext.StravaUsers.Include(x => x.StravaClubs).ToList();
 
+
+      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
+      StravaUser currentUser;
+      if (userId != null)
+      {
+        var currId = Int32.Parse(userId);
+
+        currentUser = users.Find(u => u.AthleteId == currId);
+      }
+
       if (genderFilter != null && (genderFilter == "M" || genderFilter == "F"))
       {
         users = users.FindAll(u => u.Sex == genderFilter);
@@ -121,6 +131,14 @@ namespace TodoApi.Controllers
       {
         users = users.FindAll(u => u.StravaClubs.Any(club => club.Id == clubFilter));
       }
+
+      //if (distanceFilter != 0))
+      //{
+      //  users = users.FindAll(u =>
+      //  {
+
+      //  } );
+      //}
 
       var data = users.Join(_dbContext.Efforts,
         effort => effort.AthleteId,
