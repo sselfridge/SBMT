@@ -20,6 +20,8 @@ namespace TodoApi.Services
     StravaUser UpdateUserClubs(StravaUser user, List<StravaClub> newClubs);
     StravaUser UpdateUserClubs(StravaUser user, StravaClubResponse[] newClubs);
 
+    Task<StravaUser> UpdateUserStats(StravaUser user);
+
   }
   public class StravaService : IStravaService
   {
@@ -243,11 +245,8 @@ namespace TodoApi.Services
 
     }
 
+
     public async Task<HttpClient> GetClientForUser(int athleteId)
-    {
-      return await GetClientForUser(athleteId, null);
-    }
-    private async Task<HttpClient> GetClientForUser(int athleteId, sbmtContext? context)
     {
       var user = UserService.GetById(athleteId);
 
@@ -317,6 +316,27 @@ namespace TodoApi.Services
       }
     }
 
+
+    public async Task<StravaUser> UpdateUserStats(StravaUser user)
+    {
+      var stats = await GetAthleteStats(user.AthleteId);
+
+      user.RecentDistance = stats.Distance / 4;
+      user.RecentElevation = (stats.ElevationGain) / 4;
+
+
+      using (var scope = _serviceScopeFactory.CreateScope())
+      {
+
+        var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
+
+        context.Update(user);
+        context.SaveChanges();
+
+      }
+
+      return user;
+    }
 
     /// <summary>
     /// Method <c>GetStrava</c> performs GET operation on StravaAPI

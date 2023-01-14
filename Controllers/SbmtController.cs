@@ -82,6 +82,7 @@ namespace TodoApi.Controllers
 
       string surfaceFilter = HttpContext.Request.Query["surface"];
       string genderFilter = HttpContext.Request.Query["gender"];
+      string distanceFilter = HttpContext.Request.Query["distance"];
 
       long clubFilter = 0;
       long.TryParse(HttpContext.Request.Query["club"], out clubFilter);

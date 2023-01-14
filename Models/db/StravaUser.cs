@@ -23,13 +23,13 @@ namespace TodoApi.Models.db
     public string Scope { get; set; }
     public int Age { get; set; }
     public string Category { get; set; }
-    public int RecentDistance { get; set; }
-    public int RecentElevation { get; set; }
+    public double RecentDistance { get; set; }
+    public double RecentElevation { get; set; }
 
     public ICollection<StravaClub> StravaClubs { get; set; }
 
 
-    public StravaUser(int athleteId, string firstname, string lastname, string avatar, long expiresAt, string refreshToken, string accessToken, string sex, double weight, string? scope, int age, string category, int recentDistance, int recentElevation)
+    public StravaUser(int athleteId, string firstname, string lastname, string avatar, long expiresAt, string refreshToken, string accessToken, string sex, double weight, string? scope, int age, string category, double recentDistance, double recentElevation)
     {
       AthleteId = athleteId;
       Firstname = firstname;

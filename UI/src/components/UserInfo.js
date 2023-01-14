@@ -210,7 +210,7 @@ const UserInfo = () => {
         <Grid item xs={1} sm={3} />
         <Grid item xs={1} />
         <Grid item xs={10} sx={{ display: "flex", justifyContent: "center" }}>
-          <Avatar src={localUser.avatar} sx={{ width: 75, height: 75 }} />
+          <Avatar src={localUser?.avatar} sx={{ width: 75, height: 75 }} />
         </Grid>
         <Grid item xs={1} />
         {stravaFields.map(mapFields)}

@@ -191,12 +191,14 @@ namespace TodoApi.Controllers
 
       //var stats = await _stravaService.GetAthleteStats(201227);
 
-      var outVal = await StravaUtilities.ParseNewActivity(
-                                                           _serviceScopeFactory,
-                                                           1075670,
-                                                           8182529142);
+      var user = _dbContext.StravaUsers.FirstOrDefault(x => x.AthleteId == 1075670);
 
 
+
+      var updated = await _stravaService.UpdateUserStats(user);
+
+
+      //return Ok(updated);
 
       return Ok("Ready to go");
 

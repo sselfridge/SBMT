@@ -27,6 +27,7 @@ const LEADERBOARD_URL = "/api/leaderboard";
 const Leaderboard = () => {
   const theme = useTheme();
   const isMobile = !useMediaQuery(theme.breakpoints.up("sm"));
+  // eslint-disable-next-line no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [columnVisible, setColumnVisible] = React.useState(ALL_COLUMNS);
@@ -42,27 +43,26 @@ const Leaderboard = () => {
     (filters) => {
       let url = LEADERBOARD_URL + "?";
       const params = {};
-      if (filters?.surface && filters.surface !== "ALL") {
-        url += `&surface=${filters.surface}`;
-        params.surface = filters.surface;
-      }
 
-      if (filters?.gender && filters.gender !== "ALL") {
-        url += `&gender=${filters.gender}`;
-        params.gender = filters.gender;
-      }
+      const simpleFilters = [
+        "surface",
+        "gender",
+        "age",
+        "category",
+        "distance",
+        "elevation",
+      ];
+
+      simpleFilters.forEach((name) => {
+        if (filters?.[name] && filters[name] !== "ALL") {
+          url += `&${name}=${filters[name]}`;
+          params[name] = filters[name];
+        }
+      });
 
       if (filters?.club !== "0") {
         url += `&club=${filters.club}`;
         params.club = filters.club;
-      }
-      if (filters?.age && filters.age !== "ALL") {
-        url += `&age=${filters.age}`;
-        params.age = filters.age;
-      }
-      if (filters?.category && filters.category !== "ALL") {
-        url += `&category=${filters.category}`;
-        params.category = filters.category;
       }
 
       setSearchParams(params);

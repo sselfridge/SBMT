@@ -16,8 +16,8 @@ namespace TodoApi.Models
     public ICollection<StravaClub> StravaClubs { get; set; }
     public int Age { get; set; }
     public string Category { get; set; }
-    public int RecentDistance { get; set; }
-    public int RecentElevation { get; set; }
+    public double RecentDistance { get; set; }
+    public double RecentElevation { get; set; }
 
     [JsonConstructor]
     public StravaUserDTO() { }

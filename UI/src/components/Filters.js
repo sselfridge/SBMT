@@ -23,6 +23,8 @@ import {
   categoryList,
   genderList,
   surfaceList,
+  distanceList,
+  elevationList,
 } from "utils/constants";
 import AppContext from "AppContext";
 import StravaButton from "./Shared/StravaButton";
@@ -35,6 +37,9 @@ const Filters = (props) => {
   const [surface, setSurface] = useState(surfaceList[1]);
   const [gender, setGender] = useState(genderList[0]);
   const [age, setAge] = useState(ageList[0]);
+  const [distance, setDistance] = useState(distanceList[0]);
+  const [elevation, setElevation] = useState(elevationList[0]);
+
   const [category, setCategory] = useState(categoryList[0]);
   const [clubList, setClubList] = useState([]);
   const [clubNode, setClubNode] = useState("");
@@ -43,43 +48,64 @@ const Filters = (props) => {
 
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
-  // const didMount = React.useRef(false);
+  const didMount = React.useRef(false);
   useEffect(() => {
-    // if (didMount.current === false) {
-    for (const [key, value] of searchParams) {
-      console.info(key, value);
-      switch (key) {
-        case "surface":
-          setSurface(value);
-          break;
-        case "gender":
-          setGender(value);
-          break;
-        case "club":
-          setClubId(value);
-          break;
-        case "category":
-          setCategory(value);
-          break;
-        case "age":
-          setAge(value);
-          break;
+    if (didMount.current === false) {
+      for (const [key, value] of searchParams) {
+        switch (key) {
+          case "surface":
+            setSurface(value);
+            break;
+          case "gender":
+            setGender(value);
+            break;
+          case "club":
+            setClubId(value);
+            break;
+          case "category":
+            setCategory(value);
+            break;
+          case "age":
+            setAge(value);
+            break;
+          case "distance":
+            setDistance(value);
+            break;
+          case "elevation":
+            setElevation(value);
+            break;
 
-        default:
-          break;
+          default:
+            break;
+        }
       }
+      didMount.current = true;
     }
-    // didMount.current = true;
-    // }
   }, [searchParams]);
 
   useEffect(() => {
     const club = clubNode?.key || 0;
-    onApplyFilters({ surface, gender, age, club, category });
-  }, [surface, gender, age, category, onApplyFilters, clubNode]);
+    onApplyFilters({
+      surface,
+      gender,
+      age,
+      club,
+      category,
+      distance,
+      elevation,
+    });
+  }, [
+    surface,
+    gender,
+    age,
+    category,
+    onApplyFilters,
+    clubNode,
+    distance,
+    elevation,
+  ]);
 
   useEffect(() => {
-    console.info("USER EFFECT");
     if (user?.scope?.includes("profile:read_all") === false) {
       setClubList([]);
       setStravaBtnText("Enable Clubs");
@@ -169,18 +195,18 @@ const Filters = (props) => {
         setValue={setAge}
         list={ageList}
       />
-      {/* <LabeledSelect
+      <LabeledSelect
         label={"Recent Distance"}
-        value={age}
-        setValue={setAge}
-        list={ageList}
+        value={distance}
+        setValue={setDistance}
+        list={distanceList}
       />
       <LabeledSelect
         label={"Recent Elevation"}
-        value={age}
-        setValue={setAge}
-        list={ageList}
-      /> */}
+        value={elevation}
+        setValue={setElevation}
+        list={elevationList}
+      />
     </FormGroup>
   );
 };

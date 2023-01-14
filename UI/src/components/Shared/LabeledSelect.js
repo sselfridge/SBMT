@@ -18,10 +18,20 @@ const LabeledSelect = (props) => {
       <Select
         value={value}
         onChange={onChange}
-        sx={{ textTransform: "capitalize", minWidth }}
+        sx={{
+          //TODO - see about adding :first-letter pseudo selector here
+          textTransform: "capitalize",
+          minWidth,
+        }}
       >
         {list.map((item, idx) => (
-          <MenuItem value={item} key={idx} sx={{ textTransform: "capitalize" }}>
+          <MenuItem
+            value={item}
+            key={idx}
+            sx={{
+              textTransform: "capitalize",
+            }}
+          >
             {item}
           </MenuItem>
         ))}

@@ -34,6 +34,21 @@ export const weightClass = [
   "250lbs and over",
 ];
 
+export const distanceList = [
+  "ALL",
+  "10 mi/wk",
+  "20 mi/wk",
+  "30 mi/wk",
+  "50 mi/wk",
+];
+export const elevationList = [
+  "ALL",
+  "1k ft/wk",
+  "2k ft/wk",
+  "5k ft/wk",
+  "10k ft/wk",
+];
+
 export const MOBILE_COLUMNS = {
   rank: true,
   athlete: true,
