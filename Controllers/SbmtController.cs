@@ -97,7 +97,7 @@ namespace TodoApi.Controllers
 
       string elevStr = HttpContext.Request.Query["elevation"];
       long elevationFilter = 0;
-      if (disStr != null)
+      if (elevStr != null)
       {
         long.TryParse(string.Join("", new Regex(@"\d+").Matches(elevStr)), out elevationFilter);
       }
@@ -114,7 +114,7 @@ namespace TodoApi.Controllers
 
 
       var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
-      StravaUser currentUser;
+      StravaUser? currentUser = null;
       if (userId != null)
       {
         var currId = Int32.Parse(userId);
@@ -132,13 +132,27 @@ namespace TodoApi.Controllers
         users = users.FindAll(u => u.StravaClubs.Any(club => club.Id == clubFilter));
       }
 
-      //if (distanceFilter != 0))
-      //{
-      //  users = users.FindAll(u =>
-      //  {
+      if (distanceFilter != 0 && currentUser != null)
+      {
+        users = users.FindAll(u =>
+        {
+          var userMiles = u.RecentDistance * 0.000621371;
+          var currMiles = currentUser.RecentDistance * 0.000621371;
+          var diff = userMiles - currMiles;
+          return Math.Abs(diff) <= distanceFilter;
+        });
+      }
 
-      //  } );
-      //}
+      if (elevationFilter != 0 && currentUser != null)
+      {
+        users = users.FindAll(u =>
+        {
+          var userFt = u.RecentElevation * 3.28084;
+          var currFt = currentUser.RecentElevation * 3.28084;
+          var diff = userFt - currFt;
+          return Math.Abs(diff) <= elevationFilter * 1000;
+        });
+      }
 
       var data = users.Join(_dbContext.Efforts,
         effort => effort.AthleteId,
