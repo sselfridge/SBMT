@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TodoApi.Models;
 using TodoApi.Models.db;
@@ -82,14 +83,27 @@ namespace TodoApi.Controllers
 
       string surfaceFilter = HttpContext.Request.Query["surface"];
       string genderFilter = HttpContext.Request.Query["gender"];
-      string distanceFilter = HttpContext.Request.Query["distance"];
+      ;
 
       long clubFilter = 0;
       long.TryParse(HttpContext.Request.Query["club"], out clubFilter);
 
+      string disStr = HttpContext.Request.Query["distance"];
+      long distanceFilter = 0;
+      if (disStr != null)
+      {
+        long.TryParse(string.Join("", new Regex(@"\d+").Matches(disStr)), out distanceFilter);
+      }
 
+      string elevStr = HttpContext.Request.Query["elevation"];
+      long elevationFilter = 0;
+      if (disStr != null)
+      {
+        long.TryParse(string.Join("", new Regex(@"\d+").Matches(elevStr)), out elevationFilter);
+      }
 
       var allSegment = _dbContext.Segments.ToList();
+
       if (surfaceFilter != null &&
           (surfaceFilter == "gravel" || surfaceFilter == "road"))
       {
