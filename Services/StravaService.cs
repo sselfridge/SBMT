@@ -17,8 +17,8 @@ namespace TodoApi.Services
     Task<StravaAthleteProfile> GetInitialProfile(string accessToken);
     Task<RecentRideTotals> GetAthleteStats(int athleteId);
     Task<HttpClient> GetClientForUser(int athleteId);
-    StravaUser UpdateUserClubs(StravaUser user, List<StravaClub> newClubs);
-    StravaUser UpdateUserClubs(StravaUser user, StravaClubResponse[] newClubs);
+    StravaUser UpdateUserClubs(int athleteId, List<StravaClub> newClubs);
+    StravaUser UpdateUserClubs(int athleteId, StravaClubResponse[] newClubs);
 
     Task<StravaUser> UpdateUserStats(StravaUser user);
 
@@ -264,23 +264,24 @@ namespace TodoApi.Services
       return client;
     }
 
-    public StravaUser UpdateUserClubs(StravaUser user, StravaClubResponse[] newClubs)
+    public StravaUser UpdateUserClubs(int athleteId, StravaClubResponse[] newClubs)
     {
       var clubsList = Array.ConvertAll(newClubs,
                       new Converter<StravaClubResponse, StravaClub>
                       (clubRes => new StravaClub(clubRes))).ToList();
-      return UpdateUserClubs(user, clubsList);
+      return UpdateUserClubs(athleteId, clubsList);
     }
-    public StravaUser UpdateUserClubs(StravaUser user, List<StravaClub> newClubs)
+    public StravaUser UpdateUserClubs(int athleteId, List<StravaClub> newClubs)
     {
 
       using (var scope = _serviceScopeFactory.CreateScope())
       {
 
         var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
+        var user = context.StravaUsers.Include(x => x.StravaClubs)
+          .FirstOrDefault(x => x.AthleteId == athleteId);
 
-
-
+        if (user == null) throw new Exception("User not found");
 
         var newDbClubs = new List<StravaClub>();
         foreach (var club in newClubs)
@@ -297,8 +298,8 @@ namespace TodoApi.Services
 
         foreach (var club in newClubs)
         {
-          var userIds = user.StravaClubs.Select(x => x.Id);
-          if (userIds.Contains(club.Id) == false)
+          var currentClubIds = user.StravaClubs.Select(x => x.Id);
+          if (currentClubIds.Contains(club.Id) == false)
           {
             user.StravaClubs.Add(club);
           }
@@ -310,7 +311,7 @@ namespace TodoApi.Services
         {
           user.StravaClubs.Remove(userClub);
         }
-
+        context.SaveChanges();
 
         return user;
       }
