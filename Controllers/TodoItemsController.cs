@@ -187,11 +187,14 @@ namespace TodoApi.Controllers
         return Ok("loadked");
       }
 
-      long bob = 3029159949833121256;
 
-      var outVal = Ok(bob);
+      var activity = await _stravaService.GetActivity(8260858800, 2920928, _dbContext);
 
-      return outVal;
+      var segmentIds = _dbContext.Segments.Select(s => s.Id).ToList();
+
+      var efforts = StravaUtilities.ParseNewActivity(_serviceScopeFactory, 2920928, 8260858800);
+
+      return Ok("alldone");
       var athleteId = 1075670;
       //var newClub = _dbContext.StravaClubs.Include(x => x.StravaUsers).FirstOrDefault(x => x.Id == 1703);
       var newClub = new StravaClub(444, "four four four,", "http:pick.com", "meinUrl");

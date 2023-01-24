@@ -145,7 +145,7 @@ namespace TodoApi.Controllers
 
           if (segments.ContainsKey(segId))
           {
-            if (segments[segId] < elapsedTime)
+            if (segments[segId] > elapsedTime)
             {
               segments[segId] = elapsedTime;
             }
