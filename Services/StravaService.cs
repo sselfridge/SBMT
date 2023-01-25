@@ -325,19 +325,9 @@ namespace TodoApi.Services
       user.RecentDistance = stats.Distance / 4;
       user.RecentElevation = (stats.ElevationGain) / 4;
 
-
-      using (var scope = _serviceScopeFactory.CreateScope())
-      {
-
-        var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
-
-        context.Update(user);
-        context.SaveChanges();
-
-      }
-
       return user;
     }
+
 
     /// <summary>
     /// Method <c>GetStrava</c> performs GET operation on StravaAPI

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -187,21 +186,18 @@ namespace TodoApi.Controllers
         return Ok("loadked");
       }
 
-      //return Ok("Standing by...");
+      return Ok("Standing by...");
 
 
-      //var stats = await _stravaService.GetAthleteStats(201227);
+      //var user = _dbContext.StravaUsers.FirstOrDefault(x => x.AthleteId == 10645041);
 
-      var user = _dbContext.StravaUsers.FirstOrDefault(x => x.AthleteId == 1075670);
+      //var resultUser = await _stravaService.UpdateUserStats(user);
 
-
-
-      var updated = await _stravaService.UpdateUserStats(user);
+      //await StravaUtilities.UpdateAllUserStats(_serviceScopeFactory);
 
 
-      //return Ok(updated);
+      return Ok("update");
 
-      return Ok("Ready to go");
 
 
       var newStudent = new Student();

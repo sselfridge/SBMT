@@ -196,5 +196,68 @@ namespace TodoApi.Helpers
       return true;
     }
 
+    public static async Task<bool> UpdateAllUserStats(IServiceScopeFactory serviceScopeFactory)
+    {
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+      Task.Run(async () =>
+      {
+        using (var scope = serviceScopeFactory.CreateScope())
+        {
+
+          try
+          {
+            var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
+            var stravaService = scope.ServiceProvider.GetRequiredService<IStravaService>();
+
+            var users = context.StravaUsers.Where(x => x.AthleteId != 1).ToList();
+
+            var userTasks = users.Select(user => stravaService.UpdateUserStats(user))
+                                                                              .ToArray();
+
+            var whenAll = Task.WhenAll(userTasks);
+
+            try
+            {
+              //https://stackoverflow.com/a/61017974/901311
+              await whenAll;
+            }
+            catch
+            {
+              if (whenAll.IsFaulted) // There is also the possibility of being canceled
+              {
+                foreach (var ex in whenAll.Exception.InnerExceptions)
+                {
+                  Console.WriteLine("sbmtLog: Single Stats update failed");
+                  Console.WriteLine(ex); // Log each exception
+                }
+              }
+            }
+
+            var results = userTasks
+                .Where(t => t.IsCompletedSuccessfully)
+                .Select(t => t.Result)
+                .ToArray();
+
+            Console.Write("done and one");
+
+            context.StravaUsers.UpdateRange(results);
+            context.SaveChanges();
+
+          }
+          catch (Exception ex)
+          {
+
+            Console.WriteLine("sbmtLog: Entire Stats update failed");
+            Console.WriteLine(ex);
+          }
+
+        }
+      });
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+      await Task.Delay(1);
+
+      return true;
+    }
+
   }
 }
