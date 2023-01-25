@@ -192,7 +192,7 @@ namespace TodoApi.Controllers
 
           if (segments.ContainsKey(segId))
           {
-            if (segments[segId] < elapsedTime)
+            if (segments[segId] > elapsedTime)
             {
               segments[segId] = elapsedTime;
             }
@@ -382,6 +382,7 @@ namespace TodoApi.Controllers
 
       StravaUser user = (StravaUser)possibleNullUser;
 
+      //remove users from clubs (more data leaks)
       foreach (var club in user.StravaClubs)
       {
         club.StravaUsers = new List<StravaUser>();
