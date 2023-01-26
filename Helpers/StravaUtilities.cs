@@ -259,5 +259,24 @@ namespace TodoApi.Helpers
       return true;
     }
 
+    public static string TestUtilitiesAccess(IServiceScopeFactory serviceScopeFactory)
+    {
+
+      Task.Run(async () =>
+      {
+        using (var scope = serviceScopeFactory.CreateScope())
+        {
+
+
+          var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
+
+          var user = context.StravaUsers.FirstOrDefault(x => x.AthleteId == 1075670);
+
+          Console.WriteLine("we made it here");
+        }
+      });
+      return "allo";
+    }
+
   }
 }
