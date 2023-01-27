@@ -183,7 +183,7 @@ const Filters = (props) => {
           </Box>
         </Tooltip>
       )}
-      <LabeledSelect
+      {/* <LabeledSelect
         label={"Category"}
         value={category}
         setValue={setCategory}
@@ -206,7 +206,7 @@ const Filters = (props) => {
         value={elevation}
         setValue={setElevation}
         list={elevationList}
-      />
+      /> */}
     </FormGroup>
   );
 };

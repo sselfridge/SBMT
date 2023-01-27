@@ -196,7 +196,7 @@ const UserInfo = () => {
       <Typography variant="h3">User Profile</Typography>
 
       <Grid container spacing={1}>
-        {profileFields.map(mapFields)}
+        {/* {profileFields.map(mapFields)}
         <Grid item xs={1} sm={3} />
         <Grid item xs={10} sm={6}>
           <Button
@@ -207,7 +207,9 @@ const UserInfo = () => {
             Save
           </Button>
         </Grid>
-        <Grid item xs={1} sm={3} />
+        <Grid item xs={1} sm={3} /> */}
+
+        {/* line break */}
         <Grid item xs={1} />
         <Grid item xs={10} sx={{ display: "flex", justifyContent: "center" }}>
           <Avatar src={localUser?.avatar} sx={{ width: 75, height: 75 }} />
