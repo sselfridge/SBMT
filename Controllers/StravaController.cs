@@ -194,7 +194,7 @@ namespace TodoApi.Controllers
           {
             var activityId = pushNotification.ObjectId;
 #pragma warning disable CS4014
-            StravaUtilities.ParseNewActivity(_serviceScopeFactory, athleteId, activityId);
+            StravaUtilities.ParseNewActivity(_serviceScopeFactory, athleteId, activityId, 0);
 #pragma warning restore CS4014
           }
 

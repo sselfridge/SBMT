@@ -137,11 +137,13 @@ namespace TodoApi.Helpers
       return;
     }
 
-    public static async Task<bool> ParseNewActivity(IServiceScopeFactory serviceScopeFactory, int athleteId, long activityId)
+    public static async Task<bool> ParseNewActivity(IServiceScopeFactory serviceScopeFactory, int athleteId, long activityId, int delayAmount)
     {
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
       Task.Run(async () =>
      {
+       await Task.Delay(delayAmount);
+
        using (var scope = serviceScopeFactory.CreateScope())
        {
          try
@@ -159,7 +161,15 @@ namespace TodoApi.Helpers
              return;
            }
 
-           Console.WriteLine($"sbmtLog:  activity {activityId} has {activity.SegmentEfforts.Length} efforts on it");
+           Console.WriteLine($"sbmtLog:  activity {activityId} has {activity.SegmentEfforts.Length} efforts on it Delay was:{delayAmount}");
+
+           if (activity.SegmentEfforts.Length == 0 && delayAmount == 0)
+           {
+             var delayTime = 300000;
+             var timeInMin = delayTime / 1000 / 60;
+             Console.WriteLine($"sbmtLog: Retrying {activityId} in {timeInMin} minutes");
+             ParseNewActivity(serviceScopeFactory, athleteId, activityId, delayTime);
+           }
 
            var segmentIds = context.Segments.Select(s => s.Id).ToList();
 

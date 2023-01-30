@@ -63,7 +63,7 @@ const columns = [
   },
   {
     field: "elapsedTime",
-    sortable: true,
+    sortable: false,
     headerName: "Time",
     width: 75,
     valueGetter: ({ row }) => ({
