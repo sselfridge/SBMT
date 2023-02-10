@@ -64,4 +64,18 @@ export const ApiPost = (url, body, setValue, onError, setErrorUndefined) => {
     });
 };
 
+export const ApiPostCb = (
+  url,
+  body,
+  onSuccess = () => {},
+  onError = () => {}
+) => {
+  Api.post(url, body)
+    .then((response) => {
+      onSuccess(response);
+    })
+    .catch((err) => {
+      onError(err);
+    });
+};
 export default Api;
