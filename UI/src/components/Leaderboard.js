@@ -29,6 +29,7 @@ const Leaderboard = () => {
   const isMobile = !useMediaQuery(theme.breakpoints.up("sm"));
 
   const [columnVisible, setColumnVisible] = React.useState(ALL_COLUMNS);
+  const [loading, setLoading] = useState(true);
 
   React.useEffect(() => {
     const newColumns = isMobile ? MOBILE_COLUMNS : ALL_COLUMNS;
@@ -37,22 +38,30 @@ const Leaderboard = () => {
 
   const [rows, setRows] = useState([]);
 
-  const onApplyFilters = React.useCallback((filters) => {
-    let url = LEADERBOARD_URL + "?";
-    if (filters?.surface && filters.surface !== "ALL") {
-      url += `&surface=${filters.surface}`;
-    }
-
-    if (filters?.gender && filters.gender !== "ALL") {
-      url += `&gender=${filters.gender}`;
-    }
-
-    if (filters?.club) {
-      url += `&club=${filters.club}`;
-    }
-
-    ApiGet(url, setRows);
+  const onLoad = React.useCallback((data) => {
+    setRows(data);
+    setLoading(false);
   }, []);
+
+  const onApplyFilters = React.useCallback(
+    (filters) => {
+      let url = LEADERBOARD_URL + "?";
+      if (filters?.surface && filters.surface !== "ALL") {
+        url += `&surface=${filters.surface}`;
+      }
+
+      if (filters?.gender && filters.gender !== "ALL") {
+        url += `&gender=${filters.gender}`;
+      }
+
+      if (filters?.club) {
+        url += `&club=${filters.club}`;
+      }
+
+      ApiGet(url, onLoad);
+    },
+    [onLoad]
+  );
 
   const columns = useMemo(
     () => [
@@ -258,6 +267,7 @@ const Leaderboard = () => {
         <DataGrid
           rows={rows}
           columns={columns}
+          loading={loading}
           disableColumnMenu
           hideFooter={true}
           columnVisibilityModel={columnVisible}
