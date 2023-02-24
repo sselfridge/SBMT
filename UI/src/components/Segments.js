@@ -49,13 +49,20 @@ const Segments = () => {
   const [allSegments, setAllSegments] = useState([]);
   const [segments, setSegments] = useState(SEGMENTS);
 
+  const [loading, setLoading] = useState(true);
+
   const handleTabChange = (event, newValue) => {
     setTabVal(newValue);
   };
 
-  React.useEffect(() => {
-    ApiGet("api/segments", setAllSegments);
+  const onLoad = React.useCallback((data) => {
+    setAllSegments(data);
+    setLoading(false);
   }, []);
+
+  React.useEffect(() => {
+    ApiGet("api/segments", onLoad);
+  }, [onLoad]);
 
   React.useEffect(() => {
     let filterFunc;
@@ -87,6 +94,7 @@ const Segments = () => {
       </Tabs>
       <DataGrid
         rows={segments}
+        loading={loading}
         columns={columns}
         hideFooter={true}
         initialState={{
