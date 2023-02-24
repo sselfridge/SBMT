@@ -66,7 +66,6 @@ const Filters = (props) => {
     } else if (_.isEmpty(user)) {
       setStravaBtnText("Login to filter by Club");
     }
-    console.info(user);
   }, [user]);
 
   return (
