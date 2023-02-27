@@ -16,17 +16,22 @@ import { ApiPostCb } from "api/api";
 
 const Feedback = (props) => {
   const [showText, setShowText] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+  const [submitting, setSubmitting] = useState("un-submitted");
   const [feedback, setFeedback] = useState("");
 
   const onSubmit = () => {
     let text = DOMPurify.sanitize(feedback);
-    setSubmitting(true);
+    setSubmitting("submitting");
     const body = { text };
     ApiPostCb("/api/feedback", body, (res) => {
-      setSubmitting(false);
-      setShowText(false);
-      setFeedback("");
+      setTimeout(() => {
+        setSubmitting("submitted");
+        setTimeout(() => {
+          setSubmitting("un-submitted");
+          setFeedback("");
+          setShowText(false);
+        }, 1000);
+      }, 1000);
     });
   };
 
@@ -88,12 +93,14 @@ const Feedback = (props) => {
           <Button
             sx={{ width: "80%", marginBottom: "8px" }}
             onClick={() => onSubmit()}
-            disabled={!feedback}
+            disabled={!feedback || submitting !== "un-submitted"}
           >
-            {submitting ? (
+            {submitting === "submitting" ? (
               <CircularProgress sx={{ color: "white" }} />
-            ) : (
+            ) : submitting === "un-submitted" ? (
               "Submit"
+            ) : (
+              "Submitted!"
             )}
           </Button>
         </Box>
