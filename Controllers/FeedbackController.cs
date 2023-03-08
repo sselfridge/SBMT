@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Services;
 
@@ -26,20 +27,29 @@ namespace TodoApi.Controllers
     {
       //return await _context.Feedback.ToListAsync();
 
-      var feedbacks = _context.Feedback;
+      var feedbacks = _context.Feedback.ToList();
 
-      var data = feedbacks.Join(_context.StravaUsers,
-        feedback => feedback.AthleteId,
-        user => user.AthleteId,
-        (feedback, user) => new
+      var users = _context.StravaUsers.ToList();
+
+      var data = new List<FeedbackDTO>();
+
+      foreach (var feedback in feedbacks)
+      {
+        var athleteId = feedback.AthleteId;
+        var user = users.Find(u => u.AthleteId == athleteId);
+
+        if (user == null)
         {
-          id = feedback.Id,
-          name = $"{user.Firstname} {user.Lastname}",
-          athleteId = user.AthleteId,
-          avatar = user.Avatar,
-          text = feedback.Text,
+          var newFeedback = new FeedbackDTO(feedback);
+          data.Add(newFeedback);
+        }
+        else
+        {
+          var newFeedback = new FeedbackDTO(feedback, user);
+          data.Add(newFeedback);
+        }
+      }
 
-        });
 
       return Ok(data);
     }

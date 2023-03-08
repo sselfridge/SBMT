@@ -45,7 +45,9 @@ const AdminFeedback = (props) => {
                   </Box>
                 </Link>
               </TableCell>
-              <TableCell align="right">{f.text}</TableCell>
+              <TableCell sx={{ maxWidth: 500 }} align="right">
+                {f.text}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
