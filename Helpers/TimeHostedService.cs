@@ -16,9 +16,10 @@
     public Task StartAsync(CancellationToken stoppingToken)
     {
       _logger.LogInformation("Timed Hosted Service running.");
+      Console.WriteLine($"DoWork-=-=-=-=-=-=-=-=-=-=-=-=---=-=-=-=-==--=");
 
       _timer = new Timer(DoWork, null, TimeSpan.Zero,
-          TimeSpan.FromSeconds(30));
+          TimeSpan.FromHours(24));
 
       return Task.CompletedTask;
     }
@@ -26,8 +27,8 @@
     private void DoWork(object? state)
     {
       var count = Interlocked.Increment(ref executionCount);
-      StravaUtilities.TestUtilitiesAccess(_serviceScopeFactory);
-      Console.WriteLine($"DoWork{count}");
+      //StravaUtilities.UpdateAllUserStats(_serviceScopeFactory);
+      Console.WriteLine($"sbmtLog DoWork{count} -=-=-=-=-=-=-=-=-=-=-=-=---=-=-=-=-==--=");
       _logger.LogInformation(
           "Timed Hosted Service is working. Count: {Count}", count);
     }

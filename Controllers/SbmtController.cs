@@ -136,8 +136,8 @@ namespace TodoApi.Controllers
       {
         users = users.FindAll(u =>
         {
-          var userMiles = u.RecentDistance * 0.000621371;
-          var currMiles = currentUser.RecentDistance * 0.000621371;
+          var userMiles = u.RecentDistance;// * 0.000621371;
+          var currMiles = currentUser.RecentDistance;// * 0.000621371;
           var diff = userMiles - currMiles;
           return Math.Abs(diff) <= distanceFilter;
         });
@@ -147,8 +147,8 @@ namespace TodoApi.Controllers
       {
         users = users.FindAll(u =>
         {
-          var userFt = u.RecentElevation * 3.28084;
-          var currFt = currentUser.RecentElevation * 3.28084;
+          var userFt = u.RecentElevation;// * 3.28084;
+          var currFt = currentUser.RecentElevation;// * 3.28084;
           var diff = userFt - currFt;
           return Math.Abs(diff) <= elevationFilter * 1000;
         });
@@ -246,6 +246,8 @@ namespace TodoApi.Controllers
                                   totalTime,
                                   totalDistance,
                                   totalElevation,
+                                  user.RecentDistance,
+                                  user.RecentElevation,
                                   segmentCount);
 
           leaderboard.Add(leaderboardEntry);

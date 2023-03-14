@@ -238,7 +238,7 @@ namespace TodoApi.Helpers
                 .Select(t => t.Result)
                 .ToArray();
 
-            Console.Write("done and one");
+            Console.Write("done and done");
 
             context.StravaUsers.UpdateRange(results);
             context.SaveChanges();

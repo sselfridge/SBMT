@@ -165,7 +165,8 @@ namespace TodoApi.Services
       if (stats == null) throw new Exception("Invalid stats");
 
       var result = stats.RecentTotals;
-
+      result.Distance = result.Distance * 0.000621371;
+      result.ElevationGain = result.ElevationGain * 3.28084;
       return result;
     }
 
@@ -321,7 +322,7 @@ namespace TodoApi.Services
     public async Task<StravaUser> UpdateUserStats(StravaUser user)
     {
       var stats = await GetAthleteStats(user.AthleteId);
-
+      Console.WriteLine($"Getting Stats for user {user.AthleteId}");
       user.RecentDistance = stats.Distance / 4;
       user.RecentElevation = (stats.ElevationGain) / 4;
 

@@ -5,7 +5,15 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import { DataGrid } from "@mui/x-data-grid";
-import { Avatar, Box, Paper, Typography, Button } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Paper,
+  Typography,
+  Button,
+  Tooltip,
+  CardHeader,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Filters from "./Filters";
 
@@ -14,6 +22,7 @@ import { formattedTime, metersToMiles, metersToFeet } from "utils/helperFuncs";
 import { ApiGet } from "api/api";
 import { Link, useSearchParams } from "react-router-dom";
 
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 const MyBox = styled(Box)(({ theme }) => {
   return {
     backgroundColor: theme.palette.background.paper,
@@ -89,18 +98,37 @@ const Leaderboard = () => {
 
         renderCell: (props) => {
           const { row } = props;
-          const { athleteName, avatar, id } = row;
+          const { athleteName, avatar, id, recentDistance, recentElevation } =
+            row;
+
           return (
-            <Link to={`/athletes/${id}`}>
+            <Link style={{ width: "100%" }} to={`/athletes/${id}`}>
               <Box
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "space-evenly",
+                  justifyContent: "space-between",
                 }}
               >
-                <Avatar src={avatar} />
-                <>{athleteName}</>
+                <CardHeader
+                  avatar={<Avatar src={avatar} />}
+                  title={athleteName}
+                >
+                  {/* <Avatar src={avatar} /> */}
+                  {/* <>{athleteName}</> */}
+                </CardHeader>
+                <Tooltip
+                  arrow
+                  title={
+                    <Box>
+                      Distance:{recentDistance}
+                      <br />
+                      Elevation:{recentElevation}
+                    </Box>
+                  }
+                >
+                  <InfoOutlinedIcon />
+                </Tooltip>
               </Box>
             </Link>
           );
