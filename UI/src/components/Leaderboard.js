@@ -118,7 +118,7 @@ const Leaderboard = () => {
                   {/* <Avatar src={avatar} /> */}
                   {/* <>{athleteName}</> */}
                 </CardHeader>
-                <Tooltip
+                {/* <Tooltip
                   arrow
                   title={
                     <Box>
@@ -129,7 +129,7 @@ const Leaderboard = () => {
                   }
                 >
                   <InfoOutlinedIcon />
-                </Tooltip>
+                </Tooltip> */}
               </Box>
             </Link>
           );
