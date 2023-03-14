@@ -4,6 +4,7 @@ import { Outlet } from "react-router-dom";
 import NavBar from "components/NavBar";
 
 import "./global.css";
+import Feedback from "components/Feedback";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <main className="App-Body">
         <Outlet /> {/* see MeinRoutes for value of outlet */}
       </main>
+      <Feedback />
     </div>
   );
 }

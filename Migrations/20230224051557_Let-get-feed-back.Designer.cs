@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TodoApi.Models.db;
@@ -11,9 +12,10 @@ using TodoApi.Models.db;
 namespace TodoApi.Migrations
 {
     [DbContext(typeof(sbmtContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20230224051557_Let-get-feed-back")]
+    partial class Letgetfeedback
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -233,14 +235,7 @@ namespace TodoApi.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("Age")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Avatar")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Category")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -257,12 +252,6 @@ namespace TodoApi.Migrations
                     b.Property<string>("Lastname")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<double>("RecentDistance")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("RecentElevation")
-                        .HasColumnType("double precision");
 
                     b.Property<string>("RefreshToken")
                         .IsRequired()

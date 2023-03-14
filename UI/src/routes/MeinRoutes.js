@@ -24,6 +24,7 @@ import Admin from "components/Admin/Admin";
 import AdminSegments from "components/Admin/AdminSegments";
 
 import AdminUsers from "components/Admin/AdminUsers";
+import AdminFeedback from "components/Admin/AdminFeedback";
 
 import AppContext from "AppContext";
 
@@ -70,6 +71,7 @@ const MeinRoutes = () => {
               <Route path="" element={<Admin />} />
               <Route path="segments" element={<AdminSegments />} />
               <Route path="users" element={<AdminUsers />} />
+              <Route path="feedback" element={<AdminFeedback />} />
             </Route>
           )}
 

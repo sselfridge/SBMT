@@ -453,9 +453,28 @@ namespace TodoApi.Controllers
       return Ok("Cookie Deleted");
     }
 
+    [HttpPost("feedback")]
+    public IActionResult SubmitFeedback([FromBody] Feedback feedback)
+    {
+      Console.WriteLine(feedback);
+      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
+      if (userId != null)
+      {
+        var athleteId = Int32.Parse(userId);
+        feedback.AthleteId = athleteId;
+      }
+
+      _dbContext.Feedback.Add(feedback);
+      _dbContext.SaveChanges();
+
+
+      return Ok();
+    }
+
     [HttpPost]
     public void Post([FromBody] string value)
     {
+
     }
 
     [HttpPut("{id}")]

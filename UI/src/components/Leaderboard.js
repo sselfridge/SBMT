@@ -40,6 +40,7 @@ const Leaderboard = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [columnVisible, setColumnVisible] = React.useState(ALL_COLUMNS);
+  const [loading, setLoading] = useState(true);
 
   React.useEffect(() => {
     const newColumns = isMobile ? MOBILE_COLUMNS : ALL_COLUMNS;
@@ -304,6 +305,7 @@ const Leaderboard = () => {
         <DataGrid
           rows={rows}
           columns={columns}
+          loading={loading}
           disableColumnMenu
           hideFooter={true}
           columnVisibilityModel={columnVisible}

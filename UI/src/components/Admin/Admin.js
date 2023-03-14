@@ -12,6 +12,7 @@ const Admin = (props) => {
       <Typography variant={"h3"}>Admin Utilities</Typography>
       <Link to="segments">Segments</Link>
       <Link to="users">Users</Link>
+      <Link to="feedback">Feedback</Link>
     </MyPaper>
   );
 };

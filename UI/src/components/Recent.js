@@ -63,7 +63,7 @@ const columns = [
   },
   {
     field: "elapsedTime",
-    sortable: true,
+    sortable: false,
     headerName: "Time",
     width: 75,
     valueGetter: ({ row }) => ({
@@ -143,9 +143,16 @@ const columns = [
 const Recent = () => {
   const [recentEfforts, setRecentEfforts] = useState([]);
 
-  React.useEffect(() => {
-    ApiGet("/api/recentEfforts", setRecentEfforts);
+  const [loading, setLoading] = useState(true);
+
+  const onLoad = React.useCallback((data) => {
+    setRecentEfforts(data);
+    setLoading(false);
   }, []);
+
+  React.useEffect(() => {
+    ApiGet("/api/recentEfforts", onLoad);
+  }, [onLoad]);
 
   const sortedEfforts = recentEfforts.slice().sort((a, b) => {
     const aDate = new Date(a.startDate);
@@ -171,6 +178,7 @@ const Recent = () => {
         <Typography variant="h4">Recent Efforts</Typography>
         <DataGrid
           rows={sortedEfforts}
+          loading={loading}
           columns={columns}
           disableColumnMenu
           hideFooter={true}
