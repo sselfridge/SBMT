@@ -11,7 +11,7 @@ import {
   Paper,
   Typography,
   Button,
-  Tooltip,
+  // Tooltip,
   CardHeader,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -22,7 +22,7 @@ import { formattedTime, metersToMiles, metersToFeet } from "utils/helperFuncs";
 import { ApiGet } from "api/api";
 import { Link, useSearchParams } from "react-router-dom";
 
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+// import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 const MyBox = styled(Box)(({ theme }) => {
   return {
     backgroundColor: theme.palette.background.paper,
@@ -48,6 +48,11 @@ const Leaderboard = () => {
   }, [isMobile]);
 
   const [rows, setRows] = useState([]);
+
+  const onLoad = React.useCallback((data) => {
+    setRows(data);
+    setLoading(false);
+  }, []);
 
   const onApplyFilters = React.useCallback(
     (filters) => {
@@ -77,9 +82,9 @@ const Leaderboard = () => {
 
       setSearchParams(params);
 
-      ApiGet(url, setRows);
+      ApiGet(url, onLoad);
     },
-    [setSearchParams]
+    [onLoad, setSearchParams]
   );
 
   const columns = useMemo(
@@ -99,8 +104,12 @@ const Leaderboard = () => {
 
         renderCell: (props) => {
           const { row } = props;
-          const { athleteName, avatar, id, recentDistance, recentElevation } =
-            row;
+          const {
+            athleteName,
+            avatar,
+            id,
+            //  recentDistance, recentElevation
+          } = row;
 
           return (
             <Link style={{ width: "100%" }} to={`/athletes/${id}`}>
