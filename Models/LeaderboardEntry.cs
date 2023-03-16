@@ -11,6 +11,9 @@
     public int TotalTime { get; set; }
     public double TotalDistance { get; set; }
     public double TotalElevation { get; set; }
+    public double RecentDistance { get; set; }
+    public double RecentElevation { get; set; }
+
     public int SegmentCount { get; set; }
 
     public LeaderboardEntry(
@@ -21,6 +24,8 @@
                             int totalTime,
                             double totalDistance,
                             double totalElevation,
+                            double recentDistance,
+                            double recentElevation,
                             int segmentCount)
     {
       Id = athleteId;
@@ -30,6 +35,8 @@
       TotalTime = totalTime;
       TotalDistance = totalDistance;
       TotalElevation = totalElevation;
+      RecentDistance = recentDistance;
+      RecentElevation = recentElevation;
       SegmentCount = segmentCount;
       rank = 0;
     }

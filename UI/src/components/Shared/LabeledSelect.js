@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { MenuItem, FormControl, InputLabel, Select } from "@mui/material";
 
 const LabeledSelect = (props) => {
-  const { value, label, setValue, list } = props;
+  const { value, label, setValue, list, minWidth = 60 } = props;
 
   const onChange = useCallback(
     (e) => {
@@ -18,10 +18,20 @@ const LabeledSelect = (props) => {
       <Select
         value={value}
         onChange={onChange}
-        sx={{ textTransform: "capitalize", minWidth: 60 }}
+        sx={{
+          //TODO - see about adding :first-letter pseudo selector here
+          textTransform: "capitalize",
+          minWidth,
+        }}
       >
         {list.map((item, idx) => (
-          <MenuItem value={item} key={idx} sx={{ textTransform: "capitalize" }}>
+          <MenuItem
+            value={item}
+            key={idx}
+            sx={{
+              textTransform: "capitalize",
+            }}
+          >
             {item}
           </MenuItem>
         ))}

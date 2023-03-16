@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TodoApi.Models.db;
@@ -11,9 +12,10 @@ using TodoApi.Models.db;
 namespace TodoApi.Migrations
 {
     [DbContext(typeof(sbmtContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20230114032919_intToDouble")]
+    partial class intToDouble
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,23 +72,6 @@ namespace TodoApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Efforts");
-                });
-
-            modelBuilder.Entity("TodoApi.Models.db.Feedback", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<int>("AthleteId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Feedback");
                 });
 
             modelBuilder.Entity("TodoApi.Models.db.Segment", b =>

@@ -1,4 +1,5 @@
-﻿using TodoApi.Models.db;
+﻿using System.Text.Json.Serialization;
+using TodoApi.Models.db;
 
 namespace TodoApi.Models
 {
@@ -13,6 +14,13 @@ namespace TodoApi.Models
     public double Weight { get; set; }
     public string Scope { get; set; }
     public ICollection<StravaClub> StravaClubs { get; set; }
+    public int Age { get; set; }
+    public string Category { get; set; }
+    public double RecentDistance { get; set; }
+    public double RecentElevation { get; set; }
+
+    [JsonConstructor]
+    public StravaUserDTO() { }
 
     public StravaUserDTO(StravaUser user)
     {
@@ -25,6 +33,10 @@ namespace TodoApi.Models
       Weight = user.Weight;
       Scope = user.Scope;
       StravaClubs = user.StravaClubs;
+      Age = user.Age;
+      Category = user.Category;
+      RecentDistance = user.RecentDistance;
+      RecentElevation = user.RecentElevation;
     }
 
   }

@@ -1,5 +1,6 @@
 ﻿namespace TodoApi.Services
 {
+  using Microsoft.Extensions.DependencyInjection;
   using TodoApi.Models;
   using TodoApi.Models.db;
 
@@ -7,10 +8,10 @@
   {
     IEnumerable<User> GetAll();
     //StravaUser? GetById(int id);
-    StravaUser? GetById(int id, sbmtContext? scopeContext = null);
+    StravaUser? GetById(int id);
     Task Add(StravaUser user);
     //Task<StravaUser> Update(StravaUser user);
-    Task<StravaUser> Update(StravaUser user, sbmtContext? scopeContext = null);
+    Task<StravaUser> Update(StravaUser user);
 
     public List<UserSegment>? GetUserEfforts(int athleteId);
 
@@ -29,13 +30,15 @@
     };
 
     private sbmtContext _dbContext;
+    private IServiceScopeFactory _serviceScopeFactory;
 
 
     //private readonly AppSettings _appSettings;
 
-    public UserService(sbmtContext dbContext)
+    public UserService(sbmtContext dbContext, IServiceScopeFactory serviceScopeFactory)
     {
       _dbContext = dbContext;
+      _serviceScopeFactory = serviceScopeFactory;
     }
 
     //public AuthenticateResponse Authenticate(AuthenticateRequest model)
@@ -61,12 +64,14 @@
     //  return GetById(id, _dbContext);
     //}
 
-    public StravaUser? GetById(int id, sbmtContext? scopeContext)
+    public StravaUser? GetById(int id)
     {
-      sbmtContext dbContext = scopeContext ?? _dbContext;
-
-      var user = dbContext.StravaUsers.FirstOrDefault(x => x.AthleteId == id);
-      return user;
+      using (var scope = _serviceScopeFactory.CreateScope())
+      {
+        var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
+        var user = context.StravaUsers.FirstOrDefault(x => x.AthleteId == id);
+        return user;
+      }
     }
 
     public async Task Add(StravaUser user)
@@ -76,20 +81,22 @@
     }
 
 
-    public async Task<StravaUser> Update(StravaUser user, sbmtContext? scopeContext)
+    public async Task<StravaUser> Update(StravaUser user)
     {
-      sbmtContext dbContext = scopeContext ?? _dbContext;
+      using (var scope = _serviceScopeFactory.CreateScope())
+      {
+        var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
 
-      dbContext.Update(user);
-      await dbContext.SaveChangesAsync();
-      return user;
+        context.Update(user);
+        await context.SaveChangesAsync();
+        return user;
+      }
     }
-
 
     public List<UserSegment>? GetUserEfforts(int athleteId)
     {
 
-      var user = GetById(athleteId, null);
+      var user = GetById(athleteId);
       if (user == null) return null;
 
 

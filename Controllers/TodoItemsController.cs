@@ -8,7 +8,6 @@ using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Services;
 
-
 namespace TodoApi.Controllers
 {
   [Route("api/[controller]")]
@@ -49,12 +48,12 @@ namespace TodoApi.Controllers
         var count = 0;
         try
         {
-          var actvities = await _stravaService.GetActivities(user.AthleteId, context);
+          var actvities = await _stravaService.GetActivities(user.AthleteId);
           var newEfforts = new List<Effort>();
           foreach (var act in actvities)
           {
             count++;
-            var fullActivity = await _stravaService.GetActivity(act.Id, user.AthleteId, context);
+            var fullActivity = await _stravaService.GetActivity(act.Id, user.AthleteId);
             var efforts = StravaUtilities.PullEffortsFromActivity(fullActivity, list);
             if (efforts.Count > 0)
             {
@@ -186,13 +185,17 @@ namespace TodoApi.Controllers
         return Ok("loadked");
       }
 
+      return Ok("Standing by...");
 
 
-      await StravaUtilities.ParseNewActivity(serviceScopeFactory, 1075670, 8474047436, 0);
+      //var user = _dbContext.StravaUsers.FirstOrDefault(x => x.AthleteId == 10645041);
+
+      //var resultUser = await _stravaService.UpdateUserStats(user);
+
+      //await StravaUtilities.UpdateAllUserStats(_serviceScopeFactory);
 
 
-
-      return Ok("allo there");
+      return Ok("update");
 
 
 

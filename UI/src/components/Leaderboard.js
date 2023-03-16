@@ -5,15 +5,24 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import { DataGrid } from "@mui/x-data-grid";
-import { Avatar, Box, Paper, Typography, Button } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Paper,
+  Typography,
+  Button,
+  // Tooltip,
+  CardHeader,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Filters from "./Filters";
 
 import { ALL_COLUMNS, MOBILE_COLUMNS } from "utils/constants";
 import { formattedTime, metersToMiles, metersToFeet } from "utils/helperFuncs";
 import { ApiGet } from "api/api";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
+// import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 const MyBox = styled(Box)(({ theme }) => {
   return {
     backgroundColor: theme.palette.background.paper,
@@ -27,6 +36,8 @@ const LEADERBOARD_URL = "/api/leaderboard";
 const Leaderboard = () => {
   const theme = useTheme();
   const isMobile = !useMediaQuery(theme.breakpoints.up("sm"));
+  // eslint-disable-next-line no-unused-vars
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [columnVisible, setColumnVisible] = React.useState(ALL_COLUMNS);
   const [loading, setLoading] = useState(true);
@@ -46,21 +57,34 @@ const Leaderboard = () => {
   const onApplyFilters = React.useCallback(
     (filters) => {
       let url = LEADERBOARD_URL + "?";
-      if (filters?.surface && filters.surface !== "ALL") {
-        url += `&surface=${filters.surface}`;
-      }
+      const params = {};
 
-      if (filters?.gender && filters.gender !== "ALL") {
-        url += `&gender=${filters.gender}`;
-      }
+      const simpleFilters = [
+        "surface",
+        "gender",
+        "age",
+        "category",
+        "distance",
+        "elevation",
+      ];
 
-      if (filters?.club) {
+      simpleFilters.forEach((name) => {
+        if (filters?.[name] && filters[name] !== "ALL") {
+          url += `&${name}=${filters[name]}`;
+          params[name] = filters[name];
+        }
+      });
+
+      if (filters?.club !== "0") {
         url += `&club=${filters.club}`;
+        params.club = filters.club;
       }
+
+      setSearchParams(params);
 
       ApiGet(url, onLoad);
     },
-    [onLoad]
+    [onLoad, setSearchParams]
   );
 
   const columns = useMemo(
@@ -80,18 +104,41 @@ const Leaderboard = () => {
 
         renderCell: (props) => {
           const { row } = props;
-          const { athleteName, avatar, id } = row;
+          const {
+            athleteName,
+            avatar,
+            id,
+            //  recentDistance, recentElevation
+          } = row;
+
           return (
-            <Link to={`/athletes/${id}`}>
+            <Link style={{ width: "100%" }} to={`/athletes/${id}`}>
               <Box
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "space-evenly",
+                  justifyContent: "space-between",
                 }}
               >
-                <Avatar src={avatar} />
-                <>{athleteName}</>
+                <CardHeader
+                  avatar={<Avatar src={avatar} />}
+                  title={athleteName}
+                >
+                  {/* <Avatar src={avatar} /> */}
+                  {/* <>{athleteName}</> */}
+                </CardHeader>
+                {/* <Tooltip
+                  arrow
+                  title={
+                    <Box>
+                      Distance:{recentDistance}
+                      <br />
+                      Elevation:{recentElevation}
+                    </Box>
+                  }
+                >
+                  <InfoOutlinedIcon />
+                </Tooltip> */}
               </Box>
             </Link>
           );

@@ -5,10 +5,10 @@ import {
   Link,
   Grid,
   Box,
-  FormGroup,
   Typography,
   Button,
   Avatar,
+  TextField,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import AppContext from "AppContext";
@@ -17,13 +17,10 @@ import { ReactComponent as StravaLogo } from "assets/stravaLogoTransparent.svg";
 
 import LabeledSelect from "./Shared/LabeledSelect";
 
-import {
-  // ageList,
-  categoryList,
-  // genderList,
-  // surfaceList,
-} from "utils/constants";
-import { ApiGet } from "api/api";
+import { categoryList } from "utils/constants";
+import { ApiGet, ApiPost } from "api/api";
+import { metersToMiles } from "utils/helperFuncs";
+import { metersToFeet } from "utils/helperFuncs";
 
 const MyPaper = styled(Paper)(({ theme }) => ({
   padding: 8,
@@ -35,13 +32,23 @@ const categorySelect = categoryList.filter((c) => c !== "ALL");
 
 const UserInfo = () => {
   const { user, dispatch } = useContext(AppContext);
-  // const [age, setAge] = useState("");
+  const [age, setAge] = useState("");
+  const [ageHelperText, setAgeHelperText] = useState("");
   const [category, setCategory] = useState("");
   const [localUser, setLocalUser] = useState({});
 
   const fetchProfile = useCallback((athleteId) => {
     ApiGet(`/api/strava/userRefresh/${athleteId}`, setLocalUser);
   }, []);
+
+  const updateProfile = useCallback(() => {
+    const updatedUser = _.cloneDeep(user);
+    updatedUser.category = category;
+    updatedUser.age = age;
+    updatedUser.stravaClubs = [];
+
+    ApiPost(`/api/athletes/current`, updatedUser, () => {});
+  }, [age, category, user]);
 
   React.useEffect(() => {
     setLocalUser(user);
@@ -60,67 +67,194 @@ const UserInfo = () => {
     }
   }, [dispatch, localUser, user]);
 
+  React.useEffect(() => {
+    if (localUser?.age !== undefined) {
+      setAge(localUser.age);
+    }
+    if (localUser?.category !== undefined) {
+      setCategory(localUser.category);
+    }
+  }, [localUser]);
+
+  const profileFields = [
+    {
+      label: "Age",
+      content: (
+        <Box sx={{ width: "100px" }}>
+          <TextField
+            value={age}
+            error={!!ageHelperText}
+            helperText={ageHelperText}
+            onChange={(e) => {
+              setAgeHelperText("");
+              setAge(e.target.value);
+            }}
+            onBlur={(e) => {
+              const newVal = e.target.value;
+              const numVal = Number(newVal);
+              if (newVal === "") {
+                setAge("");
+              } else if (Number.isNaN(numVal)) {
+                setAge("");
+              } else {
+                if (numVal < 13) {
+                  setAgeHelperText("Age must be higher than 13");
+                } else if (numVal > 100) {
+                  setAgeHelperText("Age must be less than 100");
+                } else {
+                  setAge(numVal);
+                }
+              }
+            }}
+            InputProps={{
+              inputProps: {
+                type: "number",
+                min: 13,
+                max: 100,
+              },
+            }}
+          />
+        </Box>
+      ),
+    },
+    {
+      label: "Category",
+      content: (
+        <Box sx={{ width: "220px" }}>
+          <LabeledSelect
+            label={"Category"}
+            value={category}
+            setValue={setCategory}
+            list={categorySelect}
+            minWidth={180}
+          />
+        </Box>
+      ),
+    },
+  ];
+
+  const stravaFields = [
+    { label: "Weight", content: user?.weight, fromStrava: true },
+    { label: "Sex", content: user?.sex, fromStrava: true },
+    {
+      label: "Distance",
+      content: `${metersToMiles(user?.recentDistance)} mi`,
+      fromStrava: true,
+    },
+    {
+      label: "Elevation",
+      content: `${metersToFeet(user?.recentElevation)} ft`,
+      fromStrava: true,
+    },
+    { label: "Clubs", content: "", fromStrava: true },
+  ];
+
+  const mapFields = (field) => {
+    return (
+      <React.Fragment>
+        <Grid item xs={1} sm={3} />
+        <Grid item xs={1} sx={{ display: "flex", justifyContent: "flex-end" }}>
+          {!!field.fromStrava && (
+            <Box sx={{ width: 40, height: 40 }}>
+              <StravaLogo />
+            </Box>
+          )}
+        </Grid>
+        <Grid
+          item
+          xs={3}
+          sm={1}
+          sx={{
+            display: "flex",
+            justifyContent: "flex-start",
+            alignItems: "center",
+          }}
+        >
+          <Typography variant="h5">{field.label}:</Typography>
+        </Grid>
+        <Grid item xs={1} />
+        <Grid
+          item
+          xs={5}
+          sx={{
+            display: "flex",
+            justifyContent: "flex-start",
+            alignItems: "center",
+          }}
+        >
+          <Typography variant="h5" align="left">
+            {field.content}
+          </Typography>
+        </Grid>
+        <Grid item xs={1} />
+      </React.Fragment>
+    );
+  };
+
   return (
     <MyPaper>
-      <Typography variant="h3">User Info</Typography>
+      <Typography variant="h3">User Profile</Typography>
 
-      <FormGroup sx={{}}>
-        <Typography variant="h5">Non-Strava Info we need from you</Typography>
-        <LabeledSelect
-          label={"Category"}
-          value={category}
-          setValue={setCategory}
-          list={categorySelect}
-        />
-      </FormGroup>
       <Grid container spacing={1}>
-        <Grid item xs={12}>
-          <Typography variant="h5">Info we pulled from Strava</Typography>
-          <Box sx={{ width: 100, height: 100 }}>
-            <StravaLogo />
-          </Box>
+        {/* {profileFields.map(mapFields)}
+        <Grid item xs={1} sm={3} />
+        <Grid item xs={10} sm={6}>
+          <Button
+            onClick={updateProfile}
+            sx={{ width: "100%" }}
+            disabled={!!ageHelperText}
+          >
+            Save
+          </Button>
         </Grid>
+        <Grid item xs={1} sm={3} /> */}
 
         {/* line break */}
-        <Grid item xs={2} />
-        <Grid item xs={4}>
-          Weight
+        <Grid item xs={1} />
+        <Grid item xs={10} sx={{ display: "flex", justifyContent: "center" }}>
+          <Avatar src={localUser?.avatar} sx={{ width: 75, height: 75 }} />
         </Grid>
-        <Grid item xs={4}>
-          {localUser?.weight}
+        <Grid item xs={1} />
+        {stravaFields.map(mapFields)}
+
+        <Grid item xs={1} sm={2} />
+        <Grid item xs={10} sm={8}>
+          <Grid container sx={{ justifyContent: "center" }}>
+            {localUser?.stravaClubs?.map((club) => {
+              return (
+                <Grid item key={club.id}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      border: "3px solid black",
+                      borderColor: "strava.main",
+                      borderRadius: 10,
+                      padding: "5px",
+                      margin: "5px",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Avatar src={club.profileMedium} />
+                    <Typography
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        fontSize: 12,
+                      }}
+                      variant="body1"
+                    >
+                      {club.name}
+                    </Typography>
+                  </Box>
+                </Grid>
+              );
+            })}
+          </Grid>
         </Grid>
-        <Grid item xs={2} />
-        {/* line break */}
-        <Grid item xs={2} />
-        <Grid item xs={4}>
-          Sex
-        </Grid>
-        <Grid item xs={4}>
-          {localUser?.sex}
-        </Grid>
-        <Grid item xs={2} />
-        {/* line break */}
-        <Grid item xs={2} />
-        <Grid item xs={4}>
-          Clubs
-        </Grid>
-        <Grid item xs={4}>
-          {localUser?.stravaClubs?.map((club) => {
-            return (
-              <Box key={club.id} sx={{ display: "flex" }}>
-                <Avatar src={club.profileMedium} />{" "}
-                <Typography
-                  sx={{ display: "flex", alignItems: "center" }}
-                  variant="body1"
-                >
-                  {club.name}
-                </Typography>
-              </Box>
-            );
-          })}
-        </Grid>
-        <Grid item xs={2} />
-        <Grid item xs={12}>
+        <Grid item xs={1} sm={2} />
+
+        <Grid item xs={1} sm={3} />
+        <Grid item xs={10} sm={6}>
           <Link
             component={Button}
             sx={{
@@ -139,7 +273,10 @@ const UserInfo = () => {
             Edit your Strava Profile{" "}
           </Link>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={1} sm={3} />
+
+        <Grid item xs={1} sm={3} />
+        <Grid item xs={10} sm={6}>
           <Button
             onClick={() => {
               fetchProfile(user.athleteId);
@@ -149,6 +286,7 @@ const UserInfo = () => {
             Re-Fetch Strava Data
           </Button>
         </Grid>
+        <Grid item xs={1} sm={3} />
       </Grid>
     </MyPaper>
   );

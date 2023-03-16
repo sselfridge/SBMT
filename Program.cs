@@ -110,7 +110,7 @@ builder.Services.AddAuthorization(options =>
   );
 });
 
-
+builder.Services.AddHostedService<TimedHostedService>();
 
 var app = builder.Build();
 

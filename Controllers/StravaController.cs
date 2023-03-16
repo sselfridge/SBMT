@@ -119,7 +119,7 @@ namespace TodoApi.Controllers
         var savedUser = await _userService.Update(existingUser);
       }
 
-      if (oAuthUser.Scope.Contains("profile:read_all"))
+      if (oAuthUser.Scope.Contains("profile:read_all") && existingUser != null)
       {
         // this needs to be after the DB update since we probably need the new accesstoken
         // Could pass the token down if this becomes an issue.
@@ -127,9 +127,8 @@ namespace TodoApi.Controllers
         if (userWithClubs != null)
         {
 
-          var profile = await _stravaService.GetProfile(oAuthUser.AthleteId, _dbContext);
-          userWithClubs = _stravaService.UpdateUserClubs(userWithClubs, profile.Clubs, _dbContext);
-          var savedUser = await _userService.Update(userWithClubs);
+          var profile = await _stravaService.GetProfile(oAuthUser.AthleteId);
+          _stravaService.UpdateUserClubs(oAuthUser.AthleteId, profile.Clubs);
         }
       }
 
@@ -241,7 +240,7 @@ namespace TodoApi.Controllers
 
       var cookieAthleteId = Int32.Parse(userId);
 
-      var profile = await _stravaService.GetProfile(athleteId, _dbContext);
+      var profile = await _stravaService.GetProfile(athleteId);
 
       if (profile == null) return NotFound();
 
@@ -265,10 +264,14 @@ namespace TodoApi.Controllers
         user.Weight = (double)profile.Weight;
       }
 
-      user = _stravaService.UpdateUserClubs(user, profile.Clubs, _dbContext);
-
+      //doesn't play nice with scope context in updateuserclubs
+      //making an extra DB save call here, should probably condense all the user updates 
+      //together.
       _dbContext.Update(user);
       _dbContext.SaveChanges();
+
+      user = _stravaService.UpdateUserClubs(user.AthleteId, profile.Clubs);
+
 
 
       var returnUser = new StravaUserDTO(user);

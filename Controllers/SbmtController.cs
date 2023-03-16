@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Services;
@@ -82,13 +83,27 @@ namespace TodoApi.Controllers
 
       string surfaceFilter = HttpContext.Request.Query["surface"];
       string genderFilter = HttpContext.Request.Query["gender"];
+      ;
 
       long clubFilter = 0;
       long.TryParse(HttpContext.Request.Query["club"], out clubFilter);
 
+      string disStr = HttpContext.Request.Query["distance"];
+      long distanceFilter = 0;
+      if (disStr != null)
+      {
+        long.TryParse(string.Join("", new Regex(@"\d+").Matches(disStr)), out distanceFilter);
+      }
 
+      string elevStr = HttpContext.Request.Query["elevation"];
+      long elevationFilter = 0;
+      if (elevStr != null)
+      {
+        long.TryParse(string.Join("", new Regex(@"\d+").Matches(elevStr)), out elevationFilter);
+      }
 
       var allSegment = _dbContext.Segments.ToList();
+
       if (surfaceFilter != null &&
           (surfaceFilter == "gravel" || surfaceFilter == "road"))
       {
@@ -96,6 +111,16 @@ namespace TodoApi.Controllers
       }
 
       var users = _dbContext.StravaUsers.Include(x => x.StravaClubs).ToList();
+
+
+      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
+      StravaUser? currentUser = null;
+      if (userId != null)
+      {
+        var currId = Int32.Parse(userId);
+
+        currentUser = users.Find(u => u.AthleteId == currId);
+      }
 
       if (genderFilter != null && (genderFilter == "M" || genderFilter == "F"))
       {
@@ -105,6 +130,28 @@ namespace TodoApi.Controllers
       if (clubFilter != 0)
       {
         users = users.FindAll(u => u.StravaClubs.Any(club => club.Id == clubFilter));
+      }
+
+      if (distanceFilter != 0 && currentUser != null)
+      {
+        users = users.FindAll(u =>
+        {
+          var userMiles = u.RecentDistance;// * 0.000621371;
+          var currMiles = currentUser.RecentDistance;// * 0.000621371;
+          var diff = userMiles - currMiles;
+          return Math.Abs(diff) <= distanceFilter;
+        });
+      }
+
+      if (elevationFilter != 0 && currentUser != null)
+      {
+        users = users.FindAll(u =>
+        {
+          var userFt = u.RecentElevation;// * 3.28084;
+          var currFt = currentUser.RecentElevation;// * 3.28084;
+          var diff = userFt - currFt;
+          return Math.Abs(diff) <= elevationFilter * 1000;
+        });
       }
 
       var data = users.Join(_dbContext.Efforts,
@@ -199,6 +246,8 @@ namespace TodoApi.Controllers
                                   totalTime,
                                   totalDistance,
                                   totalElevation,
+                                  user.RecentDistance,
+                                  user.RecentElevation,
                                   segmentCount);
 
           leaderboard.Add(leaderboardEntry);
@@ -342,6 +391,31 @@ namespace TodoApi.Controllers
       }
 
       return Ok(new StravaUserDTO(user));
+    }
+
+    [HttpPost("athletes/current")]
+    public async Task<IActionResult> UpdateCurrentAthleteAsync([FromBody] StravaUserDTO newUser)
+    {
+      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
+
+      if (userId == null) return NotFound();
+
+      var athleteId = Int32.Parse(userId);
+      var dbUser = _dbContext.StravaUsers
+                              .Include(x => x.StravaClubs)
+                              .FirstOrDefault(u => u.AthleteId == athleteId);
+
+      if (dbUser == null) return NotFound();
+
+      if (dbUser.AthleteId != newUser.AthleteId) return Unauthorized();
+
+      dbUser.Age = newUser.Age;
+      dbUser.Category = newUser.Category;
+      _dbContext.Update(dbUser);
+      await _dbContext.SaveChangesAsync();
+
+
+      return Ok(newUser);
     }
 
     [HttpGet("athletes/{id}")]

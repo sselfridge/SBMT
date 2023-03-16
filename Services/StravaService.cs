@@ -8,22 +8,19 @@ namespace TodoApi.Services
   public interface IStravaService
   {
     Task<StravaOAuthResponseDTO> GetTokens(string code);
-    Task<ActivitySummaryResponse> GetActivity(long id, int athleteId, sbmtContext context);
+    Task<ActivitySummaryResponse> GetActivity(long id, int athleteId);
     Task<ActivitySummaryResponse> GetActivity(long id, HttpClient client);
-    Task<List<ActivitySummaryResponse>> GetActivities(int athleteId, sbmtContext context);
+    Task<List<ActivitySummaryResponse>> GetActivities(int athleteId);
     Task<Segment> GetSegment(long segmentId);
-
-    Task<StravaAthleteProfile> GetProfile(int athleteId, sbmtContext context);
-
+    Task<StravaAthleteProfile> GetProfile(int athleteId);
     //GetInitialProfile - fetch profile information without hitting local DB
     Task<StravaAthleteProfile> GetInitialProfile(string accessToken);
-
+    Task<RecentRideTotals> GetAthleteStats(int athleteId);
     Task<HttpClient> GetClientForUser(int athleteId);
+    StravaUser UpdateUserClubs(int athleteId, List<StravaClub> newClubs);
+    StravaUser UpdateUserClubs(int athleteId, StravaClubResponse[] newClubs);
 
-    Task<Segment?> AddSegment(long segmentId, sbmtContext context);
-
-    StravaUser UpdateUserClubs(StravaUser user, List<StravaClub> newClubs, sbmtContext context);
-    StravaUser UpdateUserClubs(StravaUser user, StravaClubResponse[] newClubs, sbmtContext context);
+    Task<StravaUser> UpdateUserStats(StravaUser user);
 
   }
   public class StravaService : IStravaService
@@ -31,13 +28,18 @@ namespace TodoApi.Services
     private readonly IConfiguration Configuration;
     private IUserService UserService;
     private StravaLimitService RateLimits;
-    private sbmtContext? scopeContext;
+    private IServiceScopeFactory _serviceScopeFactory;
 
-    public StravaService(IConfiguration configuration, IUserService userService, StravaLimitService rateLimites)
+
+    public StravaService(IConfiguration configuration,
+                          IUserService userService,
+                          StravaLimitService rateLimites,
+                          IServiceScopeFactory serviceScopeFactory)
     {
       Configuration = configuration;
       UserService = userService;
       RateLimits = rateLimites;
+      _serviceScopeFactory = serviceScopeFactory;
     }
 
     public async Task<StravaOAuthResponseDTO> GetTokens(string code)
@@ -73,9 +75,9 @@ namespace TodoApi.Services
       throw new Exception(response.StatusCode.ToString());
     }
 
-    public async Task<ActivitySummaryResponse> GetActivity(long activityId, int athleteId, sbmtContext context)
+    public async Task<ActivitySummaryResponse> GetActivity(long activityId, int athleteId)
     {
-      var client = await GetClientForUser(athleteId, context);
+      var client = await GetClientForUser(athleteId);
 
       return await GetActivity(activityId, client);
 
@@ -103,10 +105,10 @@ namespace TodoApi.Services
 
     }
 
-    public async Task<List<ActivitySummaryResponse>> GetActivities(int athleteId, sbmtContext context)
+    public async Task<List<ActivitySummaryResponse>> GetActivities(int athleteId)
     {
 
-      var client = await GetClientForUser(athleteId, context);
+      var client = await GetClientForUser(athleteId);
 
       var url = $"/athlete/activities" +
         $"?before=1965868100" +
@@ -130,10 +132,10 @@ namespace TodoApi.Services
 
     }
 
-    public async Task<StravaAthleteProfile> GetProfile(int athleteId, sbmtContext context)
+    public async Task<StravaAthleteProfile> GetProfile(int athleteId)
     {
 
-      var client = await GetClientForUser(athleteId, context);
+      var client = await GetClientForUser(athleteId);
       var url = "/athlete";
 
       var result = await GetStrava<StravaAthleteProfile>(client, url);
@@ -152,7 +154,21 @@ namespace TodoApi.Services
       return result;
     }
 
+    public async Task<RecentRideTotals> GetAthleteStats(int athleteId)
+    {
 
+      var client = await GetClientForUser(athleteId);
+      var url = $"/athletes/{athleteId}/stats";
+
+      var stats = await GetStrava<AthleteStats>(client, url);
+
+      if (stats == null) throw new Exception("Invalid stats");
+
+      var result = stats.RecentTotals;
+      result.Distance = result.Distance * 0.000621371;
+      result.ElevationGain = result.ElevationGain * 3.28084;
+      return result;
+    }
 
     /**
      * Private functions below
@@ -220,9 +236,7 @@ namespace TodoApi.Services
         user.ExpiresAt = result.ExpiresAt;
 
 
-        await UserService.Update(user, scopeContext);
-
-
+        await UserService.Update(user);
 
         return user.AccessToken;
       }
@@ -232,13 +246,10 @@ namespace TodoApi.Services
 
     }
 
+
     public async Task<HttpClient> GetClientForUser(int athleteId)
     {
-      return await GetClientForUser(athleteId, null);
-    }
-    private async Task<HttpClient> GetClientForUser(int athleteId, sbmtContext? context)
-    {
-      var user = UserService.GetById(athleteId, context);
+      var user = UserService.GetById(athleteId);
 
       if (user == null)
       {
@@ -254,62 +265,66 @@ namespace TodoApi.Services
       return client;
     }
 
-    public async Task<Segment?> AddSegment(long segmentId, sbmtContext context)
-    {
-      var segment = await GetSegment(segmentId);
-
-
-      if (segment == null) return null;
-
-      if (context.Segments.Any(s => s.Id == segmentId))
-      {
-        return null;
-      }
-
-      context.Segments.Add(segment);
-      await context.SaveChangesAsync();
-
-      return segment;
-    }
-
-    public StravaUser UpdateUserClubs(StravaUser user, StravaClubResponse[] newClubs, sbmtContext context)
+    public StravaUser UpdateUserClubs(int athleteId, StravaClubResponse[] newClubs)
     {
       var clubsList = Array.ConvertAll(newClubs,
                       new Converter<StravaClubResponse, StravaClub>
                       (clubRes => new StravaClub(clubRes))).ToList();
-      return UpdateUserClubs(user, clubsList, context);
+      return UpdateUserClubs(athleteId, clubsList);
     }
-    public StravaUser UpdateUserClubs(StravaUser user, List<StravaClub> newClubs, sbmtContext context)
+    public StravaUser UpdateUserClubs(int athleteId, List<StravaClub> newClubs)
     {
-      var newDbClubs = new List<StravaClub>();
-      foreach (var club in newClubs)
+
+      using (var scope = _serviceScopeFactory.CreateScope())
       {
-        var existsAlready = context.StravaClubs.Any(c => c.Id == club.Id);
-        if (existsAlready == false)
+
+        var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
+        var user = context.StravaUsers.Include(x => x.StravaClubs)
+          .FirstOrDefault(x => x.AthleteId == athleteId);
+
+        if (user == null) throw new Exception("User not found");
+
+        var newDbClubs = new List<StravaClub>();
+        foreach (var club in newClubs)
         {
-          newDbClubs.Add(club);
+          var existsAlready = context.StravaClubs.Any(c => c.Id == club.Id);
+          if (existsAlready == false)
+          {
+            newDbClubs.Add(club);
+          }
+
+        }
+        context.StravaClubs.AddRange(newDbClubs);
+
+
+        foreach (var club in newClubs)
+        {
+          var currentClubIds = user.StravaClubs.Select(x => x.Id);
+          if (currentClubIds.Contains(club.Id) == false)
+          {
+            user.StravaClubs.Add(club);
+          }
         }
 
-      }
-      context.StravaClubs.AddRange(newDbClubs);
-
-
-      foreach (var club in newClubs)
-      {
-        var userIds = user.StravaClubs.Select(x => x.Id);
-        if (userIds.Contains(club.Id) == false)
+        foreach (var userClub in user.StravaClubs.Where
+          (c => newClubs.Select(x => x.Id).Contains(c.Id) == false)
+          .ToList())
         {
-          user.StravaClubs.Add(club);
+          user.StravaClubs.Remove(userClub);
         }
-      }
+        context.SaveChanges();
 
-      foreach (var userClub in user.StravaClubs.Where
-        (c => newClubs.Select(x => x.Id).Contains(c.Id) == false)
-        .ToList())
-      {
-        user.StravaClubs.Remove(userClub);
+        return user;
       }
+    }
 
+
+    public async Task<StravaUser> UpdateUserStats(StravaUser user)
+    {
+      var stats = await GetAthleteStats(user.AthleteId);
+      Console.WriteLine($"Getting Stats for user {user.AthleteId}");
+      user.RecentDistance = stats.Distance / 4;
+      user.RecentElevation = (stats.ElevationGain) / 4;
 
       return user;
     }

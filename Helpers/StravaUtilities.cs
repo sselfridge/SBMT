@@ -10,8 +10,6 @@ namespace TodoApi.Helpers
 
     public static List<Effort> PullEffortsFromActivity(ActivitySummaryResponse activity, sbmtContext context)
     {
-
-
       var segmentIds = context.Segments.Select(s => s.Id).ToList();
 
       if (segmentIds == null) return new List<Effort>();
@@ -53,10 +51,8 @@ namespace TodoApi.Helpers
 
       if (profile.Clubs != null)
       {
-        var user = context.StravaUsers.First(x => x.AthleteId == newUser.AthleteId);
-        user = stravaService.UpdateUserClubs(user, profile.Clubs, context);
-        context.Update(user);
-        await context.SaveChangesAsync();
+        var user = stravaService.UpdateUserClubs(newUser.AthleteId, profile.Clubs);
+
         return user;
       }
       else
@@ -86,7 +82,7 @@ namespace TodoApi.Helpers
           {
             var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
             var stravaService = scope.ServiceProvider.GetRequiredService<IStravaService>();
-            var activities = await stravaService.GetActivities(athleteId, context);
+            var activities = await stravaService.GetActivities(athleteId);
 
             Console.WriteLine($"sbmtLog: athleteId:{athleteId} onboarding with {activities.Count} activities");
 
@@ -153,7 +149,8 @@ namespace TodoApi.Helpers
            var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
            var stravaService = scope.ServiceProvider.GetRequiredService<IStravaService>();
 
-           ActivitySummaryResponse activity = await stravaService.GetActivity(activityId, athleteId, context);
+           var activity = await stravaService.GetActivity(activityId, athleteId);
+
 
            if (activity.SegmentEfforts == null)
            {
@@ -207,6 +204,88 @@ namespace TodoApi.Helpers
       await Task.Delay(1);
 
       return true;
+    }
+
+    public static async Task<bool> UpdateAllUserStats(IServiceScopeFactory serviceScopeFactory)
+    {
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+      Task.Run(async () =>
+      {
+        using (var scope = serviceScopeFactory.CreateScope())
+        {
+
+          try
+          {
+            var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
+            var stravaService = scope.ServiceProvider.GetRequiredService<IStravaService>();
+
+            var users = context.StravaUsers.Where(x => x.AthleteId != 1).ToList();
+
+            var userTasks = users.Select(user => stravaService.UpdateUserStats(user))
+                                                                              .ToArray();
+
+            var whenAll = Task.WhenAll(userTasks);
+
+            try
+            {
+              //https://stackoverflow.com/a/61017974/901311
+              await whenAll;
+            }
+            catch
+            {
+              if (whenAll.IsFaulted) // There is also the possibility of being canceled
+              {
+                foreach (var ex in whenAll.Exception.InnerExceptions)
+                {
+                  Console.WriteLine("sbmtLog: Single Stats update failed");
+                  Console.WriteLine(ex); // Log each exception
+                }
+              }
+            }
+
+            var results = userTasks
+                .Where(t => t.IsCompletedSuccessfully)
+                .Select(t => t.Result)
+                .ToArray();
+
+            Console.Write("done and done");
+
+            context.StravaUsers.UpdateRange(results);
+            context.SaveChanges();
+
+          }
+          catch (Exception ex)
+          {
+
+            Console.WriteLine("sbmtLog: Entire Stats update failed");
+            Console.WriteLine(ex);
+          }
+
+        }
+      });
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+      await Task.Delay(1);
+
+      return true;
+    }
+
+    public static string TestUtilitiesAccess(IServiceScopeFactory serviceScopeFactory)
+    {
+
+      Task.Run(async () =>
+      {
+        using (var scope = serviceScopeFactory.CreateScope())
+        {
+
+
+          var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
+
+          var user = context.StravaUsers.FirstOrDefault(x => x.AthleteId == 1075670);
+
+          Console.WriteLine("we made it here");
+        }
+      });
+      return "allo";
     }
 
   }
