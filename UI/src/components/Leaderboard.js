@@ -5,15 +5,7 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import { DataGrid } from "@mui/x-data-grid";
-import {
-  Avatar,
-  Box,
-  Paper,
-  Typography,
-  Button,
-  // Tooltip,
-  CardHeader,
-} from "@mui/material";
+import { Box, Paper, Typography, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Filters from "./Filters";
 
@@ -22,12 +14,17 @@ import { formattedTime, metersToMiles, metersToFeet } from "utils/helperFuncs";
 import { ApiGet } from "api/api";
 import { Link, useSearchParams } from "react-router-dom";
 
-// import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-const MyBox = styled(Box)(({ theme }) => {
+import LeaderboardAthleteCell from "./LeaderboardAthleteCell";
+
+const MainBox = styled(Box)(({ theme }) => {
   return {
     backgroundColor: theme.palette.background.paper,
     padding: 8,
     borderRadius: 4,
+    height: "90vh",
+    width: "95vw",
+    maxWidth: 1000,
+    overflow: "auto",
   };
 });
 
@@ -102,47 +99,7 @@ const Leaderboard = () => {
         sortable: false,
         headerName: "Athlete",
 
-        renderCell: (props) => {
-          const { row } = props;
-          const {
-            athleteName,
-            avatar,
-            id,
-            //  recentDistance, recentElevation
-          } = row;
-
-          return (
-            <Link style={{ width: "100%" }} to={`/athletes/${id}`}>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <CardHeader
-                  avatar={<Avatar src={avatar} />}
-                  title={athleteName}
-                >
-                  {/* <Avatar src={avatar} /> */}
-                  {/* <>{athleteName}</> */}
-                </CardHeader>
-                {/* <Tooltip
-                  arrow
-                  title={
-                    <Box>
-                      Distance:{recentDistance}
-                      <br />
-                      Elevation:{recentElevation}
-                    </Box>
-                  }
-                >
-                  <InfoOutlinedIcon />
-                </Tooltip> */}
-              </Box>
-            </Link>
-          );
-        },
+        renderCell: LeaderboardAthleteCell,
       },
       {
         flex: 13,
@@ -294,14 +251,7 @@ const Leaderboard = () => {
   );
 
   return (
-    <MyBox
-      sx={{
-        height: "90vh",
-        width: "95vw",
-        maxWidth: 1000,
-        overflow: "auto",
-      }}
-    >
+    <MainBox sx={{}}>
       <Paper
         sx={{
           height: "100%",
@@ -357,7 +307,7 @@ const Leaderboard = () => {
           </ul>
         </Paper>
       </Paper>
-    </MyBox>
+    </MainBox>
   );
 };
 

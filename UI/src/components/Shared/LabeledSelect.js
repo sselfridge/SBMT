@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import PropTypes from "prop-types";
-import { MenuItem, FormControl, InputLabel, Select } from "@mui/material";
+import { MenuItem, Box, FormControl, InputLabel, Select } from "@mui/material";
 
 const LabeledSelect = (props) => {
   const { value, label, setValue, list, minWidth = 60 } = props;
@@ -19,20 +19,17 @@ const LabeledSelect = (props) => {
         value={value}
         onChange={onChange}
         sx={{
-          //TODO - see about adding :first-letter pseudo selector here
-          textTransform: "capitalize",
+          ":first-letter": {
+            textTransform: "capitalize",
+          },
           minWidth,
         }}
       >
         {list.map((item, idx) => (
-          <MenuItem
-            value={item}
-            key={idx}
-            sx={{
-              textTransform: "capitalize",
-            }}
-          >
-            {item}
+          <MenuItem value={item} key={idx}>
+            <Box sx={{ ":first-letter": { textTransform: "uppercase" } }}>
+              {item}
+            </Box>
           </MenuItem>
         ))}
       </Select>

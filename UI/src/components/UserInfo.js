@@ -19,8 +19,6 @@ import LabeledSelect from "./Shared/LabeledSelect";
 
 import { categoryList } from "utils/constants";
 import { ApiGet, ApiPost } from "api/api";
-import { metersToMiles } from "utils/helperFuncs";
-import { metersToFeet } from "utils/helperFuncs";
 
 const MyPaper = styled(Paper)(({ theme }) => ({
   padding: 8,
@@ -137,13 +135,13 @@ const UserInfo = () => {
     { label: "Weight", content: user?.weight, fromStrava: true },
     { label: "Sex", content: user?.sex, fromStrava: true },
     {
-      label: "Distance",
-      content: `${metersToMiles(user?.recentDistance)} mi`,
+      label: "Distance/wk",
+      content: `${user?.recentDistance.toFixed(0)} mi`,
       fromStrava: true,
     },
     {
-      label: "Elevation",
-      content: `${metersToFeet(user?.recentElevation)} ft`,
+      label: "Elevation/wk",
+      content: `${user?.recentElevation.toFixed(0)} ft`,
       fromStrava: true,
     },
     { label: "Clubs", content: "", fromStrava: true },
@@ -194,9 +192,17 @@ const UserInfo = () => {
   return (
     <MyPaper>
       <Typography variant="h3">User Profile</Typography>
-
+      <Box
+        sx={{
+          ":first-letter": {
+            textTransform: "capitalize",
+          },
+        }}
+      >
+        this is a test
+      </Box>
       <Grid container spacing={1}>
-        {/* {profileFields.map(mapFields)}
+        {profileFields.map(mapFields)}
         <Grid item xs={1} sm={3} />
         <Grid item xs={10} sm={6}>
           <Button
@@ -207,7 +213,7 @@ const UserInfo = () => {
             Save
           </Button>
         </Grid>
-        <Grid item xs={1} sm={3} /> */}
+        <Grid item xs={1} sm={3} />
 
         {/* line break */}
         <Grid item xs={1} />

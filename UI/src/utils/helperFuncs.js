@@ -38,5 +38,5 @@ export const metersToMiles = (meters) => {
 };
 
 export const metersToFeet = (meters) => {
-  return (meters * 3.28084).toFixed(0);
+  return Math.floor(meters * 3.28084).toLocaleString();
 };

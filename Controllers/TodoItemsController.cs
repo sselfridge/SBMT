@@ -21,6 +21,7 @@ namespace TodoApi.Controllers
     private readonly IConfiguration Configuration;
     private StravaLimitService RateLimits;
     private IServiceScopeFactory _serviceScopeFactory;
+    private ILogger<TodoItemsController> _logger;
 
 
     private string GenerateJwtToken(int id)
@@ -131,7 +132,8 @@ namespace TodoApi.Controllers
     public TodoItemsController(TodoContext context,
       IUserService userService, IStravaService stravaService,
       sbmtContext dbContext, IConfiguration configuration,
-      StravaLimitService stravaLimitService, IServiceScopeFactory serviceScopeFactory)
+      StravaLimitService stravaLimitService, IServiceScopeFactory serviceScopeFactory,
+      ILogger<TodoItemsController> logger)
     {
       _context = context;
       _userService = userService;
@@ -140,6 +142,7 @@ namespace TodoApi.Controllers
       Configuration = configuration;
       RateLimits = stravaLimitService;
       _serviceScopeFactory = serviceScopeFactory;
+      _logger = logger;
     }
 
     // GET: api/TodoItems
@@ -185,17 +188,13 @@ namespace TodoApi.Controllers
         return Ok("loadked");
       }
 
-      return Ok("Standing by...");
+      var str = "Add This msg";
 
+      _logger.LogInformation("{} {} {}", str,
+          TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, "Pacific Standard Time").ToLongDateString(), TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, "Pacific Standard Time").ToLongTimeString());
 
-      //var user = _dbContext.StravaUsers.FirstOrDefault(x => x.AthleteId == 10645041);
+      return Ok("OK!");
 
-      //var resultUser = await _stravaService.UpdateUserStats(user);
-
-      //await StravaUtilities.UpdateAllUserStats(_serviceScopeFactory);
-
-
-      return Ok("update");
 
 
 
@@ -211,7 +210,7 @@ namespace TodoApi.Controllers
       var fifteen = RateLimits.GetUsage15();
       var daily = RateLimits.GetUsageDaily();
 
-      int[] result = new int[] { fifteen, daily };
+      int[] rates = new int[] { fifteen, daily };
 
 
       //var activity = await _stravaService.GetActivity(6156488864, 1075670);
@@ -252,7 +251,7 @@ namespace TodoApi.Controllers
       //var seg = _dbContext.Segments.ToList();
 
 
-      return Ok(result);
+      return Ok(rates);
 
 
 

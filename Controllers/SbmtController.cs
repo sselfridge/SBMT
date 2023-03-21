@@ -83,8 +83,38 @@ namespace TodoApi.Controllers
 
       string surfaceFilter = HttpContext.Request.Query["surface"];
       string genderFilter = HttpContext.Request.Query["gender"];
-      ;
 
+      string categoryFilter = HttpContext.Request.Query["category"];
+
+      string ageFilter = HttpContext.Request.Query["age"];
+
+      int lowerAge = -1;
+      int upperAge = 101;
+      if (ageFilter != null)
+      {
+        Regex under = new Regex(@"(\d+).*under", RegexOptions.IgnoreCase);
+        Regex range = new Regex(@"(\d+) to (\d+)", RegexOptions.IgnoreCase);
+        Regex over = new Regex(@"(\d+).*over", RegexOptions.IgnoreCase);
+        //var o = over.Match(overStr);
+        var rangeMatch = range.Match(ageFilter);
+        var underMatch = under.Match(ageFilter);
+        var overMatch = over.Match(ageFilter);
+
+        if (rangeMatch.Success)
+        {
+          int.TryParse(rangeMatch.Groups[1].Value, out lowerAge);
+          int.TryParse(rangeMatch.Groups[2].Value, out upperAge);
+        }
+        else if (underMatch.Success)
+        {
+          int.TryParse(underMatch.Groups[1].Value, out upperAge);
+
+        }
+        else if (overMatch.Success)
+        {
+          int.TryParse(overMatch.Groups[1].Value, out lowerAge);
+        }
+      }
       long clubFilter = 0;
       long.TryParse(HttpContext.Request.Query["club"], out clubFilter);
 
@@ -130,6 +160,16 @@ namespace TodoApi.Controllers
       if (clubFilter != 0)
       {
         users = users.FindAll(u => u.StravaClubs.Any(club => club.Id == clubFilter));
+      }
+
+      if (categoryFilter != null)
+      {
+        users = users.FindAll(u => u.Category == categoryFilter);
+      }
+
+      if (lowerAge != -1 || upperAge != 101)
+      {
+        users = users.FindAll(u => u.Age <= upperAge && u.Age >= lowerAge);
       }
 
       if (distanceFilter != 0 && currentUser != null)
@@ -248,6 +288,7 @@ namespace TodoApi.Controllers
                                   totalElevation,
                                   user.RecentDistance,
                                   user.RecentElevation,
+                                  user.Category,
                                   segmentCount);
 
           leaderboard.Add(leaderboardEntry);
