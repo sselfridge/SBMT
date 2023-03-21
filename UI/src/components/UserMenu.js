@@ -15,7 +15,7 @@ import { styled } from "@mui/material/styles";
 //Icons
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import Settings from "@mui/icons-material/Settings";
+import AnalyticsIcon from "@mui/icons-material/Analytics";
 import Logout from "@mui/icons-material/Logout";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
@@ -152,9 +152,9 @@ const UserMenu = () => {
         {user?.athleteId && (
           <MenuItem onClick={() => navTo(`athletes/${user?.athleteId}`)}>
             <ListItemIcon>
-              <AccountBoxIcon fontSize="small" />
+              <AnalyticsIcon fontSize="small" />
             </ListItemIcon>{" "}
-            My Profile
+            My Efforts
             <Divider />
           </MenuItem>
         )}
@@ -169,9 +169,9 @@ const UserMenu = () => {
         {user?.athleteId && (
           <MenuItem onClick={() => navTo("settings")}>
             <ListItemIcon>
-              <Settings fontSize="small" />
+              <AccountBoxIcon fontSize="small" />
             </ListItemIcon>
-            Settings
+            My Profile
           </MenuItem>
         )}
         <MenuItem onClick={() => navTo("info")}>

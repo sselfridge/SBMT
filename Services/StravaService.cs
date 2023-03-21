@@ -323,8 +323,8 @@ namespace TodoApi.Services
     {
       var stats = await GetAthleteStats(user.AthleteId);
       Console.WriteLine($"Getting Stats for user {user.AthleteId}");
-      user.RecentDistance = stats.Distance / 4;
-      user.RecentElevation = (stats.ElevationGain) / 4;
+      user.RecentDistance = Math.Floor(stats.Distance / 4);
+      user.RecentElevation = Math.Floor(stats.ElevationGain / 4);
 
       return user;
     }

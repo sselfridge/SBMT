@@ -186,6 +186,8 @@ namespace TodoApi.Helpers
            {
              context.AddRange(newEfforts);
              context.SaveChanges();
+
+             //TODO - Add 'place at time of finishing' function here.
            }
 
          }
