@@ -131,7 +131,7 @@ const Filters = (props) => {
       }
       setStravaBtnText("");
     } else if (_.isEmpty(user)) {
-      setStravaBtnText("Login to filter by Club");
+      setStravaBtnText("Login for more filters");
     }
   }, [clubId, user]);
 
@@ -183,30 +183,34 @@ const Filters = (props) => {
           </Box>
         </Tooltip>
       )}
-      <LabeledSelect
-        label={"Category"}
-        value={category}
-        setValue={setCategory}
-        list={categoryList}
-      />
-      <LabeledSelect
-        label={"Age Group"}
-        value={age}
-        setValue={setAge}
-        list={ageList}
-      />
-      <LabeledSelect
-        label={"Recent Distance"}
-        value={distance}
-        setValue={setDistance}
-        list={distanceList}
-      />
-      <LabeledSelect
-        label={"Recent Elevation"}
-        value={elevation}
-        setValue={setElevation}
-        list={elevationList}
-      />
+      {!stravaBtnText && (
+        <React.Fragment>
+          <LabeledSelect
+            label={"Category"}
+            value={category}
+            setValue={setCategory}
+            list={categoryList}
+          />
+          <LabeledSelect
+            label={"Age Group"}
+            value={age}
+            setValue={setAge}
+            list={ageList}
+          />
+          <LabeledSelect
+            label={"Recent Distance"}
+            value={distance}
+            setValue={setDistance}
+            list={distanceList}
+          />
+          <LabeledSelect
+            label={"Recent Elevation"}
+            value={elevation}
+            setValue={setElevation}
+            list={elevationList}
+          />
+        </React.Fragment>
+      )}
     </FormGroup>
   );
 };
