@@ -109,31 +109,44 @@ namespace TodoApi.Controllers
         return Redirect($"{Configuration["BaseURL"]}/thanks");
 
       }
-      else if (
-        oAuthUser.AccessToken != existingUser.AccessToken ||
-        oAuthUser.Scope != existingUser.Scope)
+      else
       {
-        existingUser.AccessToken = oAuthUser.AccessToken;
-        existingUser.ExpiresAt = oAuthUser.ExpiresAt;
-        existingUser.Scope = oAuthUser.Scope;
-        var savedUser = await _userService.Update(existingUser);
-      }
 
-      if (oAuthUser.Scope.Contains("profile:read_all") && existingUser != null)
-      {
-        // this needs to be after the DB update since we probably need the new accesstoken
-        // Could pass the token down if this becomes an issue.
-        var userWithClubs = _dbContext.StravaUsers.Include(x => x.StravaClubs).FirstOrDefault(x => x.AthleteId == oAuthUser.AthleteId);
-        if (userWithClubs != null)
+        if (
+          oAuthUser.AccessToken != existingUser.AccessToken ||
+          oAuthUser.Scope != existingUser.Scope)
         {
-
-          var profile = await _stravaService.GetProfile(oAuthUser.AthleteId);
-          _stravaService.UpdateUserClubs(oAuthUser.AthleteId, profile.Clubs);
+          existingUser.AccessToken = oAuthUser.AccessToken;
+          existingUser.ExpiresAt = oAuthUser.ExpiresAt;
+          existingUser.Scope = oAuthUser.Scope;
+          var savedUser = await _userService.Update(existingUser);
         }
+
+        if (oAuthUser.Scope.Contains("profile:read_all") && existingUser != null)
+        {
+          // this needs to be after the DB update since we probably need the new accesstoken
+          // Could pass the token down if this becomes an issue.
+          var userWithClubs = _dbContext.StravaUsers.Include(x => x.StravaClubs).FirstOrDefault(x => x.AthleteId == oAuthUser.AthleteId);
+          if (userWithClubs != null)
+          {
+
+            var profile = await _stravaService.GetProfile(oAuthUser.AthleteId);
+            _stravaService.UpdateUserClubs(oAuthUser.AthleteId, profile.Clubs);
+          }
+        }
+
+        if (existingUser != null &&
+          (existingUser.Age == 0 || existingUser.Category == null))
+        {
+          return Redirect($"{Configuration["BaseURL"]}/settings");
+
+        }
+        else
+        {
+          return Redirect($"{Configuration["BaseURL"]}/recent");
+        }
+
       }
-
-
-      return Redirect($"{Configuration["BaseURL"]}/thanks");
     }
 
     //Verify push notifications subscription
