@@ -189,18 +189,19 @@ const UserInfo = () => {
     );
   };
 
+  let missingInfoWarning;
+  if (user?.age === 0 && user?.category === "") {
+    missingInfoWarning = "Please enter your age and category";
+  } else if (user?.age === 0) {
+    missingInfoWarning = "Please enter your age";
+  } else if (user?.category === "") {
+    missingInfoWarning = "Please enter your category";
+  }
+
   return (
     <MyPaper>
       <Typography variant="h3">User Profile</Typography>
-      <Box
-        sx={{
-          ":first-letter": {
-            textTransform: "capitalize",
-          },
-        }}
-      >
-        this is a test
-      </Box>
+      <Typography color="warning.main">{missingInfoWarning}</Typography>
       <Grid container spacing={1}>
         {profileFields.map(mapFields)}
         <Grid item xs={1} sm={3} />
