@@ -11,7 +11,7 @@ import Filters from "./Filters";
 
 import { ALL_COLUMNS, MOBILE_COLUMNS } from "utils/constants";
 import { formattedTime, metersToMiles, metersToFeet } from "utils/helperFuncs";
-import { ApiGet } from "api/api";
+import { ApiGet, ApiPost } from "api/api";
 import { Link, useSearchParams } from "react-router-dom";
 
 import LeaderboardAthleteCell from "./LeaderboardAthleteCell";
@@ -53,7 +53,7 @@ const Leaderboard = () => {
 
   const onApplyFilters = React.useCallback(
     (filters) => {
-      let url = LEADERBOARD_URL + "?";
+      let queryString = "?";
       const params = {};
 
       const simpleFilters = [
@@ -67,17 +67,18 @@ const Leaderboard = () => {
 
       simpleFilters.forEach((name) => {
         if (filters?.[name] && filters[name] !== "ALL") {
-          url += `&${name}=${filters[name]}`;
+          queryString += `&${name}=${filters[name]}`;
           params[name] = filters[name];
         }
       });
 
       if (filters?.club !== "0") {
-        url += `&club=${filters.club}`;
+        queryString += `&club=${filters.club}`;
         params.club = filters.club;
       }
 
       setSearchParams(params);
+      let url = LEADERBOARD_URL + queryString;
 
       ApiGet(url, onLoad);
     },
@@ -260,7 +261,7 @@ const Leaderboard = () => {
           overflow: "scroll",
         }}
       >
-        <Filters onApplyFilters={onApplyFilters} />
+        <Filters onApplyFilters={onApplyFilters} searchParams={searchParams} />
         <DataGrid
           rows={rows}
           columns={columns}

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using TodoApi.Models;
 using TodoApi.Models.db;
@@ -315,6 +316,24 @@ namespace TodoApi.Controllers
       }
 
       return Ok(leaderboard);
+    }
+
+    [HttpPost("saveFilters")]
+    public IActionResult saveFilters([FromBody] Filters filters)
+    {
+      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
+      if (userId == null) return Unauthorized();
+      var cookieAthleteId = Int32.Parse(userId);
+
+      var strFilters = JsonSerializer.Serialize(filters);
+
+      var user = _dbContext.StravaUsers.FirstOrDefault(x => x.AthleteId == cookieAthleteId);
+      if (user == null) return NotFound();
+
+      user.SavedFilters = strFilters;
+      _dbContext.SaveChanges();
+
+      return Ok(strFilters);
     }
 
 

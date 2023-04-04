@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 using TodoApi.Models.db;
 
 namespace TodoApi.Models
@@ -18,6 +19,7 @@ namespace TodoApi.Models
     public string Category { get; set; }
     public double RecentDistance { get; set; }
     public double RecentElevation { get; set; }
+    public Filters? SavedFilters { get; set; }
 
     [JsonConstructor]
     public StravaUserDTO() { }
@@ -37,6 +39,8 @@ namespace TodoApi.Models
       Category = user.Category;
       RecentDistance = user.RecentDistance;
       RecentElevation = user.RecentElevation;
+      Filters savedFilters = JsonSerializer.Deserialize<Filters>(user.SavedFilters);
+      SavedFilters = savedFilters;
     }
 
   }

@@ -28,6 +28,8 @@ namespace TodoApi.Models.db
 
     public ICollection<StravaClub> StravaClubs { get; set; }
 
+    public string SavedFilters { get; set; }
+
 
     public StravaUser(int athleteId, string firstname, string lastname, string avatar, long expiresAt, string refreshToken, string accessToken, string sex, double weight, string? scope, int age, string category, double recentDistance, double recentElevation)
     {
@@ -47,6 +49,7 @@ namespace TodoApi.Models.db
       Category = category;
       RecentDistance = recentDistance;
       RecentElevation = recentElevation;
+      SavedFilters = "";
     }
 
     public StravaUser(OauthStravaUser oAuth, StravaAthleteProfile profile)
@@ -71,6 +74,7 @@ namespace TodoApi.Models.db
       RecentDistance = 0;
       RecentElevation = 0;
 
+      SavedFilters = "";
     }
 
 

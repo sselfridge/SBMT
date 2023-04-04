@@ -28,12 +28,12 @@ import {
 } from "utils/constants";
 import AppContext from "AppContext";
 import StravaButton from "./Shared/StravaButton";
+import { ApiPost } from "api/api";
 
 const Filters = (props) => {
-  const { onApplyFilters } = props;
+  const { onApplyFilters, searchParams } = props;
   const { user } = useContext(AppContext);
 
-  const [searchParams] = useSearchParams();
   const [surface, setSurface] = useState(surfaceList[1]);
   const [gender, setGender] = useState(genderList[0]);
   const [age, setAge] = useState(ageList[0]);
@@ -135,6 +135,26 @@ const Filters = (props) => {
     }
   }, [clubId, user]);
 
+  useEffect(() => {
+    console.info(user?.savedFilters);
+  }, [user]);
+
+  const onSaveFilters = () => {
+    const filters = {
+      surface,
+      gender,
+      age,
+      category,
+      distance,
+      elevation,
+      clubId,
+    };
+
+    const FavoriteFilters = "asdf";
+
+    ApiPost("/api/saveFilters", filters, () => {});
+  };
+
   return (
     <FormGroup
       sx={{
@@ -146,6 +166,7 @@ const Filters = (props) => {
       className="MuiFormGroup-options"
       row
     >
+      <Button onClick={onSaveFilters}>Save Filters</Button>
       <LabeledSelect
         label={"Surface"}
         value={surface}
