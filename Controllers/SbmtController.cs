@@ -333,7 +333,7 @@ namespace TodoApi.Controllers
       user.SavedFilters = strFilters;
       _dbContext.SaveChanges();
 
-      return Ok(strFilters);
+      return Ok(user);
     }
 
 

@@ -38,7 +38,7 @@ const LabeledSelect = (props) => {
 };
 
 LabeledSelect.propTypes = {
-  value: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   label: PropTypes.string.isRequired,
   setValue: PropTypes.func.isRequired,
   list: PropTypes.array.isRequired,

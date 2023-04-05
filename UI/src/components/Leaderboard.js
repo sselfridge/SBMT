@@ -11,7 +11,7 @@ import Filters from "./Filters";
 
 import { ALL_COLUMNS, MOBILE_COLUMNS } from "utils/constants";
 import { formattedTime, metersToMiles, metersToFeet } from "utils/helperFuncs";
-import { ApiGet, ApiPost } from "api/api";
+import { ApiGet } from "api/api";
 import { Link, useSearchParams } from "react-router-dom";
 
 import LeaderboardAthleteCell from "./LeaderboardAthleteCell";
@@ -33,7 +33,7 @@ const LEADERBOARD_URL = "/api/leaderboard";
 const Leaderboard = () => {
   const theme = useTheme();
   const isMobile = !useMediaQuery(theme.breakpoints.up("sm"));
-  // eslint-disable-next-line no-unused-vars
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [columnVisible, setColumnVisible] = React.useState(ALL_COLUMNS);

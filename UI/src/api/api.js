@@ -53,13 +53,13 @@ export const ApiDelete = (
     });
 };
 
-export const ApiPost = (url, body, setValue, onError, setErrorUndefined) => {
+export const ApiPost = (url, body, setValue = () => {}, onError = () => {}) => {
   Api.post(url, body)
     .then((response) => {
-      if (response.status === 201) setValue(deepFreeze(response.data));
+      setValue(deepFreeze(response.data));
     })
     .catch((err) => {
-      if (onError !== undefined || setErrorUndefined) setValue(onError);
+      onError(err);
       console.error(err);
     });
 };
