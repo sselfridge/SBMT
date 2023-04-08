@@ -132,7 +132,6 @@ const Filters = (props) => {
       let savedFiltersActiveCheck = true;
       for (let filterName in userFilters) {
         if (Object.hasOwnProperty.call(userFilters, filterName)) {
-          filterName = filterName.toLowerCase();
           let userValue = userFilters[filterName];
           let filterValue = filters[filterName];
 
@@ -278,14 +277,7 @@ const Filters = (props) => {
     >
       {/* <Button onClick={onSaveFilters}>Save Filters</Button>
       <Button onClick={onClearSavedFilters}>clear Filters</Button> */}
-      {savedFiltersActive ? (
-        <StarIcon sx={{ color: "strava.main" }} onClick={onClearSavedFilters} />
-      ) : (
-        <StarOutlineIcon
-          sx={{ color: "strava.main" }}
-          onClick={onSaveFilters}
-        />
-      )}
+
       <LabeledSelect
         label={"Surface"}
         value={surface}
@@ -310,6 +302,8 @@ const Filters = (props) => {
           value={clubNode}
           setValue={setClubNode}
           list={clubList}
+          maxWidth={45}
+          minWidth={45}
         />
       )}
       {!!stravaBtnText && (
@@ -349,6 +343,23 @@ const Filters = (props) => {
             setValue={setElevation}
             list={elevationList}
           />
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            {savedFiltersActive ? (
+              <Tooltip arrow title={"Clear saved filers"}>
+                <StarIcon
+                  sx={{ color: "strava.main" }}
+                  onClick={onClearSavedFilters}
+                />
+              </Tooltip>
+            ) : (
+              <Tooltip arrow title={"Save current filters"}>
+                <StarOutlineIcon
+                  sx={{ color: "strava.main" }}
+                  onClick={onSaveFilters}
+                />
+              </Tooltip>
+            )}
+          </Box>
         </React.Fragment>
       )}
     </FormGroup>

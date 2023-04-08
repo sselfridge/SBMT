@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { MenuItem, Box, FormControl, InputLabel, Select } from "@mui/material";
 
 const LabeledSelect = (props) => {
-  const { value, label, setValue, list, minWidth = 60 } = props;
+  const { value, label, setValue, list, minWidth = 60, maxWidth } = props;
 
   const onChange = useCallback(
     (e) => {
@@ -23,6 +23,7 @@ const LabeledSelect = (props) => {
             textTransform: "capitalize",
           },
           minWidth,
+          maxWidth,
         }}
       >
         {list.map((item, idx) => (
