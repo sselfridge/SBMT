@@ -14,7 +14,8 @@ import {
 } from "@mui/material";
 import FilterListIcon from "@mui/icons-material/FilterList";
 
-import { useSearchParams } from "react-router-dom";
+import StarOutlineIcon from "@mui/icons-material/StarOutline";
+import StarIcon from "@mui/icons-material/Star";
 
 import LabeledSelect from "./Shared/LabeledSelect";
 
@@ -28,12 +29,14 @@ import {
 } from "utils/constants";
 import AppContext from "AppContext";
 import StravaButton from "./Shared/StravaButton";
+import { ApiPost } from "api/api";
 
 const Filters = (props) => {
-  const { onApplyFilters } = props;
-  const { user } = useContext(AppContext);
+  const { onApplyFilters, searchParams } = props;
+  const { user, dispatch } = useContext(AppContext);
 
-  const [searchParams] = useSearchParams();
+  const setUser = (user) => dispatch({ type: "setUser", user });
+
   const [surface, setSurface] = useState(surfaceList[1]);
   const [gender, setGender] = useState(genderList[0]);
   const [age, setAge] = useState(ageList[0]);
@@ -45,6 +48,8 @@ const Filters = (props) => {
   const [clubNode, setClubNode] = useState("");
   const [clubId, setClubId] = useState(null);
   const [stravaBtnText, setStravaBtnText] = useState("");
+
+  const [savedFiltersActive, setSavedFiltersActive] = useState(false);
 
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
@@ -105,6 +110,58 @@ const Filters = (props) => {
     elevation,
   ]);
 
+  //Check if the current filters are the user's favorites
+  useEffect(() => {
+    let userFilters = user?.savedFilters;
+    if (userFilters) {
+      if (typeof userFilters === "string") {
+        userFilters = JSON.parse(userFilters);
+      }
+
+      const clubId = clubNode?.key;
+      const filters = {
+        surface,
+        gender,
+        age,
+        category,
+        distance,
+        elevation,
+        clubId,
+      };
+
+      let savedFiltersActiveCheck = true;
+      for (let filterName in userFilters) {
+        if (Object.hasOwnProperty.call(userFilters, filterName)) {
+          let userValue = userFilters[filterName];
+          let filterValue = filters[filterName];
+
+          if (filterName === "clubId") {
+            userValue = Number(userValue);
+            filterValue = Number(filterValue);
+          }
+
+          if (userValue !== filterValue) {
+            savedFiltersActiveCheck = false;
+            break;
+          }
+        }
+      }
+      if (savedFiltersActiveCheck !== savedFiltersActive) {
+        setSavedFiltersActive(savedFiltersActiveCheck);
+      }
+    }
+  }, [
+    surface,
+    gender,
+    age,
+    category,
+    clubNode,
+    distance,
+    elevation,
+    user,
+    savedFiltersActive,
+  ]);
+
   useEffect(() => {
     if (user?.scope?.includes("profile:read_all") === false) {
       setClubList([]);
@@ -135,6 +192,78 @@ const Filters = (props) => {
     }
   }, [clubId, user]);
 
+  useEffect(() => {
+    if (user?.savedFilters) {
+      for (const filter in user.savedFilters) {
+        if (Object.hasOwnProperty.call(user.savedFilters, filter)) {
+          const value = user.savedFilters[filter];
+          if (!value) continue;
+          switch (filter) {
+            case "surface":
+              setSurface(value);
+              break;
+            case "gender":
+              setGender(value);
+              break;
+            case "clubId":
+              setClubId(Number(value));
+              break;
+            case "category":
+              setCategory(value);
+              break;
+            case "age":
+              setAge(value);
+              break;
+            case "distance":
+              setDistance(value);
+              break;
+            case "elevation":
+              setElevation(value);
+              break;
+
+            default:
+              break;
+          }
+        }
+      }
+    }
+  }, [user]);
+
+  const onSaveFilters = () => {
+    setSavedFiltersActive(true);
+    const filters = {
+      surface,
+      gender,
+      age,
+      category,
+      distance,
+      elevation,
+      clubId: 0,
+    };
+
+    const clubKey = Number(clubNode.key);
+    if (clubKey) {
+      filters.clubId = clubKey;
+    }
+    ApiPost("/api/saveFilters", filters, setUser);
+  };
+
+  const onClearSavedFilters = () => {
+    setSavedFiltersActive(false);
+
+    const filters = {
+      surface: null,
+      gender: null,
+      age: null,
+      category: null,
+      distance: null,
+      elevation: null,
+      clubId: 0,
+    };
+
+    ApiPost("/api/saveFilters", filters, setUser);
+  };
+
   return (
     <FormGroup
       sx={{
@@ -146,6 +275,9 @@ const Filters = (props) => {
       className="MuiFormGroup-options"
       row
     >
+      {/* <Button onClick={onSaveFilters}>Save Filters</Button>
+      <Button onClick={onClearSavedFilters}>clear Filters</Button> */}
+
       <LabeledSelect
         label={"Surface"}
         value={surface}
@@ -170,6 +302,8 @@ const Filters = (props) => {
           value={clubNode}
           setValue={setClubNode}
           list={clubList}
+          maxWidth={45}
+          minWidth={45}
         />
       )}
       {!!stravaBtnText && (
@@ -209,6 +343,23 @@ const Filters = (props) => {
             setValue={setElevation}
             list={elevationList}
           />
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            {savedFiltersActive ? (
+              <Tooltip arrow title={"Clear saved filers"}>
+                <StarIcon
+                  sx={{ color: "strava.main" }}
+                  onClick={onClearSavedFilters}
+                />
+              </Tooltip>
+            ) : (
+              <Tooltip arrow title={"Save current filters"}>
+                <StarOutlineIcon
+                  sx={{ color: "strava.main" }}
+                  onClick={onSaveFilters}
+                />
+              </Tooltip>
+            )}
+          </Box>
         </React.Fragment>
       )}
     </FormGroup>

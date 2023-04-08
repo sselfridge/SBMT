@@ -33,7 +33,7 @@ const LEADERBOARD_URL = "/api/leaderboard";
 const Leaderboard = () => {
   const theme = useTheme();
   const isMobile = !useMediaQuery(theme.breakpoints.up("sm"));
-  // eslint-disable-next-line no-unused-vars
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [columnVisible, setColumnVisible] = React.useState(ALL_COLUMNS);
@@ -53,7 +53,7 @@ const Leaderboard = () => {
 
   const onApplyFilters = React.useCallback(
     (filters) => {
-      let url = LEADERBOARD_URL + "?";
+      let queryString = "?";
       const params = {};
 
       const simpleFilters = [
@@ -67,17 +67,18 @@ const Leaderboard = () => {
 
       simpleFilters.forEach((name) => {
         if (filters?.[name] && filters[name] !== "ALL") {
-          url += `&${name}=${filters[name]}`;
+          queryString += `&${name}=${filters[name]}`;
           params[name] = filters[name];
         }
       });
 
       if (filters?.club !== "0") {
-        url += `&club=${filters.club}`;
+        queryString += `&club=${filters.club}`;
         params.club = filters.club;
       }
 
       setSearchParams(params);
+      let url = LEADERBOARD_URL + queryString;
 
       ApiGet(url, onLoad);
     },
@@ -260,7 +261,7 @@ const Leaderboard = () => {
           overflow: "scroll",
         }}
       >
-        <Filters onApplyFilters={onApplyFilters} />
+        <Filters onApplyFilters={onApplyFilters} searchParams={searchParams} />
         <DataGrid
           rows={rows}
           columns={columns}

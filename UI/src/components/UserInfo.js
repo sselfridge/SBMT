@@ -45,7 +45,7 @@ const UserInfo = () => {
     updatedUser.age = age;
     updatedUser.stravaClubs = [];
 
-    ApiPost(`/api/athletes/current`, updatedUser, () => {});
+    ApiPost(`/api/athletes/current`, updatedUser);
   }, [age, category, user]);
 
   React.useEffect(() => {

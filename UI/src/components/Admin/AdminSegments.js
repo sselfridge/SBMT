@@ -45,11 +45,11 @@ const AdminSegments = (props) => {
     ApiPost(
       `/api/admin/segments/${textFieldValRef.current}`,
       {},
-      (newSeg) => {
-        setNewSegment(newSeg);
+      (newSegment) => {
+        setNewSegment(newSegment);
         refreshSegments();
       },
-      { name: "Segment Already exists" }
+      () => setNewSegment({ name: "Segment Already exists" })
     );
   };
 

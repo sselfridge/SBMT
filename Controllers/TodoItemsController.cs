@@ -188,10 +188,13 @@ namespace TodoApi.Controllers
         return Ok("loadked");
       }
 
-      var str = "Add This msg";
 
-      _logger.LogInformation("{} {} {}", str,
-          TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, "Pacific Standard Time").ToLongDateString(), TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, "Pacific Standard Time").ToLongTimeString());
+
+      var afterDate = new DateTime(23, 03, 10, 01, 01, 01);
+      var efforts = _dbContext.Efforts.Where(x => x.StartDate == "hello there").ToList();
+
+
+
 
       return Ok("OK!");
 
