@@ -368,6 +368,7 @@ const Filters = (props) => {
 
 Filters.propTypes = {
   onApplyFilters: PropTypes.func.isRequired,
+  searchParams: PropTypes.object.isRequired,
 };
 
 const FiltersWithMobile = (props) => {

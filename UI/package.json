@@ -35,7 +35,15 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "react/prop-types": [
+        "warn"
+      ],
+      "react/no-array-index-key": [
+        "warn"
+      ]
+    }
   },
   "browserslist": {
     "production": [
