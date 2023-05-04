@@ -26,6 +26,14 @@ namespace TodoApi.Models
 
     public StravaUserDTO(StravaUser user)
     {
+      var userFilters = new Filters();
+
+      if (user.SavedFilters != null && user.SavedFilters != "")
+      {
+        userFilters = JsonSerializer.Deserialize<Filters>(user.SavedFilters);
+      }
+
+
       AthleteId = user.AthleteId;
       Firstname = user.Firstname;
       Lastname = user.Lastname;
@@ -39,7 +47,7 @@ namespace TodoApi.Models
       Category = user.Category;
       RecentDistance = user.RecentDistance;
       RecentElevation = user.RecentElevation;
-      Filters savedFilters = JsonSerializer.Deserialize<Filters>(user.SavedFilters);
+      Filters savedFilters = userFilters;
       SavedFilters = savedFilters;
     }
 

@@ -114,17 +114,17 @@ export default class App extends Component {
             </Link>
             <h2 className="h2Landing">Coming May 26th, 2023</h2>
           </div>
-          <Link to="/beta">
-            <div
-              style={{
-                backgroundColor: "#FC4C02",
-                textDecoration: "underline",
-              }}
-              className="button"
-            >
-              Now in Beta testing! Join here.
-            </div>
-          </Link>
+          {/* <Link to="/beta"> */}
+          <div
+            style={{
+              backgroundColor: "#FC4C02",
+              padding: 20,
+            }}
+            // className="button"
+          >
+            Beta now closed. Pre-reg opening soon.
+          </div>
+          {/* </Link> */}
           <div id="infoBtn" className="button">
             Info
           </div>
@@ -187,7 +187,6 @@ export default class App extends Component {
             <div>
               <ul>
                 <li>Have a segment suggestion?</li>
-                <li>Care to be part of the beta testing?</li>
                 <li>Want to help with coding / designing?</li>
                 <li>Have any feedback or ideas for how to make this fun?</li>
                 <li>Got a good recipe you'd like to share?</li>
