@@ -108,6 +108,10 @@ a.landingLink {
     color: white
 }
 
+a.landingLink.padding {
+    padding: 6px;
+}
+
 h1.h1Landing {
     flex: 1;
     font-size: calc(min(9vw, 75px));

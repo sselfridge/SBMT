@@ -171,7 +171,10 @@ export default class App extends Component {
           </h1>
           <article className="articleLanding">
             Inspired by the
-            <a className="landingLink" href="http://www.smmtchallenge.com">
+            <a
+              className="landingLink padding"
+              href="http://www.smmtchallenge.com"
+            >
               Santa Monica Mountain Challenge
             </a>
             the <span className="sbmt">SBMT</span> is the same idea here in
