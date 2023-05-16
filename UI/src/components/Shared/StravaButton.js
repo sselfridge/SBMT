@@ -39,7 +39,7 @@ const StravaButton = (props) => {
 };
 
 StravaButton.propTypes = {
-  prop: PropTypes.object,
+  text: PropTypes.string.isRequired,
 };
 
 export default StravaButton;

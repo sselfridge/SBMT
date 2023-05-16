@@ -123,6 +123,7 @@ const Segments = () => {
             }}
           >
             {details.map((d, i) => (
+              // eslint-disable-next-line react/no-array-index-key
               <React.Fragment key={i}>
                 <Box>
                   <Typography textAlign={"right"}>{d.label}</Typography>
@@ -155,7 +156,7 @@ const Segments = () => {
                 <TableBody>
                   {segmentLeaderboard.map((e, i) => {
                     return (
-                      <TableRow key={i}>
+                      <TableRow key={e.athleteId}>
                         <TableCell>{i + 1}</TableCell>
                         <TableCell>
                           <Link

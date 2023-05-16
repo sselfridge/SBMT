@@ -65,8 +65,8 @@ const AdminSegments = (props) => {
       field: "name",
       headerName: "Segment",
       flex: 20,
-      renderCell: (props) => {
-        const { value, id } = props;
+      renderCell: (cell) => {
+        const { value, id } = cell;
         return <Link to={`${id}`}>{value}</Link>;
       },
     },
@@ -84,8 +84,8 @@ const AdminSegments = (props) => {
       headerName: "Action",
       // flex: 4,
       minWidth: 4,
-      renderCell: (props) => {
-        const { id } = props;
+      renderCell: (cell) => {
+        const { id } = cell;
         return (
           <Button
             onClick={() => {

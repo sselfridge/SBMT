@@ -104,7 +104,9 @@ const Updates = (props) => {
 };
 
 Updates.propTypes = {
-  prop: PropTypes.object,
+  TitleTypography: PropTypes.string,
+  ArticleBox: PropTypes.element,
+  SubTitleTypo: PropTypes.string,
 };
 
 export default Updates;

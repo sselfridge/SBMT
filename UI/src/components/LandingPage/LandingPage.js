@@ -7,7 +7,7 @@ import React, { Component } from "react";
 
 // import './custom.css'
 import "./mein.css";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import { formatDuration, intervalToDuration } from "date-fns";
 
 import { ReactComponent as LogoV1 } from "./assets/logoV1.svg";
@@ -126,9 +126,9 @@ export default class App extends Component {
       <div className="root">
         <section className="landingSection">
           <div className="logo">
-            <Link to="/beta">
-              <LogoV1 id="logo" />
-            </Link>
+            {/* <Link to="/beta"> */}
+            <LogoV1 id="logo" />
+            {/* </Link> */}
             <h3 id="countdown">{countdown}</h3>
             <h2 className="h2Landing">Coming May 26th, 2023</h2>
           </div>

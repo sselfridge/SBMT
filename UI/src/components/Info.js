@@ -1,13 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  Box,
-  Link as MuiLink,
-  List,
-  ListItem,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { Box, Link as MuiLink, Paper, Typography } from "@mui/material";
 import { ReactComponent as Logo } from "assets/logoV1.svg";
 
 import { styled } from "@mui/material/styles";

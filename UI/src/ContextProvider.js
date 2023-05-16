@@ -1,4 +1,5 @@
 import React, { useReducer } from "react";
+import PropTypes from "prop-types";
 import AppContext from "AppContext";
 import AppReducer, { INITIAL_STATE } from "./AppReducer";
 
@@ -11,5 +12,9 @@ function ContextProvider({ children }) {
     </AppContext.Provider>
   );
 }
+
+ContextProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
 export default ContextProvider;

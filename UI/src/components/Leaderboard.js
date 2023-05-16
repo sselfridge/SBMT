@@ -109,8 +109,8 @@ const Leaderboard = () => {
         headerName: "Completed",
         align: "right",
         // valueGetter: ({ row }) => `${row.completed}`,
-        renderCell: (props) => {
-          const { row } = props;
+        renderCell: (cell) => {
+          const { row } = cell;
           const { completed, segmentCount } = row;
 
           const completedTotalPercent = Math.floor(
@@ -156,8 +156,8 @@ const Leaderboard = () => {
         headerName: "#",
         headerAlign: "right",
         align: "right",
-        renderCell: (props) => {
-          const { row } = props;
+        renderCell: (cell) => {
+          const { row } = cell;
           const { completed, segmentCount } = row;
 
           const completedTotalPercent = Math.floor(
@@ -229,8 +229,8 @@ const Leaderboard = () => {
         headerAlign: "center",
         flex: 30,
         valueGetter: ({ row }) => row.totalTime,
-        renderCell: (props) => {
-          const { value } = props;
+        renderCell: (cell) => {
+          const { value } = cell;
           return formattedTime(value);
         },
       },
@@ -242,8 +242,8 @@ const Leaderboard = () => {
         headerAlign: "right",
         flex: 18,
         valueGetter: ({ row }) => row.totalTime,
-        renderCell: (props) => {
-          const { value } = props;
+        renderCell: (cell) => {
+          const { value } = cell;
           return formattedTime(value, true);
         },
       },

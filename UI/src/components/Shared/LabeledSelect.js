@@ -27,6 +27,7 @@ const LabeledSelect = (props) => {
         }}
       >
         {list.map((item, idx) => (
+          // eslint-disable-next-line react/no-array-index-key
           <MenuItem value={item} key={idx}>
             <Box sx={{ ":first-letter": { textTransform: "uppercase" } }}>
               {item}
@@ -43,6 +44,8 @@ LabeledSelect.propTypes = {
   label: PropTypes.string.isRequired,
   setValue: PropTypes.func.isRequired,
   list: PropTypes.array.isRequired,
+  minWidth: PropTypes.number,
+  maxWidth: PropTypes.number,
 };
 
 export default LabeledSelect;

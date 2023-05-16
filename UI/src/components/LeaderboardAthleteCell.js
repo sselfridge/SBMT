@@ -1,6 +1,6 @@
-import React, { useState, useContext, useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { Paper, Box, CardHeader, Avatar, Popover } from "@mui/material";
+import { Box, Avatar, Popover } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 
@@ -83,7 +83,14 @@ const LeaderboardAthleteCell = (props) => {
 };
 
 LeaderboardAthleteCell.propTypes = {
-  prop: PropTypes.object,
+  row: PropTypes.shape({
+    athleteName: PropTypes.string.isRequired,
+    avatar: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
+    recentDistance: PropTypes.number.isRequired,
+    recentElevation: PropTypes.number.isRequired,
+    category: PropTypes.string.isRequired,
+  }),
 };
 
 export default LeaderboardAthleteCell;
