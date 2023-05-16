@@ -201,6 +201,7 @@ namespace TodoApi.Controllers
               pushNotification.Updates.Contains("private") &&
               pushNotification.Updates.Contains("false")))
         {
+          return Ok(); //TODO add date specific check so this goes live at the right time.
           var athleteId = pushNotification.OwnerId;
           if (_dbContext.StravaUsers.Any(u => u.AthleteId == athleteId))
           {

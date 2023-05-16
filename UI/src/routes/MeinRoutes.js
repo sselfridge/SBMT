@@ -3,21 +3,21 @@ import App from "../App";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import NotFound from "routes/NotFound";
-import Recent from "components/Recent";
-import Leaderboard from "components/Leaderboard";
-import Segments from "components/Segments";
-import SegmentDetails from "components/SegmentDetail";
-import Athletes from "components/Athletes";
-import AthleteDetails from "components/AthleteDetail";
-import FullFeaturedDemo from "components/DataGridDemo";
-import UserSettings from "components/UserSettings";
-import HelpContact from "components/HelpContact";
-import Info from "components/Info";
-import InfoScopes from "components/InfoScopes";
-import UserInfo from "components/UserInfo";
-import Beta from "components/Beta";
+// import Recent from "components/Recent";
+// import Leaderboard from "components/Leaderboard";
+// import Segments from "components/Segments";
+// import SegmentDetails from "components/SegmentDetail";
+// import Athletes from "components/Athletes";
+// import AthleteDetails from "components/AthleteDetail";
+// import FullFeaturedDemo from "components/DataGridDemo";
+// import UserSettings from "components/UserSettings";
+// import HelpContact from "components/HelpContact";
+// import Info from "components/Info";
+// import InfoScopes from "components/InfoScopes";
+// import UserInfo from "components/UserInfo";
 import BetaRedirect from "./BetaRedirect";
-import Thanks from "components/Thanks";
+import RedirectLanding from "./RedirectLanding";
+// import Thanks from "components/Thanks";
 import LandingPage from "components/LandingPage/LandingPage";
 
 import Admin from "components/Admin/Admin";
@@ -30,7 +30,7 @@ import AppContext from "AppContext";
 
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import config from "config";
-import StravaOops from "components/StravaOops";
+// import StravaOops from "components/StravaOops";
 
 mapboxgl.accessToken = config.mapBox;
 
@@ -46,9 +46,10 @@ const MeinRoutes = () => {
         <Route path="/" element={<LandingPage />} />
 
         <Route path="/" element={<App />}>
-          <Route path="beta" element={<Beta />} />
+          {/* <Route path="/" element={<App />}> */}
+          <Route path="/*" element={<RedirectLanding />} />
           <Route path="beta/*" element={<BetaRedirect />} />
-          <Route path="recent" element={<Recent />} />
+          {/* <Route path="recent" element={<Recent />} />
           <Route path="leaderboard" element={<Leaderboard />} />
           <Route path="segments" element={<Segments />} />
           <Route path="segments/:segmentId" element={<SegmentDetails />} />
@@ -64,7 +65,7 @@ const MeinRoutes = () => {
           <Route path="thanks" element={<Thanks />} />
 
           <Route path="UserInfo" element={<UserInfo />} />
-          <Route path="StravaOops" element={<StravaOops />} />
+          <Route path="StravaOops" element={<StravaOops />} /> */}
 
           {isAdmin && (
             <Route path="admin">
