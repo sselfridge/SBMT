@@ -34,7 +34,7 @@ namespace TodoApi.Controllers
     }
 
     [HttpGet("recentEfforts")]
-    [ResponseCache(Duration = 360)]
+    ////[ResponseCache(Duration = 360)]
     public ActionResult<Effort> GetRecentEfforts(int id)
     {
 
@@ -77,7 +77,7 @@ namespace TodoApi.Controllers
     }
 
     [HttpGet("leaderboard")]
-    [ResponseCache(Duration = 3600)]
+    ////[ResponseCache(Duration = 3600)]
 
     public IActionResult GetLeaderboard()
     {
@@ -338,7 +338,7 @@ namespace TodoApi.Controllers
 
 
     [HttpGet("segments")]
-    [ResponseCache(Duration = 36000)]
+    //[ResponseCache(Duration = 36000)]
 
     public List<Segment> GetSegments()
     {
@@ -348,7 +348,7 @@ namespace TodoApi.Controllers
     }
 
     [HttpGet("segments/{segmentId}/leaderboard")]
-    [ResponseCache(Duration = 36000)]
+    //[ResponseCache(Duration = 36000)]
     public IActionResult GetSegmentLeaderboard(long segmentId)
     {
 
@@ -396,7 +396,7 @@ namespace TodoApi.Controllers
     }
 
     [HttpGet("segments/{segmentId}")]
-    [ResponseCache(Duration = 36000)]
+    //[ResponseCache(Duration = 36000)]
 
     public IActionResult GetSegment(long segmentId)
     {
@@ -408,7 +408,7 @@ namespace TodoApi.Controllers
     }
 
     [HttpGet("athletes")]
-    [ResponseCache(Duration = 360)]
+    //[ResponseCache(Duration = 360)]
 
     public IActionResult GetAllAthletes()
     {
@@ -479,7 +479,7 @@ namespace TodoApi.Controllers
     }
 
     [HttpGet("athletes/{id}")]
-    [ResponseCache(Duration = 360)]
+    //[ResponseCache(Duration = 360)]
 
     public IActionResult GetAthlete(int id)
     {
@@ -490,7 +490,7 @@ namespace TodoApi.Controllers
     }
 
     [HttpGet("athletes/{athleteId}/efforts")]
-    [ResponseCache(Duration = 3600)]
+    //[ResponseCache(Duration = 3600)]
 
     public IActionResult GetAthleteEfforts(int athleteId)
     {

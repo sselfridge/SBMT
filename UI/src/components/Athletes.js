@@ -62,7 +62,7 @@ const Athletes = () => {
       </Box>
       <Grid container sx={{ justifyContent: "center" }}>
         {filteredAthletes.map((user) => (
-          <Grid sx={{ margin: "5px" }}>
+          <Grid sx={{ margin: "5px" }} key={user.athleteId}>
             <Paper
               sx={{
                 display: "flex",

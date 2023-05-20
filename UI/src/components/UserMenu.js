@@ -66,7 +66,7 @@ const UserMenu = () => {
       contextUser.scope.includes("activity:read") === false &&
       pathname !== "/settings"
     ) {
-      navigate("/thanks");
+      navigate("/settings");
     }
   }, [contextUser, navigate, pathname]);
 

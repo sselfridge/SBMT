@@ -269,6 +269,7 @@ const Leaderboard = () => {
           disableColumnMenu
           hideFooter={true}
           columnVisibilityModel={columnVisible}
+          localeText={{ noRowsLabel: "The leaderboard is empty...for now" }}
           initialState={
             {
               //need to sort by 2 fields, only supported by MDG pro so handling sort on server

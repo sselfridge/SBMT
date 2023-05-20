@@ -4,10 +4,10 @@ import React, { Component } from "react";
 // import { Home } from "./components/Home";
 // import { FetchData } from "./components/FetchData";
 // import { Counter } from "./components/Counter";
-
+import StravaButton from "components/Shared/StravaButton";
 // import './custom.css'
 import "./mein.css";
-// import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { formatDuration, intervalToDuration } from "date-fns";
 
 import { ReactComponent as LogoV1 } from "./assets/logoV1.svg";
@@ -46,6 +46,25 @@ export default class App extends Component {
     // document
     //   .getElementById("textArea")
     //   .addEventListener("keydown", onTextChange);
+
+    let countdown;
+
+    setInterval(() => {
+      const start = new Date("May 26 2023");
+      const end = new Date();
+
+      let duration = intervalToDuration({
+        start,
+        end,
+      });
+      countdown = formatDuration(duration, {
+        delimiter: ", ",
+      });
+      const element = document.getElementById("countdown");
+      if (element) {
+        element.innerText = countdown;
+      }
+    }, 1000);
   }
 
   render() {
@@ -67,82 +86,19 @@ export default class App extends Component {
         .scrollIntoView({ behavior: "smooth", block: "start" });
     };
 
-    // const onSubmit = () => {
-    //   const textArea = document.getElementById("textArea");
-    //   const value = textArea.value;
-    //   const sendVal = encodeURIComponent(value);
-    //   fetch(
-    //     `https://www.mapper.bike/api/sbmt/submission/BikssesBeersBaby3a58a6bc3f6a?segment=${sendVal}`,
-    //     { method: "GET", mode: "cors" }
-    //   )
-    //     .then((response) => response.json())
-    //     .then(endSubmit)
-    //     .catch(endSubmit);
-    // };
-
-    // const endSubmit = () => {
-    //   document.getElementById("submitArea").classList.add("hideElm");
-    //   document.getElementById("allDone").classList.remove("hideElm");
-    //   document.getElementById("submitArea").classList.remove("flexCol");
-    //   document.getElementById("allDone").classList.add("flexCol");
-    //   document.getElementById("textArea").value = "";
-    // };
-
-    // const bringTextBack = () => {
-    //   document.getElementById("submitArea").classList.remove("hideElm");
-    //   document.getElementById("allDone").classList.add("hideElm");
-    //   document.getElementById("submitArea").classList.add("flexCol");
-    //   document.getElementById("allDone").classList.remove("flexCol");
-    // };
-
-    // const onTextChange = () => {
-    //   const ta = document.getElementById("textArea");
-    //   if (ta) {
-    //     const value = `${ta.value}`;
-    //     const count = value.length;
-    //     document.getElementById("textCount").innerText = 1000 - count;
-    //   }
-    // };
-
-    // setInterval(onTextChange, 450);
-
-    let countdown;
-
-    setInterval(() => {
-      const start = new Date("May 26 2023");
-      const end = new Date();
-
-      let duration = intervalToDuration({
-        start,
-        end,
-      });
-      countdown = formatDuration(duration, {
-        delimiter: ", ",
-      });
-      document.getElementById("countdown").innerText = countdown;
-    }, 1000);
-
     return (
       <div className="root">
         <section className="landingSection">
           <div className="logo">
-            {/* <Link to="/beta"> */}
-            <LogoV1 id="logo" />
-            {/* </Link> */}
-            <h3 id="countdown">{countdown}</h3>
+            <Link to="/segments">
+              <LogoV1 id="logo" />
+            </Link>
+            <h3 id="countdown">Soon...</h3>
             <h2 className="h2Landing">Coming May 26th, 2023</h2>
           </div>
-          {/* <Link to="/beta"> */}
-          <div
-            style={{
-              backgroundColor: "#FC4C02",
-              padding: 20,
-            }}
-            // className="button"
-          >
-            Beta now closed. Pre-reg opening soon.
-          </div>
-          {/* </Link> */}
+
+          <StravaButton text={"Sign up for the Challenge!"} />
+
           <div id="infoBtn" className="button">
             Info
           </div>

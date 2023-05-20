@@ -182,6 +182,7 @@ const Recent = () => {
           columns={columns}
           disableColumnMenu
           hideFooter={true}
+          localeText={{ noRowsLabel: "No efforts to show yet" }}
           sx={{
             boxShadow: 2,
             border: 2,

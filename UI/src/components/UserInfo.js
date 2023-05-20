@@ -9,6 +9,7 @@ import {
   Button,
   Avatar,
   TextField,
+  CircularProgress,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import AppContext from "AppContext";
@@ -35,17 +36,23 @@ const UserInfo = () => {
   const [category, setCategory] = useState("");
   const [localUser, setLocalUser] = useState({});
 
+  const [saving, setSaving] = useState(false);
+
   const fetchProfile = useCallback((athleteId) => {
     ApiGet(`/api/strava/userRefresh/${athleteId}`, setLocalUser);
   }, []);
 
   const updateProfile = useCallback(() => {
+    setSaving(true);
     const updatedUser = _.cloneDeep(user);
     updatedUser.category = category;
     updatedUser.age = age;
     updatedUser.stravaClubs = [];
 
-    ApiPost(`/api/athletes/current`, updatedUser);
+    ApiPost(`/api/athletes/current`, updatedUser, setLocalUser);
+    setTimeout(() => {
+      setSaving(false);
+    }, 500);
   }, [age, category, user]);
 
   React.useEffect(() => {
@@ -132,16 +139,20 @@ const UserInfo = () => {
   ];
 
   const stravaFields = [
-    { label: "Weight", content: user?.weight, fromStrava: true },
+    {
+      label: "Weight",
+      content: ((user?.weight || 0) * 2.2).toFixed(0),
+      fromStrava: true,
+    },
     { label: "Sex", content: user?.sex, fromStrava: true },
     {
       label: "Distance/wk",
-      content: `${user?.recentDistance.toFixed(0)} mi`,
+      content: `${user?.recentDistance?.toFixed(0)} mi`,
       fromStrava: true,
     },
     {
       label: "Elevation/wk",
-      content: `${user?.recentElevation.toFixed(0)} ft`,
+      content: `${user?.recentElevation?.toFixed(0)} ft`,
       fromStrava: true,
     },
     { label: "Clubs", content: "", fromStrava: true },
@@ -189,7 +200,7 @@ const UserInfo = () => {
     );
   };
 
-  let missingInfoWarning;
+  let missingInfoWarning = " ";
   if (user?.age === 0 && user?.category === "") {
     missingInfoWarning = "Please enter your age and category";
   } else if (user?.age === 0) {
@@ -198,10 +209,18 @@ const UserInfo = () => {
     missingInfoWarning = "Please enter your category";
   }
 
+  const saveDisabled =
+    saving ||
+    !category ||
+    !age ||
+    age < 13 ||
+    age > 100 ||
+    (age === user.age && category === user.category);
+
   return (
     <MyPaper>
       <Typography variant="h3">User Profile</Typography>
-      <Typography color="warning.main">{missingInfoWarning}</Typography>
+      <Typography color="warning.main"> {missingInfoWarning}</Typography>
       <Grid container spacing={1}>
         {profileFields.map(mapFields)}
         <Grid item xs={1} sm={3} />
@@ -209,9 +228,9 @@ const UserInfo = () => {
           <Button
             onClick={updateProfile}
             sx={{ width: "100%" }}
-            disabled={!!ageHelperText}
+            disabled={saveDisabled}
           >
-            Save
+            {saving ? <CircularProgress size={20} /> : "Save"}
           </Button>
         </Grid>
         <Grid item xs={1} sm={3} />

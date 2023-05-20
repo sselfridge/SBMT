@@ -11,11 +11,13 @@ import {
   AccordionDetails,
   Avatar,
   Tooltip,
+  IconButton,
 } from "@mui/material";
 import FilterListIcon from "@mui/icons-material/FilterList";
 
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
 import StarIcon from "@mui/icons-material/Star";
+import ClearIcon from "@mui/icons-material/Clear";
 
 import LabeledSelect from "./Shared/LabeledSelect";
 
@@ -264,6 +266,17 @@ const Filters = (props) => {
     ApiPost("/api/saveFilters", filters, setUser);
   };
 
+  const onClearFilters = () => {
+    setSurface(surfaceList[1]);
+    setGender(genderList[0]);
+    setClubId(null);
+    setCategory(categoryList[0]);
+    setAge(ageList[0]);
+    setDistance(distanceList[0]);
+    setElevation(elevationList[0]);
+    setClubNode(clubList?.[0] || "");
+  };
+
   return (
     <FormGroup
       sx={{
@@ -345,20 +358,36 @@ const Filters = (props) => {
           />
           <Box sx={{ display: "flex", alignItems: "center" }}>
             {savedFiltersActive ? (
-              <Tooltip arrow title={"Clear saved filers"}>
-                <StarIcon
-                  sx={{ color: "strava.main" }}
-                  onClick={onClearSavedFilters}
-                />
+              <Tooltip arrow title={"Remove favorite filters"}>
+                <IconButton onClick={onClearSavedFilters}>
+                  <StarIcon sx={{ color: "strava.main" }} />
+                </IconButton>
               </Tooltip>
             ) : (
-              <Tooltip arrow title={"Save current filters"}>
-                <StarOutlineIcon
-                  sx={{ color: "strava.main" }}
-                  onClick={onSaveFilters}
-                />
+              <Tooltip
+                arrow
+                title={
+                  <Box>
+                    <Box>
+                      <b>Favorite current filters</b>
+                    </Box>
+                    <Box>
+                      Your favorite filters will load by default when you load
+                      the leaderboard until they are cleared.
+                    </Box>
+                  </Box>
+                }
+              >
+                <IconButton onClick={onSaveFilters}>
+                  <StarOutlineIcon sx={{ color: "strava.main" }} />
+                </IconButton>
               </Tooltip>
             )}
+            <Tooltip arrow title={"Reset all filters"}>
+              <IconButton onClick={onClearFilters}>
+                <ClearIcon />
+              </IconButton>
+            </Tooltip>
           </Box>
         </React.Fragment>
       )}
