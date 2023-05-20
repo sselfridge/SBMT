@@ -104,7 +104,7 @@ const Updates = (props) => {
 };
 
 Updates.propTypes = {
-  TitleTypography: PropTypes.string,
+  TitleTypography: PropTypes.object,
   ArticleBox: PropTypes.element,
   SubTitleTypo: PropTypes.string,
 };

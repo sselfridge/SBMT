@@ -160,7 +160,7 @@ const UserInfo = () => {
 
   const mapFields = (field) => {
     return (
-      <React.Fragment>
+      <React.Fragment key={field?.label}>
         <Grid item xs={1} sm={3} />
         <Grid item xs={1} sx={{ display: "flex", justifyContent: "flex-end" }}>
           {!!field.fromStrava && (
