@@ -201,7 +201,15 @@ namespace TodoApi.Controllers
               pushNotification.Updates.Contains("private") &&
               pushNotification.Updates.Contains("false")))
         {
-          return Ok(); //TODO add date specific check so this goes live at the right time.
+
+          DateTime startTime = new DateTime(2023, 5, 26, 8, 0, 0, 0, DateTimeKind.Utc);
+          DateTime now = DateTime.UtcNow;
+          if (startTime > now)
+          {
+            Console.WriteLine("sbmtLog: Not go time yet");
+            return Ok();
+          }
+
           var athleteId = pushNotification.OwnerId;
           if (_dbContext.StravaUsers.Any(u => u.AthleteId == athleteId))
           {

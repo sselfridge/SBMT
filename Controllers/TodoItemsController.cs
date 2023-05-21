@@ -190,13 +190,19 @@ namespace TodoApi.Controllers
 
 
 
-      var afterDate = new DateTime(23, 03, 10, 01, 01, 01);
-      var efforts = _dbContext.Efforts.Where(x => x.StartDate == "hello there").ToList();
+      DateTime startTime = new DateTime(2023, 5, 26, 8, 0, 0, 0, DateTimeKind.Utc);
+      //DateTime startTime = new DateTime(2023, 5, 21, 2, 58, 0, 0, DateTimeKind.Utc);
+      DateTime now = DateTime.UtcNow;
+      //TimeZoneInfo pstTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
 
+      //// Convert the UTC date and time to PST.
+      //DateTime pstDateTime = TimeZoneInfo.ConvertTimeFromUtc(date, pstTimeZone);
 
+      var ret = "Go Time";
 
+      if (startTime > now) ret = "Not Yet!";
 
-      return Ok("OK!");
+      return Ok(ret);
 
 
 
