@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import App from "../App";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import NotFound from "routes/NotFound";
 import Recent from "components/Recent";
@@ -15,9 +15,8 @@ import HelpContact from "components/HelpContact";
 import Info from "components/Info";
 import InfoScopes from "components/InfoScopes";
 import UserInfo from "components/UserInfo";
-import RedirectLanding from "./RedirectLanding";
 import BetaRedirect from "./BetaRedirect";
-import LandingPage from "components/LandingPage/LandingPage";
+// import LandingPage from "components/LandingPage/LandingPage";
 
 import Admin from "components/Admin/Admin";
 import AdminSegments from "components/Admin/AdminSegments";
@@ -42,13 +41,14 @@ const MeinRoutes = () => {
     <BrowserRouter>
       <Routes>
         {/* <NavBar /> */}
-        <Route path="/" element={<LandingPage />} />
+        {/* <Route path="/" element={<Recent />} /> */}
+        <Route path="/" element={<Navigate to="/recent" />} />
 
         <Route path="/" element={<App />}>
-          <Route path="/*" element={<RedirectLanding />} />
+          {/* <Route path="/*" element={<RedirectLanding />} /> */}
 
-          <Route path="beta/*" element={<BetaRedirect />} />
           <Route path="recent" element={<Recent />} />
+          <Route path="beta/*" element={<BetaRedirect />} />
           <Route path="leaderboard" element={<Leaderboard />} />
           <Route path="segments" element={<Segments />} />
           <Route path="segments/:segmentId" element={<SegmentDetails />} />
