@@ -62,6 +62,8 @@ namespace TodoApi.Models.stravaApi
     public ActivitySummaryResAthlete Athlete { get; set; }
     [JsonPropertyName("activity")]
     public ActivitySummaryResActivity Activity { get; set; }
+    [JsonPropertyName("pr_rank")]
+    public int? PrRank { get; set; }
   }
 
   public class ActivitySumResSegment
