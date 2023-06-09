@@ -9,6 +9,9 @@ const palette = {
     main: "#FC4C02",
     light: "#ffb18c",
     contrastText: "white",
+    gold: "#fdc746",
+    silver: "#94949d",
+    bronze: "#e5820a",
   },
 };
 

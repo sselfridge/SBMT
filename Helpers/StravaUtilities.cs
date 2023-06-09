@@ -188,6 +188,30 @@ namespace TodoApi.Helpers
              context.SaveChanges();
 
              //TODO - Add 'place at time of finishing' function here.
+
+
+             var needToUpdate = false;
+
+             newEfforts.ForEach(newEffort =>
+             {
+               var top10 = context.Efforts
+                  .Where(e => e.SegmentId == newEffort.SegmentId)
+                  .OrderBy(e => e.ElapsedTime)
+                  .Take(10).ToList();
+
+               var rank = top10.FindIndex(effort => effort.Id == effort.Id);
+               if (rank != -1)
+               {
+                 top10[rank].Rank = rank + 1;
+                 context.Update(top10[rank]);
+                 needToUpdate = true;
+               }
+             });
+
+             if (needToUpdate)
+             {
+               context.SaveChanges();
+             }
            }
 
          }

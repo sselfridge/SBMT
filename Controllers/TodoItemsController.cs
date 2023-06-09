@@ -188,6 +188,7 @@ namespace TodoApi.Controllers
         return Ok("loadked");
       }
 
+      //await StravaUtilities.ParseNewActivity(_serviceScopeFactory, 1075670, 9190258080, 0);
 
 
       DateTime startTime = new DateTime(2023, 5, 26, 8, 0, 0, 0, DateTimeKind.Utc);

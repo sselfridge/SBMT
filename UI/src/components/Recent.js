@@ -1,10 +1,20 @@
 import React, { useState } from "react";
 
 import { DataGrid } from "@mui/x-data-grid";
-import { Box, Paper, Typography, Tooltip, Avatar } from "@mui/material";
+import {
+  Box,
+  Paper,
+  Typography,
+  Tooltip,
+  Avatar,
+  useMediaQuery,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 import { isBefore } from "date-fns";
+
+import PRMedal from "./PRMedal";
+import Cup from "./Cup";
 
 import {
   formattedDate,
@@ -22,128 +32,120 @@ const MyBox = styled(Box)(({ theme }) => {
   };
 });
 
-const columns = [
-  {
-    field: "avatar",
-    sortable: false,
-    headerName: "",
-    width: 55,
-    renderCell: ({ value: v }) => (
-      <Link to={`/athletes/${v.athleteId}`}>
-        {" "}
-        <Avatar src={v?.avatar} />
-      </Link>
-    ),
-    valueGetter: ({ row }) => ({
-      avatar: row.avatar,
-      athleteId: row.athleteId,
-    }),
-  },
-  {
-    field: "name",
-    sortable: false,
-    headerName: "Athlete",
-    width: 200,
-    flex: 2,
-    renderCell: ({ value }) => value,
-    valueGetter: ({ row }) => (
-      <Link to={`/athletes/${row.athleteId}`}>{row.name}</Link>
-    ),
-  },
-  {
-    field: "segmentName",
-    sortable: false,
-    headerName: "Segment",
-    renderCell: ({ value }) => value,
-    valueGetter: ({ row }) => (
-      <Link to={`/segments/${row.segmentId}`}>{row.segmentName}</Link>
-    ),
-
-    flex: 4,
-  },
-  {
-    field: "elapsedTime",
-    sortable: false,
-    headerName: "Time",
-    width: 75,
-    valueGetter: ({ row }) => ({
-      id: row.id,
-      activityId: row.activityId,
-      time: row.elapsedTime,
-    }),
-    renderCell: ({ value }) => (
-      <a
-        href={`https://www.strava.com/activities/${value.activityId}/segments/${value.id}`}
-      >
-        {formattedTime(value.time)}
-      </a>
-    ),
-    flex: 1,
-  },
-  // {
-  //   field: "created",
-  //   sortable: true,
-  //   headerName: "Date Uploaded",
-  //   flex: 1.5,
-  //   width: 75,
-  //   renderCell: ({ value }) => {
-  //     const title = (
-  //       <div>
-  //         <section>Effort Time:</section>
-  //         <section>{formattedDate(value.startDate)}</section>
-  //         <section>Uploaded at:</section>
-  //         <section>{formattedDate(value.created)}</section>
-  //       </div>
-  //     );
-
-  //     return (
-  //       <Tooltip arrow title={title}>
-  //         <a href={`https://www.strava.com/activities/${value.id}`}>
-  //           {formattedTimeAgo(value.created, { addSuffix: true })}
-  //         </a>
-  //       </Tooltip>
-  //     );
-  //   },
-  //   valueGetter: ({ row }) => ({
-  //     id: row.activityId,
-  //     startDate: row.startDate,
-  //     created: row.created,
-  //   }),
-  // },
-  {
-    field: "startDate",
-    sortable: false,
-    headerName: "Date Ridden",
-    flex: 1.5,
-    width: 75,
-    renderCell: ({ value }) => {
-      const title = (
-        <div>
-          <section>Effort Time:</section>
-          <section>{formattedDate(value.startDate)}</section>
-          <section>Uploaded at:</section>
-          <section>{formattedDate(value.created)}</section>
-        </div>
-      );
-
-      return (
-        <Tooltip arrow title={title}>
-          <Box>{formattedTimeAgo(value.startDate, { addSuffix: true })}</Box>
-        </Tooltip>
-      );
-    },
-    valueGetter: ({ row }) => ({
-      id: row.activityId,
-      startDate: row.startDate,
-      created: row.created,
-    }),
-  },
-];
-
 const Recent = () => {
   const [recentEfforts, setRecentEfforts] = useState([]);
-
   const [loading, setLoading] = useState(true);
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+
+  const columns = React.useMemo(() => {
+    const COLUMNS = [
+      {
+        mobile: true,
+        field: "avatar",
+        sortable: false,
+        headerName: "",
+        width: 55,
+        renderCell: ({ value: v }) => (
+          <Link to={`/athletes/${v.athleteId}`}>
+            {" "}
+            <Avatar src={v?.avatar} />
+          </Link>
+        ),
+        valueGetter: ({ row }) => ({
+          avatar: row.avatar,
+          athleteId: row.athleteId,
+        }),
+      },
+      {
+        field: "name",
+        sortable: false,
+        headerName: "Athlete",
+        width: 200,
+        flex: 4,
+        renderCell: ({ value }) => value,
+        valueGetter: ({ row }) => (
+          <Link to={`/athletes/${row.athleteId}`}>{row.name}</Link>
+        ),
+      },
+      {
+        mobile: true,
+        field: "segmentName",
+        sortable: false,
+        headerName: "Segment",
+        renderCell: ({ value }) => value,
+        valueGetter: ({ row }) => (
+          <Link to={`/segments/${row.segmentId}`}>{row.segmentName}</Link>
+        ),
+
+        flex: 4,
+      },
+      {
+        mobile: true,
+        field: "elapsedTime",
+        sortable: false,
+        headerName: "Time",
+        width: 75,
+        align: "right",
+        valueGetter: ({ row }) => ({
+          id: row.id,
+          activityId: row.activityId,
+          time: row.elapsedTime,
+          prRank: row.prRank,
+          rank: row.rank,
+        }),
+        renderCell: ({ value }) => (
+          <React.Fragment>
+            <Cup rank={value.rank} />
+
+            <PRMedal rank={value.prRank} />
+            <a
+              href={`https://www.strava.com/activities/${value.activityId}/segments/${value.id}`}
+            >
+              {formattedTime(value.time)}
+            </a>
+          </React.Fragment>
+        ),
+        flex: isMobile ? 4 : 2,
+      },
+
+      {
+        field: "startDate",
+        sortable: false,
+        headerName: "Date Ridden",
+        flex: 2.5,
+        width: 75,
+        renderCell: ({ value }) => {
+          const title = (
+            <div>
+              <section>Effort Time:</section>
+              <section>{formattedDate(value.startDate)}</section>
+              <section>Uploaded at:</section>
+              <section>{formattedDate(value.created)}</section>
+            </div>
+          );
+
+          return (
+            <Tooltip arrow title={title}>
+              <Box>
+                {formattedTimeAgo(value.startDate, { addSuffix: true })}
+              </Box>
+            </Tooltip>
+          );
+        },
+        valueGetter: ({ row }) => ({
+          id: row.activityId,
+          startDate: row.startDate,
+          created: row.created,
+        }),
+      },
+    ];
+
+    let columns = COLUMNS;
+    if (isMobile) {
+      columns = columns.filter((c) => c.mobile);
+    }
+    return columns;
+  }, [isMobile]);
 
   const onLoad = React.useCallback((data) => {
     setRecentEfforts(data);
