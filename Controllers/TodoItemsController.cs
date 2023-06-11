@@ -188,22 +188,67 @@ namespace TodoApi.Controllers
         return Ok("loadked");
       }
 
-      //await StravaUtilities.ParseNewActivity(_serviceScopeFactory, 1075670, 9190258080, 0);
+
+      var efforts = _dbContext.Efforts
+        .OrderBy(e => e.CreatedAt)
+        .ThenBy(e => e.StartDate)
+        .ToList();
+      var completedEfforts = new List<Effort>();
+      var list = new List<object>();
+
+      efforts.ForEach(effort =>
+      {
+        Console.WriteLine("");
+        Console.WriteLine("");
+        Console.WriteLine($"Adding effort: {effort.Id} - {effort.CreatedAt}");
+        Console.WriteLine($"{effort.AthleteId} on {effort.SegmentId}. Time: {effort.ElapsedTime}");
+        completedEfforts.Add(effort);
+
+        var segmentEfforts = completedEfforts.Where(ce => ce.SegmentId == effort.SegmentId).GroupBy(e => e.AthleteId, e => new { e.ElapsedTime, e.Id, e.SegmentId }, (baseKey, times) =>
+        new
+        {
+          Key = baseKey,
+          SegmentId = times.First().SegmentId,
+          Time = times.Where(x => x.ElapsedTime == times.Min(x => x.ElapsedTime)).Select(x => x.ElapsedTime).First(),
+          Id = times.Where(x => x.ElapsedTime == times.Min(x => x.ElapsedTime)).Select(x => x.Id).First(),
+        }).OrderBy(x => x.Time).ToList();
 
 
-      DateTime startTime = new DateTime(2023, 5, 26, 8, 0, 0, 0, DateTimeKind.Utc);
-      //DateTime startTime = new DateTime(2023, 5, 21, 2, 58, 0, 0, DateTimeKind.Utc);
-      DateTime now = DateTime.UtcNow;
-      //TimeZoneInfo pstTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
 
-      //// Convert the UTC date and time to PST.
-      //DateTime pstDateTime = TimeZoneInfo.ConvertTimeFromUtc(date, pstTimeZone);
+
+        Console.WriteLine($"{segmentEfforts.Count} efforts on segment");
+        list.Add(segmentEfforts);
+
+        var index = segmentEfforts.FindIndex(e => e.Id == effort.Id);
+        int newRank;
+        if (index != -1)
+        {
+          newRank = index + 1;
+        }
+        else
+        {
+          newRank = 0;
+        }
+
+
+
+        var dbEffort = _dbContext.Efforts.Where(e => e.Id == effort.Id).FirstOrDefault();
+        if (dbEffort != null)
+        {
+          dbEffort.Rank = index + 1;
+          _dbContext.Update(dbEffort);
+        }
+
+
+
+      });
+
+      _dbContext.SaveChanges();
 
       var ret = "Go Time";
 
-      if (startTime > now) ret = "Not Yet!";
 
-      return Ok(ret);
+      return Ok(list);
 
 
 
