@@ -95,9 +95,9 @@ const Recent = () => {
         }),
         renderCell: ({ value }) => (
           <React.Fragment>
+            <PRMedal rank={value.prRank} />
             <Cup rank={value.rank} />
 
-            <PRMedal rank={value.prRank} />
             <a
               href={`https://www.strava.com/activities/${value.activityId}/segments/${value.id}`}
             >

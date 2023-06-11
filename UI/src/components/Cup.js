@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Tooltip, Badge } from "@mui/material";
+import { Tooltip, Badge, Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 
@@ -17,7 +17,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 const Cup = (props) => {
   const { rank } = props;
 
-  if (!rank) return null;
+  if (!rank) return <Box sx={{ width: 35, height: 35 }} />;
 
   return (
     <Tooltip arrow title={"SBMT Rank at time of upload"}>

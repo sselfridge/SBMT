@@ -188,67 +188,55 @@ namespace TodoApi.Controllers
         return Ok("loadked");
       }
 
+      //var scope = serviceScopeFactory.CreateScope();
 
-      var efforts = _dbContext.Efforts
-        .OrderBy(e => e.CreatedAt)
-        .ThenBy(e => e.StartDate)
-        .ToList();
-      var completedEfforts = new List<Effort>();
-      var list = new List<object>();
+      //var stravaService = scope.ServiceProvider.GetRequiredService<IStravaService>();
 
-      efforts.ForEach(effort =>
-      {
-        Console.WriteLine("");
-        Console.WriteLine("");
-        Console.WriteLine($"Adding effort: {effort.Id} - {effort.CreatedAt}");
-        Console.WriteLine($"{effort.AthleteId} on {effort.SegmentId}. Time: {effort.ElapsedTime}");
-        completedEfforts.Add(effort);
+      //var list = new List<ActivitySumResEffort>();
 
-        var segmentEfforts = completedEfforts.Where(ce => ce.SegmentId == effort.SegmentId).GroupBy(e => e.AthleteId, e => new { e.ElapsedTime, e.Id, e.SegmentId }, (baseKey, times) =>
-        new
-        {
-          Key = baseKey,
-          SegmentId = times.First().SegmentId,
-          Time = times.Where(x => x.ElapsedTime == times.Min(x => x.ElapsedTime)).Select(x => x.ElapsedTime).First(),
-          Id = times.Where(x => x.ElapsedTime == times.Min(x => x.ElapsedTime)).Select(x => x.Id).First(),
-        }).OrderBy(x => x.Time).ToList();
+      //bool needToUpdate = false;
 
+      //var activities = _dbContext.Efforts.OrderBy(x => x.StartDate).ToList().GroupBy(x => x.ActivityId).ToList().Select(x => new
+      //{
+      //  ActivityId = x.Key,
+      //  Efforts = x.ToList()
+      //}).ToList();
 
+      //for (int i = 0; i < activities.Count; i++)
+      //{
+      //  var current = activities[i];
+      //  var activityId = current.ActivityId;
+      //  var athleteId = current.Efforts[0].AthleteId;
+      //  var activity = await stravaService.GetActivity(activityId, athleteId);
 
+      //  if (activity == null || activity.SegmentEfforts == null) { continue; }
 
-        Console.WriteLine($"{segmentEfforts.Count} efforts on segment");
-        list.Add(segmentEfforts);
+      //  current.Efforts.ForEach(effort =>
+      //  {
 
-        var index = segmentEfforts.FindIndex(e => e.Id == effort.Id);
-        int newRank;
-        if (index != -1)
-        {
-          newRank = index + 1;
-        }
-        else
-        {
-          newRank = 0;
-        }
+      //    var activityEffort = activity.SegmentEfforts.Where(x => x.Id == effort.Id).FirstOrDefault();
+      //    if (activityEffort != null && activityEffort.PrRank != null)
+      //    {
+      //      var dbEffort = _dbContext.Efforts.Where(e => e.Id == effort.Id).FirstOrDefault();
+      //      if (dbEffort != null)
+      //      {
+      //        dbEffort.PrRank = activityEffort.PrRank ?? 0;
+      //        needToUpdate = true;
+      //        _dbContext.Update(dbEffort);
+      //      }
+      //    }
+      //  });
 
+      //}
 
-
-        var dbEffort = _dbContext.Efforts.Where(e => e.Id == effort.Id).FirstOrDefault();
-        if (dbEffort != null)
-        {
-          dbEffort.Rank = index + 1;
-          _dbContext.Update(dbEffort);
-        }
+      //if (needToUpdate)
+      //{
+      //  _dbContext.SaveChanges();
+      //}
 
 
 
-      });
-
-      _dbContext.SaveChanges();
-
-      var ret = "Go Time";
-
-
-      return Ok(list);
+      return Ok("I think it worked....");
 
 
 
