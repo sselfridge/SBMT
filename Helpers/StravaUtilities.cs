@@ -187,23 +187,37 @@ namespace TodoApi.Helpers
              context.AddRange(newEfforts);
              context.SaveChanges();
 
-             //TODO - Add 'place at time of finishing' function here.
 
 
              var needToUpdate = false;
+
+             // for each new effort, check where it stands on that segment, if its in the top 10, set rank accordingly.
+             // will only show for an athlete if its their fastest time on the segment
 
              newEfforts.ForEach(newEffort =>
              {
                var top10 = context.Efforts
                   .Where(e => e.SegmentId == newEffort.SegmentId)
-                  .OrderBy(e => e.ElapsedTime)
-                  .Take(10).ToList();
+                  .GroupBy(e => e.AthleteId, e => new { e.ElapsedTime, e.Id }, (baseKey, times) =>
+                  new
+                  {
+                    Key = baseKey, //AthleteId (not used)
+                    Time = times.Where(x => x.ElapsedTime == times.Min(x => x.ElapsedTime)).Select(x => x.ElapsedTime).First(),
+                    Id = times.Where(x => x.ElapsedTime == times.Min(x => x.ElapsedTime)).Select(x => x.Id).First(),
+                  })
+                  .OrderBy(x => x.Time)
+                  .Take(10)
+                  .ToList();
 
-               var rank = top10.FindIndex(effort => effort.Id == effort.Id);
-               if (rank != -1)
+               var index = top10.FindIndex(effort => effort.Id == effort.Id);
+               if (index != -1)
                {
-                 top10[rank].Rank = rank + 1;
-                 context.Update(top10[rank]);
+                 var dbEffort = context.Efforts.Where(e => e.Id == top10[index].Id).FirstOrDefault();
+                 if (dbEffort != null)
+                 {
+                   dbEffort.Rank = index + 1;
+                   context.Update(dbEffort);
+                 }
                  needToUpdate = true;
                }
              });
