@@ -209,7 +209,7 @@ namespace TodoApi.Helpers
                   .Take(10)
                   .ToList();
 
-               var index = top10.FindIndex(effort => effort.Id == effort.Id);
+               var index = top10.FindIndex(e => e.Id == newEffort.Id);
                if (index != -1)
                {
                  var dbEffort = context.Efforts.Where(e => e.Id == top10[index].Id).FirstOrDefault();
@@ -217,8 +217,8 @@ namespace TodoApi.Helpers
                  {
                    dbEffort.Rank = index + 1;
                    context.Update(dbEffort);
+                   needToUpdate = true;
                  }
-                 needToUpdate = true;
                }
              });
 
