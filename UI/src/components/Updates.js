@@ -8,6 +8,12 @@ const Updates = (props) => {
   return (
     <ArticleBox sx={{ margin: "0 15%" }}>
       <TitleTypography variant="h2">Beta Updates</TitleTypography>
+      <SubTitleTypo variant="h4">Ah small bug</SubTitleTypo>
+      <List sx={{ fontSize: ".8em" }}>
+        <ListItem>
+          checking for does 2 == 2 ... not the best way to add trophy ranks
+        </ListItem>
+      </List>
       <SubTitleTypo variant="h4">And we're off!</SubTitleTypo>
       <List sx={{ fontSize: ".8em" }}>
         <ListItem>Adding Rank and PR to current and incoming rides</ListItem>
