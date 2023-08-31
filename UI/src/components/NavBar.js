@@ -74,6 +74,16 @@ export default function NavBar() {
           >
             <TitleLink to="recent">
               <span className="sbmt">SBMT</span>
+              <Box
+                sx={{
+                  fontSize: 8,
+                  fontWeight: 400,
+                  letterSpacing: 1,
+                  fontFamily: "roboto",
+                }}
+              >
+                Ends Sep 4th at 11:59pm
+              </Box>
             </TitleLink>
             <UserMenu />
           </Typography>

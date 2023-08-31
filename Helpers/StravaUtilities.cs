@@ -151,6 +151,22 @@ namespace TodoApi.Helpers
 
            var activity = await stravaService.GetActivity(activityId, athleteId);
 
+           if (activity == null)
+           {
+             Console.WriteLine($"sbmtLog:  activity {activityId} is null, aborting");
+             return;
+           }
+
+           DateTime startDate = DateTime.Parse(activity.StartDate);
+           DateTime endTime = new DateTime(2023, 9, 4, 0, 0, 0, 0, DateTimeKind.Utc);
+           DateTime now = DateTime.UtcNow;
+           ;
+           if (startDate > endTime)
+           {
+             Console.WriteLine($"sbmtLog: activity {activityId} is after the cut off date");
+             return;
+           }
+
 
            if (activity.SegmentEfforts == null)
            {
