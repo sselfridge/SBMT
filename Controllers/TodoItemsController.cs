@@ -6,6 +6,7 @@ using System.Text;
 using TodoApi.Helpers;
 using TodoApi.Models;
 using TodoApi.Models.db;
+using TodoApi.Models.stravaApi;
 using TodoApi.Services;
 
 namespace TodoApi.Controllers
@@ -175,6 +176,12 @@ namespace TodoApi.Controllers
       return todoItem;
     }
 
+    [HttpPost("hellothere")]
+    public async Task<ActionResult<long>> FormTest([FromForm] string value1)
+    {
+      return Ok("rabbl");
+    }
+
     [HttpGet()]
     public async Task<ActionResult<long>> TestThing([FromServices] IServiceScopeFactory serviceScopeFactory)
     {
@@ -188,55 +195,92 @@ namespace TodoApi.Controllers
         return Ok("loadked");
       }
 
-      //var scope = serviceScopeFactory.CreateScope();
 
-      //var stravaService = scope.ServiceProvider.GetRequiredService<IStravaService>();
+      var startDate = "2023-09-26T13:19:58Z";
 
-      //var list = new List<ActivitySumResEffort>();
+      var segments = _dbContext.Segments.ToList();
 
-      //bool needToUpdate = false;
+      var scope = serviceScopeFactory.CreateScope();
+
+      var stravaService = scope.ServiceProvider.GetRequiredService<IStravaService>();
+
+      var list = new List<ActivitySumResEffort>();
+
+      bool needToUpdate = false;
 
       //var activities = _dbContext.Efforts.OrderBy(x => x.StartDate).ToList().GroupBy(x => x.ActivityId).ToList().Select(x => new
       //{
       //  ActivityId = x.Key,
       //  Efforts = x.ToList()
       //}).ToList();
-
+      //var actCount = 0;
+      //var effCount = 0;
+      //var prActs = new List<long>();
+      //var prActs23 = new List<long>();
+      //var komActs = new List<long>();
+      //double totalCal = 0;
+      //double totalDistance = 0;
+      //double totalEle = 0;
       //for (int i = 0; i < activities.Count; i++)
       //{
       //  var current = activities[i];
       //  var activityId = current.ActivityId;
       //  var athleteId = current.Efforts[0].AthleteId;
       //  var activity = await stravaService.GetActivity(activityId, athleteId);
+      //  actCount++;
+      //  if (activity != null)
+      //  {
+      //    totalCal += activity.Calories;
+      //    totalDistance += activity.Distance;
+      //    totalEle += activity.TotalElevationGain;
 
-      //  if (activity == null || activity.SegmentEfforts == null) { continue; }
+      //    foreach (var eff in activity.SegmentEfforts)
+      //    {
+      //      if (eff.KomRank > 0 && segments.FindIndex(x => x.Id == eff.Segment.Id) != -1)
+      //      {
+      //        komActs.Add(activity.Id);
+      //      }
+      //    }
+
+
+      //  }
+
 
       //  current.Efforts.ForEach(effort =>
       //  {
-
-      //    var activityEffort = activity.SegmentEfforts.Where(x => x.Id == effort.Id).FirstOrDefault();
-      //    if (activityEffort != null && activityEffort.PrRank != null)
+      //    effCount++;
+      //    if (effort.PrRank == 1)
       //    {
-      //      var dbEffort = _dbContext.Efforts.Where(e => e.Id == effort.Id).FirstOrDefault();
-      //      if (dbEffort != null)
-      //      {
-      //        dbEffort.PrRank = activityEffort.PrRank ?? 0;
-      //        needToUpdate = true;
-      //        _dbContext.Update(dbEffort);
-      //      }
+      //      prActs.Add(effort.ActivityId);
       //    }
+      //    else if (effort.PrRank != 0 && effort.PrRank != 1)
+      //    {
+      //      prActs23.Add(effort.ActivityId);
+      //    }
+
       //  });
-
       //}
 
-      //if (needToUpdate)
+
+
+
+
+      //return Ok(new
       //{
-      //  _dbContext.SaveChanges();
-      //}
+      //  prActs = prActs,
+      //  prActs23 = prActs23,
+      //  komActs = komActs,
+      //  effCount = effCount,
+      //  actCount = actCount,
+      //  totalEle = totalEle,
+      //  totalDistance = totalDistance,
+      //  totalCal = totalCal,
+      //});
 
+      var activity = await stravaService.GetActivity(9817200125, 1075670);
 
+      return Ok(activity);
 
-      return Ok("I think it worked....");
 
 
 
@@ -475,3 +519,51 @@ namespace TodoApi.Controllers
 
 //_dbContext.AddRange(t);
 //await _dbContext.SaveChangesAsync();
+
+
+//scan all activities
+//var scope = serviceScopeFactory.CreateScope();
+
+//var stravaService = scope.ServiceProvider.GetRequiredService<IStravaService>();
+
+//var list = new List<ActivitySumResEffort>();
+
+//bool needToUpdate = false;
+
+//var activities = _dbContext.Efforts.OrderBy(x => x.StartDate).ToList().GroupBy(x => x.ActivityId).ToList().Select(x => new
+//{
+//  ActivityId = x.Key,
+//  Efforts = x.ToList()
+//}).ToList();
+
+//for (int i = 0; i < activities.Count; i++)
+//{
+//  var current = activities[i];
+//  var activityId = current.ActivityId;
+//  var athleteId = current.Efforts[0].AthleteId;
+//  var activity = await stravaService.GetActivity(activityId, athleteId);
+
+//  if (activity == null || activity.SegmentEfforts == null) { continue; }
+
+//  current.Efforts.ForEach(effort =>
+//  {
+
+//    var activityEffort = activity.SegmentEfforts.Where(x => x.Id == effort.Id).FirstOrDefault();
+//    if (activityEffort != null && activityEffort.PrRank != null)
+//    {
+//      var dbEffort = _dbContext.Efforts.Where(e => e.Id == effort.Id).FirstOrDefault();
+//      if (dbEffort != null)
+//      {
+//        dbEffort.PrRank = activityEffort.PrRank ?? 0;
+//        needToUpdate = true;
+//        _dbContext.Update(dbEffort);
+//      }
+//    }
+//  });
+
+//}
+
+//if (needToUpdate)
+//{
+//  _dbContext.SaveChanges();
+//}

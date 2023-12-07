@@ -6,6 +6,8 @@ namespace TodoApi.Models.stravaApi
   {
     [JsonPropertyName("id")]
     public long Id { get; set; }
+    [JsonPropertyName("name")]
+    public string? Name { get; set; }
 
     [JsonPropertyName("athlete")]
     public ActivitySummaryResAthlete? Athlete { get; set; }
@@ -21,6 +23,16 @@ namespace TodoApi.Models.stravaApi
 
     [JsonPropertyName("segment_efforts")]
     public ActivitySumResEffort[]? SegmentEfforts { get; set; }
+
+    [JsonPropertyName("total_elevation_gain")]
+    public double TotalElevationGain { get; set; }
+
+    [JsonPropertyName("distance")]
+    public double Distance { get; set; }
+
+    [JsonPropertyName("calories")]
+    public double Calories { get; set; }
+
 
   }
 
@@ -64,6 +76,8 @@ namespace TodoApi.Models.stravaApi
     public ActivitySummaryResActivity Activity { get; set; }
     [JsonPropertyName("pr_rank")]
     public int? PrRank { get; set; }
+    [JsonPropertyName("kom_rank")]
+    public int? KomRank { get; set; }
   }
 
   public class ActivitySumResSegment
