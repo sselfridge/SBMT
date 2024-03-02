@@ -157,7 +157,7 @@ namespace TodoApi.Helpers
              return;
            }
 
-           DateTime startDate = DateTime.Parse(activity.StartDate);
+           DateTime startDate = activity.StartDate;
            DateTime endTime = new DateTime(2023, 9, 5, 8, 0, 0, 0, DateTimeKind.Utc);
            DateTime now = DateTime.UtcNow;
            ;

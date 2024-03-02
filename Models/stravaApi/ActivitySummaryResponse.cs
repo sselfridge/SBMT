@@ -11,7 +11,9 @@ namespace TodoApi.Models.stravaApi
     public ActivitySummaryResAthlete? Athlete { get; set; }
 
     [JsonPropertyName("start_date")]
-    public string? StartDate { get; set; }
+    [JsonConverter(typeof(JsonDateTimeConverter))]
+
+    public DateTime StartDate { get; set; }
 
     [JsonPropertyName("private")]
     public Boolean Private { get; set; }
@@ -53,7 +55,8 @@ namespace TodoApi.Models.stravaApi
     public int MovingTime { get; set; }
 
     [JsonPropertyName("start_date")]
-    public string? StartDate { get; set; }
+    [JsonConverter(typeof(JsonDateTimeConverter))]
+    public DateTime StartDate { get; set; }
 
     [JsonPropertyName("segment")]
     public ActivitySumResSegment Segment { get; set; }
