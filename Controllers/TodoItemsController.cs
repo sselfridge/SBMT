@@ -188,6 +188,32 @@ namespace TodoApi.Controllers
         return Ok("loadked");
       }
 
+      //var efforts = _dbContext.Efforts.ToList();
+
+      //efforts.ForEach(e =>
+      //{
+      //  e.StartAt = DateTime.Parse(e.StartDate);
+      //  var kind = e.StartAt.Kind;
+      //  Console.WriteLine(kind);
+      //  e.StartAt = e.StartAt.ToUniversalTime();
+      //  _dbContext.Update(e);
+
+      //});
+
+      //await _dbContext.SaveChangesAsync();
+
+      //var efforts = _dbContext.Efforts.ToList();
+
+      //efforts.ForEach(e =>
+      //{
+      //  e.StartDate = e.StartAt;
+
+      //  _dbContext.Update(e);
+
+      //});
+
+      //await _dbContext.SaveChangesAsync();
+
       //var scope = serviceScopeFactory.CreateScope();
 
       //var stravaService = scope.ServiceProvider.GetRequiredService<IStravaService>();
@@ -235,8 +261,7 @@ namespace TodoApi.Controllers
       //}
 
 
-
-      return Ok("I think it worked....");
+      return Ok("Nailed it");
 
 
 
