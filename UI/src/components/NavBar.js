@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
-import {
-  AppBar,
-  Box,
-  Toolbar,
-  Typography,
-  Tab,
-  Tabs,
-  useMediaQuery,
-} from "@mui/material";
+import { AppBar, Box, Toolbar, Tab, Tabs, useMediaQuery } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import UserMenu from "./UserMenu";
 import { Link, useLocation } from "react-router-dom";
 
+import { ReactComponent as PwdByStrava } from "assets/stravaBrand/api_logo_pwrdBy_strava_horiz_light.svg";
+
 const TitleLink = styled(Link)(({ theme }) => ({
   color: theme.palette.primary.contrastText,
   textDecoration: "none",
+}));
+
+const PwdBy = styled(PwdByStrava)(({ theme }) => ({
+  height: "40px",
+  position: "absolute",
+  top: "-15px",
 }));
 
 export default function NavBar() {
@@ -60,7 +60,7 @@ export default function NavBar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <Typography
+          <Box
             variant="h6"
             component="div"
             align="left"
@@ -74,7 +74,7 @@ export default function NavBar() {
           >
             <TitleLink to="recent">
               <span className="sbmt">SBMT</span>
-              <Box
+              {/* <Box
                 sx={{
                   fontSize: 8,
                   fontWeight: 400,
@@ -83,10 +83,13 @@ export default function NavBar() {
                 }}
               >
                 Ends Sep 4th at 11:59pm
+              </Box> */}
+              <Box sx={{ position: "relative" }}>
+                <PwdBy />
               </Box>
             </TitleLink>
             <UserMenu />
-          </Typography>
+          </Box>
         </Toolbar>
         <Toolbar sx={{ justifyContent: "flex-end" }}>
           <Tabs value={currentTabIdx} aria-label="nav tabs example">

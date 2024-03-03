@@ -89,7 +89,7 @@ const UserMenu = () => {
   return (
     <React.Fragment>
       <UserMenuBox>
-        {!user?.athleteId && <StravaButton text={"Register / Login"} />}
+        {!user?.athleteId && <StravaButton />}
         <IconButton
           onClick={handleClick}
           size="small"
