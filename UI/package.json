@@ -42,6 +42,16 @@
       ],
       "react/no-array-index-key": [
         "warn"
+      ],
+      "no-console": [
+        "warn",
+        {
+          "allow": [
+            "warn",
+            "error",
+            "log"
+          ]
+        }
       ]
     }
   },

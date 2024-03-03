@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using TodoApi.Models.stravaApi;
 
 namespace TodoApi.Models.db
@@ -34,9 +35,12 @@ namespace TodoApi.Models.db
 
     public string Years { get; set; }
 
+    //public StravaUser() { }
 
+    [JsonConstructor] // Parameterized constructor annotated with JsonConstructorAttribute
     public StravaUser(int athleteId, string firstname, string lastname, string avatar, long expiresAt, string refreshToken, string accessToken, string sex, double weight, string? scope, int age, string category, double recentDistance, double recentElevation, bool active, string years)
     {
+      //This one is used for incoming JSON objects, such as admin user update
       AthleteId = athleteId;
       Firstname = firstname;
       Lastname = lastname;
@@ -57,6 +61,7 @@ namespace TodoApi.Models.db
       Active = active;
       Years = years;
     }
+
 
     public StravaUser(OauthStravaUser oAuth, StravaAthleteProfile profile)
     {

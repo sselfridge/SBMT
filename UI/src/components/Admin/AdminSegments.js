@@ -36,7 +36,6 @@ const AdminSegments = (props) => {
   const [segments, setSegments] = useState([]);
 
   const [newSegment, setNewSegment] = useState(null);
-  console.log("newSegment: ", newSegment);
   const navigate = useNavigate();
 
   const textFieldValRef = useRef("");

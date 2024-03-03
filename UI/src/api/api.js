@@ -78,4 +78,16 @@ export const ApiPostCb = (
       onError(err);
     });
 };
+
+export const ApiPut = (url, body, setValue = () => {}, onError = () => {}) => {
+  Api.put(url, body)
+    .then((response) => {
+      setValue(deepFreeze(response.data));
+    })
+    .catch((err) => {
+      onError(err);
+      console.error(err);
+    });
+};
+
 export default Api;

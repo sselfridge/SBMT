@@ -25,9 +25,44 @@ namespace TodoApi.Controllers
     [HttpGet]
     public async Task<ActionResult<IEnumerable<StravaUser>>> GetUsers()
     {
-      return await _context.StravaUsers.ToListAsync();
+      var users = await _context.StravaUsers.ToListAsync();
+      return Ok(users);
     }
 
+    // PUT: api/users/5
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [HttpPut("{athleteId}")]
+    public async Task<IActionResult> PutSegment(int athleteId, StravaUser user)
+    {
+      if (athleteId != user.AthleteId)
+      {
+        return BadRequest();
+      }
 
+      _context.Entry(user).State = EntityState.Modified;
+
+      try
+      {
+        await _context.SaveChangesAsync();
+      }
+      catch (DbUpdateConcurrencyException)
+      {
+        if (!UsersExists(athleteId))
+        {
+          return NotFound();
+        }
+        else
+        {
+          throw;
+        }
+      }
+
+      return NoContent();
+    }
+
+    private bool UsersExists(int athleteId)
+    {
+      return _context.StravaUsers.Any(e => e.AthleteId == athleteId);
+    }
   }
 }

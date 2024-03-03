@@ -34,17 +34,16 @@ const MyBox = styled(Box)(({ theme }) => ({
 }));
 
 const Segments = (props) => {
-  const { prop } = props;
   const mapContainer = useRef(null);
   const map = useRef(null);
-  const [lng, setLng] = useState(-119.6769);
-  const [lat, setLat] = useState(34.46313);
+  const [lng] = useState(-119.6769);
+  const [lat] = useState(34.46313);
   const [dataIdx, setDataIdx] = useState(0);
-  const [zoom, setZoom] = useState(11);
+  const [zoom] = useState(11);
   const params = useParams();
   console.log("params: ", params);
 
-  const markerRef = useRef(null);
+  // const markerRef = useRef(null);
 
   React.useEffect(() => {
     if (map.current) return; // initialize map only once
@@ -146,44 +145,44 @@ const Segments = (props) => {
     //   .setLngLat([lng + 0.001, lat + 0.001])
     //   .addTo(map.current);
 
-    const geojson = {
-      type: "FeatureCollection",
-      features: [
-        {
-          type: "Feature",
-          properties: {
-            message: "Foo",
-            iconSize: [60, 60],
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [-66.324462, -16.024695],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            message: "Bar",
-            iconSize: [50, 50],
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [-61.21582, -15.971891],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            message: "Baz",
-            iconSize: [40, 40],
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [-63.292236, -18.281518],
-          },
-        },
-      ],
-    };
+    // const geojson = {
+    //   type: "FeatureCollection",
+    //   features: [
+    //     {
+    //       type: "Feature",
+    //       properties: {
+    //         message: "Foo",
+    //         iconSize: [60, 60],
+    //       },
+    //       geometry: {
+    //         type: "Point",
+    //         coordinates: [-66.324462, -16.024695],
+    //       },
+    //     },
+    //     {
+    //       type: "Feature",
+    //       properties: {
+    //         message: "Bar",
+    //         iconSize: [50, 50],
+    //       },
+    //       geometry: {
+    //         type: "Point",
+    //         coordinates: [-61.21582, -15.971891],
+    //       },
+    //     },
+    //     {
+    //       type: "Feature",
+    //       properties: {
+    //         message: "Baz",
+    //         iconSize: [40, 40],
+    //       },
+    //       geometry: {
+    //         type: "Point",
+    //         coordinates: [-63.292236, -18.281518],
+    //       },
+    //     },
+    //   ],
+    // };
 
     const features = map.current.queryRenderedFeatures();
 
