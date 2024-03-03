@@ -37,11 +37,14 @@ namespace TodoApi.Controllers
     ////[ResponseCache(Duration = 360)]
     public ActionResult<Effort> GetRecentEfforts(int id)
     {
+      var cutOff = DateTime.Parse("May 2023").ToUniversalTime();
+      var efforts = _dbContext.Efforts
+        .Where(x => x.StartDate > cutOff)
+        .OrderByDescending(u => u.CreatedAt).Take(50);
 
-      var efforts = _dbContext.Efforts.OrderByDescending(u => u.CreatedAt).Take(50);
+      var effList = efforts.ToList();
 
-
-      var data = efforts.Join(_dbContext.StravaUsers,
+      var data = efforts.Join(_dbContext.StravaUsers.Where(x => x.Active),
         effort => effort.AthleteId,
         user => user.AthleteId,
         (effort, user) => new
@@ -146,7 +149,7 @@ namespace TodoApi.Controllers
         allSegment = allSegment.FindAll(s => s.SurfaceType == surfaceFilter);
       }
 
-      var users = _dbContext.StravaUsers.Include(x => x.StravaClubs).ToList();
+      var users = _dbContext.StravaUsers.Where(x => x.Active).Include(x => x.StravaClubs).ToList();
 
 
       var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
@@ -381,7 +384,7 @@ namespace TodoApi.Controllers
       var bestList = bestEfforts.OrderBy(x => x.Value.ElapsedTime).ToList();
 
 
-      var data = bestList.Join(_dbContext.StravaUsers,
+      var data = bestList.Join(_dbContext.StravaUsers.Where(x => x.Active),
       effort => effort.Key,
       user => user.AthleteId,
       (effort, user) => new
@@ -417,7 +420,7 @@ namespace TodoApi.Controllers
 
     public IActionResult GetAllAthletes()
     {
-      var dbUsers = _dbContext.StravaUsers.ToList();
+      var dbUsers = _dbContext.StravaUsers.Where(x => x.Active).ToList();
 
       var users = new List<StravaUserDTO>();
 
@@ -441,7 +444,7 @@ namespace TodoApi.Controllers
       if (userId == null) return NotFound();
 
       var athleteId = Int32.Parse(userId);
-      var possibleNullUser = _dbContext.StravaUsers
+      var possibleNullUser = _dbContext.StravaUsers.Where(x => x.Active)
                               .Include(x => x.StravaClubs)
                               .FirstOrDefault(u => u.AthleteId == athleteId);
 
@@ -466,7 +469,7 @@ namespace TodoApi.Controllers
       if (userId == null) return NotFound();
 
       var athleteId = Int32.Parse(userId);
-      var dbUser = _dbContext.StravaUsers
+      var dbUser = _dbContext.StravaUsers.Where(x => x.Active)
                               .Include(x => x.StravaClubs)
                               .FirstOrDefault(u => u.AthleteId == athleteId);
 
@@ -480,7 +483,7 @@ namespace TodoApi.Controllers
       await _dbContext.SaveChangesAsync();
 
 
-      return Ok(newUser);
+      return Ok(dbUser);
     }
 
     [HttpGet("athletes/{id}")]

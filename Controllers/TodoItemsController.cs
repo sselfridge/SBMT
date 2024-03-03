@@ -188,15 +188,13 @@ namespace TodoApi.Controllers
         return Ok("loadked");
       }
 
-      //var efforts = _dbContext.Efforts.ToList();
+      //var users = _dbContext.StravaUsers.ToList();
 
-      //efforts.ForEach(e =>
+      //users.ForEach(u =>
       //{
-      //  e.StartAt = DateTime.Parse(e.StartDate);
-      //  var kind = e.StartAt.Kind;
-      //  Console.WriteLine(kind);
-      //  e.StartAt = e.StartAt.ToUniversalTime();
-      //  _dbContext.Update(e);
+      //  u.Years = "2023";
+      //  u.Active = false;
+      //  _dbContext.Update(u);
 
       //});
 
@@ -206,7 +204,7 @@ namespace TodoApi.Controllers
 
       //efforts.ForEach(e =>
       //{
-      //  e.StartDate = e.StartAt;
+      //  e.StartDate = e.CreatedAt;
 
       //  _dbContext.Update(e);
 
@@ -261,7 +259,9 @@ namespace TodoApi.Controllers
       //}
 
 
-      return Ok("Nailed it");
+
+
+      return Ok("fin");
 
 
 

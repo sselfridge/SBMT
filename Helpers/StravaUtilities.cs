@@ -42,22 +42,38 @@ namespace TodoApi.Helpers
     {
       var profile = await stravaService.GetInitialProfile(oauth.AccessToken);
 
-      var newUser = new StravaUser(oauth, profile);
+      var user = context.StravaUsers.FirstOrDefault(x => x.AthleteId == oauth.AthleteId);
 
-      context.Add(newUser);
-      context.SaveChanges();
-
-      KickOffInitialFetch(serviceScopeFactory, newUser.AthleteId);
-
-      if (profile.Clubs != null)
+      if (user == null)
       {
-        var user = stravaService.UpdateUserClubs(newUser.AthleteId, profile.Clubs);
-
-        return user;
+        user = new StravaUser(oauth, profile);
+        context.Add(user);
       }
       else
       {
-        return newUser;
+        user.Active = true;
+        var yearList = user.Years.Split(",").ToList();
+        yearList.Add(DateTime.Now.Year.ToString());
+        user.Years = string.Join(",", yearList);
+        user.Scope = oauth.Scope;
+        user.AccessToken = oauth.AccessToken;
+        user.RefreshToken = oauth.RefreshToken;
+        user.ExpiresAt = oauth.ExpiresAt;
+        context.Update(user);
+      }
+      context.SaveChanges();
+
+      KickOffInitialFetch(serviceScopeFactory, user.AthleteId);
+
+      if (profile.Clubs != null)
+      {
+        var clubUser = stravaService.UpdateUserClubs(user.AthleteId, profile.Clubs);
+
+        return clubUser;
+      }
+      else
+      {
+        return user;
 
       }
       // get other stats for user?

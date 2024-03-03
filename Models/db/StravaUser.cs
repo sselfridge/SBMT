@@ -30,8 +30,12 @@ namespace TodoApi.Models.db
 
     public string SavedFilters { get; set; }
 
+    public bool Active { get; set; }
 
-    public StravaUser(int athleteId, string firstname, string lastname, string avatar, long expiresAt, string refreshToken, string accessToken, string sex, double weight, string? scope, int age, string category, double recentDistance, double recentElevation)
+    public string Years { get; set; }
+
+
+    public StravaUser(int athleteId, string firstname, string lastname, string avatar, long expiresAt, string refreshToken, string accessToken, string sex, double weight, string? scope, int age, string category, double recentDistance, double recentElevation, bool active, string years)
     {
       AthleteId = athleteId;
       Firstname = firstname;
@@ -50,6 +54,8 @@ namespace TodoApi.Models.db
       RecentDistance = recentDistance;
       RecentElevation = recentElevation;
       SavedFilters = "";
+      Active = active;
+      Years = years;
     }
 
     public StravaUser(OauthStravaUser oAuth, StravaAthleteProfile profile)
@@ -75,6 +81,8 @@ namespace TodoApi.Models.db
       RecentElevation = 0;
 
       SavedFilters = "";
+      Years = DateTime.Now.Year.ToString();
+      Active = false;
     }
 
 

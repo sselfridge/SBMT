@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Net.Http.Headers;
+using System.Text.Json;
 using TodoApi.Models.db;
 using TodoApi.Models.stravaApi;
 
@@ -19,6 +20,8 @@ namespace TodoApi.Services
     Task<HttpClient> GetClientForUser(int athleteId);
     StravaUser UpdateUserClubs(int athleteId, List<StravaClub> newClubs);
     StravaUser UpdateUserClubs(int athleteId, StravaClubResponse[] newClubs);
+
+    Task<bool> UpdateClubs();
 
     Task<StravaUser> UpdateUserStats(StravaUser user);
 
@@ -329,6 +332,38 @@ namespace TodoApi.Services
       return user;
     }
 
+    public async Task<bool> UpdateClubs()
+    {
+      var client = await GetClientForUser(1);
+      var scope = _serviceScopeFactory.CreateScope();
+      var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
+
+      var clubs = context.StravaClubs.ToList();
+
+      for (var i = 0; i < clubs.Count; i++)
+      {
+        var club = clubs[i];
+        var url = $"/clubs/{club.Id}";
+
+        var result = await GetStravaString(client, url);
+
+        StravaClubResponse? newClub = JsonSerializer.Deserialize<StravaClubResponse>(result);
+
+        if (newClub != null)
+        {
+          club.ProfileMedium = newClub.ProfileMedium;
+          club.Name = newClub.Name;
+          club.Url = newClub.Url;
+        }
+        context.Update(club);
+      }
+
+
+
+      context.SaveChanges();
+
+      return true;
+    }
 
     /// <summary>
     /// Method <c>GetStrava</c> performs GET operation on StravaAPI
@@ -380,6 +415,51 @@ namespace TodoApi.Services
       }
     }
 
+    private async Task<string> GetStravaString(HttpClient client, string url)
+    {
+      Console.WriteLine($"sbmtLog:Making StravaCall:{url}");
+      var response = await client.GetAsync($"https://www.strava.com/api/v3{url}");
+      if (response.IsSuccessStatusCode)
+      {
+        try
+        {
+          var result = await response.Content.ReadAsStringAsync();
+          var limit = response.Headers.GetValues("X-RateLimit-Limit");
+          var usage = response.Headers.GetValues("X-RateLimit-Usage");
+
+          foreach (string value in usage)
+          {
+            if (value != null)
+            {
+              RateLimits.UpdateUsage(value);
+            }
+          }
+
+
+          if (result == null)
+          {
+            Console.WriteLine($"sbmtLog:ERROR GetStrava Invalid Response url:{url}");
+            throw new Exception("Invalid response");
+          }
+
+          return result;
+
+        }
+        catch (Exception e)
+        {
+          Console.WriteLine($"sbmtLog:ERROR GetStrava Bad Model url:{url}");
+          throw new Exception("Bad model!");
+        }
+
+
+      }
+      else
+      {
+        Console.WriteLine($"Strava Get Failed for url:{url}");
+        throw new Exception("Strava Get Failed");
+
+      }
+    }
 
 
   }

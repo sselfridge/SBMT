@@ -69,7 +69,7 @@
       using (var scope = _serviceScopeFactory.CreateScope())
       {
         var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
-        var user = context.StravaUsers.FirstOrDefault(x => x.AthleteId == id);
+        var user = context.StravaUsers.Where(x => x.Active).FirstOrDefault(x => x.AthleteId == id);
         return user;
       }
     }
