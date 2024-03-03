@@ -55,6 +55,7 @@ namespace TodoApi.Controllers
 
       var oAuthUser = new OauthStravaUser(oAuth, scope);
 
+      //setup login cookie
       var claims = new List<Claim>
         {
             //new Claim(ClaimTypes.Name, oAuthUser.AthleteId),
