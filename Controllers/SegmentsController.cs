@@ -83,7 +83,15 @@ namespace TodoApi.Controllers
 
       var segment = await _stravaService.GetSegment(id);
 
+      bool isGravel = HttpContext.Request.Query["isGravel"] == "true";
+
+
       if (segment == null) return NotFound();
+
+      if (isGravel)
+      {
+        segment.SurfaceType = "gravel";
+      }
 
       if (SegmentExists(id)) return Conflict("Segment already exists");
 

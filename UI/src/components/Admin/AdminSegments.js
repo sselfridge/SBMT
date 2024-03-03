@@ -6,7 +6,15 @@ import React, {
   useCallback,
 } from "react";
 import PropTypes from "prop-types";
-import { Box, Button, Paper, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Switch,
+  Paper,
+  TextField,
+  Typography,
+  FormControlLabel,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { DataGrid } from "@mui/x-data-grid";
 import { ApiGet } from "api/api";
@@ -33,6 +41,8 @@ const AdminSegments = (props) => {
 
   const textFieldValRef = useRef("");
 
+  const [isGravel, setIsGravel] = React.useState(false);
+
   const refreshSegments = useCallback(() => {
     ApiGet("/api/admin/segments", setSegments, null);
   }, []);
@@ -43,7 +53,7 @@ const AdminSegments = (props) => {
 
   const addSegment = () => {
     ApiPost(
-      `/api/admin/segments/${textFieldValRef.current}`,
+      `/api/admin/segments/${textFieldValRef.current}?isGravel=${isGravel}`,
       {},
       (newSegment) => {
         setNewSegment(newSegment);
@@ -107,10 +117,24 @@ const AdminSegments = (props) => {
   return (
     <MyBox>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Box>
+        <Box sx={{ display: "flex", color: "black", p: 1 }}>
           <TextField
             onChange={(e) => (textFieldValRef.current = e.target.value)}
           />
+          <Box>
+            <FormControlLabel
+              labelPlacement="top"
+              control={
+                <Switch
+                  checked={isGravel}
+                  onChange={(e) => {
+                    setIsGravel(e.target.checked);
+                  }}
+                />
+              }
+              label="Gravel?"
+            />
+          </Box>
           <Button onClick={addSegment}>Add Segment</Button>
           {newSegment && (
             <Paper>
