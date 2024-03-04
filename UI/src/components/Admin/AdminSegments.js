@@ -117,6 +117,13 @@ const AdminSegments = (props) => {
     <MyBox>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box sx={{ display: "flex", color: "black", p: 1 }}>
+          <Button
+            onClick={() => {
+              navigate("/admin");
+            }}
+          >
+            Back to Admin
+          </Button>
           <TextField
             onChange={(e) => (textFieldValRef.current = e.target.value)}
           />

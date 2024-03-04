@@ -134,7 +134,13 @@ const AdminUsers = (props) => {
 
   return (
     <MyBox>
-      <Box sx={{ color: "black" }}>{JSON.stringify(error)}</Box>
+      <Button
+        onClick={() => {
+          navigate("/admin");
+        }}
+      >
+        Back to Admin
+      </Button>
       <Button
         sx={{ m: 2 }}
         onClick={submit}
@@ -142,6 +148,7 @@ const AdminUsers = (props) => {
       >
         Save Updates
       </Button>
+      <Box sx={{ color: "black" }}>{JSON.stringify(error)}</Box>
 
       <DataGrid
         rows={users || []}

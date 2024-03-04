@@ -9,26 +9,50 @@ import {
   TableHead,
   TableRow,
   Box,
+  Button,
   Avatar,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+
 import { Link } from "react-router-dom";
 
-import { ApiGet } from "api/api";
+import { ApiGet, ApiDelete } from "api/api";
 
 const AdminFeedback = (props) => {
   const [feedback, setFeedback] = useState([]);
 
-  useEffect(() => {
+  const navigate = useNavigate();
+
+  const refreshFeedback = React.useCallback(() => {
     ApiGet("/api/admin/feedback", setFeedback);
   }, []);
 
+  useEffect(() => {
+    refreshFeedback();
+  }, [refreshFeedback]);
+
+  const handleDelete = React.useCallback(
+    (id) => {
+      ApiDelete(`/api/admin/feedback/${id}`, refreshFeedback);
+    },
+    [refreshFeedback]
+  );
+
   return (
     <TableContainer component={Paper}>
+      <Button
+        onClick={() => {
+          navigate("/admin");
+        }}
+      >
+        Back to Admin
+      </Button>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
             <TableCell>Athlete Id</TableCell>
             <TableCell align="right">Text</TableCell>
+            <TableCell />
           </TableRow>
         </TableHead>
         <TableBody>
@@ -47,6 +71,16 @@ const AdminFeedback = (props) => {
               </TableCell>
               <TableCell sx={{ maxWidth: 500 }} align="right">
                 {f.text}
+              </TableCell>
+              <TableCell align="right">
+                <Button
+                  color="error"
+                  onClick={() => {
+                    handleDelete(f.id);
+                  }}
+                >
+                  Delete
+                </Button>
               </TableCell>
             </TableRow>
           ))}

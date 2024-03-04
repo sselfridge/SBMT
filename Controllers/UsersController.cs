@@ -113,10 +113,6 @@ namespace TodoApi.Controllers
 
           // Check if the property exists in the model
           var propertyToUpdate = user.GetType().GetProperty(PropertyName);
-          var uType = user.GetType();
-          var propUP = uType.GetProperty(PropertyName);
-
-
           if (propertyToUpdate != null)
           {
             // Convert the new value to the correct type and set it

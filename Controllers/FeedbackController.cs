@@ -54,6 +54,20 @@ namespace TodoApi.Controllers
       return Ok(data);
     }
 
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteFeedback(string id)
+    {
 
+      var feedback = await _context.Feedback.FindAsync(id);
+      if (feedback == null)
+      {
+        return NotFound();
+      }
+
+      _context.Feedback.Remove(feedback);
+      await _context.SaveChangesAsync();
+
+      return NoContent();
+    }
   }
 }
