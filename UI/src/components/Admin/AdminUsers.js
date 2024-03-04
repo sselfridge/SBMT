@@ -4,7 +4,7 @@ import _ from "lodash";
 import { Box, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { DataGrid } from "@mui/x-data-grid";
-import { ApiGet, ApiPut } from "api/api";
+import { ApiGet, ApiPatch } from "api/api";
 import { useNavigate } from "react-router-dom";
 
 import AppContext from "AppContext";
@@ -20,7 +20,7 @@ const AdminUsers = (props) => {
   const [users, setUsers] = useState([]);
 
   const [updatedUsers, setUpdatedUsers] = useState({});
-  console.info("updatedUsers: ", updatedUsers);
+  const [error, setError] = useState({});
 
   const navigate = useNavigate();
 
@@ -40,25 +40,21 @@ const AdminUsers = (props) => {
     }
   }, [navigate, user?.athleteId]);
 
-  const [retVal, setRetVal] = useState({});
-  const [error, setError] = useState({});
-
   const submit = () => {
+    const users = [];
     Object.keys(updatedUsers).forEach((id, i) => {
       const user = updatedUsers[id];
-      console.info("user: ", user);
-
-      ApiPut(
-        `/api/admin/users/${id}`,
-        user,
-        () => {
-          if (i === Object.keys(updatedUsers).length - 1) {
-            refreshUsers();
-          }
-        },
-        setError
-      );
+      user.athleteId = id;
+      users.push(user);
     });
+    ApiPatch(
+      `/api/admin/users`,
+      users,
+      () => {
+        refreshUsers();
+      },
+      setError
+    );
   };
 
   const columns = [
@@ -161,20 +157,13 @@ const AdminUsers = (props) => {
           }
         }}
         onCellEditStop={(params, e, a, b, c) => {
-          console.info("a,b,c: ", a, b, c);
-          console.info("params: ", params);
-          const { id, row, field, getValue } = params;
+          const { id, field, getValue } = params;
           const value = getValue(id, field);
-          console.info("row: ", row);
           setUpdatedUsers((u) => {
             const updated = _.cloneDeep(u);
-            console.info("updated: ", updated);
-            const user = _.cloneDeep(row);
-            user.stravaClubs = [];
-            console.info("user: ", user);
+            const user = updated[id] || {};
             user[field] = value;
             updated[id] = user;
-            console.info("updated: ", updated);
             return updated;
           });
         }}

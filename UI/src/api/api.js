@@ -79,8 +79,13 @@ export const ApiPostCb = (
     });
 };
 
-export const ApiPut = (url, body, setValue = () => {}, onError = () => {}) => {
-  Api.put(url, body)
+export const ApiPatch = (
+  url,
+  body,
+  setValue = () => {},
+  onError = () => {}
+) => {
+  Api.patch(url, body)
     .then((response) => {
       setValue(deepFreeze(response.data));
     })

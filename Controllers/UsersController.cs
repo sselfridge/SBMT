@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 using TodoApi.Models.db;
 using TodoApi.Services;
 
@@ -56,6 +57,85 @@ namespace TodoApi.Controllers
           throw;
         }
       }
+
+      return NoContent();
+    }
+
+    [HttpPatch()]
+    public async Task<IActionResult> PatchSegment([FromBody] List<JsonElement> patch)
+    {
+
+      var errors = new List<string>();
+
+      for (var i = 0; i < patch.Count; i++)
+      {
+        var obj = patch[i];
+        var patchObject = JsonSerializer.Deserialize<Dictionary<string, object>>(obj.GetRawText());
+
+        if (patchObject == null)
+        {
+          errors.Add("Null Object");
+          continue;
+        }
+
+        if (patchObject["athleteId"] == null)
+        {
+          errors.Add("Missing athleteId");
+          continue;
+        }
+
+        var athId = patchObject["athleteId"].ToString();
+        if (athId == null)
+        {
+          errors.Add("Invalid athleteId");
+          continue;
+        }
+        var atheleteId = Int32.Parse(athId);
+        var user = _context.StravaUsers.FirstOrDefault(x => x.AthleteId == atheleteId);
+
+        if (user == null)
+        {
+          errors.Add("Invalid user");
+          continue;
+        }
+
+        foreach (var kvp in patchObject)
+        {
+          var propertyName = kvp.Key;
+          var PropertyName = propertyName.Substring(0, 1).ToUpper() + propertyName.Substring(1);
+          var newValue = kvp.Value.ToString();
+
+          if (propertyName == "athleteId")
+          {
+            continue;
+          }
+
+
+          // Check if the property exists in the model
+          var propertyToUpdate = user.GetType().GetProperty(PropertyName);
+          var uType = user.GetType();
+          var propUP = uType.GetProperty(PropertyName);
+
+
+          if (propertyToUpdate != null)
+          {
+            // Convert the new value to the correct type and set it
+            var convertedValue = Convert.ChangeType(newValue, propertyToUpdate.PropertyType);
+            propertyToUpdate.SetValue(user, convertedValue);
+
+            Console.WriteLine();
+
+
+          }
+        }
+
+        _context.Update(user);
+
+      }
+
+
+      await _context.SaveChangesAsync();
+
 
       return NoContent();
     }
