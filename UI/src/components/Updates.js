@@ -8,6 +8,18 @@ const Updates = (props) => {
   return (
     <ArticleBox sx={{ margin: "0 15%" }}>
       <TitleTypography variant="h2">Beta Updates</TitleTypography>
+      <SubTitleTypo variant="h4">2024 is Coming</SubTitleTypo>
+      <List sx={{ fontSize: ".8em" }}>
+        <ListItem>
+          Getting things prepped for the next run, figuring out how I can get
+          things up and running and also see about eventually supporting being
+          able to view past efforts
+        </ListItem>
+        <ListItem>
+          Dusting the cob-webs off the site and making sure everything still
+          works
+        </ListItem>
+      </List>
       <SubTitleTypo variant="h4">Ah small bug</SubTitleTypo>
       <List sx={{ fontSize: ".8em" }}>
         <ListItem>
