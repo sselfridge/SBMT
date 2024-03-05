@@ -2,10 +2,10 @@ import * as React from "react";
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import {
-  DataGridPro,
+  DataGrid,
   GRID_CHECKBOX_SELECTION_FIELD,
   // GridToolbar,
-} from "@mui/x-data-grid-pro";
+} from "@mui/x-data-grid";
 import { useDemoData } from "@mui/x-data-grid-generator";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { styled } from "@mui/material/styles";
@@ -17,7 +17,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 // import "./Demo.css";
 
-const AntDesignStyledDataGridPro = styled(DataGridPro)(({ theme }) => ({
+const AntDesignStyledDataGrid = styled(DataGrid)(({ theme }) => ({
   border: `1px solid ${theme.palette.mode === "light" ? "#f0f0f0" : "#303030"}`,
   color:
     theme.palette.mode === "light"
@@ -254,7 +254,6 @@ export default function FullFeaturedDemo() {
     editable: true,
   });
 
-  
   const [pagination, setPagination] = React.useState({
     pagination: false,
     autoPageSize: false,
@@ -303,9 +302,7 @@ export default function FullFeaturedDemo() {
     });
   };
 
-  const DataGridComponent = isAntDesign
-    ? AntDesignStyledDataGridPro
-    : DataGridPro;
+  const DataGridComponent = isAntDesign ? AntDesignStyledDataGrid : DataGrid;
 
   return (
     <StyledBox>

@@ -1,9 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { List, ListItem } from "@mui/material";
+import { List, ListItem, styled, Box } from "@mui/material";
 
 const Updates = (props) => {
-  const { TitleTypography, ArticleBox, SubTitleTypo } = props;
+  const { TitleTypography, SubTitleTypo } = props;
+
+  const ArticleBox = styled(Box)(({ theme }) => ({ margin: "0 15%" }));
 
   return (
     <ArticleBox sx={{ margin: "0 15%" }}>
@@ -127,7 +129,6 @@ const Updates = (props) => {
 
 Updates.propTypes = {
   TitleTypography: PropTypes.object,
-  ArticleBox: PropTypes.element,
   SubTitleTypo: PropTypes.string,
 };
 
