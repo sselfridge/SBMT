@@ -8,11 +8,12 @@ import StravaButton from "components/Shared/StravaButton";
 // import './custom.css'
 import "./mein.css";
 import { Link } from "react-router-dom";
-import { formatDuration, intervalToDuration } from "date-fns";
+import { differenceInSeconds } from "date-fns";
 
 import { ReactComponent as LogoV1 } from "./assets/logoV1.svg";
 import { ReactComponent as Insta } from "./assets/insta.svg";
 import { ReactComponent as StravaLogo } from "./assets/stravaLogo.svg";
+import Countdown from "./Countdown";
 
 const targetMap = {
   infoBtn: "infoSection",
@@ -21,6 +22,10 @@ const targetMap = {
 };
 
 export default class App extends Component {
+  constructor(props) {
+    super(props);
+    this.intervalRef = React.createRef();
+  }
   static displayName = App.name;
 
   componentDidMount() {
@@ -43,28 +48,33 @@ export default class App extends Component {
       document.getElementById(btn).addEventListener("click", scrollToArea)
     );
 
-    // document
-    //   .getElementById("textArea")
-    //   .addEventListener("keydown", onTextChange);
-
     let countdown;
 
-    setInterval(() => {
-      const start = new Date("May 26 2023");
-      const end = new Date();
+    this.intervalRef = setInterval(() => {
+      const end = new Date("May 24 2024");
 
-      let duration = intervalToDuration({
-        start,
-        end,
-      });
-      countdown = formatDuration(duration, {
-        delimiter: ", ",
-      });
+      const difference = differenceInSeconds(end, new Date());
+
+      // Convert seconds into days, hours, minutes, and seconds
+      const days = Math.floor(difference / (60 * 60 * 24));
+      const hours = Math.floor((difference % (60 * 60 * 24)) / (60 * 60));
+      const minutes = Math.floor((difference % (60 * 60)) / 60);
+      const seconds = difference % 60;
+
+      // Return the countdown in the format: days:hours:minutes:seconds
+      const dayDisplay = days > 0 ? `${days} days\n` : "";
+      countdown = `${dayDisplay}${hours}:${minutes
+        .toFixed(0)
+        .padStart(2, "0")}:${seconds.toFixed(0).padStart(2, "0")}`;
       const element = document.getElementById("countdown");
       if (element) {
         element.innerText = countdown;
       }
     }, 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalRef);
   }
 
   render() {
@@ -74,9 +84,6 @@ export default class App extends Component {
       btns.forEach((btn) =>
         document.getElementById(btn).addEventListener("click", scrollToArea)
       );
-      // document
-      //   .getElementById("textArea")
-      //   .addEventListener("keydown", onTextChange);
     };
 
     const scrollToArea = (e) => {
@@ -93,11 +100,11 @@ export default class App extends Component {
             <Link to="/segments">
               <LogoV1 id="logo" />
             </Link>
-            <h3 id="countdown">Soon...</h3>
-            <h2 className="h2Landing">Coming May 26th, 2023</h2>
+            <Countdown />
+            {/* <h2 className="h2Landing">Coming May 24th, 2024</h2> */}
           </div>
 
-          <StravaButton text={"Sign up for the Challenge!"} />
+          <StravaButton />
 
           <div id="infoBtn" className="button">
             Info

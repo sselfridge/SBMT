@@ -29,12 +29,11 @@ export default function NavBar() {
     switch (pathname) {
       case "/segments":
       case "/leaderboard":
-      case "/recent":
       case "/athletes":
         setCurrentTabIdx(pathname);
         break;
 
-      case "/beta/recent":
+      case "/recent":
         if (isMobile) {
           setCurrentTabIdx(false);
         } else {

@@ -20,9 +20,10 @@ import { ReactComponent as StravaLogo } from "assets/stravaLogoTransparent.svg";
 import SegmentDetailMap from "./SegmentDetailMap";
 import { ApiGet } from "api/api";
 import { deepFreeze, metersToMiles, metersToFeet } from "utils/helperFuncs";
-// import AppContext from "AppContext";
+import AppContext from "AppContext";
 // import { MAX_INT } from "utils/constants";
 import { formattedTime } from "utils/helperFuncs";
+import TempCountdown from "./LandingPage/TempCountdown";
 
 const MyBox = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -38,7 +39,9 @@ const Segments = () => {
   // const [userEfforts, setUserEfforts] = useState(null);
   const [segmentLeaderboard, setSegmentLeaderboard] = useState(null);
 
-  // const { user } = useContext(AppContext);
+  const { user, isPreLaunch } = React.useContext(AppContext);
+
+  const isAdmin = user.athleteId === 1075670;
 
   useEffect(() => {
     if (segmentId) {
@@ -140,7 +143,8 @@ const Segments = () => {
               {e.segmentName} - {formattedTime(e.bestTime)}
             </div>
           ))} */}
-          {!!segmentLeaderboard?.length && (
+          {isPreLaunch && <TempCountdown banner={"Segment leaderboard"} />}
+          {!!segmentLeaderboard?.length && (!isPreLaunch || isAdmin) && (
             <React.Fragment>
               <Typography sx={{ mt: 3 }} variant="h5">
                 Segment Leaderboard

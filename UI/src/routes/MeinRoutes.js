@@ -9,31 +9,30 @@ import Segments from "components/Segments";
 import SegmentDetails from "components/SegmentDetail";
 import Athletes from "components/Athletes";
 import AthleteDetails from "components/AthleteDetail";
-import FullFeaturedDemo from "components/DataGridDemo";
 import UserSettings from "components/UserSettings";
 import HelpContact from "components/HelpContact";
 import Info from "components/Info";
 import InfoScopes from "components/InfoScopes";
 import UserInfo from "components/UserInfo";
 import BetaRedirect from "./BetaRedirect";
-// import LandingPage from "components/LandingPage/LandingPage";
+import Landing from "components/LandingPage/LandingPage";
 
 import Admin from "components/Admin/Admin";
 import AdminSegments from "components/Admin/AdminSegments";
 
 import AdminUsers from "components/Admin/AdminUsers";
 import AdminFeedback from "components/Admin/AdminFeedback";
-
 import AppContext from "AppContext";
 
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import config from "config";
 import StravaOops from "components/StravaOops";
+import TempCountdown from "components/LandingPage/TempCountdown";
 
 mapboxgl.accessToken = config.mapBox;
 
 const MeinRoutes = () => {
-  const { user } = useContext(AppContext);
+  const { user, isPreLaunch } = useContext(AppContext);
 
   const isAdmin = user?.athleteId === 1075670;
 
@@ -43,18 +42,31 @@ const MeinRoutes = () => {
         {/* <NavBar /> */}
         {/* <Route path="/" element={<Recent />} /> */}
         <Route path="/" element={<Navigate to="/recent" />} />
+        {isPreLaunch ? (
+          <Route path="/" element={<Landing />} />
+        ) : (
+          <Route path="/" element={<Navigate to="/recent" />} />
+        )}
 
         <Route path="/" element={<App />}>
           {/* <Route path="/*" element={<RedirectLanding />} /> */}
 
-          <Route path="recent" element={<Recent />} />
           <Route path="beta/*" element={<BetaRedirect />} />
-          <Route path="leaderboard" element={<Leaderboard />} />
+          {isAdmin || !isPreLaunch ? (
+            <React.Fragment>
+              <Route path="recent" element={<Recent />} />
+              <Route path="leaderboard" element={<Leaderboard />} />
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <Route path="recent" element={<TempCountdown />} />
+              <Route path="leaderboard" element={<TempCountdown />} />
+            </React.Fragment>
+          )}
           <Route path="segments" element={<Segments />} />
           <Route path="segments/:segmentId" element={<SegmentDetails />} />
           <Route path="athletes" element={<Athletes />} />
           <Route path="athletes/:athleteId" element={<AthleteDetails />} />
-          <Route path="demo" element={<FullFeaturedDemo />} />
           <Route path="settings" element={<UserSettings />} />
           <Route path="help" element={<HelpContact />} />
           <Route path="info">

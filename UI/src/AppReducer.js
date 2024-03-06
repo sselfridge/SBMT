@@ -1,3 +1,5 @@
+import { differenceInSeconds } from "date-fns";
+
 export default function reducer(state, action) {
   switch (action.type) {
     case "setUser":
@@ -9,7 +11,11 @@ export default function reducer(state, action) {
   }
 }
 
+const launchDate = "05-24-2024";
 export const INITIAL_STATE = {
   user: null,
+  launchDate,
+  endDate: "09-02-2024",
+  isPreLaunch: differenceInSeconds(launchDate, new Date()) > 0,
   rateLimit: -1,
 };

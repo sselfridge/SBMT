@@ -63,7 +63,7 @@ const ConfirmDelete = (props) => {
         </div>
       );
       setTimeout(() => {
-        navigate("/beta");
+        navigate("/");
       }, 3000);
     }
   }, [deleteComplete, dispatch, navigate]);

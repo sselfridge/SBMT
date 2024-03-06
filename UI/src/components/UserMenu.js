@@ -74,6 +74,7 @@ const UserMenu = () => {
   useEffect(() => {
     if (fetchOnce.current) {
       fetchOnce.current = null;
+      //init user here
       ApiGet("/api/athletes/current", onSetUser, {});
     }
   }, [onSetUser]);

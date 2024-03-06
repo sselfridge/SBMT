@@ -42,9 +42,9 @@ const AdminUsers = (props) => {
 
   const submit = () => {
     const users = [];
-    Object.keys(updatedUsers).forEach((id, i) => {
-      const user = updatedUsers[id];
-      user.athleteId = id;
+    Object.keys(updatedUsers).forEach((athleteId, i) => {
+      const user = updatedUsers[athleteId];
+      user.athleteId = athleteId;
       users.push(user);
     });
     ApiPatch(
@@ -154,7 +154,9 @@ const AdminUsers = (props) => {
         rows={users || []}
         columns={columns}
         disableColumnMenu
-        getRowId={(r) => r.athleteId}
+        getRowId={(r) => {
+          return r.athleteId;
+        }}
         hideFooter={true}
         editMode="cell"
         onCellEditStart={(params, e, context) => {
@@ -163,16 +165,30 @@ const AdminUsers = (props) => {
             e.defaultMuiPrevented = true;
           }
         }}
-        onCellEditStop={(params, e, a, b, c) => {
-          const { id, field, getValue } = params;
-          const value = getValue(id, field);
+        processRowUpdate={(newRow, oldRow) => {
+          const { athleteId } = newRow;
+          const editableFields = ["years", "active"];
+
           setUpdatedUsers((u) => {
             const updated = _.cloneDeep(u);
-            const user = updated[id] || {};
-            user[field] = value;
-            updated[id] = user;
-            return updated;
+
+            let changed = false;
+            const updateUser = updated[athleteId] || {};
+            editableFields.forEach((f) => {
+              if (newRow[f] !== oldRow[f]) {
+                changed = true;
+                updateUser[f] = newRow[f];
+              }
+            });
+            updated[athleteId] = updateUser;
+
+            return changed ? updated : u;
           });
+
+          return newRow;
+        }}
+        onProcessRowUpdateError={(error) => {
+          console.error("UpdateError", error);
         }}
         sx={{
           boxShadow: 2,

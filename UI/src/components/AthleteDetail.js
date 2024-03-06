@@ -28,7 +28,7 @@ const MyBox = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
 }));
 
-const Athletes = () => {
+const AthleteDetail = () => {
   const params = useParams();
   const [user, setUser] = useState(undefined);
   const [userSegments, setUserSegments] = useState([]);
@@ -36,7 +36,7 @@ const Athletes = () => {
 
   const [hideIncomplete, setHideIncomplete] = useState(false);
 
-  const { user: meinUser } = useContext(AppContext);
+  const { user: meinUser, isPreLaunch } = useContext(AppContext);
 
   const gravelSegments = userSegments.filter((s) => s.surfaceType === "gravel");
   const roadSegments = userSegments.filter((s) => s.surfaceType === "road");
@@ -81,7 +81,7 @@ const Athletes = () => {
     const posStyle = { color: "green" };
 
     return (
-      <React.Fragment>
+      <React.Fragment key={segment.segmentId}>
         {isMobile && (
           <TableRow>
             <TableCell colSpan={5}>
@@ -91,7 +91,7 @@ const Athletes = () => {
             </TableCell>
           </TableRow>
         )}
-        <TableRow key={index}>
+        <TableRow>
           {!isMobile && (
             <React.Fragment>
               <TableCell>
@@ -178,54 +178,60 @@ const Athletes = () => {
             View on Strava
           </a>
         </Box>
-        <Typography variant="h4">Segment Efforts</Typography>
-        <Button onClick={() => setHideIncomplete((v) => !v)}>
-          {hideIncomplete ? "Show" : "Hide"} uncompleted segments
-        </Button>
-        <Table>
-          <TableHead>
-            <TableRow>
-              {!isMobile && <TableCell>Segment Name</TableCell>}
-              <TableCell>Runs</TableCell>
-              <TableCell>
-                <Avatar src={user.avatar} alt={user.firstname} />
-              </TableCell>
-              {meinSegments && (
-                <React.Fragment>
+        {!isPreLaunch || meinUser.athleteId === 1075670 ? (
+          <React.Fragment>
+            <Typography variant="h4">Segment Efforts</Typography>
+            <Button onClick={() => setHideIncomplete((v) => !v)}>
+              {hideIncomplete ? "Show" : "Hide"} uncompleted segments
+            </Button>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  {!isMobile && <TableCell>Segment Name</TableCell>}
+                  <TableCell>Runs</TableCell>
                   <TableCell>
-                    <Avatar src={meinUser.avatar} />
+                    <Avatar src={user.avatar} alt={user.firstname} />
                   </TableCell>
-                  <TableCell>Diff +/-</TableCell>
-                </React.Fragment>
-              )}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell sx={{ paddingLeft: "50px" }} colSpan={5}>
-                <Typography textAlign={"center"}>
-                  Road Segments {roadCompletedCount} of {roadSegments.length}{" "}
-                  completed
-                </Typography>
-              </TableCell>
-            </TableRow>
-            {roadSegments.filter(filterCompleted).map(makeSegmentRow)}
-            <TableRow>
-              <TableCell />
-              <TableCell />
-              <TableCell />
-            </TableRow>
-            <TableRow>
-              <TableCell sx={{ paddingLeft: "50px" }} colSpan={5}>
-                <Typography textAlign={"center"}>
-                  Gravel Segments {gravelCompletedCount} of{" "}
-                  {gravelSegments.length} completed
-                </Typography>
-              </TableCell>
-            </TableRow>
-            {gravelSegments.filter(filterCompleted).map(makeSegmentRow)}
-          </TableBody>
-        </Table>
+                  {!!meinSegments && (
+                    <React.Fragment>
+                      <TableCell>
+                        <Avatar src={meinUser.avatar} />
+                      </TableCell>
+                      <TableCell>Diff +/-</TableCell>
+                    </React.Fragment>
+                  )}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow>
+                  <TableCell sx={{ paddingLeft: "50px" }} colSpan={5}>
+                    <Typography textAlign={"center"}>
+                      Road Segments {roadCompletedCount} of{" "}
+                      {roadSegments.length} completed
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+                {roadSegments.filter(filterCompleted).map(makeSegmentRow)}
+                <TableRow>
+                  <TableCell />
+                  <TableCell />
+                  <TableCell />
+                </TableRow>
+                <TableRow>
+                  <TableCell sx={{ paddingLeft: "50px" }} colSpan={5}>
+                    <Typography textAlign={"center"}>
+                      Gravel Segments {gravelCompletedCount} of{" "}
+                      {gravelSegments.length} completed
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+                {gravelSegments.filter(filterCompleted).map(makeSegmentRow)}
+              </TableBody>
+            </Table>
+          </React.Fragment>
+        ) : (
+          <Box>TBD</Box>
+        )}
       </MyBox>
     );
   } else if (user === null) {
@@ -235,4 +241,4 @@ const Athletes = () => {
   }
 };
 
-export default Athletes;
+export default AthleteDetail;
