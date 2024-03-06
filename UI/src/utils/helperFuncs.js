@@ -2,6 +2,9 @@ import { intervalToDuration, format, parseISO, formatDistance } from "date-fns";
 
 export function formattedTime(seconds, showHours = false) {
   const out = intervalToDuration({ start: 0, end: seconds * 1000 });
+  out.seconds = out.seconds || 0;
+  out.minutes = out.minutes || 0;
+  out.hours = out.hours || 0;
   let str = "";
   if (out.hours || showHours) str += `${out.hours}:`.padStart(3, 0);
   str += `${out.minutes}:`.padStart(3, 0);
