@@ -41,7 +41,7 @@ const Segments = () => {
 
   const { user, isPreLaunch } = React.useContext(AppContext);
 
-  const isAdmin = user.athleteId === 1075670;
+  const isAdmin = user?.athleteId === 1075670;
 
   useEffect(() => {
     if (segmentId) {
