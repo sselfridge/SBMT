@@ -77,7 +77,7 @@ namespace TodoApi.Models.db
       Sex = profile.Sex ?? "none";
       Weight = profile.Weight ?? 0;
 
-      JoinDate = DateTime.UtcNow;
+      JoinDate = DateTime.MinValue;
       StravaClubs = new List<StravaClub>();
 
       Age = 0;

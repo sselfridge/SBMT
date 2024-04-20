@@ -76,7 +76,8 @@ const ConfirmDelete = (props) => {
           flexDirection: "column",
           alignItems: "center",
           paddingBottom: "24px",
-          minWidth: "min(80vw,500px)",
+          minWidth: "min(90vw,500px)",
+          minHeight: "65vh",
         }}
       >
         <Typography variant="h4" textAlign={"center"}>
@@ -126,12 +127,12 @@ const ConfirmDelete = (props) => {
             </Button>
           </Paper>
         )}
+        {deleteConfirmMsg && (
+          <Typography variant={"h3"} color="error">
+            {deleteConfirmMsg}
+          </Typography>
+        )}
       </Paper>
-      {deleteConfirmMsg && (
-        <Typography variant={"h3"} color="error">
-          {deleteConfirmMsg}
-        </Typography>
-      )}
     </MyBox>
   );
 };

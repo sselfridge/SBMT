@@ -444,7 +444,7 @@ namespace TodoApi.Controllers
       if (userId == null) return NotFound();
 
       var athleteId = Int32.Parse(userId);
-      var possibleNullUser = _dbContext.StravaUsers.Where(x => x.Active)
+      var possibleNullUser = _dbContext.StravaUsers
                               .Include(x => x.StravaClubs)
                               .FirstOrDefault(u => u.AthleteId == athleteId);
 
@@ -469,7 +469,7 @@ namespace TodoApi.Controllers
       if (userId == null) return NotFound();
 
       var athleteId = Int32.Parse(userId);
-      var dbUser = _dbContext.StravaUsers.Where(x => x.Active)
+      var dbUser = _dbContext.StravaUsers
                               .Include(x => x.StravaClubs)
                               .FirstOrDefault(u => u.AthleteId == athleteId);
 
@@ -477,13 +477,26 @@ namespace TodoApi.Controllers
 
       if (dbUser.AthleteId != newUser.AthleteId) return Unauthorized();
 
-      dbUser.Age = newUser.Age;
-      dbUser.Category = newUser.Category;
-      _dbContext.Update(dbUser);
-      await _dbContext.SaveChangesAsync();
+      if (dbUser.Active == false && newUser.Active == true)
+      {
+        dbUser.JoinDate = DateTime.UtcNow;
+        dbUser.Active = true;
+      }
+
+      try
+      {
+        dbUser.Age = newUser.Age;
+        dbUser.Category = newUser.Category;
+        _dbContext.Update(dbUser);
+        await _dbContext.SaveChangesAsync();
 
 
-      return Ok(dbUser);
+        return Ok(new StravaUserDTO(dbUser));
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ex.Message);
+      }
     }
 
     [HttpGet("athletes/{id}")]

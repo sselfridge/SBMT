@@ -136,10 +136,49 @@
     {
       var dbUser = _dbContext.StravaUsers.FirstOrDefault(u => u.AthleteId == athleteId);
       if (dbUser == null) throw new Exception("User not found");
+      var properties = typeof(StravaUser).GetProperties();
+      foreach (var prop in properties)
+      {
+        if (prop.PropertyType == typeof(string) && prop.Name != "Years")
+        {
 
-      var allEfforts = _dbContext.Efforts.Where(e => e.AthleteId == athleteId).ToList();
-      _dbContext.RemoveRange(allEfforts);
-      _dbContext.Remove(dbUser);
+
+          prop.SetValue(dbUser, string.Empty);
+          // You can set it to null instead by uncommenting the line below
+          // prop.SetValue(user, null);
+        }
+        else if (
+          prop.Name != "AthleteId" && (
+          prop.PropertyType == typeof(Int64) ||
+          prop.PropertyType == typeof(double) ||
+          prop.PropertyType == typeof(Int32)
+          )
+          )
+        {
+          prop.SetValue(dbUser, 0);
+        }
+        else if (prop.PropertyType == typeof(bool))
+        {
+          prop.SetValue(dbUser, false);
+        }
+        else if (prop.PropertyType == typeof(DateTime))
+        {
+          prop.SetValue(dbUser, new DateTime(0));
+        }
+        else if (prop.Name == "StravaClubs")
+        {
+          prop.SetValue(dbUser, new List<StravaClub>());
+        }
+        else
+        {
+          var proType = prop.PropertyType;
+          Console.WriteLine("out");
+        }
+      }
+
+      // var allEfforts = _dbContext.Efforts.Where(e => e.AthleteId == athleteId).ToList();
+      // _dbContext.RemoveRange(allEfforts);
+      //_dbContext.Remove(dbUser);
       await _dbContext.SaveChangesAsync();
       return true;
     }

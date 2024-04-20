@@ -51,7 +51,7 @@ namespace TodoApi.Helpers
       }
       else
       {
-        user.Active = true;
+        user.Active = false;
         var yearList = user.Years.Split(",").ToList();
         yearList.Add(DateTime.Now.Year.ToString());
         user.Years = string.Join(",", yearList);

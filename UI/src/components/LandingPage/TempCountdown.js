@@ -15,10 +15,29 @@ const TempCountdown = (props) => {
   const { banner } = props;
 
   return (
-    <MyPaper>
-      <Box>{banner} live in:</Box>
-      <Countdown />
-    </MyPaper>
+    <Box
+      sx={{
+        height: "80%",
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <MyPaper
+        sx={{
+          height: "300px",
+          width: "80%",
+          maxWidth: "500px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Box>{banner} live in:</Box>
+        <Countdown />
+      </MyPaper>
+    </Box>
   );
 };
 

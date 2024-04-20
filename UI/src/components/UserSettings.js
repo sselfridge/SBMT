@@ -25,6 +25,8 @@ const MyBox = styled(Box)(({ theme }) => ({
   flexDirection: "column",
   padding: 8,
   borderRadius: 4,
+  justifyContent: "center",
+  alignItems: "center",
 }));
 
 const UserSettings = (props) => {
