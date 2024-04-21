@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { AppBar, Box, Toolbar, Tab, Tabs, useMediaQuery } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import AppContext from "AppContext";
 
 import UserMenu from "./UserMenu";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { ReactComponent as PwdByStrava } from "assets/stravaBrand/api_logo_pwrdBy_strava_horiz_light.svg";
 
@@ -21,9 +22,22 @@ const PwdBy = styled(PwdByStrava)(({ theme }) => ({
 export default function NavBar() {
   const [currentTabIdx, setCurrentTabIdx] = useState(false);
 
+  const { user } = React.useContext(AppContext);
+
   const location = useLocation();
+  const navigate = useNavigate();
   const { pathname } = location;
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+
+  React.useEffect(() => {
+    if (
+      user?.active === false &&
+      pathname !== "/settings" &&
+      pathname !== "/info/terms"
+    ) {
+      navigate("/settings?remind");
+    }
+  }, [navigate, pathname, user?.active]);
 
   useEffect(() => {
     switch (pathname) {

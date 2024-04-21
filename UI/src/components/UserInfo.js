@@ -22,7 +22,7 @@ import LabeledSelect from "./Shared/LabeledSelect";
 
 import { categoryList } from "utils/constants";
 import { ApiGet, ApiPostCb } from "api/api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { deepFreeze } from "utils/helperFuncs";
 
@@ -47,9 +47,13 @@ const UserInfo = () => {
 
   const [saving, setSaving] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const fetchProfile = useCallback((athleteId) => {
     ApiGet(`/api/strava/userRefresh/${athleteId}`, setLocalUser);
   }, []);
+
+  const params = new URLSearchParams(location.search);
+  const showReminder = params.has("remind") && !user?.active;
 
   const updateProfile = useCallback(() => {
     setSaving(true);
@@ -303,6 +307,19 @@ const UserInfo = () => {
         </Grid>
         <Grid item xs={1} sm={3} />
         {/* line break */}
+        {showReminder && (
+          <Box
+            sx={{
+              display: "flex",
+              width: "100%",
+              justifyContent: "center",
+              fontSize: "2em",
+              fontWeight: "bold",
+            }}
+          >
+            You'll need to accept terms and save to proceed
+          </Box>
+        )}
         {user?.active && (
           <React.Fragment>
             <Grid item xs={1} />
