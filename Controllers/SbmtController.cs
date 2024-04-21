@@ -37,9 +37,10 @@ namespace TodoApi.Controllers
     ////[ResponseCache(Duration = 360)]
     public ActionResult<Effort> GetRecentEfforts(int id)
     {
-      var cutOff = DateTime.Parse("May 2023").ToUniversalTime();
+      var kickOffDate = getKickOffDate();
+
       var efforts = _dbContext.Efforts
-        .Where(x => x.StartDate > cutOff)
+        .Where(x => x.StartDate > kickOffDate)
         .OrderByDescending(u => u.CreatedAt).Take(50);
 
       var effList = efforts.ToList();
@@ -203,7 +204,9 @@ namespace TodoApi.Controllers
         });
       }
 
-      var data = users.Join(_dbContext.Efforts,
+      var kickOffDate = getKickOffDate();
+
+      var data = users.Join(_dbContext.Efforts.Where(x => x.StartDate > kickOffDate),
         effort => effort.AthleteId,
         user => user.AthleteId,
         (user, effort) =>
@@ -591,6 +594,21 @@ namespace TodoApi.Controllers
       HttpContext.Response.Cookies.Delete(Configuration["CookieName"]);
       var deletedUserDTO = new StravaUserDTO(dbUser);
       return Ok(deletedUserDTO);
+    }
+
+    private DateTime getKickOffDate()
+    {
+      var kickOffStr = getConfigVal("KickOffDate");
+
+      return DateTime.Parse(kickOffStr).ToUniversalTime();
+    }
+    private string getConfigVal(string key)
+    {
+      IConfiguration configuration = new ConfigurationBuilder()
+                            .AddJsonFile("appsettings.json")
+                            .Build();
+
+      return configuration[key];
     }
   }
 }
