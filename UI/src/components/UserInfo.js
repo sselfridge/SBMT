@@ -317,7 +317,7 @@ const UserInfo = () => {
               fontWeight: "bold",
             }}
           >
-            You'll need to accept terms and save to proceed
+            You'll need to accept terms and save to proceed, please.
           </Box>
         )}
         {user?.active && (
