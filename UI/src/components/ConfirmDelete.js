@@ -75,8 +75,9 @@ const ConfirmDelete = (props) => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          justifyContent: "center",
           paddingBottom: "24px",
-          minWidth: "min(90vw,500px)",
+          width: "90vw",
           minHeight: "65vh",
         }}
       >

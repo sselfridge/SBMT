@@ -42,7 +42,7 @@ const UserInfo = () => {
   const [age, setAge] = useState("");
   const [ageHelperText, setAgeHelperText] = useState("");
   const [category, setCategory] = useState("");
-  const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const [agreeToTerms, setAgreeToTerms] = useState(!!user?.active);
   const [localUser, setLocalUser] = useState({});
 
   const [saving, setSaving] = useState(false);
@@ -237,7 +237,10 @@ const UserInfo = () => {
     !age ||
     age < 13 ||
     age > 100 ||
-    (age === user.age && category === user.category) ||
+    (age === user.age &&
+      category === user.category &&
+      !agreeToTerms &&
+      !!user?.active === true) ||
     (!agreeToTerms && !user?.active);
 
   return (
@@ -315,9 +318,18 @@ const UserInfo = () => {
               justifyContent: "center",
               fontSize: "2em",
               fontWeight: "bold",
+              gap: 1,
+              m: 1,
             }}
           >
-            You'll need to accept terms and save to proceed, please.
+            Accept{" "}
+            <Link
+              sx={{ cursor: "pointer" }}
+              onClick={() => navigate("/info/terms")}
+            >
+              Terms
+            </Link>{" "}
+            to proceed.
           </Box>
         )}
         {user?.active && (
