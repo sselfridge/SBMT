@@ -9,6 +9,8 @@ import SegmentMap from "./SegmentMap";
 import SEGMENTS from "mockData/segments";
 import { ApiGet } from "api/api";
 
+import { surfaceList } from "utils/constants";
+
 const MyBox = styled(Box)(({ theme }) => ({
   height: "90vh",
   width: "95vw",
@@ -66,12 +68,12 @@ const Segments = () => {
 
   React.useEffect(() => {
     let filterFunc;
-    if (tabVal === "road") {
-      filterFunc = (s) => s.surfaceType === "road";
-    } else if (tabVal === "gravel") {
-      filterFunc = (s) => s.surfaceType === "gravel";
-    } else {
+    if (surfaceList.includes(tabVal) === false)
+      throw new Error("Invalid surface type");
+    if (tabVal === "ALL") {
       filterFunc = () => true;
+    } else {
+      filterFunc = (s) => s.surfaceType === tabVal;
     }
 
     setSegments((seg) => allSegments.filter(filterFunc));
@@ -90,6 +92,7 @@ const Segments = () => {
       >
         <Tab label="Road" value={"road"} />
         <Tab label="Gravel" value={"gravel"} />
+        <Tab label="Trail Run" value={"trail"} />
         <Tab label="Show All" value={"ALL"} />
       </Tabs>
       <DataGrid

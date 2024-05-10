@@ -176,7 +176,7 @@ namespace TodoApi.Controllers
     }
 
     [HttpGet()]
-    public async Task<ActionResult<long>> TestThing([FromServices] IServiceScopeFactory serviceScopeFactory)
+    public ActionResult<long> TestThing([FromServices] IServiceScopeFactory serviceScopeFactory)
     {
 
       var count = _dbContext.StravaUsers.Count();

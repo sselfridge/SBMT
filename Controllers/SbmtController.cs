@@ -145,7 +145,7 @@ namespace TodoApi.Controllers
       var allSegment = _dbContext.Segments.ToList();
 
       if (surfaceFilter != null &&
-          (surfaceFilter == "gravel" || surfaceFilter == "road"))
+          (surfaceFilter == "gravel" || surfaceFilter == "road" || surfaceFilter == "trail"))
       {
         allSegment = allSegment.FindAll(s => s.SurfaceType == surfaceFilter);
       }

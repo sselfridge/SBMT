@@ -40,10 +40,14 @@ const AthleteDetail = () => {
 
   const gravelSegments = userSegments.filter((s) => s.surfaceType === "gravel");
   const roadSegments = userSegments.filter((s) => s.surfaceType === "road");
+  const trailSegments = userSegments.filter((s) => s.surfaceType === "trail");
   const roadCompletedCount = roadSegments.filter(
     (s) => s.efforts.length > 0
   ).length;
   const gravelCompletedCount = gravelSegments.filter(
+    (s) => s.efforts.length > 0
+  ).length;
+  const trailCompletedCount = trailSegments.filter(
     (s) => s.efforts.length > 0
   ).length;
 
@@ -226,6 +230,20 @@ const AthleteDetail = () => {
                   </TableCell>
                 </TableRow>
                 {gravelSegments.filter(filterCompleted).map(makeSegmentRow)}
+                <TableRow>
+                  <TableCell />
+                  <TableCell />
+                  <TableCell />
+                </TableRow>
+                <TableRow>
+                  <TableCell sx={{ paddingLeft: "50px" }} colSpan={5}>
+                    <Typography textAlign={"center"}>
+                      Trail Run Segments {trailCompletedCount} of{" "}
+                      {trailSegments.length} completed
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+                {trailSegments.filter(filterCompleted).map(makeSegmentRow)}
               </TableBody>
             </Table>
           </React.Fragment>
