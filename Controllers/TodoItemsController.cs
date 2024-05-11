@@ -89,13 +89,21 @@ namespace TodoApi.Controllers
 
       var list = new List<long>() { 647488 };
 
+      IConfiguration configuration = new ConfigurationBuilder()
+                              .AddJsonFile("appsettings.json")
+                              .Build();
+
+      var appAthleteIdStr = configuration["AppAthleteId"];
+      int appAthleteId = int.Parse(appAthleteIdStr);
 
       var users = _dbContext.StravaUsers.ToList();
       var realUsers = new List<StravaUser>();
 
       foreach (var user in users)
       {
-        if (user == null || user.AthleteId == 1) continue;
+
+
+        if (user == null || user.AthleteId == appAthleteId) continue;
         // for 504 activites was ~7min
         // 40.81 - running in parellel no DB calls
         // 
@@ -188,8 +196,10 @@ namespace TodoApi.Controllers
         return Ok("loadked");
       }
 
-      //var users = _dbContext.StravaUsers.ToList();
+      var users = _dbContext.StravaUsers.ToList();
 
+
+      Console.WriteLine("");
       //users.ForEach(u =>
       //{
       //  u.Years = "2023";

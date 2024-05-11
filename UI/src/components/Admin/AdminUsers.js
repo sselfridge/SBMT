@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 
 import AppContext from "AppContext";
 
+import { APP_ATHLETE_ID } from "utils/constants";
+
 const MyBox = styled(Box)(({ theme }) => ({
   width: "80vw",
   backgroundColor: theme.palette.background.paper,
@@ -161,7 +163,7 @@ const AdminUsers = (props) => {
         editMode="cell"
         onCellEditStart={(params, e, context) => {
           const { id } = params;
-          if (id === 1) {
+          if (id === APP_ATHLETE_ID) {
             e.defaultMuiPrevented = true;
           }
         }}
