@@ -1,6 +1,6 @@
 export const START_DATE = new Date("2023-05-26T01:00:00-07:00");
 
-export const surfaceList = ["ALL", "road", "gravel", "trail"];
+export const surfaceList = ["ALL", "road", "gravel", "bikes", "trail"];
 export const genderList = ["ALL", "M", "F"];
 export const categoryList = [
   "ALL",

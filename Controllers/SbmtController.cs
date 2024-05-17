@@ -149,6 +149,10 @@ namespace TodoApi.Controllers
       {
         allSegment = allSegment.FindAll(s => s.SurfaceType == surfaceFilter);
       }
+      else if (surfaceFilter == "bikes")
+      {
+        allSegment = allSegment.FindAll(s => s.SurfaceType == "gravel" || s.SurfaceType == "road");
+      }
 
       var users = _dbContext.StravaUsers.Where(x => x.Active).Include(x => x.StravaClubs).ToList();
 
