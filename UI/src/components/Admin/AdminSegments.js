@@ -1,19 +1,15 @@
-import React, {
-  useState,
-  useContext,
-  useEffect,
-  useRef,
-  useCallback,
-} from "react";
+import React, { useState, useContext, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import {
   Box,
   Button,
-  Switch,
   Paper,
   TextField,
   Typography,
-  FormControlLabel,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { DataGrid } from "@mui/x-data-grid";
@@ -38,9 +34,8 @@ const AdminSegments = (props) => {
   const [newSegment, setNewSegment] = useState(null);
   const navigate = useNavigate();
 
-  const textFieldValRef = useRef("");
-
-  const [isGravel, setIsGravel] = React.useState(false);
+  const [segmentId, setSegmentId] = React.useState(null);
+  const [surfaceType, setSurfaceType] = React.useState("road");
 
   const refreshSegments = useCallback(() => {
     ApiGet("/api/admin/segments", setSegments, null);
@@ -52,7 +47,7 @@ const AdminSegments = (props) => {
 
   const addSegment = () => {
     ApiPost(
-      `/api/admin/segments/${textFieldValRef.current}?isGravel=${isGravel}`,
+      `/api/admin/segments/${segmentId}?surfaceType=${surfaceType}`,
       {},
       (newSegment) => {
         setNewSegment(newSegment);
@@ -125,21 +120,25 @@ const AdminSegments = (props) => {
             Back to Admin
           </Button>
           <TextField
-            onChange={(e) => (textFieldValRef.current = e.target.value)}
+            label="Segment ID"
+            value={segmentId}
+            onChange={(e) => setSegmentId(e.target.value)}
           />
           <Box>
-            <FormControlLabel
-              labelPlacement="top"
-              control={
-                <Switch
-                  checked={isGravel}
-                  onChange={(e) => {
-                    setIsGravel(e.target.checked);
-                  }}
-                />
-              }
-              label="Gravel?"
-            />
+            <FormControl>
+              <InputLabel id="surfaceSelectLabel">Surface</InputLabel>
+              <Select
+                id="hellothere"
+                labelId="surfaceSelectLabel"
+                label="Surface"
+                value={surfaceType}
+                onChange={(e) => setSurfaceType(e.target.value)}
+              >
+                <MenuItem value={"road"}>Road</MenuItem>
+                <MenuItem value={"gravel"}>Gravel</MenuItem>
+                <MenuItem value={"trail"}>Trail Run</MenuItem>
+              </Select>
+            </FormControl>
           </Box>
           <Button onClick={addSegment}>Add Segment</Button>
           {newSegment && (

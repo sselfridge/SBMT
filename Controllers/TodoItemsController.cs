@@ -267,10 +267,21 @@ namespace TodoApi.Controllers
       //{
       //  _dbContext.SaveChanges();
       //}
+      var activity = await _stravaService.GetActivity(9753298578, 1075670);
+      var result = await _stravaService.GetProfile(1075670);
+      var efforts = StravaUtilities.PullEffortsFromActivity(activity, _dbContext);
+
+      //Array.ForEach(efforts, (effort) =>
+      //{
+      //  var effortExists = _dbContext.Efforts.Any(e => e.Id == effort.Id);
+      //  if (effortExists == false)
+      //  {
+      //    _dbContext.Add(effort);
+      //  }
+      //});
 
 
-
-      return Ok("fin");
+      return Ok(efforts);
 
 
 
