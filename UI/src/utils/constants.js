@@ -3,7 +3,6 @@ export const START_DATE = new Date("2023-05-26T01:00:00-07:00");
 export const surfaceList = ["ALL", "road", "gravel", "bikes", "trail"];
 export const APP_ATHLETE_ID = 1;
 
-
 export const genderList = ["ALL", "M", "F"];
 export const categoryList = [
   "ALL",
@@ -39,19 +38,13 @@ export const weightClass = [
   "250lbs and over",
 ];
 
-export const distanceList = [
-  "ALL",
-  "10 mi/wk",
-  "20 mi/wk",
-  "30 mi/wk",
-  "50 mi/wk",
-];
+export const distanceList = ["ALL", "+/- 10 mi/wk", "+/- 20 mi/wk", "+/- 30 mi/wk", "+/- 50 mi/wk"];
 export const elevationList = [
   "ALL",
-  "1k ft/wk",
-  "2k ft/wk",
-  "5k ft/wk",
-  "10k ft/wk",
+  "+/- 1k ft/wk",
+  "+/- 2k ft/wk",
+  "+/- 5k ft/wk",
+  "+/- 10k ft/wk",
 ];
 
 export const MOBILE_COLUMNS = {

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { MenuItem, Box, FormControl, InputLabel, Select } from "@mui/material";
 
 const LabeledSelect = (props) => {
-  const { value, label, setValue, list, minWidth = 60, maxWidth } = props;
+  const { value, label, setValue, list, minWidth = 60, maxWidth, helpText = "" } = props;
 
   const onChange = useCallback(
     (e) => {
@@ -26,12 +26,11 @@ const LabeledSelect = (props) => {
           maxWidth,
         }}
       >
+        {helpText && <Box sx={{ p: 1, maxWidth: "200px" }}>{helpText}</Box>}
         {list.map((item, idx) => (
           // eslint-disable-next-line react/no-array-index-key
           <MenuItem value={item} key={idx}>
-            <Box sx={{ ":first-letter": { textTransform: "uppercase" } }}>
-              {item}
-            </Box>
+            <Box sx={{ ":first-letter": { textTransform: "uppercase" } }}>{item}</Box>
           </MenuItem>
         ))}
       </Select>
