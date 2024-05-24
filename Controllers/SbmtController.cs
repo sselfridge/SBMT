@@ -366,8 +366,8 @@ namespace TodoApi.Controllers
     //[ResponseCache(Duration = 36000)]
     public IActionResult GetSegmentLeaderboard(long segmentId)
     {
-
-      var efforts = _dbContext.Efforts.Where(e => e.SegmentId == segmentId).ToList();
+      var kickOffDate = getKickOffDate();
+      var efforts = _dbContext.Efforts.Where(e => e.SegmentId == segmentId && e.StartDate > kickOffDate).ToList();
 
       var bestEfforts = new Dictionary<int, Effort>();
 
