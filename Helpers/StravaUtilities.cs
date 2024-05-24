@@ -111,7 +111,7 @@ namespace TodoApi.Helpers
             foreach (var fullActivity in result)
             {
               var efforts = PullEffortsFromActivity(fullActivity, context);
-              if (efforts != null)
+              if (efforts.Count > 0)
               {
                 allEfforts.AddRange(efforts);
               }
