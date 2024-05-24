@@ -298,7 +298,7 @@ const Leaderboard = () => {
                 {" "}
                 SBMT segments{" "}
               </Link>{" "}
-              from Friday Oct 21st to onward
+              from Friday May 24th onward
             </li>
             <li>
               Ranking is based first on total segments completed and second on
