@@ -174,7 +174,7 @@ namespace TodoApi.Helpers
            }
 
            DateTime startDate = activity.StartDate;
-           DateTime endTime = new DateTime(2023, 9, 5, 8, 0, 0, 0, DateTimeKind.Utc);
+           DateTime endTime = new DateTime(2024, 9, 5, 8, 0, 0, 0, DateTimeKind.Utc);
            DateTime now = DateTime.UtcNow;
            ;
            if (startDate > endTime)
