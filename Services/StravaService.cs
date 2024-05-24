@@ -113,9 +113,11 @@ namespace TodoApi.Services
 
       var client = await GetClientForUser(athleteId);
 
+      //TODO grab this from appSettings
+
       var url = $"/athlete/activities" +
         $"?before=1965868100" +
-         $"&after=1685088000" +
+         $"&after=1716534122" +
         $"&page=1" +
         $"&per_page=200";
 
