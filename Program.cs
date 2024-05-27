@@ -12,7 +12,7 @@ var env1 = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 var env2 = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
 
 var env = env1 ?? env2 ?? "Production";
-//var env = "Staging";
+// env = "Staging";
 
 Console.WriteLine($"sbmtLog: Current ENV var is:{env}------------------");
 

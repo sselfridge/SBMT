@@ -112,8 +112,17 @@
       if (user == null) return null;
 
 
+      IConfiguration configuration = new ConfigurationBuilder()
+                               .AddJsonFile("appsettings.json")
+                               .Build();
+
+      var kickOffDateStr = configuration["KickOffDate"];
+      var kickOffDate = DateTime.Parse(kickOffDateStr).ToUniversalTime();
+
       var userEfforts = _dbContext.Efforts
        .Where(e => e.AthleteId == athleteId)
+               .Where(x => x.StartDate > kickOffDate)
+
        .Join(_dbContext.Segments,
        effort => effort.SegmentId,
        segment => segment.Id,
