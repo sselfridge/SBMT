@@ -4,6 +4,7 @@
     "firstname",
     "lastname",
     "Leaderboard",
+    "leaderboards",
     "mapbox",
     "mapboxgl",
     "Strava"

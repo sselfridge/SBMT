@@ -173,6 +173,15 @@ namespace TodoApi.Helpers
              return;
            }
 
+           IConfiguration configuration = new ConfigurationBuilder()
+                           .AddJsonFile("appsettings.json")
+                           .Build();
+
+           var kickOffStr = configuration["KickOffDate"];
+           var kickOffDate = DateTime.Parse(kickOffStr).ToUniversalTime();
+           //var endDateStr = configuration["EndingDate"];
+           //var endDate = DateTime.Parse(endDateStr).ToUniversalTime(); //TODO use this later when I can check the upload didn't break
+
            DateTime startDate = activity.StartDate;
            DateTime endTime = new DateTime(2024, 9, 5, 8, 0, 0, 0, DateTimeKind.Utc);
            DateTime now = DateTime.UtcNow;
@@ -220,7 +229,6 @@ namespace TodoApi.Helpers
              context.SaveChanges();
 
 
-
              var needToUpdate = false;
 
              // for each new effort, check where it stands on that segment, if its in the top 10, set rank accordingly.
@@ -229,7 +237,8 @@ namespace TodoApi.Helpers
              newEfforts.ForEach(newEffort =>
              {
                var top10 = context.Efforts
-                  .Where(e => e.SegmentId == newEffort.SegmentId)
+
+                  .Where(e => e.SegmentId == newEffort.SegmentId && e.StartDate > kickOffDate)
                   .GroupBy(e => e.AthleteId, e => new { e.ElapsedTime, e.Id }, (baseKey, times) =>
                   new
                   {
