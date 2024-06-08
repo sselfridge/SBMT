@@ -13,6 +13,7 @@ namespace TodoApi.Models.db
     public DateTime CreatedAt { get; set; }
     public DateTime StartDate { get; set; }
     public int PrRank { get; set; }
+    public int KomRank { get; set; } = 0;
     public int Rank { get; set; } = 0;
 
 
@@ -20,7 +21,7 @@ namespace TodoApi.Models.db
     public Effort(long id, int athleteId, long activityId,
       int elapsedTime, int movingTime, long segmentId,
       DateTime startDate,
-      int prRank)
+      int prRank, int komRank)
     {
       Id = id;
       AthleteId = athleteId;
@@ -31,6 +32,7 @@ namespace TodoApi.Models.db
       CreatedAt = DateTime.UtcNow;
       StartDate = startDate;
       PrRank = prRank;
+      KomRank = komRank;
     }
 
     public Effort(ActivitySumResEffort eff)
@@ -43,7 +45,8 @@ namespace TodoApi.Models.db
       SegmentId = eff.Segment.Id;
       StartDate = eff.StartDate;
       CreatedAt = DateTime.UtcNow;
-      PrRank = eff.PrRank ?? 0;
+      PrRank = eff.KomRank != null ? 1 : (eff.PrRank ?? 0);
+      KomRank = eff.KomRank ?? 0;
     }
   }
 

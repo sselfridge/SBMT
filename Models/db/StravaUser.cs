@@ -38,7 +38,22 @@ namespace TodoApi.Models.db
     //public StravaUser() { }
 
     [JsonConstructor] // Parameterized constructor annotated with JsonConstructorAttribute
-    public StravaUser(int athleteId, string firstname, string lastname, string avatar, long expiresAt, string refreshToken, string accessToken, string sex, double weight, string? scope, int age, string category, double recentDistance, double recentElevation, bool active, string years)
+    public StravaUser(int athleteId,
+      string firstname,
+      string lastname,
+      string avatar,
+      string accessToken,
+      long expiresAt,
+      string refreshToken,
+      string sex,
+      double weight,
+      string? scope,
+      int age,
+      string category,
+      double recentDistance,
+      double recentElevation,
+      bool active,
+      string years)
     {
       //This one is used for incoming JSON objects, such as admin user update
       AthleteId = athleteId;
@@ -46,8 +61,8 @@ namespace TodoApi.Models.db
       Lastname = lastname;
       Avatar = avatar;
       AccessToken = accessToken;
-      RefreshToken = refreshToken;
       ExpiresAt = expiresAt;
+      RefreshToken = refreshToken;
       Sex = sex;
       Weight = weight;
       Scope = scope ?? "";
