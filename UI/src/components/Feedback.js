@@ -11,16 +11,18 @@ import {
 import AddCommentIcon from "@mui/icons-material/AddComment";
 import CloseIcon from "@mui/icons-material/Close";
 import * as DOMPurify from "dompurify";
-
 import { ApiPostCb } from "api/api";
 
 const Feedback = (props) => {
   const [showText, setShowText] = useState(false);
   const [submitting, setSubmitting] = useState("un-submitted");
   const [feedback, setFeedback] = useState("");
+  const [email, setEmail] = useState("");
+  const emailRef = React.useRef();
 
   const onSubmit = () => {
-    let text = DOMPurify.sanitize(feedback);
+    const preText = `${feedback} -- ${email}`;
+    let text = DOMPurify.sanitize(preText);
     setSubmitting("submitting");
     const body = { text };
     ApiPostCb("/api/feedback", body, (res) => {
@@ -34,6 +36,8 @@ const Feedback = (props) => {
       }, 1000);
     });
   };
+
+  const submitDisabled = !feedback || submitting !== "un-submitted";
 
   return (
     <Box sx={{ position: "fixed", bottom: "20px", right: "20px" }}>
@@ -54,6 +58,7 @@ const Feedback = (props) => {
             borderColor: "primary.main",
             borderRadius: "7px",
             alignItems: "center",
+            gap: 2,
           }}
         >
           <Box
@@ -81,6 +86,25 @@ const Feedback = (props) => {
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+                emailRef.current.focus();
+              }
+              if (e.key === "Escape") {
+                e.preventDefault();
+                setShowText(false);
+              }
+            }}
+          />
+          <TextField
+            label="Email"
+            value={email}
+            inputProps={{ ref: emailRef }}
+            onChange={(e) => setEmail(e.target.value)}
+            onKeyDown={(e) => {
+              if (
+                e.key === "Enter" &&
+                (e.ctrlKey || e.metaKey) &&
+                !submitDisabled
+              ) {
                 e.preventDefault();
                 onSubmit();
               }
@@ -93,7 +117,7 @@ const Feedback = (props) => {
           <Button
             sx={{ width: "80%", marginBottom: "8px" }}
             onClick={() => onSubmit()}
-            disabled={!feedback || submitting !== "un-submitted"}
+            disabled={submitDisabled}
           >
             {submitting === "submitting" ? (
               <CircularProgress sx={{ color: "white" }} />
