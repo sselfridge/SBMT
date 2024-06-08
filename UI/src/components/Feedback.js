@@ -59,6 +59,7 @@ const Feedback = (props) => {
             borderRadius: "7px",
             alignItems: "center",
             gap: 2,
+            p: 2,
           }}
         >
           <Box
@@ -76,7 +77,7 @@ const Feedback = (props) => {
             />
           </Box>
           <TextField
-            sx={{ width: "100%", padding: 2 }}
+            sx={{ width: "100%" }}
             multiline={true}
             minRows={8}
             value={feedback}
@@ -95,6 +96,7 @@ const Feedback = (props) => {
             }}
           />
           <TextField
+            sx={{ width: "100%" }}
             label="Email"
             value={email}
             inputProps={{ ref: emailRef }}
