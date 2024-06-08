@@ -10,6 +10,23 @@ const Updates = (props) => {
   return (
     <ArticleBox sx={{ margin: "0 15%" }}>
       <TitleTypography variant="h2">Beta Updates</TitleTypography>
+      <SubTitleTypo variant="h4">Up and running!</SubTitleTypo>
+      <List sx={{ fontSize: ".8em" }}>
+        <ListItem>
+          Had to manually fetch a nite moves for Lynda, but things are working
+        </ListItem>
+        <ListItem>
+          Fixed several issues where I wasn't restricting effort queries to this
+          year
+        </ListItem>
+        <ListItem>
+          Added KOM rank to efforts because they wipe out the prRank
+        </ListItem>
+        <ListItem>
+          Added email to feedback popup because if someone isn't logged in and
+          doesn't leave it, i have no way to get in touch with them
+        </ListItem>
+      </List>
       <SubTitleTypo variant="h4">2024 is Coming</SubTitleTypo>
       <List sx={{ fontSize: ".8em" }}>
         <ListItem>
