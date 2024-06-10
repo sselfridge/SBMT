@@ -3,6 +3,7 @@ import App from "../App";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import NotFound from "routes/NotFound";
+import TeresaWon from "./TeresaWon";
 import Recent from "components/Recent";
 import Leaderboard from "components/Leaderboard";
 import Segments from "components/Segments";
@@ -42,17 +43,18 @@ const MeinRoutes = () => {
       <Routes>
         {/* <NavBar /> */}
         {/* <Route path="/" element={<Recent />} /> */}
-        <Route path="/" element={<Navigate to="/recent" />} />
-        {isPreLaunch ? (
+        {/* <Route path="/" element={<Navigate to="/recent" />} /> */}
+
+        {/* {isPreLaunch ? (
           <Route path="/" element={<Landing />} />
         ) : (
           <Route path="/" element={<Navigate to="/recent" />} />
-        )}
+        )} */}
 
         <Route path="/" element={<App />}>
           {/* <Route path="/*" element={<RedirectLanding />} /> */}
 
-          <Route path="beta/*" element={<BetaRedirect />} />
+          {/* <Route path="beta/*" element={<BetaRedirect />} />
           {isAdmin || !isPreLaunch ? (
             <React.Fragment>
               <Route path="recent" element={<Recent />} />
@@ -86,9 +88,10 @@ const MeinRoutes = () => {
               <Route path="users" element={<AdminUsers />} />
               <Route path="feedback" element={<AdminFeedback />} />
             </Route>
-          )}
+          )} */}
 
-          <Route path="*" element={<NotFound />} />
+          <Route path="*" element={<TeresaWon />} />
+          {/* <Route path="*" element={<NotFound />} /> */}
         </Route>
       </Routes>
     </BrowserRouter>
