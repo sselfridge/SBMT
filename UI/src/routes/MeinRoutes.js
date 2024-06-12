@@ -42,13 +42,11 @@ const MeinRoutes = () => {
     <BrowserRouter>
       <Routes>
         {/* <NavBar /> */}
-        {/* <Route path="/" element={<Recent />} /> */}
-        <Route path="/" element={<Navigate to="/teresa" />} />
-        {/* {isPreLaunch ? (
+        {isPreLaunch ? (
           <Route path="/" element={<Landing />} />
         ) : (
           <Route path="/" element={<Navigate to="/recent" />} />
-        )} */}
+        )}
 
         <Route path="/" element={<App />}>
           {/* <Route path="/*" element={<RedirectLanding />} /> */}

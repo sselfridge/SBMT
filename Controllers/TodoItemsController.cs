@@ -8,6 +8,7 @@ using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Services;
 
+
 namespace TodoApi.Controllers
 {
   [Route("api/[controller]")]
@@ -196,95 +197,17 @@ namespace TodoApi.Controllers
         return Ok("loadked");
       }
 
-      var users = _dbContext.StravaUsers.ToList();
+      IConfiguration configuration = new ConfigurationBuilder()
+                       .AddJsonFile("appsettings.json")
+                       .Build();
 
-
-      Console.WriteLine("");
-      //users.ForEach(u =>
-      //{
-      //  u.Years = "2023";
-      //  u.Active = false;
-      //  _dbContext.Update(u);
-
-      //});
-
-      //await _dbContext.SaveChangesAsync();
-
-      //var efforts = _dbContext.Efforts.ToList();
-
-      //efforts.ForEach(e =>
-      //{
-      //  e.StartDate = e.CreatedAt;
-
-      //  _dbContext.Update(e);
-
-      //});
-
-      //await _dbContext.SaveChangesAsync();
-
-      //var scope = serviceScopeFactory.CreateScope();
-
-      //var stravaService = scope.ServiceProvider.GetRequiredService<IStravaService>();
-
-      //var list = new List<ActivitySumResEffort>();
-
-      //bool needToUpdate = false;
-
-      //var activities = _dbContext.Efforts.OrderBy(x => x.StartDate).ToList().GroupBy(x => x.ActivityId).ToList().Select(x => new
-      //{
-      //  ActivityId = x.Key,
-      //  Efforts = x.ToList()
-      //}).ToList();
-
-      //for (int i = 0; i < activities.Count; i++)
-      //{
-      //  var current = activities[i];
-      //  var activityId = current.ActivityId;
-      //  var athleteId = current.Efforts[0].AthleteId;
-      //  var activity = await stravaService.GetActivity(activityId, athleteId);
-
-      //  if (activity == null || activity.SegmentEfforts == null) { continue; }
-
-      //  current.Efforts.ForEach(effort =>
-      //  {
-
-      //    var activityEffort = activity.SegmentEfforts.Where(x => x.Id == effort.Id).FirstOrDefault();
-      //    if (activityEffort != null && activityEffort.PrRank != null)
-      //    {
-      //      var dbEffort = _dbContext.Efforts.Where(e => e.Id == effort.Id).FirstOrDefault();
-      //      if (dbEffort != null)
-      //      {
-      //        dbEffort.PrRank = activityEffort.PrRank ?? 0;
-      //        needToUpdate = true;
-      //        _dbContext.Update(dbEffort);
-      //      }
-      //    }
-      //  });
-
-      //}
-
-      //if (needToUpdate)
-      //{
-      //  _dbContext.SaveChanges();
-      //}
-      var activity = await _stravaService.GetActivity(9753298578, 1075670);
-      var result = await _stravaService.GetProfile(1075670);
-      var efforts = StravaUtilities.PullEffortsFromActivity(activity, _dbContext);
-
-      //Array.ForEach(efforts, (effort) =>
-      //{
-      //  var effortExists = _dbContext.Efforts.Any(e => e.Id == effort.Id);
-      //  if (effortExists == false)
-      //  {
-      //    _dbContext.Add(effort);
-      //  }
-      //});
-
-
-      return Ok(efforts);
+      var kickOffStr = configuration["KickOffDate"];
+      var kickOffDate = DateTime.Parse(kickOffStr).ToUniversalTime();
 
 
 
+
+      return Ok("doin' nothin' boss");
 
       var newStudent = new Student();
       newStudent.Name = "Bobby";
@@ -301,42 +224,7 @@ namespace TodoApi.Controllers
       int[] rates = new int[] { fifteen, daily };
 
 
-      //var activity = await _stravaService.GetActivity(6156488864, 1075670);
-      //var result = await _stravaService.GetProfile(1075670, _dbContext);
-      //var efforts = StravaUtilities.PullEffortsFromActivity(activity);
-      //Array.ForEach(efforts, (effort) =>
-      //{
-      //  var effortExists = _dbContext.Efforts.Any(e => e.Id == effort.Id);
-      //  if (effortExists == false)
-      //  {
-      //    _dbContext.Add(effort);
-      //  }
-      //});
 
-      //_dbContext.SaveChanges();
-      //await StravaUtilities.KickOffInitialFetch(serviceScopeFactory);
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-      //Task.Run(async () =>
-      //{
-
-      //  using (var scope = serviceScopeFactory.CreateScope())
-      //  {
-      //    var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
-      //    var activities = await _stravaService.GetActivities(1075670, context);
-
-      //    var newStudent = new Student();
-      //    newStudent.Name = "WAIT FOR ME!!!!";
-      //    newStudent.Age = 20;
-      //    newStudent.Grade = 10;
-
-      //    context.Students.Add(newStudent);
-      //    await context.SaveChangesAsync();
-      //  }
-      //});
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-
-      //var seg = _dbContext.Segments.FirstOrDefault(s => s.Id == 746977);
-      //var seg = _dbContext.Segments.ToList();
 
 
       return Ok(rates);
