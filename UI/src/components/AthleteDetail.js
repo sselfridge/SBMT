@@ -81,8 +81,14 @@ const AthleteDetail = () => {
       }
       meinActLink = `${meinSegment.bestActId}/segments/${meinSegment.bestEffortId}`;
     }
+
+    const isBehind = timeDiff > 0;
+    const isAhead = timeDiff < 0;
+
     const negStyle = { color: "red" };
     const posStyle = { color: "green" };
+
+    timeDiff = Math.abs(timeDiff);
 
     return (
       <React.Fragment key={segment.segmentId}>
@@ -129,10 +135,8 @@ const AthleteDetail = () => {
                   </a>
                 )}
               </TableCell>
-              <TableCell
-                sx={timeDiff > 0 ? negStyle : timeDiff < 0 ? posStyle : {}}
-              >
-                {timeDiff > 0 ? "-" : timeDiff < 0 ? "+" : ""}
+              <TableCell sx={isBehind ? negStyle : isAhead ? posStyle : {}}>
+                {isAhead ? "-" : isBehind ? "+" : ""}
                 {timeDiff ? formattedTime(timeDiff) : "--"}
               </TableCell>
             </React.Fragment>
