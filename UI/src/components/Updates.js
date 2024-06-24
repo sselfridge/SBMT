@@ -10,6 +10,18 @@ const Updates = (props) => {
   return (
     <ArticleBox sx={{ margin: "0 15%" }}>
       <TitleTypography variant="h2">Beta Updates</TitleTypography>
+      {/* <SubTitleTypo variant="h4">TITLE</SubTitleTypo>
+      <List sx={{ fontSize: ".8em" }}>
+        <ListItem>
+          ITEM
+        </ListItem>
+     
+      </List> */}
+      <SubTitleTypo variant="h4">Thanks date-fns</SubTitleTypo>
+      <List sx={{ fontSize: ".8em" }}>
+        <ListItem>Fix date display on diff for users</ListItem>
+        <ListItem>Added options for athlete display.</ListItem>
+      </List>
       <SubTitleTypo variant="h4">Up and running!</SubTitleTypo>
       <List sx={{ fontSize: ".8em" }}>
         <ListItem>
