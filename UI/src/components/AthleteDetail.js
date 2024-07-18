@@ -20,6 +20,7 @@ import { formattedTime } from "utils/helperFuncs";
 import { MAX_INT } from "utils/constants";
 
 import { ReactComponent as StravaLogo } from "assets/stravaLogoTransparent.svg";
+import SelectCompUser from "./SelectCompUser";
 
 const MyBox = styled(Box)(({ theme }) => ({
   padding: 8,
@@ -32,11 +33,11 @@ const AthleteDetail = () => {
   const params = useParams();
   const [user, setUser] = useState(undefined);
   const [userSegments, setUserSegments] = useState([]);
-  const [meinSegments, setMeinSegments] = useState(null);
+  const [compSegments, setCompSegments] = useState(null);
 
   const [hideIncomplete, setHideIncomplete] = useState(false);
 
-  const { user: meinUser, isPreLaunch } = useContext(AppContext);
+  const { user: loggedInUser, isPreLaunch } = useContext(AppContext);
 
   const gravelSegments = userSegments.filter((s) => s.surfaceType === "gravel");
   const roadSegments = userSegments.filter((s) => s.surfaceType === "road");
@@ -58,28 +59,16 @@ const AthleteDetail = () => {
     ApiGet(`/api/athletes/${params.athleteId}/efforts`, setUserSegments);
   }, [params]);
 
-  React.useEffect(() => {
-    if (
-      // isMobile === false &&
-      meinUser?.athleteId &&
-      user?.athleteId &&
-      meinUser.athleteId !== user.athleteId &&
-      !meinSegments
-    ) {
-      ApiGet(`/api/athletes/${meinUser.athleteId}/efforts`, setMeinSegments);
-    }
-  }, [isMobile, meinSegments, meinUser, user]);
-
   const makeSegmentRow = (segment, index) => {
     let timeDiff = 0;
-    let meinSegment = null;
-    let meinActLink = null;
-    if (meinSegments) {
-      meinSegment = meinSegments.find((s) => s.segmentId === segment.segmentId);
-      if (meinSegment.bestTime !== MAX_INT && segment.bestTime !== MAX_INT) {
-        timeDiff = meinSegment.bestTime - segment.bestTime;
+    let compSegment = null;
+    let compActLink = null;
+    if (compSegments) {
+      compSegment = compSegments.find((s) => s.segmentId === segment.segmentId);
+      if (compSegment.bestTime !== MAX_INT && segment.bestTime !== MAX_INT) {
+        timeDiff = compSegment.bestTime - segment.bestTime;
       }
-      meinActLink = `${meinSegment.bestActId}/segments/${meinSegment.bestEffortId}`;
+      compActLink = `${compSegment.bestActId}/segments/${compSegment.bestEffortId}`;
     }
 
     const isBehind = timeDiff > 0;
@@ -124,14 +113,14 @@ const AthleteDetail = () => {
               </a>
             )}
           </TableCell>
-          {meinSegment && (
+          {compSegment && (
             <React.Fragment>
               <TableCell>
-                {meinSegment.bestTime === MAX_INT ? (
+                {compSegment.bestTime === MAX_INT ? (
                   "--"
                 ) : (
-                  <a href={`https://www.strava.com/activities/${meinActLink}`}>
-                    {formattedTime(meinSegment.bestTime)}
+                  <a href={`https://www.strava.com/activities/${compActLink}`}>
+                    {formattedTime(compSegment.bestTime)}
                   </a>
                 )}
               </TableCell>
@@ -186,7 +175,7 @@ const AthleteDetail = () => {
             View on Strava
           </a>
         </Box>
-        {!isPreLaunch || meinUser.athleteId === 1075670 ? (
+        {!isPreLaunch || loggedInUser.athleteId === 1075670 ? (
           <React.Fragment>
             <Typography variant="h4">Segment Efforts</Typography>
             <Button onClick={() => setHideIncomplete((v) => !v)}>
@@ -200,14 +189,15 @@ const AthleteDetail = () => {
                   <TableCell>
                     <Avatar src={user.avatar} alt={user.firstname} />
                   </TableCell>
-                  {!!meinSegments && (
-                    <React.Fragment>
-                      <TableCell>
-                        <Avatar src={meinUser.avatar} />
-                      </TableCell>
-                      <TableCell>Diff +/-</TableCell>
-                    </React.Fragment>
-                  )}
+                  {!!loggedInUser &&
+                    user.athleteId !== loggedInUser.athleteId && (
+                      <React.Fragment>
+                        <TableCell>
+                          <SelectCompUser setCompSegments={setCompSegments} />
+                        </TableCell>
+                        <TableCell>Diff +/-</TableCell>
+                      </React.Fragment>
+                    )}
                 </TableRow>
               </TableHead>
               <TableBody>
