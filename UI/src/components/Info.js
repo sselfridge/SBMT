@@ -70,6 +70,44 @@ const Info = (props) => {
           <br />
           <br />
         </ArticleBox>
+        <ArticleBox>
+          <TitleTypography variant="h2">2024 Prizes</TitleTypography>
+          For the first time, the 2024 SBMT will have prizes!{" "}
+          <MuiLink href="https://www.dunecoffee.com/" target="_blank">
+            Dune Coffee
+          </MuiLink>{" "}
+          and{" "}
+          <MuiLink href="https://www.velopro.com/" target="_blank">
+            Velo Pro Cyclery
+          </MuiLink>{" "}
+          have both offered prizes to the tops of our leaderboard, and I'll
+          throw in some{" "}
+          <MuiLink href="https://www.riobravoranch.com">
+            Rio Bravo Olive oil
+          </MuiLink>{" "}
+          as well.
+          <br />
+          <br />
+          Prizes are going to be given out white-elephant style (with no
+          stealing). Top of the leaderboard will have their pick of the the
+          available prizes, then next down the line based on whatever eligiblity
+          the gifter agreed to, for example to be eligible for the Velo Pro
+          prizes, you need to{" "}
+          <MuiLink href="https://www.strava.com/clubs/velopro" target="_blank">
+            join their strava club
+          </MuiLink>
+          .
+          <br />
+          <br />
+          This will keep whoever gets top spot from getting multiple things from
+          different shops and spread things out a little bit so more people are
+          included.
+          <br />
+          <br />
+          Stay tuned for exact prizes.
+          <br />
+          <br />
+        </ArticleBox>
         <Updates
           ArticleBox={ArticleBox}
           TitleTypography={TitleTypography}
