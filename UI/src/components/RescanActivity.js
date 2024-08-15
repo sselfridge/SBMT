@@ -58,6 +58,8 @@ const RescanActivity = () => {
           <Box>
             Segment not showing up??
             <br /> Enter the ActivityID here and we'll rescan it
+            <br /> Url / Share scan is work in progress - but for now you'll
+            have to grab the activity ID from the URL of the activity.
           </Box>
           <Box>
             <TextField

@@ -1,17 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import {
-  Box,
-  Paper,
-  Typography,
-  TextField,
-  Button,
-  FormControl,
-  FormHelperText,
-  Divider,
-} from "@mui/material";
+import { Box, Paper, Typography, Divider } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import * as DOMPurify from "dompurify";
 
 import RescanActivity from "./RescanActivity";
 
@@ -20,20 +10,7 @@ import { Link } from "react-router-dom";
 
 const MyBox = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 
-const STATUS_LIST = ["Submit", "Submitting...", "Submitted"];
-
 const HelpContact = (props) => {
-  const [contactField, setContactField] = useState("");
-  const [submittedStatus, setSubmittedStatus] = useState(STATUS_LIST[0]);
-
-  const onSubmit = () => {
-    setSubmittedStatus(STATUS_LIST[1]);
-    setTimeout(() => {
-      setSubmittedStatus(STATUS_LIST[2]);
-      setContactField("");
-    }, 900);
-  };
-
   return (
     <MyBox
       sx={{
@@ -108,61 +85,6 @@ const HelpContact = (props) => {
             />
             @SBMTChallenge
           </a>
-        </Box>
-        <Divider />
-        <Box>
-          <FormControl>
-            {/* <InputLabel htmlFor="my-input">Email address</InputLabel> */}
-            {submittedStatus === STATUS_LIST[2] ? (
-              <Button onClick={() => setSubmittedStatus(STATUS_LIST[0])}>
-                Wait I had more!!
-              </Button>
-            ) : (
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
-                <TextField
-                  multiline
-                  value={contactField}
-                  onChange={(e) => {
-                    let clean = DOMPurify.sanitize(e.target.value);
-                    setContactField(clean);
-                  }}
-                  // maxRows={15}
-                  label={"Message to Developer"}
-                  placeholder="Your message here."
-                  minRows={4}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
-                      onSubmit();
-                    }
-                  }}
-                  sx={{
-                    minWidth: "225px",
-                    width: "50vw",
-                    maxWidth: "700px",
-                  }}
-                />
-                <FormHelperText id="my-helper-text">
-                  (Ctrl/Cmd + Enter to submit)
-                </FormHelperText>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  onClick={onSubmit}
-                  disabled={
-                    contactField === "" || submittedStatus === "Submitting..."
-                  }
-                >
-                  {submittedStatus}
-                </Button>
-              </Box>
-            )}
-          </FormControl>
         </Box>
       </Paper>
 
