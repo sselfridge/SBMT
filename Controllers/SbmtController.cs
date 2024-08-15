@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using TodoApi.Helpers;
 using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Services;
@@ -17,13 +18,18 @@ namespace TodoApi.Controllers
     private sbmtContext _dbContext;
     private IUserService _userService;
     private readonly IConfiguration Configuration;
+    private IServiceScopeFactory _serviceScopeFactory;
 
 
-    public SbmtController(sbmtContext dbContext, IUserService userService, IConfiguration configuration)
+
+    public SbmtController(sbmtContext dbContext, IUserService userService, IConfiguration configuration, IServiceScopeFactory serviceScopeFactory
+)
     {
       _dbContext = dbContext;
       _userService = userService;
       Configuration = configuration;
+      _serviceScopeFactory = serviceScopeFactory;
+
     }
 
 
@@ -599,6 +605,35 @@ namespace TodoApi.Controllers
       var deletedUserDTO = new StravaUserDTO(dbUser);
       return Ok(deletedUserDTO);
     }
+
+    //[HttpGet("rescanactivity/{id}")]
+    ////[ResponseCache(Duration = 360)]
+
+    //public async Task<IActionResult> RescanActivityString(string url)
+    //{
+
+
+
+
+    //  return Ok(url);
+    //}
+
+    [HttpGet("rescanactivity/{id}")]
+    //[ResponseCache(Duration = 360)]
+
+    public async Task<IActionResult> RescanActivity(long id)
+    {
+      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
+      if (userId == null) return NotFound();
+      var athleteId = Int32.Parse(userId);
+
+
+      await StravaUtilities.ParseNewActivity(_serviceScopeFactory, athleteId, id, 0);
+
+
+      return Ok();
+    }
+
 
     private DateTime getKickOffDate()
     {

@@ -13,6 +13,8 @@ import {
 import { styled } from "@mui/material/styles";
 import * as DOMPurify from "dompurify";
 
+import RescanActivity from "./RescanActivity";
+
 import { ReactComponent as Insta } from "assets/insta.svg";
 import { Link } from "react-router-dom";
 
@@ -40,6 +42,23 @@ const HelpContact = (props) => {
         },
       }}
     >
+      <Paper
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          minWidth: "75vw",
+          "& > .MuiBox-root": {
+            padding: "24px",
+          },
+          "& > .MuiDivider-root": {
+            color: "grey.600",
+            width: "75vw",
+          },
+        }}
+      >
+        <RescanActivity />
+      </Paper>
       <Paper
         sx={{
           display: "flex",

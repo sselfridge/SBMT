@@ -90,13 +90,7 @@ const Info = (props) => {
           <br />
           Prizes are going to be given out white-elephant style (with no
           stealing). Top of the leaderboard will have their pick of the the
-          available prizes, then next down the line based on whatever eligiblity
-          the gifter agreed to, for example to be eligible for the Velo Pro
-          prizes, you need to{" "}
-          <MuiLink href="https://www.strava.com/clubs/velopro" target="_blank">
-            join their strava club
-          </MuiLink>
-          .
+          available prizes, then next down the line based on what categories. .
           <br />
           <br />
           This will keep whoever gets top spot from getting multiple things from
