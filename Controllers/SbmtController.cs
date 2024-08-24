@@ -19,16 +19,19 @@ namespace TodoApi.Controllers
     private IUserService _userService;
     private readonly IConfiguration Configuration;
     private IServiceScopeFactory _serviceScopeFactory;
+    private IStravaService _stravaService;
 
 
 
-    public SbmtController(sbmtContext dbContext, IUserService userService, IConfiguration configuration, IServiceScopeFactory serviceScopeFactory
+
+    public SbmtController(sbmtContext dbContext, IUserService userService, IConfiguration configuration, IServiceScopeFactory serviceScopeFactory, IStravaService stravaService
 )
     {
       _dbContext = dbContext;
       _userService = userService;
       Configuration = configuration;
       _serviceScopeFactory = serviceScopeFactory;
+      _stravaService = stravaService;
 
     }
 
@@ -606,17 +609,20 @@ namespace TodoApi.Controllers
       return Ok(deletedUserDTO);
     }
 
-    //[HttpGet("rescanactivity/{id}")]
-    ////[ResponseCache(Duration = 360)]
+    [HttpGet("rescanactivitylink/{url}")]
+    //[ResponseCache(Duration = 360)]
 
-    //public async Task<IActionResult> RescanActivityString(string url)
-    //{
+    public async Task<IActionResult> RescanActivityLink(string url)
+    {
 
+      var act = await _stravaService.ParseLink(url);
 
+      long activityId = long.Parse(act);
 
+      await RescanActivity(activityId);
 
-    //  return Ok(url);
-    //}
+      return Ok(activityId);
+    }
 
     [HttpGet("rescanactivity/{id}")]
     //[ResponseCache(Duration = 360)]

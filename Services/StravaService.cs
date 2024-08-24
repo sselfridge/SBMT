@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using TodoApi.Models.db;
 using TodoApi.Models.stravaApi;
 
@@ -24,6 +25,8 @@ namespace TodoApi.Services
     Task<bool> UpdateClubs();
 
     Task<StravaUser> UpdateUserStats(StravaUser user);
+
+    Task<string> ParseLink(string link);
 
   }
   public class StravaService : IStravaService
@@ -365,6 +368,57 @@ namespace TodoApi.Services
       context.SaveChanges();
 
       return true;
+    }
+
+    public async Task<string> ParseLink(string link)
+    {
+      var client = new HttpClient();
+
+      string decodedUrl = Uri.UnescapeDataString(link);
+
+      var response = await client.GetAsync(decodedUrl);
+
+      response.EnsureSuccessStatusCode();
+
+      try
+      {
+        string result = await response.Content.ReadAsStringAsync();
+
+        if (result == null)
+        {
+
+          throw new Exception("Invalid response");
+        }
+
+        string pattern = @"https:\/\/www\.strava\.com\/activities\/(\d+)\?";
+
+        // Extract the number using regex
+        var match = Regex.Match(result, pattern);
+
+        if (match.Success)
+        {
+          string activityId = match.Groups[1].Value;
+
+          return activityId;
+
+        }
+        else
+        {
+          Console.WriteLine("No match found.");
+        }
+
+
+
+        return "";
+
+      }
+      catch (Exception e)
+      {
+        throw new Exception("Link Parse error");
+      }
+
+
+
     }
 
     /// <summary>

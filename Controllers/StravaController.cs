@@ -302,5 +302,12 @@ namespace TodoApi.Controllers
       return Ok(returnUser);
     }
 
+    [HttpGet("parse/{link}")]
+    public async Task<string> ParseLink(string link)
+    {
+      var result = await _stravaService.ParseLink(link);
+      return result;
+    }
+
   }
 }
