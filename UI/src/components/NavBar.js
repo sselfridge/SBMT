@@ -87,16 +87,19 @@ export default function NavBar() {
           >
             <TitleLink to="recent">
               <span className="sbmt">SBMT</span>
-              {/* <Box
+              <Box
                 sx={{
                   fontSize: 8,
                   fontWeight: 400,
+                  width: "140px",
+                  marginTop: "-14px", //TODO - remove hacky positioning
+                  marginBottom: "8px",
                   letterSpacing: 1,
                   fontFamily: "roboto",
                 }}
               >
-                Ends Sep 4th at 11:59pm
-              </Box> */}
+                Ends Sep 2th at 11:59pm
+              </Box>
               <Box sx={{ position: "relative" }}>
                 <PwdBy />
               </Box>

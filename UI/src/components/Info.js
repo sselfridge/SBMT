@@ -53,8 +53,8 @@ const Info = (props) => {
           <span className="sbmt">SBMT</span> is the same idea here in Santa
           Barbara. <br />
           We'll have a list of 10-15 local cycling climbs and a leaderboard
-          running. Starts Memorial Day weekend and runs til just before labor
-          day weekend
+          running. Starts Memorial Day weekend and runs through labor day
+          weekend.
           <br />
           <br />
           Ranking is done 1st by number of segments completed, then total
