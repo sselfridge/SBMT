@@ -179,8 +179,8 @@ namespace TodoApi.Helpers
 
            var kickOffStr = configuration["KickOffDate"];
            var kickOffDate = DateTime.Parse(kickOffStr).ToUniversalTime();
-           //var endDateStr = configuration["EndingDate"];
-           //var endDate = DateTime.Parse(endDateStr).ToUniversalTime(); //TODO use this later when I can check the upload didn't break
+           var endDateStr = configuration["EndingDate"];
+           var endDate = DateTime.Parse(endDateStr).ToUniversalTime(); //TODO use this later when I can check the upload didn't break
 
            DateTime startDate = activity.StartDate;
            DateTime endTime = new DateTime(2024, 9, 5, 8, 0, 0, 0, DateTimeKind.Utc);
