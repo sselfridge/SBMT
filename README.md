@@ -9,6 +9,15 @@ https://www.nginx.com/blog/using-free-ssltls-certificates-from-lets-encrypt-with
 not 100% sure this is how things are setup, but its a jumping off point.
 Remind Me: When doing tricky config stuff, write down the thing that actually worked.
 
+# Running app
+
+build using dotnet publish -c Release
+
+cd to build directory
+
+dotnet TodoApi.dll
+
+
 
 # old method using iptables port forwarding
 
