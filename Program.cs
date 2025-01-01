@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using TodoApi.Helpers;
-using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Services;
 
@@ -12,7 +11,7 @@ var env1 = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 var env2 = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
 
 var env = env1 ?? env2 ?? "Production";
-// env = "Staging";
+env = "Staging";
 
 Console.WriteLine($"sbmtLog: Current ENV var is:{env}------------------");
 
@@ -22,18 +21,21 @@ IConfiguration configuration = new ConfigurationBuilder()
                             .Build();
 
 var builder = WebApplication.CreateBuilder(args);
-builder.WebHost.UseUrls("http://*:5000", "https://*:5001");
+builder.WebHost.UseUrls("http://*:5000");
 
 // Add services to the container.
 
 //https://gavilan.blog/2021/05/19/fixing-the-error-a-possible-object-cycle-was-detected-in-different-versions-of-asp-net-core/
 builder.Services.AddControllers().AddJsonOptions(x =>
 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-
-string dbServer = configuration["DbConfig:dbServer"];
+string dbServer = Environment.GetEnvironmentVariable("DB_IP") ?? "localhost";
+//string dbServer = configuration["DbConfig:dbServer"];
+string dbPort = configuration["DbConfig:dbPort"];
 string dbPass = configuration["DbConfig:dbPass"];
 string dbUser = configuration["DbConfig:dbUser"];
 string dbName = configuration["DbConfig:dbName"];
+string dbSsl = configuration["DbConfig:sslMode"];
+
 bool includeError = bool.Parse(configuration["DbConfig:includeError"]);
 bool enableSensitiveDataLogging = bool.Parse(configuration["DbConfig:enableSensitiveDataLogging"]);
 
@@ -41,10 +43,10 @@ bool enableSensitiveDataLogging = bool.Parse(configuration["DbConfig:enableSensi
 string connectionString = $"" +
   $"Server={dbServer};" +
   $"Database={dbName};" +
-  $"Port=5432;" +
+  $"Port={dbPort};" +
   $"User Id={dbUser};" +
   $"Password={dbPass};" +
-  $"Ssl Mode=Require;" +
+  $"Ssl Mode={dbSsl};" +
   $"Trust Server Certificate=true;" +
   $"Include Error Detail={includeError};";
 
@@ -58,8 +60,7 @@ builder.Services.AddDbContext<sbmtContext>(opt =>
 );
 
 
-builder.Services.AddDbContext<TodoContext>(opt =>
-    opt.UseInMemoryDatabase("TodoList"));
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
