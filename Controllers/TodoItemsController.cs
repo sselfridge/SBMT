@@ -3,8 +3,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using TodoApi.Helpers;
-using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Services;
 
@@ -15,7 +16,6 @@ namespace TodoApi.Controllers
   [ApiController]
   public class TodoItemsController : ControllerBase
   {
-    private readonly TodoContext _context;
     private sbmtContext _dbContext;
     private IUserService _userService;
     private IStravaService _stravaService;
@@ -138,13 +138,12 @@ namespace TodoApi.Controllers
       return newSegmentEfforts;
     }
 
-    public TodoItemsController(TodoContext context,
+    public TodoItemsController(
       IUserService userService, IStravaService stravaService,
       sbmtContext dbContext, IConfiguration configuration,
       StravaLimitService stravaLimitService, IServiceScopeFactory serviceScopeFactory,
       ILogger<TodoItemsController> logger)
     {
-      _context = context;
       _userService = userService;
       _stravaService = stravaService;
       _dbContext = dbContext;
@@ -165,24 +164,6 @@ namespace TodoApi.Controllers
     //  return await _context.TodoItems.ToListAsync();
     //}
 
-    // GET: api/TodoItems/5
-    [HttpGet("{id}")]
-    public async Task<ActionResult<TodoItem>> GetTodoItem(long id)
-    {
-      return NotFound();
-      if (_context.TodoItems == null)
-      {
-        return NotFound();
-      }
-      var todoItem = await _context.TodoItems.FindAsync(id);
-
-      if (todoItem == null)
-      {
-        return NotFound();
-      }
-
-      return todoItem;
-    }
 
     [HttpGet()]
     public async Task<ActionResult<long>> TestThing([FromServices] IServiceScopeFactory serviceScopeFactory)
@@ -204,10 +185,17 @@ namespace TodoApi.Controllers
       var kickOffStr = configuration["KickOffDate"];
       var kickOffDate = DateTime.Parse(kickOffStr).ToUniversalTime();
 
+      var jsonStr = "{\"AthleteId\":\"1075670\",\"Firstname\":\"Sam\",\"Lastname\":\"Wise | SBMT\",\"Avatar\":\"https://dgalywyr863hv.cloudfront.net/pictures/athletes/1075670/948003/4/medium.jpg\",\"JoinDate\":\"2023-05-20T08:43:08Z\",\"AccessToken\":\"aa2d1d0840963b87f6fc51f0449a63832a1575b0\",\"ExpiresAt\":\"1727161196\",\"RefreshToken\":\"080234a781900e5efa35c402d8fe0ef343493bc9\",\"Sex\":\"M\",\"Weight\":\"84.0507\",\"Scope\":\"read,activity:read,profile:read_all\",\"Age\":\"39\",\"Category\":\"Cat 3 (Advanced)\",\"RecentDistance\":\"0\",\"RecentElevation\":\"0\",\"SavedFilters\":\"\",\"Active\":true,\"Years\":\"2023,2024\"}";
 
+      var newUser = JsonSerializer.Deserialize<StravaUser>(jsonStr, new JsonSerializerOptions
+      {
+        NumberHandling = JsonNumberHandling.AllowReadingFromString
+      });
 
+      //_dbContext.StravaUsers.Add(newUser);
+      //_dbContext.SaveChanges();
 
-      return Ok("doin' nothin' boss");
+      return Ok(newUser);
 
       var newStudent = new Student();
       newStudent.Name = "Bobby";
