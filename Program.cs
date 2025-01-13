@@ -28,8 +28,8 @@ builder.WebHost.UseUrls("http://*:5000");
 //https://gavilan.blog/2021/05/19/fixing-the-error-a-possible-object-cycle-was-detected-in-different-versions-of-asp-net-core/
 builder.Services.AddControllers().AddJsonOptions(x =>
 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-string dbServer = Environment.GetEnvironmentVariable("DB_IP") ?? "localhost";
-//string dbServer = configuration["DbConfig:dbServer"];
+
+string dbServer = configuration["DbConfig:dbServer"];
 string dbPort = configuration["DbConfig:dbPort"];
 string dbPass = configuration["DbConfig:dbPass"];
 string dbUser = configuration["DbConfig:dbUser"];
@@ -50,11 +50,13 @@ string connectionString = $"" +
   $"Trust Server Certificate=true;" +
   $"Include Error Detail={includeError};";
 
-
+Console.WriteLine($"{connectionString}");
 
 builder.Services.AddDbContext<sbmtContext>(opt =>
   {
-    opt.UseNpgsql(connectionString);
+    opt.UseNpgsql(connectionString,
+      psqlOpt => psqlOpt.EnableRetryOnFailure() //this buys 90 seconds of startup without the DB
+      );
     opt.EnableSensitiveDataLogging(enableSensitiveDataLogging);
   }
 );
