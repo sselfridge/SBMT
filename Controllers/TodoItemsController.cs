@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using TodoApi.Helpers;
 using TodoApi.Models.db;
 using TodoApi.Services;
@@ -164,6 +164,33 @@ namespace TodoApi.Controllers
     //  return await _context.TodoItems.ToListAsync();
     //}
 
+    public static void ConvertDatesToUniversal(object obj)
+    {
+      if (obj == null)
+      {
+        throw new ArgumentNullException(nameof(obj));
+      }
+
+      // Get the type of the object
+      var type = obj.GetType();
+
+      // Iterate over all properties of the object
+      foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+      {
+        // Check if the property is of type DateTime and is writable
+        if (property.PropertyType == typeof(DateTime) && property.CanWrite)
+        {
+          // Get the current value of the property
+          var value = (DateTime?)property.GetValue(obj);
+
+          if (value.HasValue)
+          {
+            // Convert the DateTime to universal time and set it back
+            property.SetValue(obj, value.Value.ToUniversalTime());
+          }
+        }
+      }
+    }
 
     [HttpGet()]
     public async Task<ActionResult<long>> TestThing([FromServices] IServiceScopeFactory serviceScopeFactory)
@@ -178,24 +205,9 @@ namespace TodoApi.Controllers
         return Ok("loadked");
       }
 
-      IConfiguration configuration = new ConfigurationBuilder()
-                       .AddJsonFile("appsettings.json")
-                       .Build();
 
-      var kickOffStr = configuration["KickOffDate"];
-      var kickOffDate = DateTime.Parse(kickOffStr).ToUniversalTime();
 
-      var jsonStr = "{\"AthleteId\":\"1075670\",\"Firstname\":\"Sam\",\"Lastname\":\"Wise | SBMT\",\"Avatar\":\"https://dgalywyr863hv.cloudfront.net/pictures/athletes/1075670/948003/4/medium.jpg\",\"JoinDate\":\"2023-05-20T08:43:08Z\",\"AccessToken\":\"aa2d1d0840963b87f6fc51f0449a63832a1575b0\",\"ExpiresAt\":\"1727161196\",\"RefreshToken\":\"080234a781900e5efa35c402d8fe0ef343493bc9\",\"Sex\":\"M\",\"Weight\":\"84.0507\",\"Scope\":\"read,activity:read,profile:read_all\",\"Age\":\"39\",\"Category\":\"Cat 3 (Advanced)\",\"RecentDistance\":\"0\",\"RecentElevation\":\"0\",\"SavedFilters\":\"\",\"Active\":true,\"Years\":\"2023,2024\"}";
-
-      var newUser = JsonSerializer.Deserialize<StravaUser>(jsonStr, new JsonSerializerOptions
-      {
-        NumberHandling = JsonNumberHandling.AllowReadingFromString
-      });
-
-      //_dbContext.StravaUsers.Add(newUser);
-      //_dbContext.SaveChanges();
-
-      return Ok(newUser);
+      return Ok("ok");
 
       var newStudent = new Student();
       newStudent.Name = "Bobby";
@@ -212,13 +224,16 @@ namespace TodoApi.Controllers
       int[] rates = new int[] { fifteen, daily };
 
 
+      //  IConfiguration configuration = new ConfigurationBuilder()
+      //                        .AddJsonFile("appsettings.json")
+      //                        .Build();
+
+      //       var kickOffStr = configuration["KickOffDate"];
+      //       var kickOffDate = DateTime.Parse(kickOffStr).ToUniversalTime();
 
 
 
-      return Ok(rates);
-
-
-
+      return Ok("Shouldn't get here");
     }
 
 
@@ -396,3 +411,27 @@ namespace TodoApi.Controllers
 
 //_dbContext.AddRange(t);
 //await _dbContext.SaveChangesAsync();
+
+//restore DB from JSON
+
+
+//       String jsonString = new StreamReader("./CSV/parsedData.json")
+//         .ReadToEnd();
+
+//       if (jsonString != null)
+//       {
+
+
+//         Console.WriteLine(jsonString);
+
+//         var newDatas = JsonSerializer.Deserialize<List<Segment>>(jsonString);
+
+//         foreach (var newData in newDatas)
+//         {
+//           ConvertDatesToUniversal(newData);
+//           _dbContext.Segments.Add(newData);
+//         }
+//         _dbContext.SaveChanges();
+//   return Ok(rates);
+
+// }
