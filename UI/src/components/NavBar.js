@@ -98,7 +98,7 @@ export default function NavBar() {
                   fontFamily: "roboto",
                 }}
               >
-                Ends Sep 2th at 11:59pm
+                Starts May 23rd 2025!!
               </Box>
               <Box sx={{ position: "relative" }}>
                 <PwdBy />

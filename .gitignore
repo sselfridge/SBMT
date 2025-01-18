@@ -3,6 +3,8 @@
 .vs/
 /appsettings.json
 Models/stravaApi/Strava.NET
+notes
 /appsettings.Development.json
 /appsettings.Production.json
 /appsettings.Staging.json
+/appsettings.QA.json
