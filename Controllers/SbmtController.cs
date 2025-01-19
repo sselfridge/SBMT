@@ -37,9 +37,12 @@ namespace TodoApi.Controllers
 
 
     [HttpGet]
-    public IEnumerable<string> Get()
+    public ActionResult<string> Get()
     {
-      return new string[] { "sbmtLife", "value2" };
+      var env1 = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+      var env2 = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
+      var env = env1 ?? env2 ?? "Production";
+      return env;
     }
 
     [HttpGet("recentEfforts")]

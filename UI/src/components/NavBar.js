@@ -5,7 +5,7 @@ import AppContext from "AppContext";
 
 import UserMenu from "./UserMenu";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-
+import { ApiGet } from "api/api";
 import { ReactComponent as PwdByStrava } from "assets/stravaBrand/api_logo_pwrdBy_strava_horiz_light.svg";
 
 const TitleLink = styled(Link)(({ theme }) => ({
@@ -21,6 +21,7 @@ const PwdBy = styled(PwdByStrava)(({ theme }) => ({
 
 export default function NavBar() {
   const [currentTabIdx, setCurrentTabIdx] = useState(false);
+  const [env, setEnv] = useState("Production");
 
   const { user } = React.useContext(AppContext);
 
@@ -28,6 +29,10 @@ export default function NavBar() {
   const navigate = useNavigate();
   const { pathname } = location;
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+
+  React.useEffect(() => {
+    ApiGet("/api", setEnv);
+  }, []);
 
   React.useEffect(() => {
     if (
@@ -69,6 +74,21 @@ export default function NavBar() {
 
   if (!isMobile) tabs.unshift("recent");
 
+  let titleText = "SBMT";
+
+  switch (env) {
+    case "QA":
+      titleText = " QA";
+      break;
+    case "Development":
+      titleText = " DEV";
+      break;
+    case "Staging":
+      titleText = " STG";
+      break;
+    default:
+  }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -86,7 +106,7 @@ export default function NavBar() {
             }}
           >
             <TitleLink to="recent">
-              <span className="sbmt">SBMT</span>
+              <span className="sbmt">{titleText}</span>
               <Box
                 sx={{
                   fontSize: 8,

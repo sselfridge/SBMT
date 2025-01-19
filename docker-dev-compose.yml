@@ -2,29 +2,20 @@
 # https://stackoverflow.com/questions/27409761/docker-multiple-dockerfiles-in-project
 # https://stackoverflow.com/questions/41637505/how-to-persist-data-in-a-dockerized-postgres-database-using-volumes
 
+name: sbmt_dev
 
 services:
-  web:
-    build:
-      context: .
-      dockerfile: ./docker/web/Dockerfile
-    image: sirclesam/sbmttest:555
-    ports:
-      - "5001:5000"
-    links:
-      - db
-
   db:
-    image: postgres:latest
-    container_name: sbmt_db
+    image: postgres:16
+    container_name: sbmt_db_dev
     ports:
-      - "5551:5432"
+      - "5555:5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=mypassword
       - POSTGRES_DB=postgres
     volumes:
-        - pgdata:/var/lib/postgresql/data
+        - pgdatadev:/var/lib/postgresql/data
   
 volumes:
-  pgdata:
+  pgdatadev:

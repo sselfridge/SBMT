@@ -7,12 +7,10 @@ using TodoApi.Models.db;
 using TodoApi.Services;
 
 var env1 = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-
+Console.WriteLine($"env1: {env1}");
 var env2 = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
-
-//var env = env1 ?? env2 ?? "Staging";//TODO for realzie
+Console.WriteLine($"env2: {env2}");
 var env = env1 ?? env2 ?? "Production";
-//env = "Staging";
 
 Console.WriteLine($"sbmtLog: Current ENV var is:{env}------------------");
 
@@ -51,7 +49,17 @@ string connectionString = $"" +
   $"Trust Server Certificate=true;" +
   $"Include Error Detail={includeError};";
 
-Console.WriteLine($"{connectionString}");
+string connectionStringSafe = $"" +
+  $"Server={dbServer};" +
+  $"Database={dbName};" +
+  $"Port={dbPort};" +
+  $"User Id={dbUser};" +
+  $"Password=XXXXXXXXX;" +
+  $"Ssl Mode={dbSsl};" +
+  $"Trust Server Certificate=true;" +
+  $"Include Error Detail={includeError};";
+
+Console.WriteLine($"{connectionStringSafe}");
 
 builder.Services.AddDbContext<sbmtContext>(opt =>
   {
