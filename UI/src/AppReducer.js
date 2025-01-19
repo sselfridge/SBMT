@@ -7,20 +7,22 @@ export default function reducer(state, action) {
     // case "setRateLimit":
     //   return { ...state, rateLimit: action.rateLimit };
     case "setSettings":
-      return { ...state, ...action.settings };
+      const { kickOffDate } = action.settings;
+
+      const isPreLaunch = differenceInSeconds(kickOffDate, new Date()) > 0;
+
+      return { ...state, isPreLaunch, ...action.settings };
 
     default:
       throw new Error();
   }
 }
 
-const launchDate = "05-24-2024";
 export const INITIAL_STATE = {
   user: null,
-  launchDate,
-  endDate: "09-02-2024",
   isPreLaunch: true,
-  // isPreLaunch: differenceInSeconds(launchDate, new Date()) > 0,
   rateLimit: -1,
   env: "Production",
+  kickOffDate: "",
+  endingDate: "",
 };

@@ -5,7 +5,6 @@ import AppContext from "AppContext";
 
 import UserMenu from "./UserMenu";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ApiGet } from "api/api";
 import { ReactComponent as PwdByStrava } from "assets/stravaBrand/api_logo_pwrdBy_strava_horiz_light.svg";
 
 const TitleLink = styled(Link)(({ theme }) => ({

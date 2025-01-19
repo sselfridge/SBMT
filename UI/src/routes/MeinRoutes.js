@@ -29,7 +29,7 @@ import AppContext from "AppContext";
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import config from "config";
 import StravaOops from "components/StravaOops";
-import TempCountdown from "components/LandingPage/TempCountdown";
+// import TempCountdown from "components/LandingPage/TempCountdown";
 
 mapboxgl.accessToken = config.mapBox;
 
@@ -38,46 +38,45 @@ const MeinRoutes = () => {
 
   const isAdmin = user?.athleteId === 1075670;
 
+  const showLanding = !isAdmin && isPreLaunch;
+
   return (
     <BrowserRouter>
       <Routes>
         {/* <NavBar /> */}
-        {isPreLaunch ? (
+        {showLanding ? (
           <Route path="/" element={<Landing />} />
         ) : (
           <Route path="/" element={<Navigate to="/recent" />} />
         )}
 
         <Route path="/" element={<App />}>
-          {/* <Route path="/*" element={<RedirectLanding />} /> */}
-          <Route path="teresa" element={<TeresaWon />} />
+          {showLanding ? (
+            <Route path="*" element={<Navigate to="/" />} />
+          ) : (
+            <>
+              <Route path="teresa" element={<TeresaWon />} />
 
-          <Route path="beta/*" element={<BetaRedirect />} />
-          {isAdmin || !isPreLaunch ? (
-            <React.Fragment>
+              <Route path="beta/*" element={<BetaRedirect />} />
               <Route path="recent" element={<Recent />} />
               <Route path="leaderboard" element={<Leaderboard />} />
-            </React.Fragment>
-          ) : (
-            <React.Fragment>
-              <Route path="recent" element={<TempCountdown />} />
-              <Route path="leaderboard" element={<TempCountdown />} />
-            </React.Fragment>
-          )}
-          <Route path="segments" element={<Segments />} />
-          <Route path="segments/:segmentId" element={<SegmentDetails />} />
-          <Route path="athletes" element={<Athletes />} />
-          <Route path="athletes/:athleteId" element={<AthleteDetails />} />
-          <Route path="settings" element={<UserSettings />} />
-          <Route path="help" element={<HelpContact />} />
-          <Route path="info">
-            <Route path="" element={<Info />} />
-            <Route path="scopes" element={<InfoScopes />} />
-            <Route path="terms" element={<InfoTerms />} />
-          </Route>
 
-          <Route path="UserInfo" element={<UserInfo />} />
-          <Route path="StravaOops" element={<StravaOops />} />
+              <Route path="segments" element={<Segments />} />
+              <Route path="segments/:segmentId" element={<SegmentDetails />} />
+              <Route path="athletes" element={<Athletes />} />
+              <Route path="athletes/:athleteId" element={<AthleteDetails />} />
+              <Route path="settings" element={<UserSettings />} />
+              <Route path="help" element={<HelpContact />} />
+              <Route path="info">
+                <Route path="" element={<Info />} />
+                <Route path="scopes" element={<InfoScopes />} />
+                <Route path="terms" element={<InfoTerms />} />
+              </Route>
+
+              <Route path="UserInfo" element={<UserInfo />} />
+              <Route path="StravaOops" element={<StravaOops />} />
+            </>
+          )}
 
           {isAdmin && (
             <Route path="admin">

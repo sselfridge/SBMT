@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { differenceInSeconds } from "date-fns";
+import AppContext from "AppContext";
 
 const MyBox = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -11,16 +11,17 @@ const MyBox = styled(Box)(({ theme }) => ({
 }));
 
 const Countdown = (props) => {
-  const { targetDate } = props;
-
   const intervalRef = React.useRef();
   const [countdown, setCountdown] = useState({
     dayDisplay: "",
     lower: "...soon",
   });
+
+  const { kickOffDate } = React.useContext(AppContext);
+
   useEffect(() => {
     intervalRef.current = setInterval(() => {
-      const difference = differenceInSeconds(targetDate, new Date());
+      const difference = differenceInSeconds(kickOffDate, new Date());
 
       // Convert seconds into days, hours, minutes, and seconds
       const days = Math.floor(difference / (60 * 60 * 24));
@@ -40,7 +41,7 @@ const Countdown = (props) => {
     return () => {
       clearInterval(intervalRef.current);
     };
-  }, [targetDate]);
+  }, [kickOffDate]);
 
   return (
     <MyBox>
@@ -48,14 +49,6 @@ const Countdown = (props) => {
       <Box>{countdown.lower}</Box>
     </MyBox>
   );
-};
-
-Countdown.defaultProps = {
-  targetDate: new Date("May 24, 2024"),
-};
-
-Countdown.propTypes = {
-  targetDate: PropTypes.object,
 };
 
 export default Countdown;
