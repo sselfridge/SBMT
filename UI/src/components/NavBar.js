@@ -21,18 +21,13 @@ const PwdBy = styled(PwdByStrava)(({ theme }) => ({
 
 export default function NavBar() {
   const [currentTabIdx, setCurrentTabIdx] = useState(false);
-  const [env, setEnv] = useState("Production");
 
-  const { user } = React.useContext(AppContext);
+  const { user, env } = React.useContext(AppContext);
 
   const location = useLocation();
   const navigate = useNavigate();
   const { pathname } = location;
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
-
-  React.useEffect(() => {
-    ApiGet("/api", setEnv);
-  }, []);
 
   React.useEffect(() => {
     if (

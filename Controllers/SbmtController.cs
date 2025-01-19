@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TodoApi.Helpers;
 using TodoApi.Models;
 using TodoApi.Models.db;
@@ -21,28 +21,32 @@ namespace TodoApi.Controllers
     private IServiceScopeFactory _serviceScopeFactory;
     private IStravaService _stravaService;
 
-
-
-
-    public SbmtController(sbmtContext dbContext, IUserService userService, IConfiguration configuration, IServiceScopeFactory serviceScopeFactory, IStravaService stravaService
-)
+    public SbmtController(
+      sbmtContext dbContext,
+      IUserService userService,
+      IConfiguration configuration,
+      IServiceScopeFactory serviceScopeFactory,
+      IStravaService stravaService
+    )
     {
       _dbContext = dbContext;
       _userService = userService;
       Configuration = configuration;
       _serviceScopeFactory = serviceScopeFactory;
       _stravaService = stravaService;
-
     }
 
-
     [HttpGet]
-    public ActionResult<string> Get()
+    public IEnumerable<string> Get()
     {
       var env1 = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
       var env2 = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
       var env = env1 ?? env2 ?? "Production";
-      return env;
+
+      var kickOffDate = Configuration["KickOffDate"];
+      var endingDate = Configuration["EndingDate"];
+
+      return new string[] { env, kickOffDate, endingDate };
     }
 
     [HttpGet("recentEfforts")]
@@ -51,48 +55,57 @@ namespace TodoApi.Controllers
     {
       var kickOffDate = getKickOffDate();
 
-      var efforts = _dbContext.Efforts
-        .Where(x => x.StartDate > kickOffDate)
-        .OrderByDescending(u => u.CreatedAt).Take(50);
+      var efforts = _dbContext
+        .Efforts.Where(x => x.StartDate > kickOffDate)
+        .OrderByDescending(u => u.CreatedAt)
+        .Take(50);
 
       var effList = efforts.ToList();
 
-      var data = efforts.Join(_dbContext.StravaUsers.Where(x => x.Active),
-        effort => effort.AthleteId,
-        user => user.AthleteId,
-        (effort, user) => new
-        {
-          id = effort.Id,
-          name = $"{user.Firstname} {user.Lastname}",
-          athleteId = user.AthleteId,
-          avatar = user.Avatar,
-          activityId = effort.ActivityId,
-          created = effort.CreatedAt,
-          elapsedTime = effort.ElapsedTime,
-          segmentId = effort.SegmentId,
-          startDate = effort.StartDate,
-          rank = effort.Rank,
-          prRank = effort.PrRank,
-        }).Join(_dbContext.Segments,
-        effort => effort.segmentId,
+      var data = efforts
+        .Join(
+          _dbContext.StravaUsers.Where(x => x.Active),
+          effort => effort.AthleteId,
+          user => user.AthleteId,
+          (effort, user) =>
+            new
+            {
+              id = effort.Id,
+              name = $"{user.Firstname} {user.Lastname}",
+              athleteId = user.AthleteId,
+              avatar = user.Avatar,
+              activityId = effort.ActivityId,
+              created = effort.CreatedAt,
+              elapsedTime = effort.ElapsedTime,
+              segmentId = effort.SegmentId,
+              startDate = effort.StartDate,
+              rank = effort.Rank,
+              prRank = effort.PrRank,
+            }
+        )
+        .Join(
+          _dbContext.Segments,
+          effort => effort.segmentId,
           segment => segment.Id,
-          (effort, segment) => new
-          {
-            id = $"{effort.id}",
-            name = effort.name,
-            athleteId = effort.athleteId,
-            avatar = effort.avatar,
-            activityId = $"{effort.activityId}",
-            created = effort.created,
-            elapsedTime = effort.elapsedTime,
-            segmentId = $"{effort.segmentId}",
-            SegmentName = segment.Name,
-            surfaceType = segment.SurfaceType,
-            startDate = effort.startDate,
-            rank = effort.rank,
-            prRank = effort.prRank,
-
-          }).ToList();
+          (effort, segment) =>
+            new
+            {
+              id = $"{effort.id}",
+              effort.name,
+              effort.athleteId,
+              effort.avatar,
+              activityId = $"{effort.activityId}",
+              effort.created,
+              effort.elapsedTime,
+              segmentId = $"{effort.segmentId}",
+              SegmentName = segment.Name,
+              surfaceType = segment.SurfaceType,
+              effort.startDate,
+              effort.rank,
+              effort.prRank,
+            }
+        )
+        .ToList();
 
       return Ok(data);
     }
@@ -102,7 +115,6 @@ namespace TodoApi.Controllers
 
     public IActionResult GetLeaderboard()
     {
-
       string surfaceFilter = HttpContext.Request.Query["surface"];
       string genderFilter = HttpContext.Request.Query["gender"];
 
@@ -130,7 +142,6 @@ namespace TodoApi.Controllers
         else if (underMatch.Success)
         {
           int.TryParse(underMatch.Groups[1].Value, out upperAge);
-
         }
         else if (overMatch.Success)
         {
@@ -156,8 +167,10 @@ namespace TodoApi.Controllers
 
       var allSegment = _dbContext.Segments.ToList();
 
-      if (surfaceFilter != null &&
-          (surfaceFilter == "gravel" || surfaceFilter == "road" || surfaceFilter == "trail"))
+      if (
+        surfaceFilter != null
+        && (surfaceFilter == "gravel" || surfaceFilter == "road" || surfaceFilter == "trail")
+      )
       {
         allSegment = allSegment.FindAll(s => s.SurfaceType == surfaceFilter);
       }
@@ -167,7 +180,6 @@ namespace TodoApi.Controllers
       }
 
       var users = _dbContext.StravaUsers.Where(x => x.Active).Include(x => x.StravaClubs).ToList();
-
 
       var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
       StravaUser? currentUser = null;
@@ -202,8 +214,8 @@ namespace TodoApi.Controllers
       {
         users = users.FindAll(u =>
         {
-          var userMiles = u.RecentDistance;// * 0.000621371;
-          var currMiles = currentUser.RecentDistance;// * 0.000621371;
+          var userMiles = u.RecentDistance; // * 0.000621371;
+          var currMiles = currentUser.RecentDistance; // * 0.000621371;
           var diff = userMiles - currMiles;
           return Math.Abs(diff) <= distanceFilter;
         });
@@ -213,8 +225,8 @@ namespace TodoApi.Controllers
       {
         users = users.FindAll(u =>
         {
-          var userFt = u.RecentElevation;// * 3.28084;
-          var currFt = currentUser.RecentElevation;// * 3.28084;
+          var userFt = u.RecentElevation; // * 3.28084;
+          var currFt = currentUser.RecentElevation; // * 3.28084;
           var diff = userFt - currFt;
           return Math.Abs(diff) <= elevationFilter * 1000;
         });
@@ -222,34 +234,35 @@ namespace TodoApi.Controllers
 
       var kickOffDate = getKickOffDate();
 
-      var data = users.Join(_dbContext.Efforts.Where(x => x.StartDate > kickOffDate),
-        effort => effort.AthleteId,
-        user => user.AthleteId,
-        (user, effort) =>
-        {
-          if (allSegment.Find(s => s.Id == effort.SegmentId) != null)
+      var data = users
+        .Join(
+          _dbContext.Efforts.Where(x => x.StartDate > kickOffDate),
+          effort => effort.AthleteId,
+          user => user.AthleteId,
+          (user, effort) =>
           {
-            return new
+            if (allSegment.Find(s => s.Id == effort.SegmentId) != null)
             {
-              ElapsedTime = effort.ElapsedTime,
-              SegmentId = effort.SegmentId,
-              AthleteId = effort.AthleteId,
-              Sex = user.Sex
-            };
+              return new
+              {
+                effort.ElapsedTime,
+                effort.SegmentId,
+                effort.AthleteId,
+                user.Sex,
+              };
+            }
+            return null;
           }
-          return null;
-        }).ToList();
-
-
-
-
+        )
+        .ToList();
 
       //Effortgroup contains key of athleteID and value of a dict with <segId, EffortTime>
       var effortGroup = new Dictionary<int, Dictionary<long, int>>();
 
       foreach (var entry in data)
       {
-        if (entry == null) continue;
+        if (entry == null)
+          continue;
         var segId = entry.SegmentId;
         var elapsedTime = entry.ElapsedTime;
         var athleteId = entry.AthleteId;
@@ -305,36 +318,48 @@ namespace TodoApi.Controllers
         if (user != null)
         {
           var athleteName = $"{user.Firstname} {user.Lastname}";
-          var leaderboardEntry =
-            new LeaderboardEntry(
-                                  athleteId,
-                                  athleteName,
-                                  user.Avatar,
-                                  completed,
-                                  totalTime,
-                                  totalDistance,
-                                  totalElevation,
-                                  user.RecentDistance,
-                                  user.RecentElevation,
-                                  user.Category,
-                                  segmentCount);
+          var leaderboardEntry = new LeaderboardEntry(
+            athleteId,
+            athleteName,
+            user.Avatar,
+            completed,
+            totalTime,
+            totalDistance,
+            totalElevation,
+            user.RecentDistance,
+            user.RecentElevation,
+            user.Category,
+            segmentCount
+          );
 
           leaderboard.Add(leaderboardEntry);
         }
-
       }
 
-      leaderboard.Sort((a, b) =>
-      {
-        if (a.Completed > b.Completed) { return -1; }
-
-        else if (a.Completed < b.Completed) { return 1; }
-        else
+      leaderboard.Sort(
+        (a, b) =>
         {
-          if (a.TotalTime < b.TotalTime) { return -1; }
-          else { return 1; }
+          if (a.Completed > b.Completed)
+          {
+            return -1;
+          }
+          else if (a.Completed < b.Completed)
+          {
+            return 1;
+          }
+          else
+          {
+            if (a.TotalTime < b.TotalTime)
+            {
+              return -1;
+            }
+            else
+            {
+              return 1;
+            }
+          }
         }
-      });
+      );
 
       for (var i = 0; i < leaderboard.Count; i++)
       {
@@ -349,20 +374,21 @@ namespace TodoApi.Controllers
     public IActionResult saveFilters([FromBody] Filters filters)
     {
       var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
-      if (userId == null) return Unauthorized();
+      if (userId == null)
+        return Unauthorized();
       var cookieAthleteId = Int32.Parse(userId);
 
       var strFilters = JsonSerializer.Serialize(filters);
 
       var user = _dbContext.StravaUsers.FirstOrDefault(x => x.AthleteId == cookieAthleteId);
-      if (user == null) return NotFound();
+      if (user == null)
+        return NotFound();
 
       user.SavedFilters = strFilters;
       _dbContext.SaveChanges();
 
       return Ok(user);
     }
-
 
     [HttpGet("segments")]
     //[ResponseCache(Duration = 36000)]
@@ -379,7 +405,9 @@ namespace TodoApi.Controllers
     public IActionResult GetSegmentLeaderboard(long segmentId)
     {
       var kickOffDate = getKickOffDate();
-      var efforts = _dbContext.Efforts.Where(e => e.SegmentId == segmentId && e.StartDate > kickOffDate).ToList();
+      var efforts = _dbContext
+        .Efforts.Where(e => e.SegmentId == segmentId && e.StartDate > kickOffDate)
+        .ToList();
 
       var bestEfforts = new Dictionary<int, Effort>();
 
@@ -402,22 +430,25 @@ namespace TodoApi.Controllers
 
       var bestList = bestEfforts.OrderBy(x => x.Value.ElapsedTime).ToList();
 
-
-      var data = bestList.Join(_dbContext.StravaUsers.Where(x => x.Active),
-      effort => effort.Key,
-      user => user.AthleteId,
-      (effort, user) => new
-      {
-        id = $"{effort.Value.Id}",
-        elapsedTime = effort.Value.ElapsedTime,
-        activityId = $"{effort.Value.ActivityId}",
-        athleteId = user.AthleteId,
-        firstname = user.Firstname,
-        lastname = user.Lastname,
-        avatar = user.Avatar,
-
-      }).ToList().OrderBy(x => x.elapsedTime);
-
+      var data = bestList
+        .Join(
+          _dbContext.StravaUsers.Where(x => x.Active),
+          effort => effort.Key,
+          user => user.AthleteId,
+          (effort, user) =>
+            new
+            {
+              id = $"{effort.Value.Id}",
+              elapsedTime = effort.Value.ElapsedTime,
+              activityId = $"{effort.Value.ActivityId}",
+              athleteId = user.AthleteId,
+              firstname = user.Firstname,
+              lastname = user.Lastname,
+              avatar = user.Avatar,
+            }
+        )
+        .ToList()
+        .OrderBy(x => x.elapsedTime);
 
       return Ok(data);
     }
@@ -429,7 +460,8 @@ namespace TodoApi.Controllers
     {
       var segment = _dbContext.Segments.FirstOrDefault(s => s.Id == segmentId);
 
-      if (segment == null) return NotFound();
+      if (segment == null)
+        return NotFound();
 
       return Ok(segment);
     }
@@ -460,14 +492,16 @@ namespace TodoApi.Controllers
     {
       var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
 
-      if (userId == null) return NotFound();
+      if (userId == null)
+        return NotFound();
 
       var athleteId = Int32.Parse(userId);
-      var possibleNullUser = _dbContext.StravaUsers
-                              .Include(x => x.StravaClubs)
-                              .FirstOrDefault(u => u.AthleteId == athleteId);
+      var possibleNullUser = _dbContext
+        .StravaUsers.Include(x => x.StravaClubs)
+        .FirstOrDefault(u => u.AthleteId == athleteId);
 
-      if (possibleNullUser == null) return NotFound();
+      if (possibleNullUser == null)
+        return NotFound();
 
       StravaUser user = (StravaUser)possibleNullUser;
 
@@ -485,16 +519,19 @@ namespace TodoApi.Controllers
     {
       var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
 
-      if (userId == null) return NotFound();
+      if (userId == null)
+        return NotFound();
 
       var athleteId = Int32.Parse(userId);
-      var dbUser = _dbContext.StravaUsers
-                              .Include(x => x.StravaClubs)
-                              .FirstOrDefault(u => u.AthleteId == athleteId);
+      var dbUser = _dbContext
+        .StravaUsers.Include(x => x.StravaClubs)
+        .FirstOrDefault(u => u.AthleteId == athleteId);
 
-      if (dbUser == null) return NotFound();
+      if (dbUser == null)
+        return NotFound();
 
-      if (dbUser.AthleteId != newUser.AthleteId) return Unauthorized();
+      if (dbUser.AthleteId != newUser.AthleteId)
+        return Unauthorized();
 
       if (dbUser.Active == false && newUser.Active == true)
       {
@@ -508,7 +545,6 @@ namespace TodoApi.Controllers
         dbUser.Category = newUser.Category;
         _dbContext.Update(dbUser);
         await _dbContext.SaveChangesAsync();
-
 
         return Ok(new StravaUserDTO(dbUser));
       }
@@ -524,7 +560,8 @@ namespace TodoApi.Controllers
     public IActionResult GetAthlete(int id)
     {
       var user = _userService.GetById(id);
-      if (user == null) return NotFound();
+      if (user == null)
+        return NotFound();
       user.Scope = "";
       return Ok(new StravaUserDTO(user));
     }
@@ -536,7 +573,8 @@ namespace TodoApi.Controllers
     {
       var userSegments = _userService.GetUserEfforts(athleteId);
 
-      if (userSegments == null) return Ok(null);
+      if (userSegments == null)
+        return Ok(null);
 
       var result = userSegments.Select(x => new UserSegmentDTO(x)).ToList();
 
@@ -546,9 +584,7 @@ namespace TodoApi.Controllers
     [HttpDelete("logout")]
     public IActionResult Logout()
     {
-
       HttpContext.Response.Cookies.Delete(Configuration["CookieName"]);
-
 
       return Ok("Cookie Deleted");
     }
@@ -567,43 +603,36 @@ namespace TodoApi.Controllers
       _dbContext.Feedback.Add(feedback);
       _dbContext.SaveChanges();
 
-
       return Ok();
     }
 
     [HttpPost]
-    public void Post([FromBody] string value)
-    {
-
-    }
+    public void Post([FromBody] string value) { }
 
     [HttpPut("{id}")]
-    public void Put(int id, [FromBody] string value)
-    {
-    }
+    public void Put(int id, [FromBody] string value) { }
 
     [HttpDelete("athletes/{id}")]
     public async Task<IActionResult> Delete(int id)
     {
       var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
-      if (userId == null) return NotFound();
+      if (userId == null)
+        return NotFound();
       var athleteId = Int32.Parse(userId);
 
-
-      if (id != athleteId) return Unauthorized();
-
+      if (id != athleteId)
+        return Unauthorized();
 
       var dbUser = _dbContext.StravaUsers.FirstOrDefault(u => u.AthleteId == athleteId);
-      if (dbUser == null) return NotFound();
+      if (dbUser == null)
+        return NotFound();
 
       try
       {
         await _userService.DeleteUser(athleteId);
-
       }
       catch (Exception)
       {
-
         return BadRequest();
       }
 
@@ -617,7 +646,6 @@ namespace TodoApi.Controllers
 
     public async Task<IActionResult> RescanActivityLink(string url)
     {
-
       var act = await _stravaService.ParseLink(url);
 
       long activityId = long.Parse(act);
@@ -633,16 +661,14 @@ namespace TodoApi.Controllers
     public async Task<IActionResult> RescanActivity(long id)
     {
       var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
-      if (userId == null) return NotFound();
+      if (userId == null)
+        return NotFound();
       var athleteId = Int32.Parse(userId);
-
 
       await StravaUtilities.ParseNewActivity(_serviceScopeFactory, athleteId, id, 0);
 
-
       return Ok();
     }
-
 
     private DateTime getKickOffDate()
     {
@@ -650,11 +676,12 @@ namespace TodoApi.Controllers
 
       return DateTime.Parse(kickOffStr).ToUniversalTime();
     }
+
     private string getConfigVal(string key)
     {
       IConfiguration configuration = new ConfigurationBuilder()
-                            .AddJsonFile("appsettings.json")
-                            .Build();
+        .AddJsonFile("appsettings.json")
+        .Build();
 
       return configuration[key];
     }

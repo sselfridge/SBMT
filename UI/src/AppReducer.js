@@ -6,6 +6,9 @@ export default function reducer(state, action) {
       return { ...state, user: action.user };
     // case "setRateLimit":
     //   return { ...state, rateLimit: action.rateLimit };
+    case "setSettings":
+      return { ...state, ...action.settings };
+
     default:
       throw new Error();
   }
@@ -16,6 +19,8 @@ export const INITIAL_STATE = {
   user: null,
   launchDate,
   endDate: "09-02-2024",
-  isPreLaunch: differenceInSeconds(launchDate, new Date()) > 0,
+  isPreLaunch: true,
+  // isPreLaunch: differenceInSeconds(launchDate, new Date()) > 0,
   rateLimit: -1,
+  env: "Production",
 };
