@@ -5,6 +5,7 @@ import { Typography, useMediaQuery, Link as MuiLink, Box } from "@mui/material";
 
 import { ReactComponent as ConnectStrava } from "assets/stravaBrand/btn_strava_connectwith_orange.svg";
 
+//TODO - get stravaUrl from contextSettings instead of config
 const StravaButton = (props) => {
   const { text } = props;
 
