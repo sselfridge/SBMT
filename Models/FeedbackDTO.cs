@@ -10,7 +10,6 @@ namespace TodoApi.Models
     public string Avatar { get; set; }
     public string Text { get; set; }
 
-
     public FeedbackDTO(Feedback feedback, StravaUser user)
     {
       Id = feedback.Id;
@@ -19,6 +18,7 @@ namespace TodoApi.Models
       Avatar = user.Avatar;
       Name = $"{user.Firstname} {user.Lastname}";
     }
+
     public FeedbackDTO(Feedback feedback)
     {
       Id = feedback.Id;
@@ -27,8 +27,5 @@ namespace TodoApi.Models
       Avatar = "";
       Name = "";
     }
-
   }
-
-
 }

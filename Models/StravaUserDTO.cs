@@ -51,8 +51,5 @@ namespace TodoApi.Models
       SavedFilters = savedFilters;
       Active = user.Active;
     }
-
   }
-
-
 }

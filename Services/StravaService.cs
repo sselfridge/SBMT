@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore;
 using TodoApi.Models.db;
 using TodoApi.Models.stravaApi;
 
@@ -15,6 +15,7 @@ namespace TodoApi.Services
     Task<List<ActivitySummaryResponse>> GetActivities(int athleteId);
     Task<Segment> GetSegment(long segmentId);
     Task<StravaAthleteProfile> GetProfile(int athleteId);
+
     //GetInitialProfile - fetch profile information without hitting local DB
     Task<StravaAthleteProfile> GetInitialProfile(string accessToken);
     Task<RecentRideTotals> GetAthleteStats(int athleteId);
@@ -27,8 +28,8 @@ namespace TodoApi.Services
     Task<StravaUser> UpdateUserStats(StravaUser user);
 
     Task<string> ParseLink(string link);
-
   }
+
   public class StravaService : IStravaService
   {
     private readonly IConfiguration Configuration;
@@ -36,11 +37,12 @@ namespace TodoApi.Services
     private StravaLimitService RateLimits;
     private IServiceScopeFactory _serviceScopeFactory;
 
-
-    public StravaService(IConfiguration configuration,
-                          IUserService userService,
-                          StravaLimitService rateLimites,
-                          IServiceScopeFactory serviceScopeFactory)
+    public StravaService(
+      IConfiguration configuration,
+      IUserService userService,
+      StravaLimitService rateLimites,
+      IServiceScopeFactory serviceScopeFactory
+    )
     {
       Configuration = configuration;
       UserService = userService;
@@ -50,10 +52,8 @@ namespace TodoApi.Services
 
     public async Task<StravaOAuthResponseDTO> GetTokens(string code)
     {
-
       string clientId = Configuration["StravaConfig:clientId"];
       string clientSecret = Configuration["StravaConfig:clientSecret"];
-
 
       var pairs = new List<KeyValuePair<string, string>>();
       pairs.Add(new KeyValuePair<string, string>("code", code));
@@ -69,7 +69,8 @@ namespace TodoApi.Services
       var response = await client.PostAsync("https://www.strava.com/api/v3/oauth/token", content);
       if (response.IsSuccessStatusCode)
       {
-        StravaOAuthResponse? result = await response.Content.ReadFromJsonAsync<StravaOAuthResponse>();
+        StravaOAuthResponse? result =
+          await response.Content.ReadFromJsonAsync<StravaOAuthResponse>();
         if (result == null)
         {
           throw new Exception("Cannot read strava oauth response");
@@ -86,50 +87,42 @@ namespace TodoApi.Services
       var client = await GetClientForUser(athleteId);
 
       return await GetActivity(activityId, client);
-
     }
+
     public async Task<ActivitySummaryResponse> GetActivity(long activityId, HttpClient client)
     {
-
       var url = $"/activities/{activityId}?include_all_efforts=true";
       return await GetStrava<ActivitySummaryResponse>(client, url);
-
     }
-
-
 
     public async Task<Segment> GetSegment(long segmentId)
     {
-
       var client = await GetClientForUser(1);
 
       var url = $"/segments/{segmentId}";
       var segRes = await GetStrava<SegmentResponse>(client, url);
 
       return new Segment(segRes);
-
-
     }
 
     public async Task<List<ActivitySummaryResponse>> GetActivities(int athleteId)
     {
-
       var client = await GetClientForUser(athleteId);
 
       //TODO grab this from appSettings
 
-      var url = $"/athlete/activities" +
-        $"?before=1965868100" +
-         $"&after=1716534122" +
-        $"&page=1" +
-        $"&per_page=200";
+      var url =
+        $"/athlete/activities"
+        + $"?before=1965868100"
+        + $"&after=1716534122"
+        + $"&page=1"
+        + $"&per_page=200";
 
       try
       {
         var arrayResult = await GetStrava<ActivitySummaryResponse[]>(client, url);
 
         return arrayResult.ToList();
-
       }
       catch (Exception)
       {
@@ -137,12 +130,10 @@ namespace TodoApi.Services
 
         return new List<ActivitySummaryResponse>();
       }
-
     }
 
     public async Task<StravaAthleteProfile> GetProfile(int athleteId)
     {
-
       var client = await GetClientForUser(athleteId);
       var url = "/athlete";
 
@@ -152,10 +143,11 @@ namespace TodoApi.Services
 
     public async Task<StravaAthleteProfile> GetInitialProfile(string accessToken)
     {
-
       var client = new HttpClient();
-      client.DefaultRequestHeaders.Authorization =
-          new AuthenticationHeaderValue("Bearer", accessToken);
+      client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+        "Bearer",
+        accessToken
+      );
 
       var url = "/athlete";
       var result = await GetStrava<StravaAthleteProfile>(client, url);
@@ -164,13 +156,13 @@ namespace TodoApi.Services
 
     public async Task<RecentRideTotals> GetAthleteStats(int athleteId)
     {
-
       var client = await GetClientForUser(athleteId);
       var url = $"/athletes/{athleteId}/stats";
 
       var stats = await GetStrava<AthleteStats>(client, url);
 
-      if (stats == null) throw new Exception("Invalid stats");
+      if (stats == null)
+        throw new Exception("Invalid stats");
 
       var result = stats.RecentTotals;
       result.Distance = result.Distance * 0.000621371;
@@ -180,11 +172,10 @@ namespace TodoApi.Services
 
     /**
      * Private functions below
-     * 
+     *
      */
     private async Task<string> checkAccessTokenAsync(StravaUser user)
     {
-
       var isExpired = isTokenExpired(user.ExpiresAt);
       string accessToken;
       if (isExpired)
@@ -201,26 +192,22 @@ namespace TodoApi.Services
       return accessToken;
     }
 
-
     private bool isTokenExpired(long expiresAt)
     {
-
       TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
       int secondsSinceEpoch = (int)t.TotalSeconds;
       //return true;
       return secondsSinceEpoch + 10 > expiresAt;
-
     }
 
     private async Task<string> refreshTokenAsync(StravaUser user)
     {
       IConfiguration configuration = new ConfigurationBuilder()
-                            .AddJsonFile("appsettings.json")
-                            .Build();
+        .AddJsonFile("appsettings.json")
+        .Build();
 
       string clientId = configuration["StravaConfig:clientId"];
       string clientSecret = configuration["StravaConfig:clientSecret"];
-
 
       var pairs = new List<KeyValuePair<string, string>>();
       pairs.Add(new KeyValuePair<string, string>("client_id", clientId));
@@ -236,13 +223,14 @@ namespace TodoApi.Services
       var response = await client.PostAsync("https://www.strava.com/oauth/token", content);
       if (response.IsSuccessStatusCode)
       {
-        StravaTokenRefreshResponse? result = await response.Content.ReadFromJsonAsync<StravaTokenRefreshResponse>();
-        if (result == null) throw new Exception("Cannot read strava refresh response");
+        StravaTokenRefreshResponse? result =
+          await response.Content.ReadFromJsonAsync<StravaTokenRefreshResponse>();
+        if (result == null)
+          throw new Exception("Cannot read strava refresh response");
 
         user.AccessToken = result.AccessToken;
         user.RefreshToken = result.RefreshToken;
         user.ExpiresAt = result.ExpiresAt;
-
 
         await UserService.Update(user);
 
@@ -251,9 +239,7 @@ namespace TodoApi.Services
       Console.WriteLine($"sbmtLog:ERROR Token Refresh Failed with status code");
       Console.WriteLine($"sbmtLog:ERROR status code:{response.StatusCode.ToString()}");
       throw new Exception(response.StatusCode.ToString());
-
     }
-
 
     public async Task<HttpClient> GetClientForUser(int athleteId)
     {
@@ -267,30 +253,36 @@ namespace TodoApi.Services
       var accessToken = await checkAccessTokenAsync(user);
 
       var client = new HttpClient();
-      client.DefaultRequestHeaders.Authorization =
-          new AuthenticationHeaderValue("Bearer", accessToken);
+      client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+        "Bearer",
+        accessToken
+      );
 
       return client;
     }
 
     public StravaUser UpdateUserClubs(int athleteId, StravaClubResponse[] newClubs)
     {
-      var clubsList = Array.ConvertAll(newClubs,
-                      new Converter<StravaClubResponse, StravaClub>
-                      (clubRes => new StravaClub(clubRes))).ToList();
+      var clubsList = Array
+        .ConvertAll(
+          newClubs,
+          new Converter<StravaClubResponse, StravaClub>(clubRes => new StravaClub(clubRes))
+        )
+        .ToList();
       return UpdateUserClubs(athleteId, clubsList);
     }
+
     public StravaUser UpdateUserClubs(int athleteId, List<StravaClub> newClubs)
     {
-
       using (var scope = _serviceScopeFactory.CreateScope())
       {
-
         var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
-        var user = context.StravaUsers.Include(x => x.StravaClubs)
+        var user = context
+          .StravaUsers.Include(x => x.StravaClubs)
           .FirstOrDefault(x => x.AthleteId == athleteId);
 
-        if (user == null) throw new Exception("User not found");
+        if (user == null)
+          throw new Exception("User not found");
 
         var newDbClubs = new List<StravaClub>();
         foreach (var club in newClubs)
@@ -300,10 +292,8 @@ namespace TodoApi.Services
           {
             newDbClubs.Add(club);
           }
-
         }
         context.StravaClubs.AddRange(newDbClubs);
-
 
         foreach (var club in newClubs)
         {
@@ -314,9 +304,11 @@ namespace TodoApi.Services
           }
         }
 
-        foreach (var userClub in user.StravaClubs.Where
-          (c => newClubs.Select(x => x.Id).Contains(c.Id) == false)
-          .ToList())
+        foreach (
+          var userClub in user
+            .StravaClubs.Where(c => newClubs.Select(x => x.Id).Contains(c.Id) == false)
+            .ToList()
+        )
         {
           user.StravaClubs.Remove(userClub);
         }
@@ -325,7 +317,6 @@ namespace TodoApi.Services
         return user;
       }
     }
-
 
     public async Task<StravaUser> UpdateUserStats(StravaUser user)
     {
@@ -363,8 +354,6 @@ namespace TodoApi.Services
         context.Update(club);
       }
 
-
-
       context.SaveChanges();
 
       return true;
@@ -386,7 +375,6 @@ namespace TodoApi.Services
 
         if (result == null)
         {
-
           throw new Exception("Invalid response");
         }
 
@@ -400,31 +388,24 @@ namespace TodoApi.Services
           string activityId = match.Groups[1].Value;
 
           return activityId;
-
         }
         else
         {
           Console.WriteLine("No match found.");
         }
 
-
-
         return "";
-
       }
       catch (Exception e)
       {
         throw new Exception("Link Parse error");
       }
-
-
-
     }
 
     /// <summary>
     /// Method <c>GetStrava</c> performs GET operation on StravaAPI
     /// </summary>
-    /// 
+    ///
     private async Task<T> GetStrava<T>(HttpClient client, string url)
     {
       Console.WriteLine($"sbmtLog:Making StravaCall:{url}");
@@ -445,7 +426,6 @@ namespace TodoApi.Services
             }
           }
 
-
           if (result == null)
           {
             Console.WriteLine($"sbmtLog:ERROR GetStrava Invalid Response url:{url}");
@@ -453,21 +433,17 @@ namespace TodoApi.Services
           }
 
           return result;
-
         }
         catch (Exception e)
         {
           Console.WriteLine($"sbmtLog:ERROR GetStrava Bad Model url:{url}");
           throw new Exception("Bad model!");
         }
-
-
       }
       else
       {
         Console.WriteLine($"Strava Get Failed for url:{url}");
         throw new Exception("Strava Get Failed");
-
       }
     }
 
@@ -491,7 +467,6 @@ namespace TodoApi.Services
             }
           }
 
-
           if (result == null)
           {
             Console.WriteLine($"sbmtLog:ERROR GetStrava Invalid Response url:{url}");
@@ -499,26 +474,18 @@ namespace TodoApi.Services
           }
 
           return result;
-
         }
         catch (Exception e)
         {
           Console.WriteLine($"sbmtLog:ERROR GetStrava Bad Model url:{url}");
           throw new Exception("Bad model!");
         }
-
-
       }
       else
       {
         Console.WriteLine($"Strava Get Failed for url:{url}");
         throw new Exception("Strava Get Failed");
-
       }
     }
-
-
   }
-
-
 }

@@ -4,7 +4,6 @@ using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Services;
 
-
 namespace TodoApi.Controllers
 {
   [Route("api/admin/[controller]")]
@@ -20,7 +19,6 @@ namespace TodoApi.Controllers
       _context = context;
       _stravaService = stravaService;
     }
-
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Feedback>>> GetUsers()
@@ -50,14 +48,12 @@ namespace TodoApi.Controllers
         }
       }
 
-
       return Ok(data);
     }
 
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteFeedback(string id)
     {
-
       var feedback = await _context.Feedback.FindAsync(id);
       if (feedback == null)
       {

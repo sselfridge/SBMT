@@ -1,6 +1,5 @@
 ﻿namespace TodoApi.Services
 {
-
   public class StravaLimitService
   {
     private static int callCount;
@@ -11,7 +10,6 @@
     private static int usage15Limit = 600;
     private static int usageDailyLimit = 30000;
 
-
     public StravaLimitService()
     {
       callCount = 0;
@@ -21,7 +19,6 @@
       usageDaily = -1;
     }
 
-
     public bool UpdateUsage(string usage)
     {
       var usages = usage.Split(',');
@@ -30,24 +27,13 @@
         try
         {
           usage15 = Int32.Parse(usages[0]);
-
         }
-        catch (Exception)
-        {
-
-        }
+        catch (Exception) { }
         try
         {
           usageDaily = Int32.Parse(usages[1]);
-
         }
-        catch (Exception)
-        {
-
-        }
-
-
-
+        catch (Exception) { }
       }
 
       return true;
@@ -62,7 +48,5 @@
     {
       return usageDaily;
     }
-
-
   }
 }

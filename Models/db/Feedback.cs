@@ -4,7 +4,6 @@ namespace TodoApi.Models.db
 {
   public class Feedback
   {
-
     public string Id { get; set; }
     public int AthleteId { get; set; }
     public string Text { get; set; }
@@ -17,4 +16,3 @@ namespace TodoApi.Models.db
     }
   }
 }
-

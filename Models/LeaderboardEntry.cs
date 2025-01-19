@@ -17,17 +17,18 @@
     public int SegmentCount { get; set; }
 
     public LeaderboardEntry(
-                            int athleteId,
-                            string athleteName,
-                            string avatar,
-                            int completed,
-                            int totalTime,
-                            double totalDistance,
-                            double totalElevation,
-                            double recentDistance,
-                            double recentElevation,
-                            string category,
-                            int segmentCount)
+      int athleteId,
+      string athleteName,
+      string avatar,
+      int completed,
+      int totalTime,
+      double totalDistance,
+      double totalElevation,
+      double recentDistance,
+      double recentElevation,
+      string category,
+      int segmentCount
+    )
     {
       Id = athleteId;
       AthleteName = athleteName;
@@ -43,6 +44,4 @@
       rank = 0;
     }
   }
-
-
 }

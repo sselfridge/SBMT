@@ -5,17 +5,21 @@ namespace TodoApi.Models.db
 {
   public class StravaPushNotificationDTO
   {
-
     [JsonPropertyName("aspect_type")]
     public string? AspectType { get; set; }
+
     [JsonPropertyName("event_time")]
     public long EventTime { get; set; }
+
     [JsonPropertyName("object_id")]
     public long ObjectId { get; set; }
+
     [JsonPropertyName("object_type")]
     public string? ObjectType { get; set; }
+
     [JsonPropertyName("owner_id")]
     public int OwnerId { get; set; }
+
     [JsonPropertyName("subscription_id")]
     public long SubscriptionId { get; set; }
 
@@ -25,7 +29,6 @@ namespace TodoApi.Models.db
 
   public class StravaPushNotification
   {
-
     public Guid Id { get; set; }
     public string? AspectType { get; set; }
     public long EventTime { get; set; }
@@ -35,7 +38,14 @@ namespace TodoApi.Models.db
     public long SubscriptionId { get; set; }
     public string? Updates { get; set; }
 
-    public StravaPushNotification(string? aspectType, long eventTime, long objectId, string? objectType, int ownerId, long subscriptionId)
+    public StravaPushNotification(
+      string? aspectType,
+      long eventTime,
+      long objectId,
+      string? objectType,
+      int ownerId,
+      long subscriptionId
+    )
     {
       AspectType = aspectType;
       EventTime = eventTime;
@@ -44,8 +54,8 @@ namespace TodoApi.Models.db
       OwnerId = ownerId;
       SubscriptionId = subscriptionId;
       Updates = null;
-
     }
+
     public StravaPushNotification(StravaPushNotificationDTO dto)
     {
       AspectType = dto.AspectType;
@@ -57,7 +67,6 @@ namespace TodoApi.Models.db
       Updates = dto.Updates.ToString();
     }
   }
-
 }
 
 

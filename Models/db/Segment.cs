@@ -26,16 +26,26 @@ namespace TodoApi.Models.db
     public string Qom { get; set; }
     public string SurfaceType { get; set; } = "road";
 
-
-
-
-
-    public Segment(long id, long resourceState, string name,
-      string activityType, float distance, float averageGrade,
-      float maximumGrade, float elevationHigh, float elevationLow,
-      float[] startLatlng, float[] endLatlng, long climbCategory,
-      float totalElevationGain, long effortCount, long athleteCount,
-      string polyline, string kom, string qom)
+    public Segment(
+      long id,
+      long resourceState,
+      string name,
+      string activityType,
+      float distance,
+      float averageGrade,
+      float maximumGrade,
+      float elevationHigh,
+      float elevationLow,
+      float[] startLatlng,
+      float[] endLatlng,
+      long climbCategory,
+      float totalElevationGain,
+      long effortCount,
+      long athleteCount,
+      string polyline,
+      string kom,
+      string qom
+    )
     {
       Id = id;
       ResourceState = resourceState;

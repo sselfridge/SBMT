@@ -1,7 +1,7 @@
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
 using TodoApi.Helpers;
 using TodoApi.Models.db;
 using TodoApi.Services;
@@ -15,9 +15,9 @@ var env = env1 ?? env2 ?? "Production";
 Console.WriteLine($"sbmtLog: Current ENV var is:{env}------------------");
 
 IConfiguration configuration = new ConfigurationBuilder()
-                            .AddJsonFile("appsettings.json")
-                            .AddJsonFile($"appsettings.{env}.json")
-                            .Build();
+  .AddJsonFile("appsettings.json")
+  .AddJsonFile($"appsettings.{env}.json")
+  .Build();
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls("http://*:5000");
@@ -25,8 +25,9 @@ builder.WebHost.UseUrls("http://*:5000");
 // Add services to the container.
 
 //https://gavilan.blog/2021/05/19/fixing-the-error-a-possible-object-cycle-was-detected-in-different-versions-of-asp-net-core/
-builder.Services.AddControllers().AddJsonOptions(x =>
-x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+builder
+  .Services.AddControllers()
+  .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 string dbServer = configuration["DbConfig:dbServer"];
 string dbPort = configuration["DbConfig:dbPort"];
@@ -38,40 +39,38 @@ string dbSsl = configuration["DbConfig:sslMode"];
 bool includeError = bool.Parse(configuration["DbConfig:includeError"]);
 bool enableSensitiveDataLogging = bool.Parse(configuration["DbConfig:enableSensitiveDataLogging"]);
 
+string connectionString =
+  $""
+  + $"Server={dbServer};"
+  + $"Database={dbName};"
+  + $"Port={dbPort};"
+  + $"User Id={dbUser};"
+  + $"Password={dbPass};"
+  + $"Ssl Mode={dbSsl};"
+  + $"Trust Server Certificate=true;"
+  + $"Include Error Detail={includeError};";
 
-string connectionString = $"" +
-  $"Server={dbServer};" +
-  $"Database={dbName};" +
-  $"Port={dbPort};" +
-  $"User Id={dbUser};" +
-  $"Password={dbPass};" +
-  $"Ssl Mode={dbSsl};" +
-  $"Trust Server Certificate=true;" +
-  $"Include Error Detail={includeError};";
-
-string connectionStringSafe = $"" +
-  $"Server={dbServer};" +
-  $"Database={dbName};" +
-  $"Port={dbPort};" +
-  $"User Id={dbUser};" +
-  $"Password=XXXXXXXXX;" +
-  $"Ssl Mode={dbSsl};" +
-  $"Trust Server Certificate=true;" +
-  $"Include Error Detail={includeError};";
+string connectionStringSafe =
+  $""
+  + $"Server={dbServer};"
+  + $"Database={dbName};"
+  + $"Port={dbPort};"
+  + $"User Id={dbUser};"
+  + $"Password=XXXXXXXXX;"
+  + $"Ssl Mode={dbSsl};"
+  + $"Trust Server Certificate=true;"
+  + $"Include Error Detail={includeError};";
 
 Console.WriteLine($"{connectionStringSafe}");
 
 builder.Services.AddDbContext<sbmtContext>(opt =>
-  {
-    opt.UseNpgsql(connectionString,
-      psqlOpt => psqlOpt.EnableRetryOnFailure() //this buys 90 seconds of startup without the DB
-      );
-    opt.EnableSensitiveDataLogging(enableSensitiveDataLogging);
-  }
-);
-
-
-
+{
+  opt.UseNpgsql(
+    connectionString,
+    psqlOpt => psqlOpt.EnableRetryOnFailure() //this buys 90 seconds of startup without the DB
+  );
+  opt.EnableSensitiveDataLogging(enableSensitiveDataLogging);
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -80,41 +79,43 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IStravaService, StravaService>();
 builder.Services.AddSingleton(new StravaLimitService());
 
-
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IAuthorizationHandler, AdminAuthHandler>();
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
+builder
+  .Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+  .AddCookie(options =>
+  {
+    //options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+    options.SlidingExpiration = true;
+    options.Cookie.Name = configuration["CookieName"];
+    options.Events = new CookieAuthenticationEvents()
     {
-      //options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
-      options.SlidingExpiration = true;
-      options.Cookie.Name = configuration["CookieName"];
-      options.Events = new CookieAuthenticationEvents()
+      OnRedirectToLogin = (ctx) =>
       {
-        OnRedirectToLogin = (ctx) =>
+        if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
         {
-          if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
-          {
-            ctx.Response.StatusCode = 401;
-          }
-
-          return Task.CompletedTask;
-        },
-        OnRedirectToAccessDenied = (ctx) =>
-        {
-          if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
-          {
-            ctx.Response.StatusCode = 403;
-          }
-
-          return Task.CompletedTask;
+          ctx.Response.StatusCode = 401;
         }
-      };
-    });
+
+        return Task.CompletedTask;
+      },
+      OnRedirectToAccessDenied = (ctx) =>
+      {
+        if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
+        {
+          ctx.Response.StatusCode = 403;
+        }
+
+        return Task.CompletedTask;
+      },
+    };
+  });
 
 builder.Services.AddAuthorization(options =>
 {
-  options.AddPolicy("UserIsAdminPolicy", policy =>
+  options.AddPolicy(
+    "UserIsAdminPolicy",
+    policy =>
     {
       //policy.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
       policy.Requirements.Add(new UserIsAdminRequirement());
@@ -129,7 +130,6 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-
   app.UseDeveloperExceptionPage();
   app.UseSwagger();
   app.UseSwaggerUI();
@@ -145,9 +145,7 @@ app.UseMiddleware<ResponseHeaderMiddleware>();
 
 app.MapControllers();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
+app.MapControllerRoute(name: "default", pattern: "{controller}/{action=Index}/{id?}");
 
 app.MapFallbackToFile("index.html");
 

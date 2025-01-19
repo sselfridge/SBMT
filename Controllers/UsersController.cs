@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
 using TodoApi.Models.db;
 using TodoApi.Services;
-
 
 namespace TodoApi.Controllers
 {
@@ -64,7 +63,6 @@ namespace TodoApi.Controllers
     [HttpPatch()]
     public async Task<IActionResult> PatchSegment([FromBody] List<JsonElement> patch)
     {
-
       var errors = new List<string>();
 
       for (var i = 0; i < patch.Count; i++)
@@ -110,7 +108,6 @@ namespace TodoApi.Controllers
             continue;
           }
 
-
           // Check if the property exists in the model
           var propertyToUpdate = user.GetType().GetProperty(PropertyName);
           if (propertyToUpdate != null)
@@ -120,18 +117,13 @@ namespace TodoApi.Controllers
             propertyToUpdate.SetValue(user, convertedValue);
 
             Console.WriteLine();
-
-
           }
         }
 
         _context.Update(user);
-
       }
 
-
       await _context.SaveChangesAsync();
-
 
       return NoContent();
     }
