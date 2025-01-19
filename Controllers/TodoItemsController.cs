@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 using TodoApi.Helpers;
-using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Services;
 
@@ -15,7 +16,6 @@ namespace TodoApi.Controllers
   [ApiController]
   public class TodoItemsController : ControllerBase
   {
-    private readonly TodoContext _context;
     private sbmtContext _dbContext;
     private IUserService _userService;
     private IStravaService _stravaService;
@@ -138,13 +138,12 @@ namespace TodoApi.Controllers
       return newSegmentEfforts;
     }
 
-    public TodoItemsController(TodoContext context,
+    public TodoItemsController(
       IUserService userService, IStravaService stravaService,
       sbmtContext dbContext, IConfiguration configuration,
       StravaLimitService stravaLimitService, IServiceScopeFactory serviceScopeFactory,
       ILogger<TodoItemsController> logger)
     {
-      _context = context;
       _userService = userService;
       _stravaService = stravaService;
       _dbContext = dbContext;
@@ -165,23 +164,32 @@ namespace TodoApi.Controllers
     //  return await _context.TodoItems.ToListAsync();
     //}
 
-    // GET: api/TodoItems/5
-    [HttpGet("{id}")]
-    public async Task<ActionResult<TodoItem>> GetTodoItem(long id)
+    public static void ConvertDatesToUniversal(object obj)
     {
-      return NotFound();
-      if (_context.TodoItems == null)
+      if (obj == null)
       {
-        return NotFound();
-      }
-      var todoItem = await _context.TodoItems.FindAsync(id);
-
-      if (todoItem == null)
-      {
-        return NotFound();
+        throw new ArgumentNullException(nameof(obj));
       }
 
-      return todoItem;
+      // Get the type of the object
+      var type = obj.GetType();
+
+      // Iterate over all properties of the object
+      foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+      {
+        // Check if the property is of type DateTime and is writable
+        if (property.PropertyType == typeof(DateTime) && property.CanWrite)
+        {
+          // Get the current value of the property
+          var value = (DateTime?)property.GetValue(obj);
+
+          if (value.HasValue)
+          {
+            // Convert the DateTime to universal time and set it back
+            property.SetValue(obj, value.Value.ToUniversalTime());
+          }
+        }
+      }
     }
 
     [HttpGet()]
@@ -197,17 +205,9 @@ namespace TodoApi.Controllers
         return Ok("loadked");
       }
 
-      IConfiguration configuration = new ConfigurationBuilder()
-                       .AddJsonFile("appsettings.json")
-                       .Build();
-
-      var kickOffStr = configuration["KickOffDate"];
-      var kickOffDate = DateTime.Parse(kickOffStr).ToUniversalTime();
 
 
-
-
-      return Ok("doin' nothin' boss");
+      return Ok("ok");
 
       var newStudent = new Student();
       newStudent.Name = "Bobby";
@@ -224,13 +224,16 @@ namespace TodoApi.Controllers
       int[] rates = new int[] { fifteen, daily };
 
 
+      //  IConfiguration configuration = new ConfigurationBuilder()
+      //                        .AddJsonFile("appsettings.json")
+      //                        .Build();
+
+      //       var kickOffStr = configuration["KickOffDate"];
+      //       var kickOffDate = DateTime.Parse(kickOffStr).ToUniversalTime();
 
 
 
-      return Ok(rates);
-
-
-
+      return Ok("Shouldn't get here");
     }
 
 
@@ -408,3 +411,27 @@ namespace TodoApi.Controllers
 
 //_dbContext.AddRange(t);
 //await _dbContext.SaveChangesAsync();
+
+//restore DB from JSON
+
+
+//       String jsonString = new StreamReader("./CSV/parsedData.json")
+//         .ReadToEnd();
+
+//       if (jsonString != null)
+//       {
+
+
+//         Console.WriteLine(jsonString);
+
+//         var newDatas = JsonSerializer.Deserialize<List<Segment>>(jsonString);
+
+//         foreach (var newData in newDatas)
+//         {
+//           ConvertDatesToUniversal(newData);
+//           _dbContext.Segments.Add(newData);
+//         }
+//         _dbContext.SaveChanges();
+//   return Ok(rates);
+
+// }

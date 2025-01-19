@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-import { Outlet } from "react-router-dom";
 import { Box } from "@mui/material";
 
 export default function TeresaWon(props) {
@@ -22,7 +20,7 @@ export default function TeresaWon(props) {
             I mean have you seen this?
           </a>
           <a href="https://www.strava.com/activities/11616177986">
-            All in ONE RIDE!!{" "}
+            All in ONE RIDE!!
           </a>
         </Box>
         <h4>*ya we're done here...</h4>

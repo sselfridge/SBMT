@@ -1,0 +1,31 @@
+
+# https://stackoverflow.com/questions/27409761/docker-multiple-dockerfiles-in-project
+# https://stackoverflow.com/questions/41637505/how-to-persist-data-in-a-dockerized-postgres-database-using-volumes
+
+services:
+  web:
+    build:
+      dockerfile: ./Dockerfile
+    # image: sbmtWeb
+    ports:
+      - "5001:5000"
+    environment:
+      - DOTNET_ENVIRONMENT=QA
+      - ASPNETCORE_ENVIRONMENT=QA
+    links:
+      - db
+
+  db:
+    image: postgres:16
+    container_name: sbmt_db
+    ports:
+      - "5551:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=mypassword
+      - POSTGRES_DB=postgres
+    volumes:
+        - pgdata:/var/lib/postgresql/data
+  
+volumes:
+  pgdata:

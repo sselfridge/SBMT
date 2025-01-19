@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+# git pull command from running on azure
+
 git pull
 
 dotnet publish -c Release
