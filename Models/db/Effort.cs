@@ -16,12 +16,17 @@ namespace TodoApi.Models.db
     public int KomRank { get; set; } = 0;
     public int Rank { get; set; } = 0;
 
-
-
-    public Effort(long id, int athleteId, long activityId,
-      int elapsedTime, int movingTime, long segmentId,
+    public Effort(
+      long id,
+      int athleteId,
+      long activityId,
+      int elapsedTime,
+      int movingTime,
+      long segmentId,
       DateTime startDate,
-      int prRank, int komRank)
+      int prRank,
+      int komRank
+    )
     {
       Id = id;
       AthleteId = athleteId;
@@ -49,6 +54,4 @@ namespace TodoApi.Models.db
       KomRank = eff.KomRank ?? 0;
     }
   }
-
-
 }

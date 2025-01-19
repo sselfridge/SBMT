@@ -34,7 +34,6 @@
       }
       Efforts.Add(effort);
     }
-
   }
 
   public class UserSegmentEffort
@@ -52,7 +51,6 @@
       ActivityId = activityId;
     }
   }
-
 
   public class UserSegmentDTO
   {
@@ -77,6 +75,7 @@
       Efforts = userSegment.Efforts.Select(e => new UserSegmentEffortDTO(e)).ToList();
     }
   }
+
   public class UserSegmentEffortDTO
   {
     public string Id { get; set; }
@@ -92,6 +91,4 @@
       ActivityId = $"{effort.ActivityId}";
     }
   }
-
-
 }

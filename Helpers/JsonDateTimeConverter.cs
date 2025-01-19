@@ -3,7 +3,11 @@ using System.Text.Json.Serialization;
 
 public class JsonDateTimeConverter : JsonConverter<DateTime>
 {
-  public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+  public override DateTime Read(
+    ref Utf8JsonReader reader,
+    Type typeToConvert,
+    JsonSerializerOptions options
+  )
   {
     // Parse the string value from JSON into a DateTime object
     if (reader.TokenType == JsonTokenType.String)

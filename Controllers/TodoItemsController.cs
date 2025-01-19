@@ -1,14 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using TodoApi.Helpers;
 using TodoApi.Models.db;
 using TodoApi.Services;
-
 
 namespace TodoApi.Controllers
 {
@@ -24,7 +23,6 @@ namespace TodoApi.Controllers
     private IServiceScopeFactory _serviceScopeFactory;
     private ILogger<TodoItemsController> _logger;
 
-
     private string GenerateJwtToken(int id)
     {
       // generate token that is valid for 30 days
@@ -36,7 +34,10 @@ namespace TodoApi.Controllers
       {
         Subject = new ClaimsIdentity(new[] { new Claim("id", id.ToString()) }),
         Expires = DateTime.UtcNow.AddDays(300),
-        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+        SigningCredentials = new SigningCredentials(
+          new SymmetricSecurityKey(key),
+          SecurityAlgorithms.HmacSha256Signature
+        ),
       };
       var token = tokenHandler.CreateToken(tokenDescriptor);
       return tokenHandler.WriteToken(token);
@@ -91,8 +92,8 @@ namespace TodoApi.Controllers
       var list = new List<long>() { 647488 };
 
       IConfiguration configuration = new ConfigurationBuilder()
-                              .AddJsonFile("appsettings.json")
-                              .Build();
+        .AddJsonFile("appsettings.json")
+        .Build();
 
       var appAthleteIdStr = configuration["AppAthleteId"];
       int appAthleteId = int.Parse(appAthleteIdStr);
@@ -102,12 +103,11 @@ namespace TodoApi.Controllers
 
       foreach (var user in users)
       {
-
-
-        if (user == null || user.AthleteId == appAthleteId) continue;
+        if (user == null || user.AthleteId == appAthleteId)
+          continue;
         // for 504 activites was ~7min
         // 40.81 - running in parellel no DB calls
-        // 
+        //
         realUsers.Add(user);
       }
       _dbContext.ChangeTracker.Clear();
@@ -133,16 +133,19 @@ namespace TodoApi.Controllers
       _dbContext.AddRange(newSegmentEfforts);
       _dbContext.SaveChanges();
 
-
       Console.WriteLine($"Total Activites:{count}");
       return newSegmentEfforts;
     }
 
     public TodoItemsController(
-      IUserService userService, IStravaService stravaService,
-      sbmtContext dbContext, IConfiguration configuration,
-      StravaLimitService stravaLimitService, IServiceScopeFactory serviceScopeFactory,
-      ILogger<TodoItemsController> logger)
+      IUserService userService,
+      IStravaService stravaService,
+      sbmtContext dbContext,
+      IConfiguration configuration,
+      StravaLimitService stravaLimitService,
+      IServiceScopeFactory serviceScopeFactory,
+      ILogger<TodoItemsController> logger
+    )
     {
       _userService = userService;
       _stravaService = stravaService;
@@ -193,19 +196,17 @@ namespace TodoApi.Controllers
     }
 
     [HttpGet()]
-    public async Task<ActionResult<long>> TestThing([FromServices] IServiceScopeFactory serviceScopeFactory)
+    public async Task<ActionResult<long>> TestThing(
+      [FromServices] IServiceScopeFactory serviceScopeFactory
+    )
     {
-
       var count = _dbContext.StravaUsers.Count();
       Console.WriteLine($"sbmtLog {count} users in DB");
-
 
       if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Development")
       {
         return Ok("loadked");
       }
-
-
 
       return Ok("ok");
 
@@ -223,7 +224,6 @@ namespace TodoApi.Controllers
 
       int[] rates = new int[] { fifteen, daily };
 
-
       //  IConfiguration configuration = new ConfigurationBuilder()
       //                        .AddJsonFile("appsettings.json")
       //                        .Build();
@@ -235,7 +235,6 @@ namespace TodoApi.Controllers
 
       return Ok("Shouldn't get here");
     }
-
 
     [HttpGet("init")]
     public async Task<ActionResult> InitApp()
@@ -301,11 +300,7 @@ namespace TodoApi.Controllers
 
 
       return Ok();
-
     }
-
-
-
 
     // PUT: api/TodoItems/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using TodoApi.Models.db;
 using TodoApi.Services;
 
-
 namespace TodoApi.Controllers
 {
   [Route("api/admin/[controller]")]
@@ -47,8 +46,6 @@ namespace TodoApi.Controllers
     [HttpPut("{id}")]
     public async Task<IActionResult> PutSegment(long id, Segment segment)
     {
-
-
       if (id != segment.Id)
       {
         return BadRequest();
@@ -80,19 +77,17 @@ namespace TodoApi.Controllers
     [HttpPost("{id}")]
     public async Task<ActionResult<Segment>> PostSegment(long id)
     {
-
       var segment = await _stravaService.GetSegment(id);
 
       string surfaceType = HttpContext.Request.Query["surfaceType"];
 
-
-      if (segment == null) return NotFound();
-
+      if (segment == null)
+        return NotFound();
 
       segment.SurfaceType = surfaceType;
 
-
-      if (SegmentExists(id)) return Conflict("Segment already exists");
+      if (SegmentExists(id))
+        return Conflict("Segment already exists");
 
       _context.Segments.Add(segment);
       await _context.SaveChangesAsync();

@@ -12,7 +12,6 @@ namespace TodoApi.Models.stravaApi
 
     [JsonPropertyName("start_date")]
     [JsonConverter(typeof(JsonDateTimeConverter))]
-
     public DateTime StartDate { get; set; }
 
     [JsonPropertyName("private")]
@@ -23,7 +22,6 @@ namespace TodoApi.Models.stravaApi
 
     [JsonPropertyName("segment_efforts")]
     public ActivitySumResEffort[]? SegmentEfforts { get; set; }
-
   }
 
   public class ActivitySummaryResAthlete
@@ -43,6 +41,7 @@ namespace TodoApi.Models.stravaApi
     [JsonPropertyName("resource_state")]
     public long ResourceState { get; set; }
   }
+
   public class ActivitySumResEffort
   {
     [JsonPropertyName("id")]
@@ -63,10 +62,13 @@ namespace TodoApi.Models.stravaApi
 
     [JsonPropertyName("athlete")]
     public ActivitySummaryResAthlete Athlete { get; set; }
+
     [JsonPropertyName("activity")]
     public ActivitySummaryResActivity Activity { get; set; }
+
     [JsonPropertyName("pr_rank")]
     public int? PrRank { get; set; }
+
     [JsonPropertyName("kom_rank")]
     public int? KomRank { get; set; }
   }
@@ -78,7 +80,5 @@ namespace TodoApi.Models.stravaApi
 
     [JsonPropertyName("name")]
     public string? Name { get; set; }
-
   }
-
 }

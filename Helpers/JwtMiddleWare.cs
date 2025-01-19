@@ -1,8 +1,8 @@
 ﻿namespace TodoApi.Helpers
 {
-  using Microsoft.IdentityModel.Tokens;
   using System.IdentityModel.Tokens.Jwt;
   using System.Text;
+  using Microsoft.IdentityModel.Tokens;
   using TodoApi.Models.db;
   using TodoApi.Services;
 
@@ -14,8 +14,6 @@
   {
     private readonly RequestDelegate _next;
     private readonly IConfiguration Configuration;
-
-
 
     public JwtMiddleware(RequestDelegate next, IConfiguration configuration)
     {
@@ -37,15 +35,18 @@
       // it's a simple one-liner
       DateTime pacific = TimeZoneInfo.ConvertTimeFromUtc(date, tzi);
 
-      Console.WriteLine($"sbmtLog({context.Request.Headers["x-forwarded-for"]}):{context.Request.Path}\t\t{pacific.ToString()}");
-      Console.WriteLine($"userAgent({context.Request.Headers["User-Agent"]}):{context.Request.Path}");
+      Console.WriteLine(
+        $"sbmtLog({context.Request.Headers["x-forwarded-for"]}):{context.Request.Path}\t\t{pacific.ToString()}"
+      );
+      Console.WriteLine(
+        $"userAgent({context.Request.Headers["User-Agent"]}):{context.Request.Path}"
+      );
       await _next(context);
     }
 
     private void attachUserToContext(HttpContext context, IUserService userService)
     {
-      var cookieId = context.User.Claims.FirstOrDefault(
-             c => c.Type == "AthleteId")?.Value;
+      var cookieId = context.User.Claims.FirstOrDefault(c => c.Type == "AthleteId")?.Value;
 
       if (cookieId != null)
       {
@@ -58,11 +59,7 @@
         }
       }
 
-
-
       Console.WriteLine("allo");
-
-
     }
 
     private void attachUserToContext(HttpContext context, IUserService userService, string token)
@@ -99,15 +96,19 @@
         var jwtKey = Configuration["jwtKey"];
 
         var key = Encoding.ASCII.GetBytes(jwtKey);
-        tokenHandler.ValidateToken(token, new TokenValidationParameters
-        {
-          ValidateIssuerSigningKey = true,
-          IssuerSigningKey = new SymmetricSecurityKey(key),
-          ValidateIssuer = false,
-          ValidateAudience = false,
-          // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
-          ClockSkew = TimeSpan.Zero
-        }, out SecurityToken validatedToken);
+        tokenHandler.ValidateToken(
+          token,
+          new TokenValidationParameters
+          {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
+            ClockSkew = TimeSpan.Zero,
+          },
+          out SecurityToken validatedToken
+        );
 
         var jwtToken = (JwtSecurityToken)validatedToken;
         var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
@@ -118,9 +119,7 @@
         {
           context.Items["User"] = user;
           Console.WriteLine($"sbmtLog:user:{user.AthleteId} - {user.Firstname} {user.Lastname}");
-
         }
-
       }
       catch
       {

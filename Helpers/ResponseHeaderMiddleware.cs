@@ -12,8 +12,11 @@
     private readonly IConfiguration Configuration;
     private StravaLimitService RateLimits;
 
-
-    public ResponseHeaderMiddleware(RequestDelegate next, IConfiguration configuration, StravaLimitService rateLimits)
+    public ResponseHeaderMiddleware(
+      RequestDelegate next,
+      IConfiguration configuration,
+      StravaLimitService rateLimits
+    )
     {
       _next = next;
       Configuration = configuration;
@@ -22,7 +25,6 @@
 
     public async Task Invoke(HttpContext context, IUserService userService)
     {
-
       var usage15 = RateLimits.GetUsage15();
       context.Response.Headers.Add("X-Usage-15", $"{usage15}");
 
@@ -30,6 +32,5 @@
       context.Response.Headers.Add("X-Usage-Daily", $"{usageDaily}");
       await _next.Invoke(context);
     }
-
   }
 }

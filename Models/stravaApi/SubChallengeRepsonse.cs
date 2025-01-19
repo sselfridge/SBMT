@@ -7,8 +7,9 @@ namespace TodoApi.Models.stravaApi
     [JsonPropertyName("hub.challenge")]
     public string Challenge { get; set; }
 
-    public SubChallengeRepsonse(string challenge) { Challenge = challenge; }
+    public SubChallengeRepsonse(string challenge)
+    {
+      Challenge = challenge;
+    }
   }
-
-
 }

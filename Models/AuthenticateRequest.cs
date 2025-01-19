@@ -1,6 +1,7 @@
 ﻿namespace TodoApi.Models
 {
   using System.ComponentModel.DataAnnotations;
+
   public class AuthenticateRequest
   {
     [Required]
