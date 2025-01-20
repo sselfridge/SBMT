@@ -107,7 +107,7 @@ export default class App extends Component {
           <StravaButton />
 
           <div id="infoBtn" className="button">
-            Info
+            Information
           </div>
           <a
             className="landingLink"
