@@ -71,8 +71,8 @@ export default function NavBar() {
   let titleText = "SBMT";
 
   switch (env) {
-    case "QA":
-      titleText = " QA";
+    case "LocalProd":
+      titleText = " LocalProd";
       break;
     case "Development":
       titleText = " DEV";

@@ -7,7 +7,7 @@ if [[ $# -ge 1 ]]; then
         ;;
         *)
             echo "Invalid argument: $1"
-            echo "Usage: $0 [dev|qa|stg]"
+            echo "Usage: $0 [dev|stg]"
             exit 1
         ;;
     esac
@@ -26,10 +26,6 @@ case "$environment" in
     dev)
         echo "Restoring Development db...."
         env=Development
-    ;;
-    qa)
-        echo "Restoring QA db...."
-        env=QA
     ;;
     stg)
         echo "Restoring Staging db...."

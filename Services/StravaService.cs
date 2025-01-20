@@ -55,11 +55,13 @@ namespace TodoApi.Services
       string clientId = Configuration["StravaConfig:clientId"];
       string clientSecret = Configuration["StravaConfig:clientSecret"];
 
-      var pairs = new List<KeyValuePair<string, string>>();
-      pairs.Add(new KeyValuePair<string, string>("code", code));
-      pairs.Add(new KeyValuePair<string, string>("client_id", clientId));
-      pairs.Add(new KeyValuePair<string, string>("client_secret", clientSecret));
-      pairs.Add(new KeyValuePair<string, string>("grant_type", "authorization_code"));
+      var pairs = new List<KeyValuePair<string, string>>
+      {
+        new KeyValuePair<string, string>("code", code),
+        new KeyValuePair<string, string>("client_id", clientId),
+        new KeyValuePair<string, string>("client_secret", clientSecret),
+        new KeyValuePair<string, string>("grant_type", "authorization_code"),
+      };
 
       var content = new FormUrlEncodedContent(pairs);
 
@@ -450,6 +452,7 @@ namespace TodoApi.Services
     private async Task<string> GetStravaString(HttpClient client, string url)
     {
       Console.WriteLine($"sbmtLog:Making StravaCall:{url}");
+
       var response = await client.GetAsync($"https://www.strava.com/api/v3{url}");
       if (response.IsSuccessStatusCode)
       {
@@ -469,7 +472,7 @@ namespace TodoApi.Services
 
           if (result == null)
           {
-            Console.WriteLine($"sbmtLog:ERROR GetStrava Invalid Response url:{url}");
+            Console.WriteLine($"sbmtLog:ERROR GetStravaString Invalid Response url:{url}");
             throw new Exception("Invalid response");
           }
 
@@ -477,14 +480,14 @@ namespace TodoApi.Services
         }
         catch (Exception e)
         {
-          Console.WriteLine($"sbmtLog:ERROR GetStrava Bad Model url:{url}");
+          Console.WriteLine($"sbmtLog:ERROR GetStravaString Bad Model url:{url}");
           throw new Exception("Bad model!");
         }
       }
       else
       {
-        Console.WriteLine($"Strava Get Failed for url:{url}");
-        throw new Exception("Strava Get Failed");
+        Console.WriteLine($"StravaString Get Failed for url:{url}");
+        throw new Exception("StravaString Get Failed");
       }
     }
   }

@@ -5,7 +5,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": ".NET Core Launch (web)",
+      "name": "smbtServer",
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
@@ -13,10 +13,10 @@
       "args": [],
       "cwd": "${workspaceFolder}",
       "stopAtEntry": false,
-      "serverReadyAction": {
-        "action": "openExternally",
-        "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
-      },
+      // "serverReadyAction": {
+      //   "action": "openExternally",
+      //   "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+      // },
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
@@ -24,6 +24,17 @@
         "/Views": "${workspaceFolder}/Views"
       }
     },
+    {
+      "name": "sbmt UI",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/UI",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["start"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+
     {
       "name": ".NET Core Attach",
       "type": "coreclr",

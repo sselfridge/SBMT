@@ -18,14 +18,13 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Staging": {
+    "LocalProd": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "api/todoitems",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Staging",
-        "DOTNET_ENVIRONMENT": "Staging"
-
+        "ASPNETCORE_ENVIRONMENT": "LocalProd",
+        "DOTNET_ENVIRONMENT": "LocalProd"
       },
       "applicationUrl": "http://localhost:5000"
     }

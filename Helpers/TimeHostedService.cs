@@ -32,7 +32,7 @@
     {
       var count = Interlocked.Increment(ref executionCount);
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-      StravaUtilities.UpdateAllUserStats(_serviceScopeFactory);
+      // StravaUtilities.UpdateAllUserStats(_serviceScopeFactory);  //TODO this is causing issues with requests because fly.io starts/starts the server
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
       logMsg($"Time Hosted Service has run: {count} times");
     }
