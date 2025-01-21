@@ -1,7 +1,4 @@
 
-# https://stackoverflow.com/questions/27409761/docker-multiple-dockerfiles-in-project
-# https://stackoverflow.com/questions/41637505/how-to-persist-data-in-a-dockerized-postgres-database-using-volumes
-
 services:
   web:
     build:
@@ -10,7 +7,6 @@ services:
     ports:
       - "5001:5000"
     environment:
-      - DOTNET_ENVIRONMENT=Staging
       - ASPNETCORE_ENVIRONMENT=Staging
     links:
       - db

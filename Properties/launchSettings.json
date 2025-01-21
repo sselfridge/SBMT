@@ -6,7 +6,12 @@
       "launchUrl": "api/todoitems",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "DOTNET_ENVIRONMENT": "Development"
+        "DB_SERVER": "localhost",
+        "DB_PORT": "5555",
+        "DB_LOCAL_PORT": "5555",
+        "DB_USER": "postgres",
+        "DB_PASS": "mypassword",
+        "DB_NAME": "postgres"
       },
       "applicationUrl": "http://localhost:5000"
     },
@@ -24,7 +29,12 @@
       "launchUrl": "api/todoitems",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "LocalProd",
-        "DOTNET_ENVIRONMENT": "LocalProd"
+        "DB_SERVER": "",
+        "DB_PORT": "",
+        "DB_LOCAL_PORT": "",
+        "DB_USER": "",
+        "DB_PASS": "",
+        "DB_NAME": ""
       },
       "applicationUrl": "http://localhost:5000"
     }
