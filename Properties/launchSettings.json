@@ -11,7 +11,9 @@
         "DB_LOCAL_PORT": "5555",
         "DB_USER": "postgres",
         "DB_PASS": "mypassword",
-        "DB_NAME": "postgres"
+        "DB_NAME": "postgres",
+        "STRAVA_SECRET": "",
+        "JWT_KEY": ""
       },
       "applicationUrl": "http://localhost:5000"
     },
