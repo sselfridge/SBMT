@@ -8,9 +8,7 @@ using TodoApi.Services;
 
 var env1 = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 Console.WriteLine($"env1: {env1}");
-var env2 = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
-Console.WriteLine($"env2: {env2}");
-var env = env1 ?? env2 ?? "Production";
+var env = env1 ?? "Production";
 
 Console.WriteLine($"sbmtLog: Current ENV var is:{env}------------------");
 
@@ -29,15 +27,36 @@ builder
   .Services.AddControllers()
   .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
-string dbServer = configuration["DbConfig:dbServer"];
-string dbPort = configuration["DbConfig:dbPort"];
-string dbPass = configuration["DbConfig:dbPass"];
-string dbUser = configuration["DbConfig:dbUser"];
-string dbName = configuration["DbConfig:dbName"];
+string? dbServer = Environment.GetEnvironmentVariable("DB_SERVER");
+string? dbPort = Environment.GetEnvironmentVariable("DB_PORT");
+string? dbPass = Environment.GetEnvironmentVariable("DB_PASS");
+string? dbUser = Environment.GetEnvironmentVariable("DB_USER");
+string? dbName = Environment.GetEnvironmentVariable("DB_NAME");
 string dbSsl = configuration["DbConfig:sslMode"];
 
 bool includeError = bool.Parse(configuration["DbConfig:includeError"]);
 bool enableSensitiveDataLogging = bool.Parse(configuration["DbConfig:enableSensitiveDataLogging"]);
+
+if (string.IsNullOrEmpty(dbServer))
+{
+  throw new Exception("Invalid ENV value for: dbServer");
+}
+if (string.IsNullOrEmpty(dbPort))
+{
+  throw new Exception("Invalid ENV value for: dbPort");
+}
+if (string.IsNullOrEmpty(dbPass))
+{
+  throw new Exception("Invalid ENV value for: dbPass");
+}
+if (string.IsNullOrEmpty(dbUser))
+{
+  throw new Exception("Invalid ENV value for: dbUser");
+}
+if (string.IsNullOrEmpty(dbName))
+{
+  throw new Exception("Invalid ENV value for: dbName");
+}
 
 string connectionString =
   $""

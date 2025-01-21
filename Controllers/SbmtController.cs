@@ -40,8 +40,7 @@ namespace TodoApi.Controllers
     public IEnumerable<string> Get()
     {
       var env1 = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-      var env2 = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
-      var env = env1 ?? env2 ?? "Production";
+      var env = env1 ?? "Production";
 
       var kickOffDate = Configuration["KickOffDate"];
       var endingDate = Configuration["EndingDate"];

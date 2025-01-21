@@ -5,8 +5,4 @@
 Models/stravaApi/Strava.NET
 notes
 backups
-/appsettings.Development.json
-/appsettings.Production.json
-/appsettings.Staging.json
-/appsettings.LocalProd.json
-/appsettings.QA.json
+

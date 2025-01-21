@@ -41,10 +41,12 @@ case "$environment" in
 esac
 
 
-dbPass=$(grep -oP '"dbPass":\s*"\K[^"]+' $SBMT_DIR/appsettings.$env.json)
-dbLocalPort=$(grep -oP '"dbLocalPort":\s*"\K[^"]+' $SBMT_DIR/appsettings.$env.json)
-dbUser=$(grep -oP '"dbUser":\s*"\K[^"]+' $SBMT_DIR/appsettings.$env.json)
-dbName=$(grep -oP '"dbName":\s*"\K[^"]+' $SBMT_DIR/appsettings.$env.json)
+
+dbLocalPort=$(grep -oP '^DB_LOCAL_PORT=\K.*' $SBMT_DIR/env/$env.env)
+dbUser=$(grep -oP '^DB_USER=\K.*' $SBMT_DIR/env/$env.env)
+dbPass=$(grep -oP '^DB_PASS=\K.*' $SBMT_DIR/env/$env.env)
+dbName=$(grep -oP '^DB_NAME=\K.*' $SBMT_DIR/env/$env.env)
+
 
 export PGPASSWORD=$dbPass
 
