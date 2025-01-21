@@ -6,8 +6,9 @@ services:
     # image: sbmtWeb
     ports:
       - "5001:5000"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Staging
+    env_file:
+      - path: ./env/Staging.env
+        required: true # default
     links:
       - db
 

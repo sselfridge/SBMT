@@ -55,6 +55,7 @@ namespace TodoApi.Services
       string clientId = Configuration["StravaConfig:clientId"];
 
       string? clientSecret = Environment.GetEnvironmentVariable("STRAVA_SECRET");
+
       if (string.IsNullOrEmpty(clientSecret))
       {
         throw new ArgumentException("Invalid ENV value for STRAVA_SECRET");
