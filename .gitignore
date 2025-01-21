@@ -5,7 +5,7 @@ Models/stravaApi/Strava.NET
 notes
 backups
 
-/env/Staging.env
-/env/Development.env
-/env/Production.env
-/env/Common.env
+env/Staging.env
+env/Development.env
+env/Production.env
+env/Common.env
