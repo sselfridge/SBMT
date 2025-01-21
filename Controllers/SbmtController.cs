@@ -45,8 +45,9 @@ namespace TodoApi.Controllers
 
       var kickOffDate = Configuration["KickOffDate"];
       var endingDate = Configuration["EndingDate"];
+      var redirectUri = Configuration["RedirectUri"];
 
-      return new string[] { env, kickOffDate, endingDate };
+      return new string[] { env, kickOffDate, endingDate, redirectUri };
     }
 
     [HttpGet("recentEfforts")]

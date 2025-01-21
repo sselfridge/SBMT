@@ -10,8 +10,8 @@ services:
     ports:
       - "5001:5000"
     environment:
-      - DOTNET_ENVIRONMENT=QA
-      - ASPNETCORE_ENVIRONMENT=QA
+      - DOTNET_ENVIRONMENT=Staging
+      - ASPNETCORE_ENVIRONMENT=Staging
     links:
       - db
 

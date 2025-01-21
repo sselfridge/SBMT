@@ -1,20 +1,23 @@
 import React from "react";
-import config from "config";
 import PropTypes from "prop-types";
 import { Typography, useMediaQuery, Link as MuiLink, Box } from "@mui/material";
 
 import { ReactComponent as ConnectStrava } from "assets/stravaBrand/btn_strava_connectwith_orange.svg";
+import AppContext from "AppContext";
 
-//TODO - get stravaUrl from contextSettings instead of config
 const StravaButton = (props) => {
   const { text } = props;
+
+  const { redirectUri } = React.useContext(AppContext);
+
+  const stravaUrl = `https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirectUri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read,activity:read,profile:read_all`;
 
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
   return (
     <Box sx={{ display: "flex" }}>
       <MuiLink
-        href={config.stravaUrl}
+        href={stravaUrl}
         sx={{
           display: "flex",
           backgroundColor: "strava.main",

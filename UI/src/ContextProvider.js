@@ -13,6 +13,7 @@ function ContextProvider({ children }) {
         env: arr[0],
         kickOffDate: arr[1],
         endingDate: arr[2],
+        redirectUri: arr[3],
       };
       dispatch({ type: "setSettings", settings });
     });
