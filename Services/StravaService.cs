@@ -53,7 +53,13 @@ namespace TodoApi.Services
     public async Task<StravaOAuthResponseDTO> GetTokens(string code)
     {
       string clientId = Configuration["StravaConfig:clientId"];
-      string clientSecret = Configuration["StravaConfig:clientSecret"];
+
+      string? clientSecret = Environment.GetEnvironmentVariable("STRAVA_SECRET");
+
+      if (string.IsNullOrEmpty(clientSecret))
+      {
+        throw new ArgumentException("Invalid ENV value for STRAVA_SECRET");
+      }
 
       var pairs = new List<KeyValuePair<string, string>>
       {
@@ -209,13 +215,19 @@ namespace TodoApi.Services
         .Build();
 
       string clientId = configuration["StravaConfig:clientId"];
-      string clientSecret = configuration["StravaConfig:clientSecret"];
+      string? clientSecret = Environment.GetEnvironmentVariable("STRAVA_SECRET");
+      if (string.IsNullOrEmpty(clientSecret))
+      {
+        throw new ArgumentException("Invalid ENV value for STRAVA_SECRET");
+      }
 
-      var pairs = new List<KeyValuePair<string, string>>();
-      pairs.Add(new KeyValuePair<string, string>("client_id", clientId));
-      pairs.Add(new KeyValuePair<string, string>("client_secret", clientSecret));
-      pairs.Add(new KeyValuePair<string, string>("grant_type", "refresh_token"));
-      pairs.Add(new KeyValuePair<string, string>("refresh_token", user.RefreshToken));
+      var pairs = new List<KeyValuePair<string, string>>
+      {
+        new KeyValuePair<string, string>("client_id", clientId),
+        new KeyValuePair<string, string>("client_secret", clientSecret),
+        new KeyValuePair<string, string>("grant_type", "refresh_token"),
+        new KeyValuePair<string, string>("refresh_token", user.RefreshToken),
+      };
 
       var content = new FormUrlEncodedContent(pairs);
 

@@ -27,7 +27,12 @@ namespace TodoApi.Controllers
     {
       // generate token that is valid for 30 days
       var tokenHandler = new JwtSecurityTokenHandler();
-      var jwtKey = Configuration["jwtKey"];
+      // var jwtKey = Configuration["jwtKey"];
+      string? jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
+      if (string.IsNullOrEmpty(jwtKey))
+      {
+        throw new ArgumentException("Invalid ENV value for JWT_KEY");
+      }
 
       var key = Encoding.ASCII.GetBytes(jwtKey);
       var tokenDescriptor = new SecurityTokenDescriptor
