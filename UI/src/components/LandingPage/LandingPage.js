@@ -77,7 +77,7 @@ export default class LandingPage extends Component {
             {/* <h2 className="h2Landing">Coming May 24th, 2024</h2> */}
           </div>
 
-          <StravaButton />
+          {/* <StravaButton /> */}
 
           <div id="infoBtn" className="button">
             Info
