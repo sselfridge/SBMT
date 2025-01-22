@@ -8,7 +8,6 @@ import StravaButton from "components/Shared/StravaButton";
 // import './custom.css'
 import "./mein.css";
 import { Link } from "react-router-dom";
-import { differenceInSeconds } from "date-fns";
 
 import { ReactComponent as LogoV1 } from "./assets/logoV1.svg";
 import { ReactComponent as Insta } from "./assets/insta.svg";
@@ -21,12 +20,12 @@ const targetMap = {
   contributeBtn2: "contributeSection",
 };
 
-export default class App extends Component {
+export default class LandingPage extends Component {
   constructor(props) {
     super(props);
     this.intervalRef = React.createRef();
   }
-  static displayName = App.name;
+  static displayName = LandingPage.name;
 
   componentDidMount() {
     const btns = Object.keys(targetMap);
@@ -47,35 +46,9 @@ export default class App extends Component {
     btns.forEach((btn) =>
       document.getElementById(btn).addEventListener("click", scrollToArea)
     );
-
-    let countdown;
-
-    this.intervalRef = setInterval(() => {
-      const end = new Date("May 24 2024");
-
-      const difference = differenceInSeconds(end, new Date());
-
-      // Convert seconds into days, hours, minutes, and seconds
-      const days = Math.floor(difference / (60 * 60 * 24));
-      const hours = Math.floor((difference % (60 * 60 * 24)) / (60 * 60));
-      const minutes = Math.floor((difference % (60 * 60)) / 60);
-      const seconds = difference % 60;
-
-      // Return the countdown in the format: days:hours:minutes:seconds
-      const dayDisplay = days > 0 ? `${days} days\n` : "";
-      countdown = `${dayDisplay}${hours}:${minutes
-        .toFixed(0)
-        .padStart(2, "0")}:${seconds.toFixed(0).padStart(2, "0")}`;
-      const element = document.getElementById("countdown");
-      if (element) {
-        element.innerText = countdown;
-      }
-    }, 1000);
   }
 
-  componentWillUnmount() {
-    clearInterval(this.intervalRef);
-  }
+  componentWillUnmount() {}
 
   render() {
     window.onload = function () {
@@ -104,10 +77,10 @@ export default class App extends Component {
             {/* <h2 className="h2Landing">Coming May 24th, 2024</h2> */}
           </div>
 
-          <StravaButton />
+          {/* <StravaButton /> */}
 
           <div id="infoBtn" className="button">
-            Information
+            Info
           </div>
           <a
             className="landingLink"
