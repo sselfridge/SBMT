@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -e
 if [[ $# -ge 1 ]]; then
     case "$1" in
         dev|qa|stg|prod)
@@ -45,9 +45,25 @@ dbUser=$(grep -oP '^DB_USER=\K.*' $SBMT_DIR/env/$env.env)
 dbPass=$(grep -oP '^DB_PASS=\K.*' $SBMT_DIR/env/$env.env)
 dbName=$(grep -oP '^DB_NAME=\K.*' $SBMT_DIR/env/$env.env)
 
-export PGPASSWORD=$dbPass
+# Variables to check
+REQUIRED_VARS=("dbLocalPort" "dbUser" "dbPass" "dbName")
 
-echo "psql -p $dbPort -U $dbUser $dbName -f $2"
+# Check if each variable is set and non-empty
+for VAR in "${REQUIRED_VARS[@]}"; do
+    if [ -z "${!VAR}" ]; then
+        echo "Error: Required variable '$VAR' is missing or empty."
+        exit 1
+    fi
+done
+
+export PGPASSWORD=$dbPass
+export PGUSER=$dbUser
+
+echo "Restore CMD:\n\n"
+
+echo ""
+echo "psql -p $dbLocalPort -U $dbUser < $2"
+echo ""
 
 read -p "Do you want to continue? (y/N):" response
 
@@ -55,8 +71,12 @@ read -p "Do you want to continue? (y/N):" response
 response=${response:-n}
 
 if [[ "$response" =~ ^[Yy]$ ]]; then
+    echo "Droping..."
+    dropdb -p $dbLocalPort -f $dbName
+    echo "Creating..."
+    createdb -p $dbLocalPort $dbName
     echo "Restoring."
-    psql -p $dbPort -U $dbUser $dbName -f $2
+    psql -p $dbLocalPort -U $dbUser < $2
 else
     echo "Restore Aborted"
 fi

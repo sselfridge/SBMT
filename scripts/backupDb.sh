@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 if [[ $# -ge 1 ]]; then
     case "$1" in
@@ -47,6 +48,16 @@ dbUser=$(grep -oP '^DB_USER=\K.*' $SBMT_DIR/env/$env.env)
 dbPass=$(grep -oP '^DB_PASS=\K.*' $SBMT_DIR/env/$env.env)
 dbName=$(grep -oP '^DB_NAME=\K.*' $SBMT_DIR/env/$env.env)
 
+# Variables to check
+REQUIRED_VARS=("dbLocalPort" "dbUser" "dbPass" "dbName")
+
+# Check if each variable is set and non-empty
+for VAR in "${REQUIRED_VARS[@]}"; do
+    if [ -z "${!VAR}" ]; then
+        echo "Error: Required variable '$VAR' is missing or empty."
+        exit 1
+    fi
+done
 
 export PGPASSWORD=$dbPass
 
