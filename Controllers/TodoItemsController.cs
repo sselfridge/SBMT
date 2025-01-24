@@ -2,7 +2,6 @@
 using System.Reflection;
 using System.Security.Claims;
 using System.Text;
-using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using TodoApi.Helpers;
@@ -208,12 +207,14 @@ namespace TodoApi.Controllers
       var count = _dbContext.StravaUsers.Count();
       Console.WriteLine($"sbmtLog {count} users in DB");
 
-      if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Development")
+      var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+      if (env != "Development" && env != "LocalProd")
       {
-        return Ok("loadked");
+        return Ok("Non-Dev Loaded!");
       }
 
-      return Ok("ok");
+      return Ok("active updated");
 
       var newStudent = new Student();
       newStudent.Name = "Bobby";
