@@ -10,13 +10,15 @@
       "request": "launch",
       "preLaunchTask": "build",
       "program": "${workspaceFolder}/bin/Debug/net6.0/TodoApi.dll",
-      "args": [],
+      // "program": "dotnet",
+      // "args": ["watch"], https://www.reddit.com/r/dotnet/comments/vhtcji/is_it_possible_to_use_hot_reload_while_debugging/k4b8li6/
       "cwd": "${workspaceFolder}",
       "stopAtEntry": false,
       // "serverReadyAction": {
       //   "action": "openExternally",
       //   "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
       // },
+      // "hotReloadProfile": "aspnetcore", // Or "blazorwasm" as needed
       "envFile": "${workspaceFolder}/env/Development.env",
       "sourceFileMap": {
         "/Views": "${workspaceFolder}/Views"
