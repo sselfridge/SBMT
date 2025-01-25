@@ -9,6 +9,7 @@ import Leaderboard from "components/Leaderboard";
 import Segments from "components/Segments";
 import SegmentDetails from "components/SegmentDetail";
 import Athletes from "components/Athletes";
+import NewEffort from "components/NewEffort";
 import AthleteDetails from "components/AthleteDetail";
 import UserSettings from "components/UserSettings";
 import HelpContact from "components/HelpContact";
@@ -38,7 +39,7 @@ const MeinRoutes = () => {
 
   const isAdmin = user?.athleteId === 1075670;
 
-  const showLanding = !isAdmin && isPreLaunch;
+  const showLanding = !isAdmin && isPreLaunch; //TODO admin isn't loaded here so it always get redirected...
 
   return (
     <BrowserRouter>
@@ -65,6 +66,7 @@ const MeinRoutes = () => {
               <Route path="segments/:segmentId" element={<SegmentDetails />} />
               <Route path="athletes" element={<Athletes />} />
               <Route path="athletes/:athleteId" element={<AthleteDetails />} />
+              <Route path="newEffort" element={<NewEffort />} />
               <Route path="settings" element={<UserSettings />} />
               <Route path="help" element={<HelpContact />} />
               <Route path="info">
