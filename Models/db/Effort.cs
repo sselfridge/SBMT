@@ -4,7 +4,7 @@ namespace TodoApi.Models.db
 {
   public class Effort
   {
-    public long Id { get; set; }
+    public long Id { get; set; } //TODO - older effort IDs in the data base are (int?) and all end in 000
     public int AthleteId { get; set; }
     public long ActivityId { get; set; }
     public int ElapsedTime { get; set; }

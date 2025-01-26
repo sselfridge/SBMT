@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Box, Paper, Autocomplete, TextField, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { ApiGet } from "api/api";
+import { ApiGet, ApiPut } from "api/api";
 import AppContext from "AppContext";
 
 const shortLinkRegex = /^https:\/\/strava.app.link\/.{8,20}$/;
@@ -154,13 +154,28 @@ const NewEffort = (props) => {
     setMovingTimeInput(formatSeconds(newTime));
   };
 
+  const save = () => {
+    const newEffort = {
+      athleteId: user.athleteId,
+      activityId,
+      elapsedTime: movingTime,
+      movingTime,
+      segmentId: segment.id,
+      startDate: date,
+    };
+
+    ApiPut("/api/admin/efforts", newEffort);
+  };
+
   return (
     <Paper sx={{ p: 3, width: "500px" }}>
       <Box>New Effort</Box>
       <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
         <Autocomplete
           options={users}
-          getOptionLabel={(o) => `${o.firstname} ${o.lastname}`.trim() || ""}
+          getOptionLabel={(o) =>
+            o.firstname ? `${o.firstname} ${o.lastname}`.trim() : ""
+          }
           value={user}
           onChange={(e, newVal) => {
             setUser(newVal);
@@ -202,13 +217,17 @@ const NewEffort = (props) => {
           helperText={activityHelper}
           error={!!activityHelper}
         />
-        <Button disabled={submitDisabled}>Save</Button>
+        <Button disabled={submitDisabled} onClick={save}>
+          Save
+        </Button>
       </Box>
-      <Box>Segment: {segment?.name || ""}</Box>
-
-      <Box>date: {date?.toString() || ""}</Box>
-      <Box>movingTime: {movingTime || ""}</Box>
-      <Box>ActivityId: {activityId || ""}</Box>
+      <Box sx={{ p: 3 }}>
+        <Box>AthleteId: {user.athleteId || ""}</Box>
+        <Box>Segment: {segment?.name || ""}</Box>
+        <Box>Date: {date?.toString() || ""}</Box>
+        <Box>MovingTime: {movingTime || ""}</Box>
+        <Box>ActivityId: {activityId || ""}</Box>
+      </Box>
     </Paper>
   );
 };

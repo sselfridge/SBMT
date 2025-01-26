@@ -31,6 +31,7 @@ import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-load
 import config from "config";
 import StravaOops from "components/StravaOops";
 // import TempCountdown from "components/LandingPage/TempCountdown";
+import AdminEfforts from "components/Admin/AdminEfforts";
 
 mapboxgl.accessToken = config.mapBox;
 
@@ -86,6 +87,7 @@ const MeinRoutes = () => {
               <Route path="segments" element={<AdminSegments />} />
               <Route path="users" element={<AdminUsers />} />
               <Route path="feedback" element={<AdminFeedback />} />
+              <Route path="efforts" element={<AdminEfforts />} />
             </Route>
           )}
 
