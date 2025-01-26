@@ -43,9 +43,11 @@ export default class LandingPage extends Component {
     //   document.getElementById("textCount").innerText = 1000 - count;
     // };
 
-    btns.forEach((btn) =>
-      document.getElementById(btn).addEventListener("click", scrollToArea)
-    );
+    btns.forEach((btn) => {
+      if (btn) {
+        document.getElementById(btn).addEventListener("click", scrollToArea);
+      }
+    });
   }
 
   componentWillUnmount() {}
