@@ -69,8 +69,12 @@ if [ "$env" == "Production" ]; then
     echo "Fly Proxy DB to $dbLocalPort on pid:$pid"
 fi
 
+if [[ -n "$2" ]]; then
+    tag=".$2"
+fi
+
 date=$(date +"%Y-%m-%d_%H%M%S")
-filename="sbmt_$env.$date.sql"
+filename="sbmt_$env.$date$tag.sql"
 echo "pg_dump -p $dbLocalPort -U $dbUser $dbName > $filename"
 pg_dump -p $dbLocalPort -U $dbUser $dbName > "$SBMT_DIR/backups/$filename"
 
