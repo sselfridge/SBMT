@@ -45,11 +45,6 @@ const NewEffort = (props) => {
 
   const { kickOffDate, user: currentUser, endingDate } = useContext(AppContext);
   const isAdmin = currentUser.athleteId === 1075670;
-  console.info("currentUser: ", currentUser);
-
-  console.info("kickOffDate: ", kickOffDate);
-
-  console.info("movingTime: ", movingTime);
 
   React.useEffect(() => {
     ApiGet("/api/segments", setSegments);
