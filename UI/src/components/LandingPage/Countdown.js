@@ -35,7 +35,7 @@ const Countdown = (props) => {
         .toFixed(0)
         .padStart(2, "0")}`;
 
-      setCountdown({ dayDisplay, lower });
+      if (!Number.isNaN(hours)) setCountdown({ dayDisplay, lower });
     }, 1000);
 
     return () => {

@@ -1,11 +1,7 @@
 import React, { Component } from "react";
-// import { Route } from "react-router";
-// import { Layout } from "./components/Layout";
-// import { Home } from "./components/Home";
-// import { FetchData } from "./components/FetchData";
-// import { Counter } from "./components/Counter";
-import StravaButton from "components/Shared/StravaButton";
-// import './custom.css'
+
+// import StravaButton from "components/Shared/StravaButton";
+
 import "./mein.css";
 import { Link } from "react-router-dom";
 
@@ -79,7 +75,7 @@ export default class LandingPage extends Component {
             {/* <h2 className="h2Landing">Coming May 24th, 2024</h2> */}
           </div>
 
-          <StravaButton />
+          {/* <StravaButton /> */}
 
           <div id="infoBtn" className="button">
             Info
