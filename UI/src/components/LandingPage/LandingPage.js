@@ -1,11 +1,7 @@
 import React, { Component } from "react";
-// import { Route } from "react-router";
-// import { Layout } from "./components/Layout";
-// import { Home } from "./components/Home";
-// import { FetchData } from "./components/FetchData";
-// import { Counter } from "./components/Counter";
-import StravaButton from "components/Shared/StravaButton";
-// import './custom.css'
+
+// import StravaButton from "components/Shared/StravaButton";
+
 import "./mein.css";
 import { Link } from "react-router-dom";
 
@@ -34,7 +30,7 @@ export default class LandingPage extends Component {
       const id = targetMap[e.target.id];
       document
         .getElementById(id)
-        .scrollIntoView({ behavior: "smooth", block: "start" });
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
     };
     // const onTextChange = () => {
     //   const ta = document.getElementById("textArea");
@@ -43,9 +39,11 @@ export default class LandingPage extends Component {
     //   document.getElementById("textCount").innerText = 1000 - count;
     // };
 
-    btns.forEach((btn) =>
-      document.getElementById(btn).addEventListener("click", scrollToArea)
-    );
+    btns.forEach((btn) => {
+      if (btn) {
+        document.getElementById(btn)?.addEventListener("click", scrollToArea);
+      }
+    });
   }
 
   componentWillUnmount() {}
@@ -55,7 +53,7 @@ export default class LandingPage extends Component {
       const btns = Object.keys(targetMap);
 
       btns.forEach((btn) =>
-        document.getElementById(btn).addEventListener("click", scrollToArea)
+        document.getElementById(btn)?.addEventListener("click", scrollToArea)
       );
     };
 
@@ -63,7 +61,7 @@ export default class LandingPage extends Component {
       const id = targetMap[e.target.id];
       document
         .getElementById(id)
-        .scrollIntoView({ behavior: "smooth", block: "start" });
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
     };
 
     return (

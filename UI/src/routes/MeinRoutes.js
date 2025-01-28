@@ -9,6 +9,7 @@ import Leaderboard from "components/Leaderboard";
 import Segments from "components/Segments";
 import SegmentDetails from "components/SegmentDetail";
 import Athletes from "components/Athletes";
+import NewEffort from "components/NewEffort";
 import AthleteDetails from "components/AthleteDetail";
 import UserSettings from "components/UserSettings";
 import HelpContact from "components/HelpContact";
@@ -30,6 +31,7 @@ import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-load
 import config from "config";
 import StravaOops from "components/StravaOops";
 // import TempCountdown from "components/LandingPage/TempCountdown";
+import AdminEfforts from "components/Admin/AdminEfforts";
 
 mapboxgl.accessToken = config.mapBox;
 
@@ -43,20 +45,20 @@ const MeinRoutes = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* <NavBar /> */}
-        {showLanding ? (
-          <Route path="/" element={<Landing />} />
-        ) : (
-          <Route path="/" element={<Navigate to="/recent" />} />
-        )}
+        <Route path="/" element={<Navigate to="/recent" />} />
+
+        {showLanding && <Route path="landing" element={<Landing />} />}
 
         <Route path="/" element={<App />}>
           {showLanding ? (
-            <Route path="*" element={<Navigate to="/" />} />
+            <>
+              {/* <Route path="landing" element={<Landing />} /> */}
+              <Route path="*" element={<Navigate to="/landing" />} />
+            </>
           ) : (
             <>
+              <Route path="landing" element={<Navigate to="/" />} />
               <Route path="teresa" element={<TeresaWon />} />
-
               <Route path="beta/*" element={<BetaRedirect />} />
               <Route path="recent" element={<Recent />} />
               <Route path="leaderboard" element={<Leaderboard />} />
@@ -65,6 +67,7 @@ const MeinRoutes = () => {
               <Route path="segments/:segmentId" element={<SegmentDetails />} />
               <Route path="athletes" element={<Athletes />} />
               <Route path="athletes/:athleteId" element={<AthleteDetails />} />
+              <Route path="newEffort" element={<NewEffort />} />
               <Route path="settings" element={<UserSettings />} />
               <Route path="help" element={<HelpContact />} />
               <Route path="info">
@@ -84,6 +87,7 @@ const MeinRoutes = () => {
               <Route path="segments" element={<AdminSegments />} />
               <Route path="users" element={<AdminUsers />} />
               <Route path="feedback" element={<AdminFeedback />} />
+              <Route path="efforts" element={<AdminEfforts />} />
             </Route>
           )}
 

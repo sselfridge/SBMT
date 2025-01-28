@@ -2,7 +2,6 @@
 using System.Reflection;
 using System.Security.Claims;
 using System.Text;
-using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using TodoApi.Helpers;
@@ -208,12 +207,31 @@ namespace TodoApi.Controllers
       var count = _dbContext.StravaUsers.Count();
       Console.WriteLine($"sbmtLog {count} users in DB");
 
-      if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Development")
+      var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+      if (env != "Development" && env != "LocalProd" && env != "Staging")
       {
-        return Ok("loadked");
+        return Ok("Non-Dev Loaded!");
       }
 
-      return Ok("ok");
+      return Ok("Test this in STG still...but on purpose");
+      //await StravaUtilities.ParseNewActivity(_serviceScopeFactory, 1075670, 12308353587, 0);
+
+      var activity = await _stravaService.GetActivity(12308353587, 1075670);
+
+      var segmentIds = _dbContext.Segments.Select(s => s.Id).ToList();
+
+      var efforts = StravaUtilities.PullEffortsFromActivity(activity, segmentIds);
+
+      if (efforts != null && efforts[0] != null)
+      {
+        var newEffort = efforts[0];
+
+        _dbContext.Add(newEffort);
+        _dbContext.SaveChanges();
+      }
+
+      return Ok(efforts);
 
       var newStudent = new Student();
       newStudent.Name = "Bobby";

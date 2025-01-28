@@ -3,19 +3,23 @@ import ReactDOM from "react-dom/client";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "theme/theme";
 import CssBaseline from "@mui/material/CssBaseline";
-
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 // import reportWebVitals from "./reportWebVitals";
 
 import MeinRoutes from "./routes/MeinRoutes";
+
 import ContextProvider from "ContextProvider";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <ContextProvider>
-        <MeinRoutes />
-      </ContextProvider>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <CssBaseline />
+        <ContextProvider>
+          <MeinRoutes />
+        </ContextProvider>
+      </LocalizationProvider>
     </ThemeProvider>
   </React.StrictMode>
 );

@@ -1,52 +1,23 @@
 #!/bin/bash
 set -e
 
-if [[ $# -ge 1 ]]; then
-    case "$1" in
-        dev|qa|stg|prod)
-            environment="$1"
-        ;;
-        *)
-            echo "Invalid argument: $1"
-            echo "Usage: $0 [dev|stg]"
-            exit 1
-        ;;
-    esac
+if [[ -z "$SBMT_DIR" ]]; then
+    echo "env SBMT_DIR is not set or is empty, aborting backup"
 fi
 
-if [[ -n "$SBMT_DIR" ]]; then
-    echo "SBMT_DIR is set to: $SBMT_DIR"
-else
-    echo "env SBMT_DIR is not set or is empty, aborting backup"
+source "$SBMT_DIR/scripts/load_env.sh" $1
+
+if [ $sbmtEnvLoaded != 1 ]; then
+    echo "sbmt env not set properly"
     exit 1
 fi
 
-env=Development
 
-case "$environment" in
-    dev)
-        echo "Backing up Development db...."
-        env=Development
-    ;;
-    stg)
-        echo "Backing up Staging db...."
-        env=Staging
-    ;;
-    prod)
-        echo "Backing up Prod db...."
-        env=Production
-    ;;
-    *)
-        echo "Backing up Development db...."
-        env=Development
-esac
+dbLocalPort=$DB_LOCAL_PORT
+dbUser=$DB_USER
+dbPass=$DB_PASS
+dbName=$DB_NAME
 
-
-
-dbLocalPort=$(grep -oP '^DB_LOCAL_PORT=\K.*' $SBMT_DIR/env/$env.env)
-dbUser=$(grep -oP '^DB_USER=\K.*' $SBMT_DIR/env/$env.env)
-dbPass=$(grep -oP '^DB_PASS=\K.*' $SBMT_DIR/env/$env.env)
-dbName=$(grep -oP '^DB_NAME=\K.*' $SBMT_DIR/env/$env.env)
 
 # Variables to check
 REQUIRED_VARS=("dbLocalPort" "dbUser" "dbPass" "dbName")
@@ -69,8 +40,12 @@ if [ "$env" == "Production" ]; then
     echo "Fly Proxy DB to $dbLocalPort on pid:$pid"
 fi
 
+if [[ -n "$2" ]]; then
+    tag=".$2"
+fi
+
 date=$(date +"%Y-%m-%d_%H%M%S")
-filename="sbmt_$env.$date.sql"
+filename="sbmt_$env.$date$tag.sql"
 echo "pg_dump -p $dbLocalPort -U $dbUser $dbName > $filename"
 pg_dump -p $dbLocalPort -U $dbUser $dbName > "$SBMT_DIR/backups/$filename"
 

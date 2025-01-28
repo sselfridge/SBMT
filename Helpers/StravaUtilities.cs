@@ -243,57 +243,7 @@ namespace TodoApi.Helpers
               context.AddRange(newEfforts);
               context.SaveChanges();
 
-              var needToUpdate = false;
-
-              // for each new effort, check where it stands on that segment, if its in the top 10, set rank accordingly.
-              // will only show for an athlete if its their fastest time on the segment
-
-              newEfforts.ForEach(newEffort =>
-              {
-                var top10 = context
-                  .Efforts.Where(e =>
-                    e.SegmentId == newEffort.SegmentId && e.StartDate > kickOffDate
-                  )
-                  .GroupBy(
-                    e => e.AthleteId,
-                    e => new { e.ElapsedTime, e.Id },
-                    (baseKey, times) =>
-                      new
-                      {
-                        Key = baseKey, //AthleteId (not used)
-                        Time = times
-                          .Where(x => x.ElapsedTime == times.Min(x => x.ElapsedTime))
-                          .Select(x => x.ElapsedTime)
-                          .First(),
-                        Id = times
-                          .Where(x => x.ElapsedTime == times.Min(x => x.ElapsedTime))
-                          .Select(x => x.Id)
-                          .First(),
-                      }
-                  )
-                  .OrderBy(x => x.Time)
-                  .Take(10)
-                  .ToList();
-
-                var index = top10.FindIndex(e => e.Id == newEffort.Id);
-                if (index != -1)
-                {
-                  var dbEffort = context
-                    .Efforts.Where(e => e.Id == top10[index].Id)
-                    .FirstOrDefault();
-                  if (dbEffort != null)
-                  {
-                    dbEffort.Rank = index + 1;
-                    context.Update(dbEffort);
-                    needToUpdate = true;
-                  }
-                }
-              });
-
-              if (needToUpdate)
-              {
-                context.SaveChanges();
-              }
+              UpdateTopTen(context, newEfforts);
             }
           }
           catch (Exception e)
@@ -315,7 +265,7 @@ namespace TodoApi.Helpers
     public static async Task<bool> UpdateAllUserStats(IServiceScopeFactory serviceScopeFactory)
     {
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-      Task.Run(async () =>
+      _ = Task.Run(async () =>
       {
         using (var scope = serviceScopeFactory.CreateScope())
         {
@@ -339,10 +289,18 @@ namespace TodoApi.Helpers
             {
               if (whenAll.IsFaulted) // There is also the possibility of being canceled
               {
-                foreach (var ex in whenAll.Exception.InnerExceptions)
+                if (whenAll.Exception != null)
+                {
+                  foreach (var ex in whenAll.Exception.InnerExceptions)
+                  {
+                    Console.WriteLine("sbmtLog: Single Stats update failed");
+                    Console.WriteLine(ex); // Log each exception
+                  }
+                }
+                else
                 {
                   Console.WriteLine("sbmtLog: Single Stats update failed");
-                  Console.WriteLine(ex); // Log each exception
+                  Console.WriteLine("No Exception data");
                 }
               }
             }
@@ -370,8 +328,62 @@ namespace TodoApi.Helpers
       return true;
     }
 
+    public static bool UpdateTopTen(sbmtContext context, List<Effort> newEfforts)
+    {
+      var needToUpdate = false;
+
+      var kickOffDate = SbmtUtils.getKickOffDate();
+
+      // for each new effort, check where it stands on that segment, if its in the top 10, set rank accordingly.
+      // will only show for an athlete if its their fastest time on the segment
+      newEfforts.ForEach(newEffort =>
+      {
+        var top10 = context
+          .Efforts.Where(e => e.SegmentId == newEffort.SegmentId && e.StartDate > kickOffDate)
+          .GroupBy(
+            e => e.AthleteId,
+            e => new { e.ElapsedTime, e.Id },
+            (baseKey, times) =>
+              new
+              {
+                Key = baseKey, //AthleteId (not used)
+                Time = times
+                  .Where(x => x.ElapsedTime == times.Min(x => x.ElapsedTime))
+                  .Select(x => x.ElapsedTime)
+                  .First(),
+                Id = times
+                  .Where(x => x.ElapsedTime == times.Min(x => x.ElapsedTime))
+                  .Select(x => x.Id)
+                  .First(),
+              }
+          )
+          .OrderBy(x => x.Time)
+          .Take(10)
+          .ToList();
+
+        var index = top10.FindIndex(e => e.Id == newEffort.Id);
+        if (index != -1)
+        {
+          var dbEffort = context.Efforts.Where(e => e.Id == top10[index].Id).FirstOrDefault();
+          if (dbEffort != null)
+          {
+            dbEffort.Rank = index + 1;
+            context.Update(dbEffort);
+            needToUpdate = true;
+          }
+        }
+      });
+
+      if (needToUpdate)
+      {
+        context.SaveChanges();
+      }
+      return true;
+    }
+
     public static string TestUtilitiesAccess(IServiceScopeFactory serviceScopeFactory)
     {
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
       Task.Run(async () =>
       {
         using (var scope = serviceScopeFactory.CreateScope())
@@ -383,6 +395,7 @@ namespace TodoApi.Helpers
           Console.WriteLine("we made it here");
         }
       });
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
       return "allo";
     }
   }
