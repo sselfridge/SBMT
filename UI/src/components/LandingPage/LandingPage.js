@@ -34,7 +34,7 @@ export default class LandingPage extends Component {
       const id = targetMap[e.target.id];
       document
         .getElementById(id)
-        .scrollIntoView({ behavior: "smooth", block: "start" });
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
     };
     // const onTextChange = () => {
     //   const ta = document.getElementById("textArea");
@@ -45,7 +45,7 @@ export default class LandingPage extends Component {
 
     btns.forEach((btn) => {
       if (btn) {
-        document.getElementById(btn).addEventListener("click", scrollToArea);
+        document.getElementById(btn)?.addEventListener("click", scrollToArea);
       }
     });
   }
@@ -57,7 +57,7 @@ export default class LandingPage extends Component {
       const btns = Object.keys(targetMap);
 
       btns.forEach((btn) =>
-        document.getElementById(btn).addEventListener("click", scrollToArea)
+        document.getElementById(btn)?.addEventListener("click", scrollToArea)
       );
     };
 
@@ -65,7 +65,7 @@ export default class LandingPage extends Component {
       const id = targetMap[e.target.id];
       document
         .getElementById(id)
-        .scrollIntoView({ behavior: "smooth", block: "start" });
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
     };
 
     return (
@@ -79,7 +79,7 @@ export default class LandingPage extends Component {
             {/* <h2 className="h2Landing">Coming May 24th, 2024</h2> */}
           </div>
 
-          {/* <StravaButton /> */}
+          <StravaButton />
 
           <div id="infoBtn" className="button">
             Info

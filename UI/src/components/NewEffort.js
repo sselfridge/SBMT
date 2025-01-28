@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { Box, Paper, Autocomplete, TextField, Button } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { ApiGet, ApiPut } from "api/api";
 import AppContext from "AppContext";
@@ -26,9 +25,7 @@ function formatSeconds(seconds) {
 
 const NewEffort = (props) => {
   const [users, setUsers] = React.useState([]);
-  const [user, setUser] = React.useState([]);
-
-  console.info("users: ", users);
+  const [user, setUser] = React.useState(null);
 
   const [segments, setSegments] = React.useState([]);
   const [segment, setSegment] = React.useState(null);

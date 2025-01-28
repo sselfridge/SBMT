@@ -265,7 +265,7 @@ namespace TodoApi.Helpers
     public static async Task<bool> UpdateAllUserStats(IServiceScopeFactory serviceScopeFactory)
     {
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-      Task.Run(async () =>
+      _ = Task.Run(async () =>
       {
         using (var scope = serviceScopeFactory.CreateScope())
         {
@@ -289,10 +289,18 @@ namespace TodoApi.Helpers
             {
               if (whenAll.IsFaulted) // There is also the possibility of being canceled
               {
-                foreach (var ex in whenAll.Exception.InnerExceptions)
+                if (whenAll.Exception != null)
+                {
+                  foreach (var ex in whenAll.Exception.InnerExceptions)
+                  {
+                    Console.WriteLine("sbmtLog: Single Stats update failed");
+                    Console.WriteLine(ex); // Log each exception
+                  }
+                }
+                else
                 {
                   Console.WriteLine("sbmtLog: Single Stats update failed");
-                  Console.WriteLine(ex); // Log each exception
+                  Console.WriteLine("No Exception data");
                 }
               }
             }

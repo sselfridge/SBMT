@@ -59,7 +59,7 @@ export default function NavBar() {
         break;
     }
 
-    let title = pathname.replace("/", "");
+    let title = pathname.replace("/", "") || [""];
     title = title[0].toUpperCase() + title.slice(1);
     document.title = `SBMT - ${title}`;
   }, [isMobile, pathname]);

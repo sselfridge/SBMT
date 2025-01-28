@@ -51,7 +51,14 @@ namespace TodoApi.Controllers
     {
       Console.WriteLine("New Effort Recieved");
 
-      return Ok(newEffort);
+      var effort = new Effort(newEffort);
+
+      //TODO - add validation for newEffort values
+
+      _context.Efforts.Add(effort);
+      await _context.SaveChangesAsync();
+
+      return Ok(effort);
     }
 
     //POST: api/Efforts

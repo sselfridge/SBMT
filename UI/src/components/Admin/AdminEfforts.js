@@ -1,9 +1,6 @@
-import React, { useState, useContext, useEffect } from "react";
-import _ from "lodash";
-import PropTypes from "prop-types";
-import { Box, Paper, TextField, Button } from "@mui/material";
+import React from "react";
+import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { ApiGet, ApiPost } from "api/api";
 import NewEffort from "components/NewEffort";
 
 const MyBox = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
@@ -16,8 +13,6 @@ const AdminEfforts = (props) => {
   );
 };
 
-AdminEfforts.propTypes = {
-  prop: PropTypes.object,
-};
+AdminEfforts.propTypes = {};
 
 export default AdminEfforts;

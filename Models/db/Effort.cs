@@ -80,5 +80,21 @@ namespace TodoApi.Models.db
       PrRank = eff.KomRank != null ? 1 : (eff.PrRank ?? 0);
       KomRank = eff.KomRank ?? 0;
     }
+
+    public Effort(NewEffortDTO newEffort)
+    {
+      if (newEffort.Id != 0)
+      {
+        Id = newEffort.Id;
+      }
+      AthleteId = newEffort.AthleteId;
+      ActivityId = newEffort.ActivityId;
+      ElapsedTime = newEffort.ElapsedTime;
+      MovingTime = newEffort.MovingTime;
+      SegmentId = newEffort.SegmentId;
+      CreatedAt = newEffort.CreatedAt;
+      StartDate = newEffort.StartDate;
+      ManualEffort = true;
+    }
   }
 }

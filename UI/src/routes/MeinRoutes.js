@@ -40,25 +40,25 @@ const MeinRoutes = () => {
 
   const isAdmin = user?.athleteId === 1075670;
 
-  const showLanding = !isAdmin && isPreLaunch; //TODO admin isn't loaded here so it always get redirected...
+  const showLanding = !isAdmin && isPreLaunch;
 
   return (
     <BrowserRouter>
       <Routes>
-        {/* <NavBar /> */}
-        {showLanding ? (
-          <Route path="/" element={<Landing />} />
-        ) : (
-          <Route path="/" element={<Navigate to="/recent" />} />
-        )}
+        <Route path="/" element={<Navigate to="/recent" />} />
+
+        {showLanding && <Route path="landing" element={<Landing />} />}
 
         <Route path="/" element={<App />}>
           {showLanding ? (
-            <Route path="*" element={<Navigate to="/" />} />
+            <>
+              {/* <Route path="landing" element={<Landing />} /> */}
+              <Route path="*" element={<Navigate to="/landing" />} />
+            </>
           ) : (
             <>
+              <Route path="landing" element={<Navigate to="/" />} />
               <Route path="teresa" element={<TeresaWon />} />
-
               <Route path="beta/*" element={<BetaRedirect />} />
               <Route path="recent" element={<Recent />} />
               <Route path="leaderboard" element={<Leaderboard />} />
