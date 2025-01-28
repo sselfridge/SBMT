@@ -392,7 +392,7 @@ namespace TodoApi.Services
           throw new Exception("Invalid response");
         }
 
-        string pattern = @"https:\/\/www\.strava\.com\/activities\/(\d+)\?";
+        string pattern = @"strava\.com\/activities\/(\d+)";
 
         // Extract the number using regex
         var match = Regex.Match(result, pattern);

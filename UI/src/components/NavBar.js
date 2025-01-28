@@ -60,8 +60,10 @@ export default function NavBar() {
     }
 
     let title = pathname.replace("/", "");
-    title = title[0].toUpperCase() + title.slice(1);
-    document.title = `SBMT - ${title}`;
+    if (title !== "") {
+      title = title[0].toUpperCase() + title.slice(1);
+      document.title = `SBMT - ${title}`;
+    }
   }, [isMobile, pathname]);
 
   const tabs = ["leaderboard", "segments", "athletes"];

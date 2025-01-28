@@ -641,6 +641,24 @@ namespace TodoApi.Controllers
       return Ok(deletedUserDTO);
     }
 
+    [HttpGet("parseStravaLink/{url}")]
+    //[ResponseCache(Duration = 360)]
+
+    public async Task<IActionResult> ParseStravaLink(string url)
+    {
+      try
+      {
+        var act = await _stravaService.ParseLink(url);
+        long activityId = long.Parse(act);
+
+        return Ok(activityId);
+      }
+      catch (System.Exception)
+      {
+        return BadRequest();
+      }
+    }
+
     [HttpGet("rescanactivitylink/{url}")]
     //[ResponseCache(Duration = 360)]
 

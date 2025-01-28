@@ -209,12 +209,29 @@ namespace TodoApi.Controllers
 
       var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
-      if (env != "Development" && env != "LocalProd")
+      if (env != "Development" && env != "LocalProd" && env != "Staging")
       {
         return Ok("Non-Dev Loaded!");
       }
 
-      return Ok("active updated");
+      return Ok("Test this in STG still...but on purpose");
+      //await StravaUtilities.ParseNewActivity(_serviceScopeFactory, 1075670, 12308353587, 0);
+
+      var activity = await _stravaService.GetActivity(12308353587, 1075670);
+
+      var segmentIds = _dbContext.Segments.Select(s => s.Id).ToList();
+
+      var efforts = StravaUtilities.PullEffortsFromActivity(activity, segmentIds);
+
+      if (efforts != null && efforts[0] != null)
+      {
+        var newEffort = efforts[0];
+
+        _dbContext.Add(newEffort);
+        _dbContext.SaveChanges();
+      }
+
+      return Ok(efforts);
 
       var newStudent = new Student();
       newStudent.Name = "Bobby";

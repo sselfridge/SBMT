@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   Box,
@@ -21,7 +21,7 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 
 import AppContext from "AppContext";
-import { ApiDelete, ApiGet } from "api/api";
+import { ApiDelete } from "api/api";
 import StravaButton from "./Shared/StravaButton";
 
 const UserMenuBox = styled(Box)(({ theme }) => ({
@@ -69,15 +69,6 @@ const UserMenu = () => {
       navigate("/settings");
     }
   }, [contextUser, navigate, pathname]);
-
-  const fetchOnce = useRef(true);
-  useEffect(() => {
-    if (fetchOnce.current) {
-      fetchOnce.current = null;
-      //init user here
-      ApiGet("/api/athletes/current", onSetUser, {});
-    }
-  }, [onSetUser]);
 
   const onLogout = () => {
     ApiDelete("/api/logout", onSetUser, {});
