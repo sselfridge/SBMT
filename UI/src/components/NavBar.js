@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { AppBar, Box, Toolbar, Tab, Tabs, useMediaQuery } from "@mui/material";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import { styled } from "@mui/material/styles";
+import DownIcon from "@mui/icons-material/ArrowDropDown";
 import AppContext from "AppContext";
 
 import UserMenu from "./UserMenu";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { ReactComponent as PwdByStrava } from "assets/stravaBrand/api_logo_pwrdBy_strava_horiz_light.svg";
-
+import { YEARS } from "utils/constants";
 const TitleLink = styled(Link)(({ theme }) => ({
   color: theme.palette.primary.contrastText,
   textDecoration: "none",
@@ -21,12 +29,24 @@ const PwdBy = styled(PwdByStrava)(({ theme }) => ({
 export default function NavBar() {
   const [currentTabIdx, setCurrentTabIdx] = useState(false);
 
-  const { user, env } = React.useContext(AppContext);
+  const { user, env, dispatch, year } = React.useContext(AppContext);
+  const [, setSearchParams] = useSearchParams();
+
+  const [menuOpen, setMenuOpen] = React.useState();
+  const selectYear = (year) => {
+    dispatch({ type: "setYear", year });
+    setSearchParams((p) => {
+      p.set("year", year);
+      return p;
+    });
+    setMenuOpen(false);
+  };
 
   const location = useLocation();
   const navigate = useNavigate();
   const { pathname } = location;
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  const yearMenuRef = React.useRef();
 
   React.useEffect(() => {
     if (
@@ -74,7 +94,7 @@ export default function NavBar() {
 
   switch (env) {
     case "LocalProd":
-      titleText = " LocalProd";
+      titleText = " LocProd";
       break;
     case "Development":
       titleText = " DEV";
@@ -89,37 +109,50 @@ export default function NavBar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <Box
-            variant="h6"
-            component="div"
-            align="left"
-            sx={{
-              flexGrow: 1,
-              fontSize: 45,
-              fontFamily: "coordinates, monospace;",
-              fontWeight: 800,
-              letterSpacing: -4,
-            }}
-          >
-            <TitleLink to="recent">
-              <span className="sbmt">{titleText}</span>
+          <Box>
+            <Box sx={{ display: "flex", fontFamily: "roboto", gap: 1 }}>
+              <TitleLink to="recent">
+                <span className="sbmt">{titleText}</span>
+              </TitleLink>
               <Box
-                sx={{
-                  fontSize: 8,
-                  fontWeight: 400,
-                  width: "140px",
-                  marginTop: "-14px", //TODO - remove hacky positioning
-                  marginBottom: "8px",
-                  letterSpacing: 1,
-                  fontFamily: "roboto",
+                ref={yearMenuRef}
+                onClick={() => setMenuOpen(true)}
+                sx={{ display: "flex", alignItems: "center", fontSize: 12 }}
+              >
+                {year}
+                <DownIcon />
+              </Box>
+              <Menu
+                id="basic-menu"
+                anchorEl={yearMenuRef.current}
+                open={menuOpen}
+                onClose={() => setMenuOpen(false)}
+                MenuListProps={{
+                  "aria-labelledby": "basic-button",
                 }}
               >
-                Starts May 23rd 2025!!
-              </Box>
-              <Box sx={{ position: "relative" }}>
-                <PwdBy />
-              </Box>
-            </TitleLink>
+                {YEARS.map((year) => (
+                  <MenuItem onClick={() => selectYear(year)}>{year}</MenuItem>
+                ))}
+              </Menu>
+            </Box>
+            <Box
+              sx={{
+                fontSize: 8,
+                fontWeight: 400,
+                width: "140px",
+                marginTop: "-14px", //TODO - remove hacky positioning
+                marginBottom: "8px",
+                letterSpacing: 1,
+                fontFamily: "roboto",
+              }}
+            >
+              Starts May 23rd 2025!!
+            </Box>
+            <Box sx={{ position: "relative" }}>
+              <PwdBy />
+            </Box>
+
             <UserMenu />
           </Box>
         </Toolbar>

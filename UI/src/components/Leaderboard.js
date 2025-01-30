@@ -15,6 +15,7 @@ import { ApiGet } from "api/api";
 import { Link, useSearchParams } from "react-router-dom";
 
 import LeaderboardAthleteCell from "./LeaderboardAthleteCell";
+import AppContext from "AppContext";
 
 const MainBox = styled(Box)(({ theme }) => {
   return {
@@ -39,6 +40,15 @@ const Leaderboard = () => {
   const [columnVisible, setColumnVisible] = React.useState(ALL_COLUMNS);
   const [loading, setLoading] = useState(true);
 
+  const { year } = React.useContext(AppContext);
+
+  React.useEffect(() => {
+    setSearchParams((currParams) => {
+      currParams.set("year", year);
+      return currParams;
+    });
+  }, [setSearchParams, year]);
+
   React.useEffect(() => {
     const newColumns = isMobile ? MOBILE_COLUMNS : ALL_COLUMNS;
     setColumnVisible(newColumns);
@@ -53,34 +63,36 @@ const Leaderboard = () => {
 
   const onApplyFilters = React.useCallback(
     (filters) => {
-      let queryString = "?";
-      const params = {};
+      setSearchParams((params) => {
+        const simpleFilters = [
+          "surface",
+          "gender",
+          "age",
+          "category",
+          "distance",
+          "elevation",
+        ];
 
-      const simpleFilters = [
-        "surface",
-        "gender",
-        "age",
-        "category",
-        "distance",
-        "elevation",
-      ];
+        simpleFilters.forEach((name) => {
+          if (filters?.[name] && filters[name] !== "ALL") {
+            params.set(name, filters[name]);
+          } else {
+            params.delete(name);
+          }
+        });
 
-      simpleFilters.forEach((name) => {
-        if (filters?.[name] && filters[name] !== "ALL") {
-          queryString += `&${name}=${filters[name]}`;
-          params[name] = filters[name];
+        if (filters?.club !== "0") {
+          params.set("club", filters.club);
+        } else {
+          params.delete("club");
         }
+
+        // setSearchParams(params);
+        let url = LEADERBOARD_URL + "/?" + params.toString();
+
+        ApiGet(url, onLoad);
+        return params;
       });
-
-      if (filters?.club !== "0") {
-        queryString += `&club=${filters.club}`;
-        params.club = filters.club;
-      }
-
-      setSearchParams(params);
-      let url = LEADERBOARD_URL + queryString;
-
-      ApiGet(url, onLoad);
     },
     [onLoad, setSearchParams]
   );

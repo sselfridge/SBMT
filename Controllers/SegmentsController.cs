@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TodoApi.Helpers;
 using TodoApi.Models.db;
 using TodoApi.Services;
 
@@ -85,6 +86,9 @@ namespace TodoApi.Controllers
         return NotFound();
 
       segment.SurfaceType = surfaceType;
+      var currentYear = SbmtUtils.getConfigVal("CurrentYear");
+
+      segment.Years = currentYear;
 
       if (SegmentExists(id))
         return Conflict("Segment already exists");

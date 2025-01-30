@@ -39,15 +39,15 @@ const Segments = () => {
   // const [userEfforts, setUserEfforts] = useState(null);
   const [segmentLeaderboard, setSegmentLeaderboard] = useState(null);
 
-  const { user, isPreLaunch } = React.useContext(AppContext);
+  const { user, isPreLaunch, year } = React.useContext(AppContext);
 
   const isAdmin = user?.athleteId === 1075670;
 
   useEffect(() => {
     if (segmentId) {
-      ApiGet(`/api/segments/${segmentId}`, setSegment);
+      ApiGet(`/api/segments/${segmentId}/?year=${year}`, setSegment);
     }
-  }, [segmentId]);
+  }, [segmentId, year]);
   // useEffect(() => {
   //   if (user && !userEfforts) {
   //     ApiGet(`/api/athletes/${user.athleteId}/efforts`, setUserEfforts);

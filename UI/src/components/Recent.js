@@ -23,6 +23,7 @@ import {
 } from "utils/helperFuncs";
 
 import { ApiGet } from "api/api";
+import AppContext from "AppContext";
 
 const MyBox = styled(Box)(({ theme }) => {
   return {
@@ -36,6 +37,8 @@ const Recent = () => {
   const [recentEfforts, setRecentEfforts] = useState([]);
   const [loading, setLoading] = useState(true);
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+
+  const { year } = React.useContext(AppContext);
 
   const columns = React.useMemo(() => {
     const COLUMNS = [
@@ -153,8 +156,8 @@ const Recent = () => {
   }, []);
 
   React.useEffect(() => {
-    ApiGet("/api/recentEfforts", onLoad);
-  }, [onLoad]);
+    ApiGet(`/api/recentEfforts/?year=${year}`, onLoad);
+  }, [onLoad, year]);
 
   const sortedEfforts = recentEfforts.slice().sort((a, b) => {
     const aDate = new Date(a.startDate);

@@ -132,6 +132,8 @@ article.articleLanding {
     font-family: coordinates, monospace;
     letter-spacing: -1px;
     font-weight: 800;
+    font-size: 45px;
+    flex-grow: 1;
 }
 
 h1.h1Landing .sbmt {
