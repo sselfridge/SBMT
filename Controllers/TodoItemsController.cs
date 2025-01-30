@@ -253,13 +253,13 @@ namespace TodoApi.Controllers
 
       // _dbContext.SaveChanges();
 
-      return Ok();
+      // return Ok("It is Done");
 
       //var users25 = _dbContext.StravaUsers.Where(x => x.Years.Contains("2025")).ToList();
       //var users24 = _dbContext.StravaUsers.Where(x => x.Years.Contains("2024")).ToList();
       //var users23 = _dbContext.StravaUsers.Where(x => x.Years.Contains("2023")).ToList();
 
-      //return Ok();
+      return Ok();
 
       var newStudent = new Student();
       newStudent.Name = "Bobby";
