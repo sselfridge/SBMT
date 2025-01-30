@@ -24,12 +24,12 @@ else
             ;;
             *)
                 echo "Invalid argument: $1"
-                echo "Usage: source $0 [dev|stg]"
+                echo "Usage: source $0 [dev|stg|prod]"
             ;;
         esac
+        elif [[ $# -eq 0 ]]; then
+        environment=dev
     fi
-    
-    env=Development
     
     case "$environment" in
         dev)

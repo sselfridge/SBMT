@@ -24,5 +24,21 @@ namespace TodoApi.Helpers
 
       return configuration[key];
     }
+
+    public static bool ContainsYear(string yearList, string year)
+    {
+      if (string.IsNullOrWhiteSpace(yearList))
+        return false;
+
+      return yearList.Split(',').Select(y => y.Trim()).Contains(year.ToString());
+    }
+
+    public static string AddYear(string yearList, string year)
+    {
+      if (ContainsYear(yearList, year))
+        return yearList; // Already exists, return as is
+
+      return string.IsNullOrWhiteSpace(yearList) ? year.ToString() : $"{yearList},{year}";
+    }
   }
 }
