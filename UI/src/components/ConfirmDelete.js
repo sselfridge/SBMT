@@ -75,8 +75,8 @@ const ConfirmDelete = (props) => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          justifyContent: "center",
-          paddingBottom: "24px",
+          justifyContent: "flex-start",
+          py: "24px",
           width: "90vw",
           minHeight: "65vh",
         }}
@@ -92,7 +92,6 @@ const ConfirmDelete = (props) => {
             setDeleteEnabledCount(3);
             setDeletePressed((v) => !v);
           }}
-          // disabled={deletePressed}
         >
           {deletePressed ? "Cancel " : ""}Delete
         </Button>
@@ -102,7 +101,6 @@ const ConfirmDelete = (props) => {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              width: "50vw",
             }}
           >
             <Typography variant="h4">Confirm Delete?</Typography>
@@ -123,7 +121,7 @@ const ConfirmDelete = (props) => {
                   Button will enable in {deleteEnabledCount}
                 </Typography>
               ) : (
-                <Typography>BIG RED BUTTON</Typography>
+                <Typography variant="h3">BIG RED BUTTON</Typography>
               )}
             </Button>
           </Paper>

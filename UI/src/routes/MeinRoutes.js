@@ -32,20 +32,24 @@ import config from "config";
 import StravaOops from "components/StravaOops";
 // import TempCountdown from "components/LandingPage/TempCountdown";
 import AdminEfforts from "components/Admin/AdminEfforts";
-
+import { YEARS } from "utils/constants";
 mapboxgl.accessToken = config.mapBox;
 
 const MeinRoutes = () => {
-  const { user, isPreLaunch } = useContext(AppContext);
+  const { user, isPreLaunch, year } = useContext(AppContext);
 
   const isAdmin = user?.athleteId === 1075670;
-
   const showLanding = !isAdmin && isPreLaunch;
+
+  const isPrevYear = YEARS.includes(year) && year !== YEARS[0];
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/recent" />} />
+        <Route
+          path="/"
+          element={<Navigate to={isPrevYear ? "/leaderboard" : "/recent"} />}
+        />
 
         {showLanding && <Route path="landing" element={<Landing />} />}
 

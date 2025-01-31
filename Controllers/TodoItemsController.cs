@@ -199,6 +199,14 @@ namespace TodoApi.Controllers
       }
     }
 
+    public static string RemoveDuplicates(string yearList)
+    {
+      if (string.IsNullOrWhiteSpace(yearList))
+        return string.Empty;
+
+      return string.Join(",", yearList.Split(',').Select(y => y.Trim()).Distinct().OrderBy(y => y)); // Optional sorting
+    }
+
     [HttpGet()]
     public async Task<ActionResult<long>> TestThing(
       [FromServices] IServiceScopeFactory serviceScopeFactory
@@ -214,24 +222,44 @@ namespace TodoApi.Controllers
         return Ok("Non-Dev Loaded!");
       }
 
-      return Ok("Test this in STG still...but on purpose");
-      //await StravaUtilities.ParseNewActivity(_serviceScopeFactory, 1075670, 12308353587, 0);
+      // DateTime newYears24 = new DateTime(2024, 1, 1, 0, 0, 0).ToUniversalTime();
+      // var efforts23 = _dbContext
+      //   .Efforts.Where(x => x.StartDate < newYears24)
+      //   .GroupBy(x => x.SegmentId)
+      //   .Select(g => new { SegmentId = g.Key })
+      //   .ToList();
 
-      var activity = await _stravaService.GetActivity(12308353587, 1075670);
+      // DateTime newYears25 = new DateTime(2025, 1, 1, 0, 0, 0).ToUniversalTime();
+      // var efforts24 = _dbContext
+      //   .Efforts.Where(x => x.StartDate < newYears25 && x.StartDate > newYears24)
+      //   .GroupBy(x => x.SegmentId)
+      //   .Select(g => new { SegmentId = g.Key })
+      //   .ToList();
 
-      var segmentIds = _dbContext.Segments.Select(s => s.Id).ToList();
+      // var segments = _dbContext.Segments.ToList();
 
-      var efforts = StravaUtilities.PullEffortsFromActivity(activity, segmentIds);
+      // foreach (var segment in segments)
+      // {
+      //   if (efforts23.Any(x => x.SegmentId == segment.Id))
+      //   {
+      //     segment.Years = SbmtUtils.AddYear(segment.Years, "2023");
+      //   }
+      //   if (efforts24.Any(x => x.SegmentId == segment.Id))
+      //   {
+      //     segment.Years = SbmtUtils.AddYear(segment.Years, "2024");
+      //   }
+      //   _dbContext.Update(segment);
+      // }
 
-      if (efforts != null && efforts[0] != null)
-      {
-        var newEffort = efforts[0];
+      // _dbContext.SaveChanges();
 
-        _dbContext.Add(newEffort);
-        _dbContext.SaveChanges();
-      }
+      // return Ok("It is Done");
 
-      return Ok(efforts);
+      //var users25 = _dbContext.StravaUsers.Where(x => x.Years.Contains("2025")).ToList();
+      //var users24 = _dbContext.StravaUsers.Where(x => x.Years.Contains("2024")).ToList();
+      //var users23 = _dbContext.StravaUsers.Where(x => x.Years.Contains("2023")).ToList();
+
+      return Ok();
 
       var newStudent = new Student();
       newStudent.Name = "Bobby";
@@ -246,15 +274,6 @@ namespace TodoApi.Controllers
       var daily = RateLimits.GetUsageDaily();
 
       int[] rates = new int[] { fifteen, daily };
-
-      //  IConfiguration configuration = new ConfigurationBuilder()
-      //                        .AddJsonFile("appsettings.json")
-      //                        .Build();
-
-      //       var kickOffStr = configuration["KickOffDate"];
-      //       var kickOffDate = DateTime.Parse(kickOffStr).ToUniversalTime();
-
-
 
       return Ok("Shouldn't get here");
     }

@@ -160,8 +160,13 @@ const UserInfo = () => {
 
   const stravaFields = [
     {
+      label: "Name",
+      content: `${user.firstname} ${user.lastname}`,
+      fromStrava: true,
+    },
+    {
       label: "Weight",
-      content: ((user?.weight || 0) * 2.2).toFixed(0),
+      content: `${((user?.weight || 0) * 2.2).toFixed(0)} lbs`,
       fromStrava: true,
     },
     { label: "Sex", content: user?.sex, fromStrava: true },
@@ -241,11 +246,14 @@ const UserInfo = () => {
       category === user.category &&
       !agreeToTerms &&
       !!user?.active === true) ||
-    (!agreeToTerms && !user?.active);
+    (!agreeToTerms && !user?.active); //TODO add check to disable save unless change has been made
 
   return (
     <MyPaper>
-      <Typography variant="h3">User Profile</Typography>
+      <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+        <Typography variant="h3">User Profile </Typography>
+        <Avatar src={localUser?.avatar} sx={{ width: 75, height: 75 }} />
+      </Box>
       <Typography color="warning.main"> {missingInfoWarning}</Typography>
       <Grid container spacing={1}>
         {profileFields.map(mapField)}
@@ -254,7 +262,6 @@ const UserInfo = () => {
             <Grid item xs={1} sm={3} />
             <Grid item xs={5} sm={3}>
               <Typography variant="h5">
-                {" "}
                 Agree to{" "}
                 <Link onClick={() => navigate("/info/terms")}>Terms:</Link>
               </Typography>
@@ -338,11 +345,16 @@ const UserInfo = () => {
             <Grid
               item
               xs={10}
-              sx={{ display: "flex", justifyContent: "center" }}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                fontWeight: "bold",
+              }}
             >
-              <Avatar src={localUser?.avatar} sx={{ width: 75, height: 75 }} />
+              Profile info from Strava
             </Grid>
             <Grid item xs={1} />
+
             {stravaFields.map(mapField)}
             <Grid item xs={1} sm={2} />
             <Grid item xs={10} sm={8}>

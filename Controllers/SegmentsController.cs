@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TodoApi.Helpers;
 using TodoApi.Models.db;
 using TodoApi.Services;
 
@@ -85,14 +86,25 @@ namespace TodoApi.Controllers
         return NotFound();
 
       segment.SurfaceType = surfaceType;
+      var currentYear = SbmtUtils.getConfigVal("CurrentYear");
 
       if (SegmentExists(id))
-        return Conflict("Segment already exists");
-
-      _context.Segments.Add(segment);
-      await _context.SaveChangesAsync();
-
-      return CreatedAtAction("GetSegment", new { id = segment.Id }, segment);
+      {
+        var dbSegment = _context.Segments.Where(x => x.Id == segment.Id).FirstOrDefault();
+        if (dbSegment == null)
+          return Conflict("DB Error");
+        dbSegment.Years = SbmtUtils.AddYear(dbSegment.Years, currentYear);
+        _context.Update(dbSegment);
+        _context.SaveChanges();
+        return Ok(segment);
+      }
+      else
+      {
+        segment.Years = currentYear;
+        _context.Segments.Add(segment);
+        await _context.SaveChangesAsync();
+        return CreatedAtAction("GetSegment", new { id = segment.Id }, segment);
+      }
     }
 
     // DELETE: api/Segments/5

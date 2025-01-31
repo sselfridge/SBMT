@@ -101,7 +101,16 @@ const Filters = (props) => {
       distance,
       elevation,
     });
-  }, [surface, gender, age, category, onApplyFilters, clubNode, distance, elevation]);
+  }, [
+    surface,
+    gender,
+    age,
+    category,
+    onApplyFilters,
+    clubNode,
+    distance,
+    elevation,
+  ]);
 
   //Check if the current filters are the user's favorites
   useEffect(() => {
@@ -143,7 +152,17 @@ const Filters = (props) => {
         setSavedFiltersActive(savedFiltersActiveCheck);
       }
     }
-  }, [surface, gender, age, category, clubNode, distance, elevation, user, savedFiltersActive]);
+  }, [
+    surface,
+    gender,
+    age,
+    category,
+    clubNode,
+    distance,
+    elevation,
+    user,
+    savedFiltersActive,
+  ]);
 
   useEffect(() => {
     if (user?.scope?.includes("profile:read_all") === false) {
@@ -272,14 +291,24 @@ const Filters = (props) => {
       {/* <Button onClick={onSaveFilters}>Save Filters</Button>
       <Button onClick={onClearSavedFilters}>clear Filters</Button> */}
 
-      <LabeledSelect label={"Surface"} value={surface} setValue={setSurface} list={surfaceList} />
+      <LabeledSelect
+        label={"Surface"}
+        value={surface}
+        setValue={setSurface}
+        list={surfaceList}
+      />
       {/* <ChipSelect
         label={"Surface"}
         list={surfaceList}
         setValue={setSurface}
         value={surface}
       /> */}
-      <LabeledSelect label={"Gender"} value={gender} setValue={setGender} list={genderList} />
+      <LabeledSelect
+        label={"Gender"}
+        value={gender}
+        setValue={setGender}
+        list={genderList}
+      />
       {clubList.length > 0 && (
         <LabeledSelect
           label={"Club"}
@@ -309,8 +338,13 @@ const Filters = (props) => {
             setValue={setCategory}
             list={categoryList}
           />
-          <LabeledSelect label={"Age Group"} value={age} setValue={setAge} list={ageList} />
           <LabeledSelect
+            label={"Age Group"}
+            value={age}
+            setValue={setAge}
+            list={ageList}
+          />
+          {/* <LabeledSelect
             label={"Recent Distance"}
             value={distance}
             setValue={setDistance}
@@ -323,7 +357,7 @@ const Filters = (props) => {
             setValue={setElevation}
             list={elevationList}
             helpText="Riders within the selected range of your weekly climbing totals"
-          />
+          /> */}
           <Box sx={{ display: "flex", alignItems: "center" }}>
             {savedFiltersActive ? (
               <Tooltip arrow title={"Remove favorite filters"}>
@@ -340,8 +374,8 @@ const Filters = (props) => {
                       <b>Favorite current filters</b>
                     </Box>
                     <Box>
-                      Your favorite filters will load by default when you load the leaderboard until
-                      they are cleared.
+                      Your favorite filters will load by default when you load
+                      the leaderboard until they are cleared.
                     </Box>
                   </Box>
                 }

@@ -37,7 +37,7 @@ const AthleteDetail = () => {
 
   const [hideIncomplete, setHideIncomplete] = useState(false);
 
-  const { user: loggedInUser, isPreLaunch } = useContext(AppContext);
+  const { user: loggedInUser, isPreLaunch, year } = useContext(AppContext);
 
   const gravelSegments = userSegments.filter((s) => s.surfaceType === "gravel");
   const roadSegments = userSegments.filter((s) => s.surfaceType === "road");
@@ -56,8 +56,11 @@ const AthleteDetail = () => {
 
   React.useEffect(() => {
     ApiGet(`/api/athletes/${params.athleteId}`, setUser, null);
-    ApiGet(`/api/athletes/${params.athleteId}/efforts`, setUserSegments);
-  }, [params]);
+    ApiGet(
+      `/api/athletes/${params.athleteId}/efforts?year=${year}`,
+      setUserSegments
+    );
+  }, [params, year]);
 
   const makeSegmentRow = (segment, index) => {
     let timeDiff = 0;

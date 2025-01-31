@@ -51,17 +51,17 @@ namespace TodoApi.Helpers
 
       var user = context.StravaUsers.FirstOrDefault(x => x.AthleteId == oauth.AthleteId);
 
+      var currentYear = SbmtUtils.getConfigVal("CurrentYear");
+
       if (user == null)
       {
-        user = new StravaUser(oauth, profile);
+        user = new StravaUser(oauth, profile, currentYear);
         context.Add(user);
       }
       else
       {
         user.Active = false;
-        var yearList = user.Years.Split(",").ToList();
-        yearList.Add(DateTime.Now.Year.ToString());
-        user.Years = string.Join(",", yearList);
+        user.Years = SbmtUtils.AddYear(user.Years, currentYear);
         user.Scope = oauth.Scope;
         user.AccessToken = oauth.AccessToken;
         user.RefreshToken = oauth.RefreshToken;
@@ -185,20 +185,15 @@ namespace TodoApi.Helpers
               return;
             }
 
-            IConfiguration configuration = new ConfigurationBuilder()
-              .AddJsonFile("appsettings.json")
-              .Build();
+            var currentYear = SbmtUtils.getConfigVal("CurrentYear");
 
-            var kickOffStr = configuration["KickOffDate"];
-            var kickOffDate = DateTime.Parse(kickOffStr).ToUniversalTime();
-            var endDateStr = configuration["EndingDate"];
-            var endDate = DateTime.Parse(endDateStr).ToUniversalTime(); //TODO use this later when I can check the upload didn't break
+            var kickOffDate = SbmtUtils.getKickOffDate(currentYear);
+            var endingDate = SbmtUtils.getEndingDate(currentYear);
 
             DateTime startDate = activity.StartDate;
-            DateTime endTime = new DateTime(2024, 9, 5, 8, 0, 0, 0, DateTimeKind.Utc);
             DateTime now = DateTime.UtcNow;
             ;
-            if (startDate > endTime)
+            if (startDate > endingDate)
             {
               Console.WriteLine($"sbmtLog: activity {activityId} is after the cut off date");
               return;

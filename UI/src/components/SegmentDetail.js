@@ -39,15 +39,15 @@ const Segments = () => {
   // const [userEfforts, setUserEfforts] = useState(null);
   const [segmentLeaderboard, setSegmentLeaderboard] = useState(null);
 
-  const { user, isPreLaunch } = React.useContext(AppContext);
+  const { user, isPreLaunch, year } = React.useContext(AppContext);
 
   const isAdmin = user?.athleteId === 1075670;
 
   useEffect(() => {
     if (segmentId) {
-      ApiGet(`/api/segments/${segmentId}`, setSegment);
+      ApiGet(`/api/segments/${segmentId}/?year=${year}`, setSegment);
     }
-  }, [segmentId]);
+  }, [segmentId, year]);
   // useEffect(() => {
   //   if (user && !userEfforts) {
   //     ApiGet(`/api/athletes/${user.athleteId}/efforts`, setUserEfforts);
@@ -55,16 +55,13 @@ const Segments = () => {
   // }, [user, userEfforts]);
 
   useEffect(() => {
-    if (!segmentLeaderboard && segmentId) {
-      ApiGet(`/api/segments/${segmentId}/leaderboard`, setSegmentLeaderboard);
+    if (segmentId) {
+      ApiGet(
+        `/api/segments/${segmentId}/leaderboard?year=${year}`,
+        setSegmentLeaderboard
+      );
     }
-  }, [segmentId, segmentLeaderboard]);
-
-  // const segmentEfforts = !userEfforts
-  //   ? []
-  //   : userEfforts.filter(
-  //       (e) => e.segmentId === Number(segmentId) && e.bestTime !== MAX_INT
-  //     );
+  }, [segmentId, year]);
 
   const details = deepFreeze([
     {
