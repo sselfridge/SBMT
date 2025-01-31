@@ -1,5 +1,4 @@
 import { differenceInSeconds } from "date-fns";
-import { YEARS } from "utils/constants";
 export default function reducer(state, action) {
   switch (action.type) {
     case "setUser":
@@ -19,14 +18,11 @@ export default function reducer(state, action) {
   }
 }
 
-const { search } = window.location;
-const urlParams = new URLSearchParams(search);
 export const INITIAL_STATE = {
   user: null,
-  isPreLaunch: true,
+  isPreLaunch: false,
   rateLimit: -1,
   env: "Production",
   kickOffDate: "",
   endingDate: "",
-  year: urlParams.get("year") || YEARS[0],
 };

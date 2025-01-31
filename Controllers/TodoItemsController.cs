@@ -275,15 +275,6 @@ namespace TodoApi.Controllers
 
       int[] rates = new int[] { fifteen, daily };
 
-      //  IConfiguration configuration = new ConfigurationBuilder()
-      //                        .AddJsonFile("appsettings.json")
-      //                        .Build();
-
-      //       var kickOffStr = configuration["KickOffDate"];
-      //       var kickOffDate = DateTime.Parse(kickOffStr).ToUniversalTime();
-
-
-
       return Ok("Shouldn't get here");
     }
 

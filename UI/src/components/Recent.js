@@ -10,7 +10,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { isBefore } from "date-fns";
 
 import PRMedal from "./PRMedal";
@@ -21,6 +21,7 @@ import {
   formattedTime,
   formattedTimeAgo,
 } from "utils/helperFuncs";
+import { YEARS } from "utils/constants";
 
 import { ApiGet } from "api/api";
 import AppContext from "AppContext";
@@ -37,8 +38,15 @@ const Recent = () => {
   const [recentEfforts, setRecentEfforts] = useState([]);
   const [loading, setLoading] = useState(true);
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  const navigate = useNavigate();
 
   const { year } = React.useContext(AppContext);
+
+  React.useEffect(() => {
+    if (YEARS.includes(year) && YEARS[0] !== year) {
+      navigate("/leaderboard");
+    }
+  }, [navigate, year]);
 
   const columns = React.useMemo(() => {
     const COLUMNS = [

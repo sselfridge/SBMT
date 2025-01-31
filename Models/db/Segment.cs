@@ -22,8 +22,8 @@ namespace TodoApi.Models.db
 
     public string Polyline { get; set; }
 
-    public string Kom { get; set; }
-    public string Qom { get; set; }
+    public string? Kom { get; set; }
+    public string? Qom { get; set; }
     public string SurfaceType { get; set; } = "road";
     public string Years { get; set; } = "";
 

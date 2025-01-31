@@ -58,7 +58,6 @@ namespace TodoApi.Controllers
     public ActionResult<Effort> GetRecentEfforts(int id)
     {
       string reqYear = HttpContext.Request.Query["year"];
-      //TODO - clean up all kickoffDate references
       var kickOffDate = SbmtUtils.getKickOffDate(reqYear);
       var endingDate = SbmtUtils.getEndingDate(reqYear);
 
@@ -493,7 +492,9 @@ namespace TodoApi.Controllers
 
     public IActionResult GetAllAthletes()
     {
-      var dbUsers = _dbContext.StravaUsers.Where(x => x.Active).ToList();
+      string year = HttpContext.Request.Query["year"];
+
+      var dbUsers = _dbContext.StravaUsers.Where(x => x.Active && x.Years.Contains(year)).ToList();
 
       var users = new List<StravaUserDTO>();
 
@@ -593,7 +594,12 @@ namespace TodoApi.Controllers
 
     public IActionResult GetAthleteEfforts(int athleteId)
     {
-      var userSegments = _userService.GetUserEfforts(athleteId);
+      string year = HttpContext.Request.Query["year"];
+
+      if (year == null)
+        year = SbmtUtils.getConfigVal("CurrentYear");
+
+      var userSegments = _userService.GetUserEfforts(athleteId, year);
 
       if (userSegments == null)
         return Ok(null);

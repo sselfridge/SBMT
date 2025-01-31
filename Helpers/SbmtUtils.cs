@@ -2,7 +2,6 @@ namespace TodoApi.Helpers
 {
   public static class SbmtUtils
   {
-    //TODO use this to get kicOff everywhere
     public static DateTime getKickOffDate()
     {
       var kickOffStr = getConfigVal("KickOffDate");

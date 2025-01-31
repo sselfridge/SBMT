@@ -55,16 +55,13 @@ const Segments = () => {
   // }, [user, userEfforts]);
 
   useEffect(() => {
-    if (!segmentLeaderboard && segmentId) {
-      ApiGet(`/api/segments/${segmentId}/leaderboard`, setSegmentLeaderboard);
+    if (segmentId) {
+      ApiGet(
+        `/api/segments/${segmentId}/leaderboard?year=${year}`,
+        setSegmentLeaderboard
+      );
     }
-  }, [segmentId, segmentLeaderboard]);
-
-  // const segmentEfforts = !userEfforts
-  //   ? []
-  //   : userEfforts.filter(
-  //       (e) => e.segmentId === Number(segmentId) && e.bestTime !== MAX_INT
-  //     );
+  }, [segmentId, year]);
 
   const details = deepFreeze([
     {

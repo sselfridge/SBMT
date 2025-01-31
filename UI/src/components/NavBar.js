@@ -32,7 +32,7 @@ export default function NavBar() {
   const { user, env, dispatch, year } = React.useContext(AppContext);
   const [, setSearchParams] = useSearchParams();
 
-  const [menuOpen, setMenuOpen] = React.useState();
+  const [menuOpen, setMenuOpen] = React.useState(false);
   const selectYear = (year) => {
     dispatch({ type: "setYear", year });
     setSearchParams((p) => {
@@ -88,7 +88,7 @@ export default function NavBar() {
 
   const tabs = ["leaderboard", "segments", "athletes"];
 
-  if (!isMobile) tabs.unshift("recent");
+  if (!isMobile && YEARS[0] === year) tabs.unshift("recent");
 
   let titleText = "SBMT";
 
@@ -132,7 +132,9 @@ export default function NavBar() {
                 }}
               >
                 {YEARS.map((year) => (
-                  <MenuItem onClick={() => selectYear(year)}>{year}</MenuItem>
+                  <MenuItem key={year} onClick={() => selectYear(year)}>
+                    {year}
+                  </MenuItem>
                 ))}
               </Menu>
             </Box>
