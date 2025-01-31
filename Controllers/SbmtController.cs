@@ -131,9 +131,7 @@ namespace TodoApi.Controllers
 
       string surfaceFilter = HttpContext.Request.Query["surface"];
       string genderFilter = HttpContext.Request.Query["gender"];
-
       string categoryFilter = HttpContext.Request.Query["category"];
-
       string ageFilter = HttpContext.Request.Query["age"];
 
       int lowerAge = -1;
@@ -193,7 +191,11 @@ namespace TodoApi.Controllers
         allSegment = allSegment.FindAll(s => s.SurfaceType == "gravel" || s.SurfaceType == "road");
       }
 
-      var users = _dbContext.StravaUsers.Where(x => x.Active).Include(x => x.StravaClubs).ToList();
+      //TODO - Add year filter for users.  Active is only for current year/season
+      var users = _dbContext
+        .StravaUsers.Where(x => x.Years.Contains(year))
+        .Include(x => x.StravaClubs)
+        .ToList();
 
       var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
       StravaUser? currentUser = null;
@@ -595,6 +597,8 @@ namespace TodoApi.Controllers
     public IActionResult GetAthleteEfforts(int athleteId)
     {
       string year = HttpContext.Request.Query["year"];
+
+      //TODO - enable this for non-active users for past year viewing
 
       if (year == null)
         year = SbmtUtils.getConfigVal("CurrentYear");

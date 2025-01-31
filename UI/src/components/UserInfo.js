@@ -45,6 +45,10 @@ const UserInfo = () => {
   const [agreeToTerms, setAgreeToTerms] = useState(!!user?.active);
   const [localUser, setLocalUser] = useState({});
 
+  const activeRef = React.useRef();
+
+  const [signupRedirect, setSignupRedirect] = React.useState(true);
+
   const [saving, setSaving] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -76,8 +80,21 @@ const UserInfo = () => {
 
   React.useEffect(() => {
     setLocalUser(user);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    if (activeRef.current === false && user.active) {
+      setSignupRedirect(true);
+    }
+
+    activeRef.current = user.active;
   }, [user]);
+
+  React.useEffect(() => {
+    if (signupRedirect) {
+      setTimeout(() => {
+        navigate("/recent");
+      }, 3000);
+    }
+  }, [navigate, signupRedirect]);
 
   React.useEffect(() => {
     if (
@@ -305,17 +322,45 @@ const UserInfo = () => {
           </React.Fragment>
         )}
         {/* LineBreak */}
-        <Grid item xs={1} sm={3} />
-        <Grid item xs={10} sm={6}>
-          <Button
-            onClick={updateProfile}
-            sx={{ width: "100%" }}
-            disabled={saveDisabled}
-          >
-            {saving ? <CircularProgress size={20} /> : "Save"}
-          </Button>
-        </Grid>
-        <Grid item xs={1} sm={3} />
+        {!signupRedirect && (
+          <>
+            <Grid item xs={1} sm={3} />
+            <Grid item xs={10} sm={6}>
+              <Button
+                onClick={updateProfile}
+                sx={{ width: "100%" }}
+                disabled={saveDisabled}
+              >
+                {saving ? <CircularProgress size={20} /> : "Save"}
+              </Button>
+            </Grid>
+            <Grid item xs={1} sm={3} />
+          </>
+        )}
+        {/* LineBreak */}
+        {signupRedirect && (
+          <>
+            <Grid item xs={1} sm={3} />
+            <Grid
+              item
+              xs={10}
+              sm={6}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Box sx={{ fontSize: "1.2em", fontWeight: "bold" }}>
+                You're all set! Redirecting...
+              </Box>
+              <Box sx={{ fontSize: "0.8em" }}>
+                Come back here from 'My Profile' link in top right menu
+              </Box>
+            </Grid>
+            <Grid item xs={1} sm={3} />
+          </>
+        )}
         {/* line break */}
         {showReminder && (
           <Box
@@ -349,6 +394,7 @@ const UserInfo = () => {
                 display: "flex",
                 justifyContent: "center",
                 fontWeight: "bold",
+                mt: 4,
               }}
             >
               Profile info from Strava
