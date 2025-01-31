@@ -15,6 +15,7 @@ import {
 } from "react-router-dom";
 import { ReactComponent as PwdByStrava } from "assets/stravaBrand/api_logo_pwrdBy_strava_horiz_light.svg";
 import { YEARS } from "utils/constants";
+import { format, parseISO } from "date-fns";
 const TitleLink = styled(Link)(({ theme }) => ({
   color: theme.palette.primary.contrastText,
   textDecoration: "none",
@@ -29,7 +30,8 @@ const PwdBy = styled(PwdByStrava)(({ theme }) => ({
 export default function NavBar() {
   const [currentTabIdx, setCurrentTabIdx] = useState(false);
 
-  const { user, env, dispatch, year } = React.useContext(AppContext);
+  const { user, env, dispatch, year, kickOffDate } =
+    React.useContext(AppContext);
   const [, setSearchParams] = useSearchParams();
 
   const [menuOpen, setMenuOpen] = React.useState(false);
@@ -105,6 +107,16 @@ export default function NavBar() {
     default:
   }
 
+  let kickOffLabel = "";
+  try {
+    if (kickOffDate) {
+      const date = parseISO(kickOffDate);
+      kickOffLabel = format(date, "EEE LLL do, yyyy");
+    }
+  } catch (error) {
+    console.error("error: ", error);
+  }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -149,7 +161,7 @@ export default function NavBar() {
                 fontFamily: "roboto",
               }}
             >
-              Starts May 23rd 2025!!
+              {kickOffLabel && `Starts ${kickOffLabel}!!`}
             </Box>
             <Box sx={{ position: "relative" }}>
               <PwdBy />

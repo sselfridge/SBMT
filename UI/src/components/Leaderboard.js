@@ -266,8 +266,10 @@ const Leaderboard = () => {
 
   let kickOffLabel = "the start";
   try {
-    const date = parseISO(kickOffDate);
-    kickOffLabel = format(date, "EEEE LLL do, yyyy");
+    if (kickOffDate) {
+      const date = parseISO(kickOffDate);
+      kickOffLabel = format(date, "EEEE LLL do, yyyy");
+    }
   } catch (error) {
     console.error("error: ", error);
   }

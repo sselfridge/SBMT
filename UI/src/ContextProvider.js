@@ -24,7 +24,7 @@ function ContextProvider({ children }) {
 
       const settings = {
         env: arr[0],
-        kickOffDate,
+        kickOffDate: arr[1],
         endingDate: arr[2],
         redirectUri: arr[3],
         isPreLaunch,
