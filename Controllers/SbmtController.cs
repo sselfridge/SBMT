@@ -598,6 +598,8 @@ namespace TodoApi.Controllers
     {
       string year = HttpContext.Request.Query["year"];
 
+      //TODO - enable this for non-active users for past year viewing
+
       if (year == null)
         year = SbmtUtils.getConfigVal("CurrentYear");
 
