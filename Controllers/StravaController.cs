@@ -118,6 +118,8 @@ namespace TodoApi.Controllers
       }
       else
       {
+        var updateUser = false;
+
         if (
           oAuthUser.AccessToken != existingUser.AccessToken
           || oAuthUser.Scope != existingUser.Scope
@@ -126,7 +128,21 @@ namespace TodoApi.Controllers
           existingUser.AccessToken = oAuthUser.AccessToken;
           existingUser.ExpiresAt = oAuthUser.ExpiresAt;
           existingUser.Scope = oAuthUser.Scope;
-          var savedUser = await _userService.Update(existingUser);
+          updateUser = true;
+        }
+
+        var years = existingUser.Years;
+        var currentYear = SbmtUtils.getConfigVal("CurrentYear");
+        if (SbmtUtils.ContainsYear(years, currentYear) == false)
+        {
+          existingUser.Years = SbmtUtils.AddYear(years, currentYear);
+          updateUser = true;
+        }
+
+        if (updateUser)
+        {
+          _dbContext.Update(existingUser);
+          _dbContext.SaveChanges();
         }
 
         if (oAuthUser.Scope.Contains("profile:read_all") && existingUser != null)

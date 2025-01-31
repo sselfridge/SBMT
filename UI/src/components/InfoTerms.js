@@ -16,6 +16,18 @@ const SubTitleTypo = styled(Typography)(({ theme }) => ({
   margin: "0 20%",
 }));
 
+// eslint-disable-next-line no-unused-vars
+const pejoratives = [
+  "Jerk",
+  "Dick",
+  "Ass",
+  "Tool",
+  "Prick",
+  "Bitch",
+  "Douche",
+  "Twat",
+];
+
 const InfoScopes = (props) => {
   const navigate = useNavigate();
   return (

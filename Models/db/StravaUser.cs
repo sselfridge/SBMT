@@ -77,7 +77,7 @@ namespace TodoApi.Models.db
       Years = years;
     }
 
-    public StravaUser(OauthStravaUser oAuth, StravaAthleteProfile profile)
+    public StravaUser(OauthStravaUser oAuth, StravaAthleteProfile profile, string year)
     {
       AccessToken = oAuth.AccessToken;
       RefreshToken = oAuth.RefreshToken;
@@ -100,7 +100,7 @@ namespace TodoApi.Models.db
       RecentElevation = 0;
 
       SavedFilters = "";
-      Years = DateTime.Now.Year.ToString();
+      Years = year;
       Active = false;
     }
   }

@@ -19,7 +19,7 @@ import AppContext from "AppContext";
 const SelectCompUser = (props) => {
   const { setCompSegments } = props;
 
-  const { user: meinUser } = useContext(AppContext);
+  const { user: meinUser, year } = useContext(AppContext);
 
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
@@ -39,16 +39,19 @@ const SelectCompUser = (props) => {
 
   React.useEffect(() => {
     if (isMobile === false && compUser.athleteId) {
-      ApiGet(`/api/athletes/${compUser.athleteId}/efforts`, setCompSegments);
+      ApiGet(
+        `/api/athletes/${compUser.athleteId}/efforts?year=${year}`,
+        setCompSegments
+      );
     }
-  }, [isMobile, compUser, setCompSegments]);
+  }, [isMobile, compUser, setCompSegments, year]);
 
   const onOpen = useCallback(() => {
     setOpen(true);
     if (users.length < 2) {
-      ApiGet("api/athletes", setSortUsers);
+      ApiGet(`api/athletes?year=${year}`, setSortUsers);
     }
-  }, [users]);
+  }, [users, year]);
 
   const filteredUsers = users.filter((u) =>
     `${u.firstname} ${u.lastname}`

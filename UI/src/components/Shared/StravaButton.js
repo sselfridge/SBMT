@@ -33,7 +33,7 @@ const StravaButton = (props) => {
   if (user?.firstname) {
     return (
       <Box sx={{ display: "flex", flexDirection: "column" }}>
-        {`${user.firstname} you're signed up for 2025`}
+        {`${user.firstname} you're signed up for the next season!`}
         <Button onClick={onLogout}>Logout</Button>
       </Box>
     );

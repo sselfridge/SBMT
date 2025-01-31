@@ -10,6 +10,7 @@ import SEGMENTS from "mockData/segments";
 import { ApiGet } from "api/api";
 
 import { surfaceList } from "utils/constants";
+import AppContext from "AppContext";
 
 const MyBox = styled(Box)(({ theme }) => ({
   height: "90vh",
@@ -53,6 +54,8 @@ const Segments = () => {
 
   const [loading, setLoading] = useState(true);
 
+  const { year } = React.useContext(AppContext);
+
   const handleTabChange = (event, newValue) => {
     setTabVal(newValue);
   };
@@ -60,11 +63,20 @@ const Segments = () => {
   const onLoad = React.useCallback((data) => {
     setAllSegments(data);
     setLoading(false);
+
+    const noRoad = !data.some((x) => x.surfaceType === "road");
+    const noGravel = !data.some((x) => x.surfaceType === "gravel");
+
+    if (noRoad && !noGravel) {
+      setTabVal("gravel");
+    } else if (noRoad && noGravel) {
+      setTabVal("trail");
+    }
   }, []);
 
   React.useEffect(() => {
-    ApiGet("api/segments", onLoad);
-  }, [onLoad]);
+    ApiGet(`api/segments/?year=${year}`, onLoad);
+  }, [onLoad, year]);
 
   React.useEffect(() => {
     let filterFunc;

@@ -16,16 +16,19 @@ import { FilterList } from "@mui/icons-material";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import ViewStreamIcon from "@mui/icons-material/ViewStream";
 import ViewModuleIcon from "@mui/icons-material/ViewModule";
+import AppContext from "AppContext";
 const viewTypes = ["standard", "dots", "list"];
 
 const Athletes = () => {
   const [athletes, setAthletes] = useState([]);
   const [viewIndex, setViewIndex] = useState(0);
 
+  const { year } = React.useContext(AppContext);
+
   const [filter, setFilter] = useState("");
   useEffect(() => {
-    ApiGet("/api/athletes", setAthletes);
-  }, []);
+    ApiGet(`/api/athletes?year=${year}`, setAthletes);
+  }, [year]);
 
   const filteredAthletes = athletes
     .filter((a) => {

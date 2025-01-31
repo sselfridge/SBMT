@@ -1,6 +1,7 @@
 ﻿namespace TodoApi.Services
 {
   using Microsoft.Extensions.DependencyInjection;
+  using TodoApi.Helpers;
   using TodoApi.Models;
   using TodoApi.Models.db;
 
@@ -15,7 +16,7 @@
     //Task<StravaUser> Update(StravaUser user);
     Task<StravaUser> Update(StravaUser user);
 
-    public List<UserSegment>? GetUserEfforts(int athleteId);
+    public List<UserSegment>? GetUserEfforts(int athleteId, string year);
 
     public Task<bool> DeleteUser(int athleteId);
   }
@@ -125,22 +126,18 @@
       }
     }
 
-    public List<UserSegment>? GetUserEfforts(int athleteId)
+    public List<UserSegment>? GetUserEfforts(int athleteId, string year)
     {
       var user = GetById(athleteId);
       if (user == null)
         return null;
 
-      IConfiguration configuration = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json")
-        .Build();
-
-      var kickOffDateStr = configuration["KickOffDate"];
-      var kickOffDate = DateTime.Parse(kickOffDateStr).ToUniversalTime();
+      var kickOffDate = SbmtUtils.getKickOffDate(year);
+      var endingDate = SbmtUtils.getEndingDate(year);
 
       var userEfforts = _dbContext
         .Efforts.Where(e => e.AthleteId == athleteId)
-        .Where(x => x.StartDate > kickOffDate)
+        .Where(x => x.StartDate > kickOffDate && x.StartDate < endingDate)
         .Join(
           _dbContext.Segments,
           effort => effort.SegmentId,

@@ -42,8 +42,12 @@ namespace TodoApi.Controllers
       var env1 = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
       var env = env1 ?? "Production";
 
-      var kickOffDate = Configuration["KickOffDate"];
-      var endingDate = Configuration["EndingDate"];
+      string year = HttpContext.Request.Query["year"];
+      if (year == null)
+        year = SbmtUtils.getConfigVal("CurrentYear");
+
+      var kickOffDate = Configuration[$"YearDates:{year}:KickOffDate"];
+      var endingDate = Configuration[$"YearDates:{year}:EndingDate"];
       var redirectUri = Configuration["RedirectUri"];
 
       return new string[] { env, kickOffDate, endingDate, redirectUri };
@@ -53,10 +57,12 @@ namespace TodoApi.Controllers
     ////[ResponseCache(Duration = 360)]
     public ActionResult<Effort> GetRecentEfforts(int id)
     {
-      var kickOffDate = getKickOffDate();
+      string reqYear = HttpContext.Request.Query["year"];
+      var kickOffDate = SbmtUtils.getKickOffDate(reqYear);
+      var endingDate = SbmtUtils.getEndingDate(reqYear);
 
       var efforts = _dbContext
-        .Efforts.Where(x => x.StartDate > kickOffDate)
+        .Efforts.Where(x => x.StartDate > kickOffDate && x.StartDate < endingDate)
         .OrderByDescending(u => u.CreatedAt)
         .Take(50);
 
@@ -115,11 +121,17 @@ namespace TodoApi.Controllers
 
     public IActionResult GetLeaderboard()
     {
+      string year = HttpContext.Request.Query["year"];
+
+      if (year == null)
+        year = SbmtUtils.getConfigVal("CurrentYear");
+
+      var kickOffDate = SbmtUtils.getKickOffDate(year);
+      var endingDate = SbmtUtils.getEndingDate(year);
+
       string surfaceFilter = HttpContext.Request.Query["surface"];
       string genderFilter = HttpContext.Request.Query["gender"];
-
       string categoryFilter = HttpContext.Request.Query["category"];
-
       string ageFilter = HttpContext.Request.Query["age"];
 
       int lowerAge = -1;
@@ -165,7 +177,7 @@ namespace TodoApi.Controllers
         long.TryParse(string.Join("", new Regex(@"\d+").Matches(elevStr)), out elevationFilter);
       }
 
-      var allSegment = _dbContext.Segments.ToList();
+      var allSegment = _dbContext.Segments.Where(x => x.Years.Contains(year)).ToList();
 
       if (
         surfaceFilter != null
@@ -179,7 +191,11 @@ namespace TodoApi.Controllers
         allSegment = allSegment.FindAll(s => s.SurfaceType == "gravel" || s.SurfaceType == "road");
       }
 
-      var users = _dbContext.StravaUsers.Where(x => x.Active).Include(x => x.StravaClubs).ToList();
+      //TODO - Add year filter for users.  Active is only for current year/season
+      var users = _dbContext
+        .StravaUsers.Where(x => x.Years.Contains(year))
+        .Include(x => x.StravaClubs)
+        .ToList();
 
       var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
       StravaUser? currentUser = null;
@@ -232,11 +248,9 @@ namespace TodoApi.Controllers
         });
       }
 
-      var kickOffDate = getKickOffDate();
-
       var data = users
         .Join(
-          _dbContext.Efforts.Where(x => x.StartDate > kickOffDate),
+          _dbContext.Efforts.Where(x => x.StartDate > kickOffDate && x.StartDate < endingDate),
           effort => effort.AthleteId,
           user => user.AthleteId,
           (user, effort) =>
@@ -395,7 +409,9 @@ namespace TodoApi.Controllers
 
     public List<Segment> GetSegments()
     {
-      var segments = _dbContext.Segments.ToList();
+      string year = HttpContext.Request.Query["year"];
+
+      var segments = _dbContext.Segments.Where(x => x.Years.Contains(year)).ToList();
 
       return segments;
     }
@@ -404,9 +420,16 @@ namespace TodoApi.Controllers
     //[ResponseCache(Duration = 36000)]
     public IActionResult GetSegmentLeaderboard(long segmentId)
     {
-      var kickOffDate = getKickOffDate();
+      string reqYear = HttpContext.Request.Query["year"];
+      if (reqYear == null)
+        reqYear = SbmtUtils.getConfigVal("CurrentYear");
+      var kickOffDate = SbmtUtils.getKickOffDate(reqYear);
+      var endingDate = SbmtUtils.getEndingDate(reqYear);
+
       var efforts = _dbContext
-        .Efforts.Where(e => e.SegmentId == segmentId && e.StartDate > kickOffDate)
+        .Efforts.Where(e =>
+          e.SegmentId == segmentId && e.StartDate > kickOffDate && e.StartDate < endingDate
+        )
         .ToList();
 
       var bestEfforts = new Dictionary<int, Effort>();
@@ -471,7 +494,9 @@ namespace TodoApi.Controllers
 
     public IActionResult GetAllAthletes()
     {
-      var dbUsers = _dbContext.StravaUsers.Where(x => x.Active).ToList();
+      string year = HttpContext.Request.Query["year"];
+
+      var dbUsers = _dbContext.StravaUsers.Where(x => x.Active && x.Years.Contains(year)).ToList();
 
       var users = new List<StravaUserDTO>();
 
@@ -479,7 +504,7 @@ namespace TodoApi.Controllers
       {
         if (user.AthleteId != 1)
         {
-          user.Scope = ""; //Not everyone needs to know everyones scopes
+          user.Scope = ""; //Not everyone needs to know everyone's scopes
           users.Add(new StravaUserDTO(user));
         }
       }
@@ -571,7 +596,12 @@ namespace TodoApi.Controllers
 
     public IActionResult GetAthleteEfforts(int athleteId)
     {
-      var userSegments = _userService.GetUserEfforts(athleteId);
+      string year = HttpContext.Request.Query["year"];
+
+      if (year == null)
+        year = SbmtUtils.getConfigVal("CurrentYear");
+
+      var userSegments = _userService.GetUserEfforts(athleteId, year);
 
       if (userSegments == null)
         return Ok(null);

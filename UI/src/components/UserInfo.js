@@ -45,6 +45,10 @@ const UserInfo = () => {
   const [agreeToTerms, setAgreeToTerms] = useState(!!user?.active);
   const [localUser, setLocalUser] = useState({});
 
+  const activeRef = React.useRef();
+
+  const [signupRedirect, setSignupRedirect] = React.useState(true);
+
   const [saving, setSaving] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -76,8 +80,21 @@ const UserInfo = () => {
 
   React.useEffect(() => {
     setLocalUser(user);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    if (activeRef.current === false && user.active) {
+      setSignupRedirect(true);
+    }
+
+    activeRef.current = user.active;
   }, [user]);
+
+  React.useEffect(() => {
+    if (signupRedirect) {
+      setTimeout(() => {
+        navigate("/recent");
+      }, 3000);
+    }
+  }, [navigate, signupRedirect]);
 
   React.useEffect(() => {
     if (
@@ -160,8 +177,13 @@ const UserInfo = () => {
 
   const stravaFields = [
     {
+      label: "Name",
+      content: `${user.firstname} ${user.lastname}`,
+      fromStrava: true,
+    },
+    {
       label: "Weight",
-      content: ((user?.weight || 0) * 2.2).toFixed(0),
+      content: `${((user?.weight || 0) * 2.2).toFixed(0)} lbs`,
       fromStrava: true,
     },
     { label: "Sex", content: user?.sex, fromStrava: true },
@@ -241,11 +263,14 @@ const UserInfo = () => {
       category === user.category &&
       !agreeToTerms &&
       !!user?.active === true) ||
-    (!agreeToTerms && !user?.active);
+    (!agreeToTerms && !user?.active); //TODO add check to disable save unless change has been made
 
   return (
     <MyPaper>
-      <Typography variant="h3">User Profile</Typography>
+      <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+        <Typography variant="h3">User Profile </Typography>
+        <Avatar src={localUser?.avatar} sx={{ width: 75, height: 75 }} />
+      </Box>
       <Typography color="warning.main"> {missingInfoWarning}</Typography>
       <Grid container spacing={1}>
         {profileFields.map(mapField)}
@@ -254,7 +279,6 @@ const UserInfo = () => {
             <Grid item xs={1} sm={3} />
             <Grid item xs={5} sm={3}>
               <Typography variant="h5">
-                {" "}
                 Agree to{" "}
                 <Link onClick={() => navigate("/info/terms")}>Terms:</Link>
               </Typography>
@@ -298,17 +322,45 @@ const UserInfo = () => {
           </React.Fragment>
         )}
         {/* LineBreak */}
-        <Grid item xs={1} sm={3} />
-        <Grid item xs={10} sm={6}>
-          <Button
-            onClick={updateProfile}
-            sx={{ width: "100%" }}
-            disabled={saveDisabled}
-          >
-            {saving ? <CircularProgress size={20} /> : "Save"}
-          </Button>
-        </Grid>
-        <Grid item xs={1} sm={3} />
+        {!signupRedirect && (
+          <>
+            <Grid item xs={1} sm={3} />
+            <Grid item xs={10} sm={6}>
+              <Button
+                onClick={updateProfile}
+                sx={{ width: "100%" }}
+                disabled={saveDisabled}
+              >
+                {saving ? <CircularProgress size={20} /> : "Save"}
+              </Button>
+            </Grid>
+            <Grid item xs={1} sm={3} />
+          </>
+        )}
+        {/* LineBreak */}
+        {signupRedirect && (
+          <>
+            <Grid item xs={1} sm={3} />
+            <Grid
+              item
+              xs={10}
+              sm={6}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Box sx={{ fontSize: "1.2em", fontWeight: "bold" }}>
+                You're all set! Redirecting...
+              </Box>
+              <Box sx={{ fontSize: "0.8em" }}>
+                Come back here from 'My Profile' link in top right menu
+              </Box>
+            </Grid>
+            <Grid item xs={1} sm={3} />
+          </>
+        )}
         {/* line break */}
         {showReminder && (
           <Box
@@ -338,11 +390,17 @@ const UserInfo = () => {
             <Grid
               item
               xs={10}
-              sx={{ display: "flex", justifyContent: "center" }}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                fontWeight: "bold",
+                mt: 4,
+              }}
             >
-              <Avatar src={localUser?.avatar} sx={{ width: 75, height: 75 }} />
+              Profile info from Strava
             </Grid>
             <Grid item xs={1} />
+
             {stravaFields.map(mapField)}
             <Grid item xs={1} sm={2} />
             <Grid item xs={10} sm={8}>
