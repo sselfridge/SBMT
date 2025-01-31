@@ -88,7 +88,6 @@ const Leaderboard = () => {
           params.delete("club");
         }
 
-        // setSearchParams(params);
         let url = LEADERBOARD_URL + "/?" + params.toString();
 
         ApiGet(url, onLoad);

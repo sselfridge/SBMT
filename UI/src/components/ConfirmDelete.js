@@ -92,7 +92,6 @@ const ConfirmDelete = (props) => {
             setDeleteEnabledCount(3);
             setDeletePressed((v) => !v);
           }}
-          // disabled={deletePressed}
         >
           {deletePressed ? "Cancel " : ""}Delete
         </Button>
@@ -102,7 +101,6 @@ const ConfirmDelete = (props) => {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              // width: "50vw",
             }}
           >
             <Typography variant="h4">Confirm Delete?</Typography>
