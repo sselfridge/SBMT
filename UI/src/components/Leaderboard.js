@@ -16,6 +16,7 @@ import { Link, useSearchParams } from "react-router-dom";
 
 import LeaderboardAthleteCell from "./LeaderboardAthleteCell";
 import AppContext from "AppContext";
+import { format, parseISO } from "date-fns";
 
 const MainBox = styled(Box)(({ theme }) => {
   return {
@@ -40,7 +41,7 @@ const Leaderboard = () => {
   const [columnVisible, setColumnVisible] = React.useState(ALL_COLUMNS);
   const [loading, setLoading] = useState(true);
 
-  const { year } = React.useContext(AppContext);
+  const { year, kickOffDate } = React.useContext(AppContext);
 
   React.useEffect(() => {
     setSearchParams((currParams) => {
@@ -263,6 +264,14 @@ const Leaderboard = () => {
     []
   );
 
+  let kickOffLabel = "the start";
+  try {
+    const date = parseISO(kickOffDate);
+    kickOffLabel = format(date, "EEEE LLL do, yyyy");
+  } catch (error) {
+    console.error("error: ", error);
+  }
+
   return (
     <MainBox sx={{}}>
       <Paper
@@ -310,7 +319,7 @@ const Leaderboard = () => {
                 {" "}
                 SBMT segments{" "}
               </Link>{" "}
-              from Friday May 24th onward
+              from {kickOffLabel} onward
             </li>
             <li>
               Ranking is based first on total segments completed and second on
