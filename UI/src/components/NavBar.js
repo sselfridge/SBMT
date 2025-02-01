@@ -16,6 +16,7 @@ import {
 import { ReactComponent as PwdByStrava } from "assets/stravaBrand/api_logo_pwrdBy_strava_horiz_light.svg";
 import { YEARS } from "utils/constants";
 import { format, parseISO } from "date-fns";
+import SbmtTitle from "./Shared/SbmtTitle";
 const TitleLink = styled(Link)(({ theme }) => ({
   color: theme.palette.primary.contrastText,
   textDecoration: "none",
@@ -39,6 +40,7 @@ export default function NavBar() {
     dispatch({ type: "setYear", year });
     setSearchParams((p) => {
       p.set("year", year);
+
       return p;
     });
     setMenuOpen(false);
@@ -124,7 +126,7 @@ export default function NavBar() {
           <Box>
             <Box sx={{ display: "flex", fontFamily: "roboto", gap: 1 }}>
               <TitleLink to="recent">
-                <span className="sbmt">{titleText}</span>
+                <SbmtTitle>{titleText}</SbmtTitle>
               </TitleLink>
               <Box
                 ref={yearMenuRef}

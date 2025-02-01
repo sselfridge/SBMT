@@ -5,3 +5,7 @@
 .mapboxgl-popup-content>h4 {
     margin: 3px 0px 0px 0px;
 }
+
+body {
+    margin: 0
+}

@@ -2,7 +2,9 @@ import React, { Component } from "react";
 
 import StravaButton from "components/Shared/StravaButton";
 
-import "./mein.css";
+// import "./mein.css";
+import styles from "./mein.module.css";
+
 import { Link } from "react-router-dom";
 
 import { ReactComponent as LogoV1 } from "./assets/logoV1.svg";
@@ -10,6 +12,8 @@ import { ReactComponent as Insta } from "./assets/insta.svg";
 import { ReactComponent as StravaLogo } from "./assets/stravaLogo.svg";
 import Countdown from "./Countdown";
 
+// console.info("styles: ", styles);
+//TODO - scope styles kinda works?!
 const targetMap = {
   infoBtn: "infoSection",
   // contributeBtn: "contributeSection",
@@ -65,32 +69,32 @@ export default class LandingPage extends Component {
     };
 
     return (
-      <div className="root">
-        <section className="landingSection">
-          <div className="logo">
+      <div className={styles.root}>
+        <section className={styles.landingSection}>
+          <div className={styles.logo}>
             <Link to="/segments">
               <LogoV1 id="logo" />
             </Link>
             <Countdown />
-            {/* <h2 className="h2Landing">Coming May 24th, 2024</h2> */}
+            {/* <h2 className={styles.h2Landing}>Coming May 24th, 2024</h2> */}
           </div>
 
           <StravaButton />
 
-          <div id="infoBtn" className="button">
+          <div id="infoBtn" className={`${styles.button}`}>
             Info
           </div>
           <a
-            className="landingLink"
+            className={styles.landingLink}
             href="https://www.instagram.com/sbmtchallenge/"
           >
             <div>
-              <Insta id="insta" />
+              <Insta id="insta" className={styles.insta} />
             </div>
           </a>
           <div>
             <a
-              className="landingLink"
+              className={styles.landingLink}
               href="https://www.strava.com/clubs/1051955"
             >
               {/* <img alt="rabble" id="stravaIco" src="./assets/stravaLogo.svg" /> */}
@@ -99,11 +103,11 @@ export default class LandingPage extends Component {
           </div>
           <div></div>
         </section>
-        <section className="landingSection" id="infoSection">
-          <h1 className="h1Landing">
-            What is <span className="sbmt">SBMT</span> ?
+        <section className={styles.landingSection} id="infoSection">
+          <h1 className={styles.h1Landing}>
+            What is <span className={styles.sbmt}>SBMT</span> ?
           </h1>
-          <article className="articleLanding">
+          <article className={styles.articleLanding}>
             Inspired by the
             <a
               className="landingLink padding"
@@ -111,8 +115,8 @@ export default class LandingPage extends Component {
             >
               Santa Monica Mountain Challenge
             </a>
-            the <span className="sbmt">SBMT</span> is the same idea here in
-            Santa Barbara. <br />
+            the <span className={styles.sbmt}>SBMT</span> is the same idea here
+            in Santa Barbara. <br />
             We'll have a list of 10-15 local cycling climbs and a leaderboard
             running. Starts Memorial Day weekend and runs til just before labor
             day weekend
@@ -132,13 +136,13 @@ export default class LandingPage extends Component {
             <br />
           </article>
 
-          <div id="contributeBtn2" className="button">
+          <div id="contributeBtn2" className={styles.button}>
             Feedback / Contribute
           </div>
         </section>
-        <section className="landingSection" id="contributeSection">
-          <h1 className="h1Landing">Contribute</h1>
-          <article className="articleLanding">
+        <section className={styles.landingSection} id="contributeSection">
+          <h1 className={styles.h1Landing}>Contribute</h1>
+          <article className={styles.articleLanding}>
             <div>
               <ul>
                 <li>Have a segment suggestion?</li>
@@ -147,330 +151,333 @@ export default class LandingPage extends Component {
                 <li>Got a good recipe you'd like to share?</li>
               </ul>
             </div>
-            <div className="contactList">
+            <div className={styles.contactList}>
               <a
-                className="landingLink"
+                className={styles.landingLink}
                 href="https://www.instagram.com/sbmtchallenge/"
               >
                 @sbmtchallenge
               </a>
-              <a className="landingLink" href="mailTo:Sam.Selfridge@gmail.com">
+              <a
+                className={styles.landingLink}
+                href="mailTo:Sam.Selfridge@gmail.com"
+              >
                 Sam.Selfridge@gmail.com
               </a>
             </div>
-            {/* <div className="flexCol" id="submitArea">
+            {/* <div className={styles.flexCol} id="submitArea">
               <textarea
                 id="textArea"
                 placeholder="Message here..."
                 maxLength="1000"
                 onChange={onTextChange}
               ></textarea>
-              <span className="characterCount">
+              <span className={styles.characterCount}>
                 <span id="textCount">1000</span> characters remaining
               </span>
-              <div className="button" onClick={onSubmit}>
+              <div className={styles.button} onClick={onSubmit}>
                 Submit
               </div>
             </div>
-            <div className="hideElm" id="allDone">
+            <div className={styles.hideElm} id="allDone">
               <span>
                 Thanks for your submission! <br />
                 If you left contact info I'll get back to you.
               </span>
-              <div className="button" onClick={bringTextBack}>
+              <div className={styles.button} onClick={bringTextBack}>
                 Wait, I had more...
               </div>
             </div> */}
           </article>
         </section>
-        {/* <section className="landingSection" id="segmentList">
-          <h1 className="h1Landing">Segments</h1>
+        {/* <section className={styles.landingSection} id="segmentList">
+          <h1 className={styles.h1Landing}>Segments</h1>
 
-          <article className="articleLanding">
+          <article className={styles.articleLanding}>
             <h3>Road</h3>
-            <table className="landingTable">
+            <table className={styles.landingTable}>
               <thead>
                 <tr>
-                  <th className="landingTh">No.</th>
-                  <th className="landingTh">Name</th>
-                  <th className="landingTh">KOM</th>
-                  <th className="landingTh">Miles</th>
-                  <th className="landingTh">Elevation</th>
+                  <th className={styles.landingTh}>No.</th>
+                  <th className={styles.landingTh}>Name</th>
+                  <th className={styles.landingTh}>KOM</th>
+                  <th className={styles.landingTh}>Miles</th>
+                  <th className={styles.landingTh}>Elevation</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td className="landingTd">1</td>
-                  <td className="landingTd">
+                  <td className={styles.landingTd}>1</td>
+                  <td className={styles.landingTd}>
                     <a
-                      className="landingLink"
+                      className={styles.landingLink}
                       href={"https://www.strava.com/segments/658277"}
                     >
                       Gibraltar
                     </a>
                   </td>
-                  <td className="landingTd">0:27:12</td>
-                  <td className="landingTd">6.14</td>
-                  <td className="landingTd">2593</td>
+                  <td className={styles.landingTd}>0:27:12</td>
+                  <td className={styles.landingTd}>6.14</td>
+                  <td className={styles.landingTd}>2593</td>
                 </tr>
                 <tr>
-                  <td className="landingTd">2</td>
-                  <td className="landingTd">
+                  <td className={styles.landingTd}>2</td>
+                  <td className={styles.landingTd}>
                     <a
-                      className="landingLink"
+                      className={styles.landingLink}
                       href={"https://www.strava.com/segments/1290381"}
                     >
                       OSM
                     </a>
                   </td>
-                  <td className="landingTd">0:12:58</td>
-                  <td className="landingTd">2.97</td>
-                  <td className="landingTd">1165</td>
+                  <td className={styles.landingTd}>0:12:58</td>
+                  <td className={styles.landingTd}>2.97</td>
+                  <td className={styles.landingTd}>1165</td>
                 </tr>
                 <tr>
-                  <td className="landingTd">3</td>
-                  <td className="landingTd">
+                  <td className={styles.landingTd}>3</td>
+                  <td className={styles.landingTd}>
                     <a
-                      className="landingLink"
+                      className={styles.landingLink}
                       href={"https://www.strava.com/segments/637362"}
                     >
                       Painted Cave
                     </a>
                   </td>
-                  <td className="landingTd">0:15:44</td>
-                  <td className="landingTd">3.52</td>
-                  <td className="landingTd">1336</td>
+                  <td className={styles.landingTd}>0:15:44</td>
+                  <td className={styles.landingTd}>3.52</td>
+                  <td className={styles.landingTd}>1336</td>
                 </tr>
                 <tr>
-                  <td className="landingTd">4</td>
-                  <td className="landingTd">
+                  <td className={styles.landingTd}>4</td>
+                  <td className={styles.landingTd}>
                     <a
-                      className="landingLink"
+                      className={styles.landingLink}
                       href={"https://www.strava.com/segments/881465"}
                     >
                       Ladera
                     </a>
                   </td>
-                  <td className="landingTd">0:04:23</td>
-                  <td className="landingTd">0.86</td>
-                  <td className="landingTd">496</td>
+                  <td className={styles.landingTd}>0:04:23</td>
+                  <td className={styles.landingTd}>0.86</td>
+                  <td className={styles.landingTd}>496</td>
                 </tr>
                 <tr>
-                  <td className="landingTd">5</td>
-                  <td className="landingTd">
+                  <td className={styles.landingTd}>5</td>
+                  <td className={styles.landingTd}>
                     <a
-                      className="landingLink"
+                      className={styles.landingLink}
                       href={"https://www.strava.com/segments/631703"}
                     >
                       Farren Road
                     </a>
                   </td>
-                  <td className="landingTd">0:06:59</td>
-                  <td className="landingTd">2.01</td>
-                  <td className="landingTd">508</td>
+                  <td className={styles.landingTd}>0:06:59</td>
+                  <td className={styles.landingTd}>2.01</td>
+                  <td className={styles.landingTd}>508</td>
                 </tr>
                 <tr>
-                  <td className="landingTd">6</td>
-                  <td className="landingTd">
+                  <td className={styles.landingTd}>6</td>
+                  <td className={styles.landingTd}>
                     <a
-                      className="landingLink"
+                      className={styles.landingLink}
                       href={"https://www.strava.com/segments/3596686"}
                     >
                       Tunnel Rd
                     </a>
                   </td>
-                  <td className="landingTd">0:10:43</td>
-                  <td className="landingTd">1.92</td>
-                  <td className="landingTd">647</td>
+                  <td className={styles.landingTd}>0:10:43</td>
+                  <td className={styles.landingTd}>1.92</td>
+                  <td className={styles.landingTd}>647</td>
                 </tr>
                 <tr>
-                  <td className="landingTd">7</td>
-                  <td className="landingTd">
+                  <td className={styles.landingTd}>7</td>
+                  <td className={styles.landingTd}>
                     <a
-                      className="landingLink"
+                      className={styles.landingLink}
                       href={"https://www.strava.com/segments/29015105"}
                     >
                       Roundabout to Mtn
                     </a>
                   </td>
-                  <td className="landingTd">0:13:22</td>
-                  <td className="landingTd">2.91</td>
-                  <td className="landingTd">710</td>
+                  <td className={styles.landingTd}>0:13:22</td>
+                  <td className={styles.landingTd}>2.91</td>
+                  <td className={styles.landingTd}>710</td>
                 </tr>
                 <tr>
-                  <td className="landingTd">8</td>
-                  <td className="landingTd">
+                  <td className={styles.landingTd}>8</td>
+                  <td className={styles.landingTd}>
                     <a
-                      className="landingLink"
+                      className={styles.landingLink}
                       href={"https://www.strava.com/segments/618305"}
                     >
                       Toro Canyon Full
                     </a>
                   </td>
-                  <td className="landingTd">0:14:14</td>
-                  <td className="landingTd">2.17</td>
-                  <td className="landingTd">1194</td>
+                  <td className={styles.landingTd}>0:14:14</td>
+                  <td className={styles.landingTd}>2.17</td>
+                  <td className={styles.landingTd}>1194</td>
                 </tr>
                 <tr>
-                  <td className="landingTd">9</td>
-                  <td className="landingTd">
+                  <td className={styles.landingTd}>9</td>
+                  <td className={styles.landingTd}>
                     <a
-                      className="landingLink"
+                      className={styles.landingLink}
                       href={"https://www.strava.com/segments/1313"}
                     >
                       First Casitas Pass
                     </a>
                   </td>
-                  <td className="landingTd">0:08:16</td>
-                  <td className="landingTd">2.5</td>
-                  <td className="landingTd">730</td>
+                  <td className={styles.landingTd}>0:08:16</td>
+                  <td className={styles.landingTd}>2.5</td>
+                  <td className={styles.landingTd}>730</td>
                 </tr>
                 <tr>
-                  <td className="landingTd">10</td>
-                  <td className="landingTd">
+                  <td className={styles.landingTd}>10</td>
+                  <td className={styles.landingTd}>
                     <a
-                      className="landingLink"
+                      className={styles.landingLink}
                       href={"https://www.strava.com/segments/1315"}
                     >
                       Second Casitas Pass
                     </a>
                   </td>
-                  <td className="landingTd">0:04:30</td>
-                  <td className="landingTd">1.33</td>
-                  <td className="landingTd">404</td>
+                  <td className={styles.landingTd}>0:04:30</td>
+                  <td className={styles.landingTd}>1.33</td>
+                  <td className={styles.landingTd}>404</td>
                 </tr>
                 <tr>
-                  <td className="landingTd">11</td>
-                  <td className="landingTd">
+                  <td className={styles.landingTd}>11</td>
+                  <td className={styles.landingTd}>
                     <a
-                      className="landingLink"
+                      className={styles.landingLink}
                       href={"https://www.strava.com/segments/5106261"}
                     >
                       Casitas Climb (rear)
                     </a>
                   </td>
-                  <td className="landingTd">0:12:25</td>
-                  <td className="landingTd">4.42</td>
-                  <td className="landingTd">654</td>
+                  <td className={styles.landingTd}>0:12:25</td>
+                  <td className={styles.landingTd}>4.42</td>
+                  <td className={styles.landingTd}>654</td>
                 </tr>
                 <tr>
-                  <td className="landingTd">12</td>
-                  <td className="landingTd">
+                  <td className={styles.landingTd}>12</td>
+                  <td className={styles.landingTd}>
                     <a
-                      className="landingLink"
+                      className={styles.landingLink}
                       href={"https://www.strava.com/segments/12039079"}
                     >
                       Sycamore Coyote
                     </a>
                   </td>
-                  <td className="landingTd">0:11:19</td>
-                  <td className="landingTd">2.22</td>
-                  <td className="landingTd">736</td>
+                  <td className={styles.landingTd}>0:11:19</td>
+                  <td className={styles.landingTd}>2.22</td>
+                  <td className={styles.landingTd}>736</td>
                 </tr>
                 <tr>
-                  <td className="landingTd">13</td>
-                  <td className="landingTd">
+                  <td className={styles.landingTd}>13</td>
+                  <td className={styles.landingTd}>
                     <a
-                      className="landingLink"
+                      className={styles.landingLink}
                       href={"https://www.strava.com/segments/813814"}
                     >
                       Arroyo Burro to La Cumbre
                     </a>
                   </td>
-                  <td className="landingTd">0:12:10</td>
-                  <td className="landingTd">2.67</td>
-                  <td className="landingTd">879</td>
+                  <td className={styles.landingTd}>0:12:10</td>
+                  <td className={styles.landingTd}>2.67</td>
+                  <td className={styles.landingTd}>879</td>
                 </tr>
                 <tr>
-                  <td className="landingTd">14</td>
-                  <td className="landingTd">
+                  <td className={styles.landingTd}>14</td>
+                  <td className={styles.landingTd}>
                     <a
-                      className="landingLink"
+                      className={styles.landingLink}
                       href={"https://www.strava.com/segments/751029"}
                     >
                       Las Alturas
                     </a>
                   </td>
-                  <td className="landingTd">0:05:35</td>
-                  <td className="landingTd">1.3</td>
-                  <td className="landingTd">597</td>
+                  <td className={styles.landingTd}>0:05:35</td>
+                  <td className={styles.landingTd}>1.3</td>
+                  <td className={styles.landingTd}>597</td>
                 </tr>
               </tbody>
             </table>
             <h3>Gravel</h3>
-            <table className="landingTable">
+            <table className={styles.landingTable}>
               <thead>
                 <tr>
-                  <th className="landingTh">No.</th>
-                  <th className="landingTh">Name</th>
-                  <th className="landingTh">KOM</th>
-                  <th className="landingTh">Miles</th>
-                  <th className="landingTh">Elevation</th>
-                  <th className="landingTh"></th>
+                  <th className={styles.landingTh}>No.</th>
+                  <th className={styles.landingTh}>Name</th>
+                  <th className={styles.landingTh}>KOM</th>
+                  <th className={styles.landingTh}>Miles</th>
+                  <th className={styles.landingTh}>Elevation</th>
+                  <th className={styles.landingTh}></th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td className="landingTd">1</td>
-                  <td className="landingTd">
+                  <td className={styles.landingTd}>1</td>
+                  <td className={styles.landingTd}>
                     <a
-                      className="landingLink"
+                      className={styles.landingLink}
                       href="https://www.strava.com/segments/746977"
                     >
                       Angostura
                     </a>
                   </td>
-                  <td className="landingTd">0:31:27</td>
-                  <td className="landingTd">5.89</td>
-                  <td className="landingTd">1738</td>
+                  <td className={styles.landingTd}>0:31:27</td>
+                  <td className={styles.landingTd}>5.89</td>
+                  <td className={styles.landingTd}>1738</td>
                 </tr>
                 <tr>
-                  <td className="landingTd">2</td>
-                  <td className="landingTd">
+                  <td className={styles.landingTd}>2</td>
+                  <td className={styles.landingTd}>
                     <a
-                      className="landingLink"
+                      className={styles.landingLink}
                       href="https://www.strava.com/segments/647251"
                     >
                       Romero
                     </a>
                   </td>
-                  <td className="landingTd">0:36:01</td>
-                  <td className="landingTd">6.09</td>
-                  <td className="landingTd">2178</td>
+                  <td className={styles.landingTd}>0:36:01</td>
+                  <td className={styles.landingTd}>6.09</td>
+                  <td className={styles.landingTd}>2178</td>
                 </tr>
                 <tr>
-                  <td className="landingTd">3</td>
-                  <td className="landingTd">
+                  <td className={styles.landingTd}>3</td>
+                  <td className={styles.landingTd}>
                     <a
-                      className="landingLink"
+                      className={styles.landingLink}
                       href="https://www.strava.com/segments/2622235"
                     >
                       Arroyo Burro
                     </a>
                   </td>
-                  <td className="landingTd">0:33:30</td>
-                  <td className="landingTd">5.3</td>
-                  <td className="landingTd">1944</td>
+                  <td className={styles.landingTd}>0:33:30</td>
+                  <td className={styles.landingTd}>5.3</td>
+                  <td className={styles.landingTd}>1944</td>
                 </tr>
                 <tr>
-                  <td className="landingTd">4</td>
-                  <td className="landingTd">
+                  <td className={styles.landingTd}>4</td>
+                  <td className={styles.landingTd}>
                     <a
-                      className="landingLink"
+                      className={styles.landingLink}
                       href="https://www.strava.com/segments/641588"
                     >
                       Refugio Ocean side
                     </a>
                   </td>
-                  <td className="landingTd">0:58:14</td>
-                  <td className="landingTd">12.43</td>
-                  <td className="landingTd">3838</td>
+                  <td className={styles.landingTd}>0:58:14</td>
+                  <td className={styles.landingTd}>12.43</td>
+                  <td className={styles.landingTd}>3838</td>
                 </tr>
               </tbody>
             </table>
             <div id="postSegmentText">
               Did I miss one?
-              <div id="letMeKnow" className="button">
+              <div id="letMeKnow" className={styles.button}>
                 Let me know!!
               </div>
             </div>

@@ -7,6 +7,7 @@ import AppContext from "AppContext";
 import { ApiGet } from "api/api";
 
 import "./global.css";
+
 import Feedback from "components/Feedback";
 import { CircularProgress } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
@@ -28,6 +29,7 @@ function App() {
     [dispatch]
   );
 
+  //Ensure context year is set before rendering any of the sub routes
   React.useEffect(() => {
     let newYear = year;
     if (YEARS.includes(newYear) === false) {
