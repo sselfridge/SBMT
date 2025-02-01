@@ -35,11 +35,13 @@ import { ApiPost } from "api/api";
 
 const Filters = (props) => {
   const { onApplyFilters, searchParams } = props;
-  const { user, dispatch } = useContext(AppContext);
+  const { user, dispatch, year } = useContext(AppContext);
 
   const setUser = (user) => dispatch({ type: "setUser", user });
 
-  const [surface, setSurface] = useState(surfaceList[1]);
+  const [surface, setSurface] = useState(
+    surfaceList[year.includes("trail") ? 4 : 1]
+  );
   const [gender, setGender] = useState(genderList[0]);
   const [age, setAge] = useState(ageList[0]);
   const [distance, setDistance] = useState(distanceList[0]);

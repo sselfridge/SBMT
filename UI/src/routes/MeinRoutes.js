@@ -18,7 +18,7 @@ import InfoScopes from "components/InfoScopes";
 import InfoTerms from "components/InfoTerms";
 import UserInfo from "components/UserInfo";
 import BetaRedirect from "./BetaRedirect";
-import Landing from "components/LandingPage/LandingPage";
+// import Landing from "components/LandingPage/LandingPage";
 
 import Admin from "components/Admin/Admin";
 import AdminSegments from "components/Admin/AdminSegments";
@@ -36,10 +36,9 @@ import { YEARS } from "utils/constants";
 mapboxgl.accessToken = config.mapBox;
 
 const MeinRoutes = () => {
-  const { user, isPreLaunch, year } = useContext(AppContext);
+  const { user, year } = useContext(AppContext);
 
   const isAdmin = user?.athleteId === 1075670;
-  const showLanding = !isAdmin && isPreLaunch;
 
   const isPrevYear = YEARS.includes(year) && year !== YEARS[0];
 
@@ -51,39 +50,28 @@ const MeinRoutes = () => {
           element={<Navigate to={isPrevYear ? "/leaderboard" : "/recent"} />}
         />
 
-        {showLanding && <Route path="landing" element={<Landing />} />}
-
         <Route path="/" element={<App />}>
-          {showLanding ? (
-            <>
-              {/* <Route path="landing" element={<Landing />} /> */}
-              <Route path="*" element={<Navigate to="/landing" />} />
-            </>
-          ) : (
-            <>
-              <Route path="landing" element={<Navigate to="/" />} />
-              <Route path="teresa" element={<TeresaWon />} />
-              <Route path="beta/*" element={<BetaRedirect />} />
-              <Route path="recent" element={<Recent />} />
-              <Route path="leaderboard" element={<Leaderboard />} />
+          <Route path="landing" element={<Navigate to="/" />} />
+          <Route path="teresa" element={<TeresaWon />} />
+          <Route path="beta/*" element={<BetaRedirect />} />
+          <Route path="recent" element={<Recent />} />
+          <Route path="leaderboard" element={<Leaderboard />} />
 
-              <Route path="segments" element={<Segments />} />
-              <Route path="segments/:segmentId" element={<SegmentDetails />} />
-              <Route path="athletes" element={<Athletes />} />
-              <Route path="athletes/:athleteId" element={<AthleteDetails />} />
-              <Route path="newEffort" element={<NewEffort />} />
-              <Route path="settings" element={<UserSettings />} />
-              <Route path="help" element={<HelpContact />} />
-              <Route path="info">
-                <Route path="" element={<Info />} />
-                <Route path="scopes" element={<InfoScopes />} />
-                <Route path="terms" element={<InfoTerms />} />
-              </Route>
+          <Route path="segments" element={<Segments />} />
+          <Route path="segments/:segmentId" element={<SegmentDetails />} />
+          <Route path="athletes" element={<Athletes />} />
+          <Route path="athletes/:athleteId" element={<AthleteDetails />} />
+          <Route path="newEffort" element={<NewEffort />} />
+          <Route path="settings" element={<UserSettings />} />
+          <Route path="help" element={<HelpContact />} />
+          <Route path="info">
+            <Route path="" element={<Info />} />
+            <Route path="scopes" element={<InfoScopes />} />
+            <Route path="terms" element={<InfoTerms />} />
+          </Route>
 
-              <Route path="UserInfo" element={<UserInfo />} />
-              <Route path="StravaOops" element={<StravaOops />} />
-            </>
-          )}
+          <Route path="UserInfo" element={<UserInfo />} />
+          <Route path="StravaOops" element={<StravaOops />} />
 
           {isAdmin && (
             <Route path="admin">

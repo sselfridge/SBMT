@@ -5,6 +5,7 @@ import { ReactComponent as Logo } from "assets/logoV1.svg";
 
 import { styled } from "@mui/material/styles";
 import Updates from "./Updates";
+import SbmtTitle from "./Shared/SbmtTitle";
 const MyBox = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 
 const ArticleBox = styled(Box)(({ theme }) => ({ margin: "0 15%" }));
@@ -40,7 +41,7 @@ const Info = (props) => {
         </Box>
         <ArticleBox>
           <TitleTypography variant="h2">
-            What is <span className="sbmt">SBMT</span> ?
+            What is <SbmtTitle />?
           </TitleTypography>
           Inspired by the
           <MuiLink
@@ -49,9 +50,8 @@ const Info = (props) => {
           >
             SMMT
           </MuiLink>
-          the Santa Barbara Mountain Challenge{" "}
-          <span className="sbmt">SBMT</span> is the same idea here in Santa
-          Barbara. <br />
+          the Santa Barbara Mountain Challenge <SbmtTitle /> is the same idea
+          here in Santa Barbara. <br />
           We'll have a list of 10-15 local cycling climbs and a leaderboard
           running. Starts Memorial Day weekend and runs through labor day
           weekend.

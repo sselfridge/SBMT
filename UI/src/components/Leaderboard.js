@@ -41,14 +41,7 @@ const Leaderboard = () => {
   const [columnVisible, setColumnVisible] = React.useState(ALL_COLUMNS);
   const [loading, setLoading] = useState(true);
 
-  const { year, kickOffDate } = React.useContext(AppContext);
-
-  React.useEffect(() => {
-    setSearchParams((currParams) => {
-      currParams.set("year", year);
-      return currParams;
-    });
-  }, [setSearchParams, year]);
+  const { kickOffDate } = React.useContext(AppContext);
 
   React.useEffect(() => {
     const newColumns = isMobile ? MOBILE_COLUMNS : ALL_COLUMNS;

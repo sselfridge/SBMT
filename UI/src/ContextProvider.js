@@ -3,20 +3,13 @@ import PropTypes from "prop-types";
 import AppContext from "AppContext";
 import AppReducer, { INITIAL_STATE } from "./AppReducer";
 import { ApiGet } from "api/api";
-import { YEARS } from "utils/constants";
 import { isAfter, parseISO } from "date-fns";
 function ContextProvider({ children }) {
   const [state, dispatch] = useReducer(AppReducer, INITIAL_STATE);
 
-  React.useEffect(() => {
-    const { search } = window.location;
-    const params = new URLSearchParams(search);
-    let year = params.get("year");
-    if (YEARS.includes(year) === false) {
-      // eslint-disable-next-line prefer-destructuring
-      year = YEARS[0];
-    }
+  const { year } = state;
 
+  React.useEffect(() => {
     ApiGet(`/api?year=${year}`, (arr) => {
       const kickOffDate = parseISO(arr[1]);
       const now = new Date();
@@ -31,8 +24,7 @@ function ContextProvider({ children }) {
       };
       dispatch({ type: "setSettings", settings });
     });
-  }, []);
-
+  }, [year]);
   return (
     <AppContext.Provider value={{ ...state, dispatch }}>
       {children}
