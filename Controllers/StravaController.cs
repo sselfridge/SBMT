@@ -114,6 +114,9 @@ namespace TodoApi.Controllers
           _stravaService,
           _dbContext
         );
+        Console.WriteLine($"sbmtLog: On boarding {oAuthUser.AthleteId} complete '{scope}'");
+        Console.WriteLine($"Redirecting to {Configuration["BaseURL"]}/settings");
+
         return Redirect($"{Configuration["BaseURL"]}/settings");
       }
       else
@@ -154,12 +157,15 @@ namespace TodoApi.Controllers
           }
         }
 
+        Console.WriteLine($"sbmtLog: updating complete for: {oAuthUser.AthleteId}");
         if (existingUser != null && (existingUser.Age == 0 || existingUser.Category == null))
         {
+          Console.WriteLine($"Redirecting to {Configuration["BaseURL"]}/settings");
           return Redirect($"{Configuration["BaseURL"]}/settings");
         }
         else
         {
+          Console.WriteLine($"Redirecting to {Configuration["BaseURL"]}/recent");
           return Redirect($"{Configuration["BaseURL"]}/recent");
         }
       }
