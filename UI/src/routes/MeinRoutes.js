@@ -45,12 +45,13 @@ const MeinRoutes = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route
-          path="/"
-          element={<Navigate to={isPrevYear ? "/leaderboard" : "/recent"} />}
-        />
-
         <Route path="/" element={<App />}>
+          <Route
+            index
+            element={
+              <Navigate to={isPrevYear ? "/leaderboard" : "/recent"} replace />
+            }
+          />
           <Route path="landing" element={<Navigate to="/" />} />
           <Route path="teresa" element={<TeresaWon />} />
           <Route path="beta/*" element={<BetaRedirect />} />

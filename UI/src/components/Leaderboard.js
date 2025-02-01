@@ -41,7 +41,14 @@ const Leaderboard = () => {
   const [columnVisible, setColumnVisible] = React.useState(ALL_COLUMNS);
   const [loading, setLoading] = useState(true);
 
-  const { kickOffDate } = React.useContext(AppContext);
+  const { year, kickOffDate } = React.useContext(AppContext);
+
+  // React.useEffect(() => {
+  //   setSearchParams((currParams) => {
+  //     currParams.set("year", year);
+  //     return currParams;
+  //   });
+  // }, [setSearchParams, year]);
 
   React.useEffect(() => {
     const newColumns = isMobile ? MOBILE_COLUMNS : ALL_COLUMNS;
@@ -66,6 +73,10 @@ const Leaderboard = () => {
           "distance",
           "elevation",
         ];
+
+        if (year) {
+          params.set("year", year);
+        }
 
         simpleFilters.forEach((name) => {
           if (filters?.[name] && filters[name] !== "ALL") {

@@ -47,7 +47,7 @@ const UserInfo = () => {
 
   const activeRef = React.useRef();
 
-  const [signupRedirect, setSignupRedirect] = React.useState(true);
+  const [signupRedirect, setSignupRedirect] = React.useState(false);
 
   const [saving, setSaving] = useState(false);
   const navigate = useNavigate();
