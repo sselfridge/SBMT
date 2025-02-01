@@ -149,6 +149,9 @@ namespace TodoApi.Services
       return result;
     }
 
+    /**
+      Fetch profile with only accessToken
+    */
     public async Task<StravaAthleteProfile> GetInitialProfile(string accessToken)
     {
       var client = new HttpClient();

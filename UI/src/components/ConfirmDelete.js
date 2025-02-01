@@ -81,20 +81,24 @@ const ConfirmDelete = (props) => {
           minHeight: "65vh",
         }}
       >
-        <Typography variant="h4" textAlign={"center"}>
-          Delete my Data
-        </Typography>
-        <Button
-          sx={{ minWidth: 350 }}
-          variant="contained"
-          color={deletePressed ? "info" : "error"}
-          onClick={() => {
-            setDeleteEnabledCount(3);
-            setDeletePressed((v) => !v);
-          }}
-        >
-          {deletePressed ? "Cancel " : ""}Delete
-        </Button>
+        {!deleteConfirmMsg && (
+          <>
+            <Typography variant="h4" textAlign={"center"}>
+              Delete my Data
+            </Typography>
+            <Button
+              sx={{ minWidth: 350 }}
+              variant="contained"
+              color={deletePressed ? "info" : "error"}
+              onClick={() => {
+                setDeleteEnabledCount(3);
+                setDeletePressed((v) => !v);
+              }}
+            >
+              {deletePressed ? "Cancel " : ""}Delete
+            </Button>
+          </>
+        )}
         {deletePressed && (
           <Paper
             sx={{
