@@ -118,32 +118,28 @@ namespace TodoApi.Controllers
       }
       else
       {
-        var updateUser = false;
+        var profile = await _stravaService.GetProfile(oAuthUser.AthleteId);
 
-        if (
-          oAuthUser.AccessToken != existingUser.AccessToken
-          || oAuthUser.Scope != existingUser.Scope
-        )
-        {
-          existingUser.AccessToken = oAuthUser.AccessToken;
-          existingUser.ExpiresAt = oAuthUser.ExpiresAt;
-          existingUser.Scope = oAuthUser.Scope;
-          updateUser = true;
-        }
+        existingUser.AccessToken = oAuthUser.AccessToken;
+        existingUser.ExpiresAt = oAuthUser.ExpiresAt;
+        existingUser.Scope = oAuthUser.Scope;
+
+        existingUser.Firstname = profile.Firstname;
+        existingUser.Lastname = profile.Lastname;
+        existingUser.Avatar = profile.ProfileMedium;
+        existingUser.AthleteId = profile.Id;
+        existingUser.Sex = profile.Sex ?? "none";
+        existingUser.Weight = profile.Weight ?? 0;
 
         var years = existingUser.Years;
         var currentYear = SbmtUtils.getConfigVal("CurrentYear");
         if (SbmtUtils.ContainsYear(years, currentYear) == false)
         {
           existingUser.Years = SbmtUtils.AddYear(years, currentYear);
-          updateUser = true;
         }
 
-        if (updateUser)
-        {
-          _dbContext.Update(existingUser);
-          _dbContext.SaveChanges();
-        }
+        _dbContext.Update(existingUser);
+        _dbContext.SaveChanges();
 
         if (oAuthUser.Scope.Contains("profile:read_all") && existingUser != null)
         {
@@ -154,7 +150,6 @@ namespace TodoApi.Controllers
             .FirstOrDefault(x => x.AthleteId == oAuthUser.AthleteId);
           if (userWithClubs != null)
           {
-            var profile = await _stravaService.GetProfile(oAuthUser.AthleteId);
             _stravaService.UpdateUserClubs(oAuthUser.AthleteId, profile.Clubs);
           }
         }

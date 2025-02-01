@@ -60,12 +60,28 @@ namespace TodoApi.Helpers
       }
       else
       {
-        user.Active = false;
-        user.Years = SbmtUtils.AddYear(user.Years, currentYear);
         user.Scope = oauth.Scope;
         user.AccessToken = oauth.AccessToken;
         user.RefreshToken = oauth.RefreshToken;
         user.ExpiresAt = oauth.ExpiresAt;
+
+        user.Firstname = profile.Firstname;
+        user.Lastname = profile.Lastname;
+        user.Avatar = profile.ProfileMedium;
+        user.AthleteId = profile.Id;
+        user.Sex = profile.Sex ?? "none";
+        user.Weight = profile.Weight ?? 0;
+
+        user.JoinDate = DateTime.MinValue;
+        user.StravaClubs = new List<StravaClub>();
+        user.Age = 0;
+        user.Category = "None";
+        user.RecentDistance = 0;
+        user.RecentElevation = 0;
+        user.SavedFilters = "";
+
+        user.Active = false;
+        user.Years = SbmtUtils.AddYear(user.Years, currentYear);
         context.Update(user);
       }
       context.SaveChanges();
