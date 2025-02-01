@@ -164,6 +164,7 @@ export default function NavBar() {
               }}
             >
               {kickOffLabel && `Starts ${kickOffLabel}!!`}
+              {/* TODO Add To / From for past years */}
             </Box>
             <Box sx={{ position: "relative" }}>
               <PwdBy />
