@@ -281,17 +281,6 @@ namespace TodoApi.Controllers
     [HttpGet("init")]
     public async Task<ActionResult> InitApp()
     {
-      //var systemUIser = new StravaUser(1,
-      //  "App",
-      //  "Root",
-      //  "https://dgalywyr863hv.cloudfront.net/pictures/athletes/10645041/16052758/1/medium.jpg",
-      //  1669890293,
-      //  "de9e59f05d5e69aca8bbfd9bc29b279080e15347",
-      //  "7aa35e2d132e10e664b7edf4e8742187cb9bf079",
-      //  "M",
-      //  0.0,
-      //  "allScope");
-
       //_dbContext.StravaUsers.Add(systemUIser);
       //await _dbContext.SaveChangesAsync();
 
