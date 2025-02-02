@@ -9,7 +9,7 @@ import { Box, Paper, Typography, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Filters from "./Filters";
 
-import { ALL_COLUMNS, MOBILE_COLUMNS } from "utils/constants";
+import { ALL_COLUMNS, MOBILE_COLUMNS, YEARS } from "utils/constants";
 import { formattedTime, metersToMiles, metersToFeet } from "utils/helperFuncs";
 import { ApiGet } from "api/api";
 import { Link, useSearchParams } from "react-router-dom";
@@ -43,13 +43,6 @@ const Leaderboard = () => {
 
   const { year, kickOffDate } = React.useContext(AppContext);
 
-  // React.useEffect(() => {
-  //   setSearchParams((currParams) => {
-  //     currParams.set("year", year);
-  //     return currParams;
-  //   });
-  // }, [setSearchParams, year]);
-
   React.useEffect(() => {
     const newColumns = isMobile ? MOBILE_COLUMNS : ALL_COLUMNS;
     setColumnVisible(newColumns);
@@ -74,7 +67,7 @@ const Leaderboard = () => {
           "elevation",
         ];
 
-        if (year) {
+        if (year !== YEARS[0]) {
           params.set("year", year);
         }
 
@@ -93,12 +86,12 @@ const Leaderboard = () => {
         }
 
         let url = LEADERBOARD_URL + "/?" + params.toString();
-
         ApiGet(url, onLoad);
+
         return params;
       });
     },
-    [onLoad, setSearchParams]
+    [onLoad, setSearchParams, year]
   );
 
   const columns = useMemo(

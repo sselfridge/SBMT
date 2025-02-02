@@ -33,11 +33,13 @@ import StravaOops from "components/StravaOops";
 // import TempCountdown from "components/LandingPage/TempCountdown";
 import AdminEfforts from "components/Admin/AdminEfforts";
 import { YEARS } from "utils/constants";
+import { db } from "utils/helperFuncs";
+
 mapboxgl.accessToken = config.mapBox;
 
 const MeinRoutes = () => {
   const { user, year } = useContext(AppContext);
-
+  db("Render Routes");
   const isAdmin = user?.athleteId === 1075670;
 
   const isPrevYear = YEARS.includes(year) && year !== YEARS[0];

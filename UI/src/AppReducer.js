@@ -1,5 +1,6 @@
 import { differenceInSeconds } from "date-fns";
 import { YEARS } from "utils/constants";
+
 export default function reducer(state, action) {
   switch (action.type) {
     case "setUser":
@@ -13,7 +14,12 @@ export default function reducer(state, action) {
 
       return { ...state, isPreLaunch, ...action.settings };
     case "setYear":
+      if (YEARS.includes(year) === false) {
+        console.error("Invalid Year", year);
+        break;
+      }
       return { ...state, year: action.year };
+
     default:
       throw new Error();
   }

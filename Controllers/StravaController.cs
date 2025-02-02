@@ -135,7 +135,7 @@ namespace TodoApi.Controllers
         existingUser.Weight = profile.Weight ?? 0;
 
         var years = existingUser.Years;
-        var currentYear = SbmtUtils.getConfigVal("CurrentYear");
+        var currentYear = SbmtUtils.getCurrentYear();
         if (SbmtUtils.ContainsYear(years, currentYear) == false)
         {
           existingUser.Years = SbmtUtils.AddYear(years, currentYear);

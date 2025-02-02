@@ -5,6 +5,7 @@ const Api = axios.create({
   baseURL: "/",
   // timeout: 1500
 });
+
 export let rateLimit = -1;
 
 Api.interceptors.response.use(
@@ -22,8 +23,8 @@ Api.interceptors.response.use(
  *
  * @param {string} url
  * @param {func} setValue
- * @param {bool} setOnError
- * @param {any} onError
+ * @param {any} onError - Value to set on GET error
+ * @param {bool} setErrorUndefined - set true if error state needs to be 'undefined'
  */
 export const ApiGet = (url, setValue, onError, setErrorUndefined) => {
   Api.get(url)

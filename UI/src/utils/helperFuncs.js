@@ -1,5 +1,8 @@
 import { intervalToDuration, format, parseISO, formatDistance } from "date-fns";
+import debug from "debug";
 
+export const db = debug("root");
+db("db Init!");
 export function formattedTime(seconds, showHours = false) {
   const out = intervalToDuration({ start: 0, end: seconds * 1000 });
   out.seconds = out.seconds || 0;
