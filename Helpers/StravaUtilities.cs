@@ -11,7 +11,12 @@ namespace TodoApi.Helpers
       sbmtContext context
     )
     {
-      var segmentIds = context.Segments.Select(s => s.Id).ToList();
+      var year = SbmtUtils.getConfigVal("CurrentYear");
+
+      var segmentIds = context
+        .Segments.Where(x => x.Years.Contains(year))
+        .Select(s => s.Id)
+        .ToList();
 
       if (segmentIds == null)
         return new List<Effort>();
@@ -234,8 +239,11 @@ namespace TodoApi.Helpers
               Console.WriteLine($"sbmtLog: Retrying {activityId} in {timeInMin} minutes");
               ParseNewActivity(serviceScopeFactory, athleteId, activityId, delayTime);
             }
-
-            var segmentIds = context.Segments.Select(s => s.Id).ToList();
+            var year = SbmtUtils.getConfigVal("CurrentYear");
+            var segmentIds = context
+              .Segments.Where(x => x.Years.Contains(year))
+              .Select(s => s.Id)
+              .ToList();
 
             var efforts = PullEffortsFromActivity(activity, segmentIds);
 
