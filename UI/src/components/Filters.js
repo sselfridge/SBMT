@@ -33,6 +33,12 @@ import AppContext from "AppContext";
 import StravaButton from "./Shared/StravaButton";
 import { ApiPost } from "api/api";
 
+const emptyClub = (
+  <Box id={"0"} key={"0"} sx={{ display: "flex" }}>
+    {"None"}
+  </Box>
+);
+
 const Filters = (props) => {
   const { onApplyFilters, searchParams } = props;
   const { user, dispatch, year } = useContext(AppContext);
@@ -49,7 +55,7 @@ const Filters = (props) => {
 
   const [category, setCategory] = useState(categoryList[0]);
   const [clubList, setClubList] = useState([]);
-  const [clubNode, setClubNode] = useState("");
+  const [clubNode, setClubNode] = useState(emptyClub);
   const [clubId, setClubId] = useState(null);
   const [stravaBtnText, setStravaBtnText] = useState("");
 
@@ -93,7 +99,7 @@ const Filters = (props) => {
   }, [searchParams]);
 
   useEffect(() => {
-    const club = clubNode?.key || 0;
+    const club = clubNode?.key || "0";
     onApplyFilters({
       surface,
       gender,
@@ -171,11 +177,6 @@ const Filters = (props) => {
       setClubList([]);
       setStravaBtnText("Enable Clubs");
     } else if (user?.stravaClubs?.length > 0) {
-      const emptyClub = (
-        <Box id={0} key={0} sx={{ display: "flex" }}>
-          {"None"}
-        </Box>
-      );
       const clubs = user.stravaClubs.map((club) => (
         <Box id={club.id} key={club.id} sx={{ display: "flex" }}>
           <Avatar src={club.profileMedium} />
@@ -186,9 +187,9 @@ const Filters = (props) => {
       setClubList(clubs);
       if (clubId) {
         const club = clubs.find((c) => c.key === `${clubId}`);
-        setClubNode(club || clubs[0]);
+        setClubNode(club || emptyClub);
       } else {
-        setClubNode(clubs[0]);
+        setClubNode(emptyClub);
       }
       setStravaBtnText("");
     } else if (_.isEmpty(user)) {
