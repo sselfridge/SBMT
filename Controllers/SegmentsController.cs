@@ -86,7 +86,7 @@ namespace TodoApi.Controllers
         return NotFound();
 
       segment.SurfaceType = surfaceType;
-      var currentYear = SbmtUtils.getConfigVal("CurrentYear");
+      var currentYear = SbmtUtils.getCurrentYear();
 
       if (SegmentExists(id))
       {

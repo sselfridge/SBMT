@@ -11,7 +11,7 @@ namespace TodoApi.Helpers
       sbmtContext context
     )
     {
-      var year = SbmtUtils.getConfigVal("CurrentYear");
+      var year = SbmtUtils.getCurrentYear();
 
       var segmentIds = context
         .Segments.Where(x => x.Years.Contains(year))
@@ -56,11 +56,11 @@ namespace TodoApi.Helpers
 
       var user = context.StravaUsers.FirstOrDefault(x => x.AthleteId == oauth.AthleteId);
 
-      var currentYear = SbmtUtils.getConfigVal("CurrentYear");
+      var year = SbmtUtils.getCurrentYear();
 
       if (user == null)
       {
-        user = new StravaUser(oauth, profile, currentYear);
+        user = new StravaUser(oauth, profile, year);
         context.Add(user);
       }
       else
@@ -86,7 +86,7 @@ namespace TodoApi.Helpers
         user.SavedFilters = "";
 
         user.Active = false;
-        user.Years = SbmtUtils.AddYear(user.Years, currentYear);
+        user.Years = SbmtUtils.AddYear(user.Years, year);
         context.Update(user);
       }
       context.SaveChanges();
@@ -206,10 +206,9 @@ namespace TodoApi.Helpers
               return;
             }
 
-            var currentYear = SbmtUtils.getConfigVal("CurrentYear");
-
-            var kickOffDate = SbmtUtils.getKickOffDate(currentYear);
-            var endingDate = SbmtUtils.getEndingDate(currentYear);
+            var year = SbmtUtils.getCurrentYear();
+            var kickOffDate = SbmtUtils.getKickOffDate(year);
+            var endingDate = SbmtUtils.getEndingDate(year);
 
             DateTime startDate = activity.StartDate;
             DateTime now = DateTime.UtcNow;
@@ -239,7 +238,6 @@ namespace TodoApi.Helpers
               Console.WriteLine($"sbmtLog: Retrying {activityId} in {timeInMin} minutes");
               ParseNewActivity(serviceScopeFactory, athleteId, activityId, delayTime);
             }
-            var year = SbmtUtils.getConfigVal("CurrentYear");
             var segmentIds = context
               .Segments.Where(x => x.Years.Contains(year))
               .Select(s => s.Id)
@@ -351,7 +349,8 @@ namespace TodoApi.Helpers
     {
       var needToUpdate = false;
 
-      var kickOffDate = SbmtUtils.getKickOffDate();
+      var year = SbmtUtils.getCurrentYear();
+      var kickOffDate = SbmtUtils.getKickOffDate(year);
 
       // for each new effort, check where it stands on that segment, if its in the top 10, set rank accordingly.
       // will only show for an athlete if its their fastest time on the segment

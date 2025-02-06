@@ -38,10 +38,9 @@ export default function NavBar() {
   const [menuOpen, setMenuOpen] = React.useState(false);
   const selectYear = (year) => {
     dispatch({ type: "setYear", year });
-    setSearchParams((p) => {
-      p.set("year", year);
-
-      return p;
+    setSearchParams((params) => {
+      params.set("year", year);
+      return params;
     });
     setMenuOpen(false);
   };

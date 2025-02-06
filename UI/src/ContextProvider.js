@@ -4,12 +4,15 @@ import AppContext from "AppContext";
 import AppReducer, { INITIAL_STATE } from "./AppReducer";
 import { ApiGet } from "api/api";
 import { isAfter, parseISO } from "date-fns";
+import { db } from "utils/helperFuncs";
+
 function ContextProvider({ children }) {
   const [state, dispatch] = useReducer(AppReducer, INITIAL_STATE);
 
   const { year } = state;
 
   React.useEffect(() => {
+    db("settings call");
     ApiGet(`/api?year=${year}`, (arr) => {
       const kickOffDate = parseISO(arr[1]);
       const now = new Date();
@@ -25,6 +28,7 @@ function ContextProvider({ children }) {
       dispatch({ type: "setSettings", settings });
     });
   }, [year]);
+
   return (
     <AppContext.Provider value={{ ...state, dispatch }}>
       {children}
