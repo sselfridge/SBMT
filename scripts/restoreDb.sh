@@ -60,7 +60,7 @@ echo "Restore CMD:\n\n"
 
 
 echo ""
-echo "psql -p $dbLocalPort -U $dbUser < $2"
+echo "psql -h localhost -p $dbLocalPort -U $dbUser < $2"
 echo ""
 
 read -p "Do you want to continue? (y/N):" response
