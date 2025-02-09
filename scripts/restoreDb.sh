@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+source ~/.bash_profile
+
 # Check if the correct number of arguments is provided
 if [ "$#" -ne 2 ]; then
     echo "Usage: $0 {dev|stg|prod} file.sql"
@@ -73,6 +75,7 @@ if [[ "$response" =~ ^[Yy]$ ]]; then
     createdb -h localhost -p $dbLocalPort $dbName
     echo "Restoring."
     psql -h localhost -p $dbLocalPort -U $dbUser < $2
+    echo "Complete"
 else
     echo "Restore Aborted"
 fi

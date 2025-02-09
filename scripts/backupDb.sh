@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+source ~/.bash_profile
+
 if [[ -z "$SBMT_DIR" ]]; then
     echo "env SBMT_DIR is not set or is empty, aborting backup"
 fi
@@ -46,8 +48,8 @@ fi
 
 date=$(date +"%Y-%m-%d_%H%M%S")
 filename="sbmt_$env.$date$tag.sql"
-echo "pg_dump -p $dbLocalPort -U $dbUser $dbName > $filename"
-pg_dump -p $dbLocalPort -U $dbUser $dbName > "$SBMT_DIR/backups/$filename"
+echo "pg_dump -h localhost -p $dbLocalPort -U $dbUser $dbName > $filename"
+pg_dump -h localhost -p $dbLocalPort -U $dbUser $dbName > "$SBMT_DIR/backups/$filename"
 
 if [[ -n "$DROPBOX_DIR" ]]; then
     echo "DROPBOX_DIR is set to: $DROPBOX_DIR"
