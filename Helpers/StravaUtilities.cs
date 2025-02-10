@@ -379,10 +379,19 @@ namespace TodoApi.Helpers
           .Take(10)
           .ToList();
 
+        var isEmpty = top10.Count() == 0;
+
+
         var index = top10.FindIndex(e => e.Id == newEffort.Id);
-        if (index != -1)
+
+        if (isEmpty)
         {
-          var dbEffort = context.Efforts.Where(e => e.Id == top10[index].Id).FirstOrDefault();
+          index = 0;
+        }
+
+        if (index != -1 || isEmpty)
+        {
+          var dbEffort = context.Efforts.Where(e => e.Id == newEffort.Id).FirstOrDefault();
           if (dbEffort != null)
           {
             dbEffort.Rank = index + 1;
