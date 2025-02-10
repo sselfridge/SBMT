@@ -720,20 +720,7 @@ namespace TodoApi.Controllers
       return Ok();
     }
 
-    private DateTime getKickOffDate()
-    {
-      var kickOffStr = getConfigVal("KickOffDate");
 
-      return DateTime.Parse(kickOffStr).ToUniversalTime();
-    }
 
-    private string getConfigVal(string key)
-    {
-      IConfiguration configuration = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json")
-        .Build();
-
-      return configuration[key];
-    }
   }
 }
