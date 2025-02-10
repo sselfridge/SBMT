@@ -1,10 +1,41 @@
 #!/bin/bash
 set -e
 
+source ~/.bash_profile
 
-source "./load_env.sh" $1
+# Check if the correct number of arguments is provided
+if [ "$#" -ne 2 ]; then
+    echo "Usage: $0 {dev|stg|prod} file.sql"
+    exit 1
+fi
 
-$env=$1
+# Validate the first argument
+case $1 in
+    dev|stg|prod)
+        # Valid argument, do nothing
+        ;;
+    *)
+        echo "Error: The first argument must be one of 'dev', 'stg', or 'prod'."
+        exit 1
+        ;;
+esac
+
+# Validate the second argument
+if [[ ! -f $2 ]]; then
+    echo "Error: The file '$2' does not exist."
+    exit 1
+fi
+
+if [[ $2 != *.sql ]]; then
+    echo "Error: The file '$2' must end with '.sql'."
+    exit 1
+fi
+
+echo SBMT $SBMT_DIR
+
+source "$SBMT_DIR/scripts/load_env.sh" $1
+
+env=$1
 
 dbLocalPort=$DB_LOCAL_PORT
 dbUser=$DB_USER
@@ -27,8 +58,9 @@ export PGUSER=$dbUser
 
 echo "Restore CMD:\n\n"
 
+
 echo ""
-echo "psql -p $dbLocalPort -U $dbUser < $2"
+echo "psql -h localhost -p $dbLocalPort -U $dbUser < $2"
 echo ""
 
 read -p "Do you want to continue? (y/N):" response
@@ -38,11 +70,12 @@ response=${response:-n}
 
 if [[ "$response" =~ ^[Yy]$ ]]; then
     echo "Droping..."
-    dropdb -p $dbLocalPort -f $dbName
+    dropdb -h localhost -p $dbLocalPort -f $dbName
     echo "Creating..."
-    createdb -p $dbLocalPort $dbName
+    createdb -h localhost -p $dbLocalPort $dbName
     echo "Restoring."
-    psql -p $dbLocalPort -U $dbUser < $2
+    psql -h localhost -p $dbLocalPort -U $dbUser < $2
+    echo "Complete"
 else
     echo "Restore Aborted"
 fi
