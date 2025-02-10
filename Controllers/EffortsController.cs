@@ -25,7 +25,12 @@ namespace TodoApi.Controllers
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Effort>>> GetEfforts()
     {
-      var kickOffDate = SbmtUtils.getKickOffDate();
+      string year = HttpContext.Request.Query["year"];
+      if (year == null)
+      {
+        year = SbmtUtils.getCurrentYear();
+      }
+      var kickOffDate = SbmtUtils.getKickOffDate(year);
 
       return await _context.Efforts.Where(x => x.StartDate > kickOffDate).ToListAsync();
     }

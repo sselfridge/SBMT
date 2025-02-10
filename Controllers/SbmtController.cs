@@ -44,22 +44,22 @@ namespace TodoApi.Controllers
 
       string year = HttpContext.Request.Query["year"];
       if (year == null)
-        year = SbmtUtils.getConfigVal("CurrentYear");
+        year = SbmtUtils.getCurrentYear();
 
-      var kickOffDate = Configuration[$"YearDates:{year}:KickOffDate"];
-      var endingDate = Configuration[$"YearDates:{year}:EndingDate"];
+      var kickOffDateStr = Configuration[$"YearDates:{year}:KickOffDate"];
+      var endingDateStr = Configuration[$"YearDates:{year}:EndingDate"];
       var redirectUri = Configuration["RedirectUri"];
 
-      return new string[] { env, kickOffDate, endingDate, redirectUri };
+      return new string[] { env, kickOffDateStr, endingDateStr, redirectUri };
     }
 
     [HttpGet("recentEfforts")]
     ////[ResponseCache(Duration = 360)]
     public ActionResult<Effort> GetRecentEfforts(int id)
     {
-      string reqYear = HttpContext.Request.Query["year"];
-      var kickOffDate = SbmtUtils.getKickOffDate(reqYear);
-      var endingDate = SbmtUtils.getEndingDate(reqYear);
+      string year = HttpContext.Request.Query["year"];
+      var kickOffDate = SbmtUtils.getKickOffDate(year);
+      var endingDate = SbmtUtils.getEndingDate(year);
 
       var efforts = _dbContext
         .Efforts.Where(x => x.StartDate > kickOffDate && x.StartDate < endingDate)
@@ -124,7 +124,7 @@ namespace TodoApi.Controllers
       string year = HttpContext.Request.Query["year"];
 
       if (year == null)
-        year = SbmtUtils.getConfigVal("CurrentYear");
+        year = SbmtUtils.getCurrentYear();
 
       var kickOffDate = SbmtUtils.getKickOffDate(year);
       var endingDate = SbmtUtils.getEndingDate(year);
@@ -420,11 +420,11 @@ namespace TodoApi.Controllers
     //[ResponseCache(Duration = 36000)]
     public IActionResult GetSegmentLeaderboard(long segmentId)
     {
-      string reqYear = HttpContext.Request.Query["year"];
-      if (reqYear == null)
-        reqYear = SbmtUtils.getConfigVal("CurrentYear");
-      var kickOffDate = SbmtUtils.getKickOffDate(reqYear);
-      var endingDate = SbmtUtils.getEndingDate(reqYear);
+      string year = HttpContext.Request.Query["year"];
+      if (year == null)
+        year = SbmtUtils.getCurrentYear();
+      var kickOffDate = SbmtUtils.getKickOffDate(year);
+      var endingDate = SbmtUtils.getEndingDate(year);
 
       var efforts = _dbContext
         .Efforts.Where(e =>
@@ -601,7 +601,7 @@ namespace TodoApi.Controllers
       //TODO - enable this for non-active users for past year viewing
 
       if (year == null)
-        year = SbmtUtils.getConfigVal("CurrentYear");
+        year = SbmtUtils.getCurrentYear();
 
       var userSegments = _userService.GetUserEfforts(athleteId, year);
 
@@ -719,8 +719,6 @@ namespace TodoApi.Controllers
 
       return Ok();
     }
-
-
 
   }
 }
