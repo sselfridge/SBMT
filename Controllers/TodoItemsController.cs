@@ -4,7 +4,9 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using TodoApi.Helpers;
+using TodoApi.Models;
 using TodoApi.Models.db;
 using TodoApi.Services;
 
@@ -258,8 +260,25 @@ namespace TodoApi.Controllers
       //var users25 = _dbContext.StravaUsers.Where(x => x.Years.Contains("2025")).ToList();
       //var users24 = _dbContext.StravaUsers.Where(x => x.Years.Contains("2024")).ToList();
       //var users23 = _dbContext.StravaUsers.Where(x => x.Years.Contains("2023")).ToList();
+      var feedback = _dbContext.Feedback.Where(x => x.Id == "f87ddf15-6810-4df9-9d51-e3b8c3dfd8f7").FirstOrDefault();
 
-      return Ok();
+      if (feedback == null) return Ok();
+
+      var settings = new AppSettingDTO();
+
+
+      string jsonString = JsonConvert.SerializeObject(settings);
+      DateTime currentUtcDateTime = DateTime.UtcNow;
+
+      var newSet = JsonConvert.DeserializeObject<AppSettingDTO>(jsonString);
+
+
+      feedback.Text = "rabble rabble";
+
+      _dbContext.Update(feedback);
+      _dbContext.SaveChanges();
+
+      return Ok("QWER");
 
       var newStudent = new Student();
       newStudent.Name = "Bobby";

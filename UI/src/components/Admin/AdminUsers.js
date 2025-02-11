@@ -42,6 +42,10 @@ const AdminUsers = (props) => {
     }
   }, [navigate, user?.athleteId]);
 
+  const fetchStats = () => {
+    ApiGet("/api/admin/users/stats");
+  };
+
   const submit = () => {
     const users = [];
     Object.keys(updatedUsers).forEach((athleteId, i) => {
@@ -143,11 +147,10 @@ const AdminUsers = (props) => {
       >
         Back to Admin
       </Button>
-      <Button
-        sx={{ m: 2 }}
-        onClick={submit}
-        disabled={!Object.keys(updatedUsers).length > 0}
-      >
+      <Button sx={{ m: 2 }} onClick={fetchStats}>
+        Fetch stats
+      </Button>
+      <Button sx={{ m: 2 }} onClick={submit} disabled={!Object.keys(updatedUsers).length > 0}>
         Save Updates
       </Button>
       <Box sx={{ color: "black" }}>{JSON.stringify(error)}</Box>

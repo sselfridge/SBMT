@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TodoApi.Helpers;
 using TodoApi.Models.db;
 using TodoApi.Services;
 
@@ -14,11 +15,14 @@ namespace TodoApi.Controllers
   {
     private readonly sbmtContext _context;
     private IStravaService _stravaService;
+    private IServiceScopeFactory _serviceScopeFactory;
 
-    public UsersController(sbmtContext context, IStravaService stravaService)
+
+    public UsersController(sbmtContext context, IStravaService stravaService, IServiceScopeFactory serviceScopeFactory)
     {
       _context = context;
       _stravaService = stravaService;
+      _serviceScopeFactory = serviceScopeFactory;
     }
 
     // GET: api/Segments
@@ -27,6 +31,15 @@ namespace TodoApi.Controllers
     {
       var users = await _context.StravaUsers.ToListAsync();
       return Ok(users);
+    }
+
+
+    [HttpGet("stats")]
+    public async Task<ActionResult> GetUserStats()
+    {
+      var scope = _serviceScopeFactory;
+      // var users = await StravaUtilities.UpdateAllUserStats(scope);
+      return Ok("users");
     }
 
     // PUT: api/users/5
