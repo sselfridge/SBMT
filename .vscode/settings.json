@@ -1,3 +1,11 @@
 {
-  "cSpell.words": ["Firstname", "Lastname", "leaderboard", "Rescan"]
+  "cSpell.words": [
+    "appsettings",
+    "ASPNETCORE",
+    "Firstname",
+    "Lastname",
+    "leaderboard",
+    "Newtonsoft",
+    "Rescan"
+  ]
 }

@@ -13,11 +13,11 @@ fi
 case $1 in
     dev|stg|prod)
         # Valid argument, do nothing
-        ;;
+    ;;
     *)
         echo "Error: The first argument must be one of 'dev', 'stg', or 'prod'."
         exit 1
-        ;;
+    ;;
 esac
 
 # Validate the second argument
@@ -52,15 +52,16 @@ for VAR in "${REQUIRED_VARS[@]}"; do
         exit 1
     fi
 done
-
+# cSpell:disable
 export PGPASSWORD=$dbPass
 export PGUSER=$dbUser
+# cSpell:enable
 
 echo "Restore CMD:\n\n"
 
 
 echo ""
-echo "psql -h localhost -p $dbLocalPort -U $dbUser < $2"
+echo "psql -h localhost -p $dbLocalPort -U $dbUser < $2"  #cspell: disable-line
 echo ""
 
 read -p "Do you want to continue? (y/N):" response
@@ -69,12 +70,12 @@ read -p "Do you want to continue? (y/N):" response
 response=${response:-n}
 
 if [[ "$response" =~ ^[Yy]$ ]]; then
-    echo "Droping..."
-    dropdb -h localhost -p $dbLocalPort -f $dbName
+    echo "Dropping..."
+    dropdb -h localhost -p $dbLocalPort -f $dbName  #cspell: disable-line
     echo "Creating..."
-    createdb -h localhost -p $dbLocalPort $dbName
+    createdb -h localhost -p $dbLocalPort $dbName #cspell: disable-line
     echo "Restoring."
-    psql -h localhost -p $dbLocalPort -U $dbUser < $2
+    psql -h localhost -p $dbLocalPort -U $dbUser < $2 #cspell: disable-line
     echo "Complete"
 else
     echo "Restore Aborted"

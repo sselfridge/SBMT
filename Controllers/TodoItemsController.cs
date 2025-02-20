@@ -40,7 +40,7 @@ namespace TodoApi.Controllers
         Expires = DateTime.UtcNow.AddDays(300),
         SigningCredentials = new SigningCredentials(
           new SymmetricSecurityKey(key),
-          SecurityAlgorithms.HmacSha256Signature
+          SecurityAlgorithms.HmacSha256Signature //cspell: disable-line
         ),
       };
       var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -55,9 +55,9 @@ namespace TodoApi.Controllers
         var count = 0;
         try
         {
-          var actvities = await _stravaService.GetActivities(user.AthleteId);
+          var activities = await _stravaService.GetActivities(user.AthleteId);
           var newEfforts = new List<Effort>();
-          foreach (var act in actvities)
+          foreach (var act in activities)
           {
             count++;
             var fullActivity = await _stravaService.GetActivity(act.Id, user.AthleteId);
@@ -109,8 +109,8 @@ namespace TodoApi.Controllers
       {
         if (user == null || user.AthleteId == appAthleteId)
           continue;
-        // for 504 activites was ~7min
-        // 40.81 - running in parellel no DB calls
+        // for 504 activities was ~7min
+        // 40.81 - running in parallel no DB calls
         //
         realUsers.Add(user);
       }
@@ -137,7 +137,7 @@ namespace TodoApi.Controllers
       _dbContext.AddRange(newSegmentEfforts);
       _dbContext.SaveChanges();
 
-      Console.WriteLine($"Total Activites:{count}");
+      Console.WriteLine($"Total activities:{count}");
       return newSegmentEfforts;
     }
 
@@ -334,7 +334,7 @@ namespace TodoApi.Controllers
     }
 
     // PUT: api/TodoItems/5
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    // To protect from over posting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     //[HttpPut("{id}")]
     //public async Task<IActionResult> PutTodoItem(long id, TodoItem todoItem)
     //{
@@ -365,7 +365,7 @@ namespace TodoApi.Controllers
     //}
 
     // POST: api/TodoItems
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    // To protect from over posting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     //[HttpPost]
     //public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
     //{
@@ -450,9 +450,9 @@ namespace TodoApi.Controllers
 
 //         Console.WriteLine(jsonString);
 
-//         var newDatas = JsonSerializer.Deserialize<List<Segment>>(jsonString);
+//         var newData = JsonSerializer.Deserialize<List<Segment>>(jsonString);
 
-//         foreach (var newData in newDatas)
+//         foreach (var newData in newData)
 //         {
 //           ConvertDatesToUniversal(newData);
 //           _dbContext.Segments.Add(newData);
