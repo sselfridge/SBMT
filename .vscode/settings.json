@@ -4,8 +4,11 @@
     "ASPNETCORE",
     "Firstname",
     "Lastname",
+    "Latlng",
     "leaderboard",
     "Newtonsoft",
-    "Rescan"
+    "polyline",
+    "Rescan",
+    "Xoms"
   ]
 }

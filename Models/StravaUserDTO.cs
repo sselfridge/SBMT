@@ -23,7 +23,9 @@ namespace TodoApi.Models
     public bool Active { get; set; }
 
     [JsonConstructor]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     public StravaUserDTO() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
     public StravaUserDTO(StravaUser user)
     {
@@ -32,6 +34,11 @@ namespace TodoApi.Models
       if (user.SavedFilters != null && user.SavedFilters != "")
       {
         userFilters = JsonSerializer.Deserialize<Filters>(user.SavedFilters);
+        SavedFilters = userFilters;
+      }
+      else
+      {
+        SavedFilters = null;
       }
 
       AthleteId = user.AthleteId;
@@ -47,8 +54,6 @@ namespace TodoApi.Models
       Category = user.Category;
       RecentDistance = user.RecentDistance;
       RecentElevation = user.RecentElevation;
-      Filters savedFilters = userFilters;
-      SavedFilters = savedFilters;
       Active = user.Active;
     }
   }

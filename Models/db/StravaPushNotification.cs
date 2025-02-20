@@ -64,7 +64,7 @@ namespace TodoApi.Models.db
       ObjectType = dto.ObjectType;
       OwnerId = dto.OwnerId;
       SubscriptionId = dto.SubscriptionId;
-      Updates = dto.Updates.ToString();
+      Updates = dto.Updates?.ToString();
     }
   }
 }
