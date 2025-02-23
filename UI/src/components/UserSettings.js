@@ -23,6 +23,7 @@ import StravaButton from "./Shared/StravaButton";
 const MyBox = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
+  gap: 1,
   padding: 8,
   borderRadius: 4,
   justifyContent: "center",
@@ -30,20 +31,6 @@ const MyBox = styled(Box)(({ theme }) => ({
 }));
 
 const UserSettings = (props) => {
-  // const [checked, setChecked] = useState([0]);
-
-  // const handleToggle = (value) => () => {
-  //   const currentIndex = checked.indexOf(value);
-  //   const newChecked = [...checked];
-
-  //   if (currentIndex === -1) {
-  //     newChecked.push(value);
-  //   } else {
-  //     newChecked.splice(currentIndex, 1);
-  //   }
-
-  //   setChecked(newChecked);
-  // };
   const { user } = useContext(AppContext);
   const [noClubScope, setNoClubScope] = useState(false);
   const [noActivityScope, setNoActivityScope] = useState(false);
