@@ -40,13 +40,13 @@ namespace TodoApi.Services
     public StravaService(
       IConfiguration configuration,
       IUserService userService,
-      StravaLimitService rateLimites,
+      StravaLimitService rateLimits,
       IServiceScopeFactory serviceScopeFactory
     )
     {
       Configuration = configuration;
       UserService = userService;
-      RateLimits = rateLimites;
+      RateLimits = rateLimits;
       _serviceScopeFactory = serviceScopeFactory;
     }
 
@@ -415,6 +415,7 @@ namespace TodoApi.Services
       }
       catch (Exception e)
       {
+        Console.WriteLine(e.Message);
         throw new Exception("Link Parse error");
       }
     }
@@ -454,6 +455,8 @@ namespace TodoApi.Services
         catch (Exception e)
         {
           Console.WriteLine($"sbmtLog:ERROR GetStrava Bad Model url:{url}");
+          Console.WriteLine(e.Message);
+
           throw new Exception("Bad model!");
         }
       }
@@ -496,6 +499,7 @@ namespace TodoApi.Services
         catch (Exception e)
         {
           Console.WriteLine($"sbmtLog:ERROR GetStravaString Bad Model url:{url}");
+          Console.WriteLine(e.Message);
           throw new Exception("Bad model!");
         }
       }

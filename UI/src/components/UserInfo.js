@@ -43,7 +43,7 @@ const UserInfo = () => {
   const [ageHelperText, setAgeHelperText] = useState("");
   const [category, setCategory] = useState("");
   const [agreeToTerms, setAgreeToTerms] = useState(!!user?.active);
-  const [localUser, setLocalUser] = useState({});
+  const [profile, setProfile] = useState({});
 
   const activeRef = React.useRef();
 
@@ -52,12 +52,20 @@ const UserInfo = () => {
   const [saving, setSaving] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+
   const fetchProfile = useCallback((athleteId) => {
-    ApiGet(`/api/strava/userRefresh/${athleteId}`, setLocalUser);
+    ApiGet(`/api/strava/userRefresh/${athleteId}`, setProfile);
   }, []);
 
   const params = new URLSearchParams(location.search);
   const showReminder = params.has("remind") && !user?.active;
+
+  const updateContextUser = React.useCallback(
+    (newUserData) => {
+      dispatch({ type: "setUser", user: newUserData });
+    },
+    [dispatch]
+  );
 
   const updateProfile = useCallback(() => {
     setSaving(true);
@@ -69,17 +77,17 @@ const UserInfo = () => {
 
     const onSuccess = (res) => {
       const newUser = deepFreeze(res.data);
-      setLocalUser(res.data);
+      updateContextUser(res.data);
       fetchProfile(newUser.athleteId);
     };
     ApiPostCb("/api/athletes/current", updatedUser, onSuccess);
     setTimeout(() => {
       setSaving(false);
     }, 500);
-  }, [age, agreeToTerms, category, fetchProfile, user]);
+  }, [age, agreeToTerms, category, fetchProfile, updateContextUser, user]);
 
   React.useEffect(() => {
-    setLocalUser(user);
+    setProfile(user);
 
     if (activeRef.current === false && user.active) {
       setSignupRedirect(true);
@@ -97,25 +105,13 @@ const UserInfo = () => {
   }, [navigate, signupRedirect]);
 
   React.useEffect(() => {
-    if (
-      localUser &&
-      user &&
-      _.isEmpty(localUser) === false &&
-      _.isEmpty(user) === false &&
-      _.isEqual(localUser, user) === false
-    ) {
-      dispatch({ type: "setUser", user: localUser });
+    if (profile?.age !== undefined) {
+      setAge(profile.age);
     }
-  }, [dispatch, localUser, user]);
-
-  React.useEffect(() => {
-    if (localUser?.age !== undefined) {
-      setAge(localUser.age);
+    if (profile?.category !== undefined) {
+      setCategory(profile.category);
     }
-    if (localUser?.category !== undefined) {
-      setCategory(localUser.category);
-    }
-  }, [localUser]);
+  }, [profile]);
 
   const profileFields = [
     {
@@ -168,7 +164,8 @@ const UserInfo = () => {
             value={category}
             setValue={setCategory}
             list={categorySelect}
-            minWidth={180}
+            minWidth={160}
+            maxWidth={160}
           />
         </Box>
       ),
@@ -203,27 +200,28 @@ const UserInfo = () => {
   const mapField = (field) => {
     return (
       <React.Fragment key={field?.label}>
-        <Grid item xs={1} sm={3} />
-        <Grid item xs={1} sx={{ display: "flex", justifyContent: "flex-end" }}>
-          {!!field.fromStrava && (
-            <Box sx={{ width: 40, height: 40 }}>
-              <Tooltip title="This data is pull directly from Strava">
-                <StravaLogo />
-              </Tooltip>
-            </Box>
-          )}
-        </Grid>
+        <Grid item sx={{ display: { xs: "none", sm: "block" } }} sm={3} />
+
         <Grid
           item
-          xs={3}
-          sm={1}
+          xs={5}
+          sm={2}
           sx={{
             display: "flex",
             justifyContent: "flex-start",
             alignItems: "center",
           }}
         >
-          <Typography variant="h5">{field.label}:</Typography>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            {!!field.fromStrava && (
+              <Box sx={{ width: 40, height: 40 }}>
+                <Tooltip title="This data is pull directly from Strava">
+                  <StravaLogo />
+                </Tooltip>
+              </Box>
+            )}
+            <Typography variant="h5">{field.label}:</Typography>
+          </Box>
         </Grid>
         <Grid item xs={1} />
         <Grid
@@ -259,17 +257,15 @@ const UserInfo = () => {
     !age ||
     age < 13 ||
     age > 100 ||
-    (age === user.age &&
-      category === user.category &&
-      !agreeToTerms &&
-      !!user?.active === true) ||
-    (!agreeToTerms && !user?.active); //TODO add check to disable save unless change has been made
+    (`${age}` === `${user.age}` && category === user.category) ||
+    (!agreeToTerms && !!user?.active === true) ||
+    (!agreeToTerms && !user?.active);
 
   return (
     <MyPaper>
       <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
         <Typography variant="h3">User Profile </Typography>
-        <Avatar src={localUser?.avatar} sx={{ width: 75, height: 75 }} />
+        <Avatar src={user?.avatar} sx={{ width: 75, height: 75 }} />
       </Box>
       <Typography color="warning.main"> {missingInfoWarning}</Typography>
       <Grid container spacing={1}>
@@ -405,7 +401,7 @@ const UserInfo = () => {
             <Grid item xs={1} sm={2} />
             <Grid item xs={10} sm={8}>
               <Grid container sx={{ justifyContent: "center" }}>
-                {localUser?.stravaClubs?.map((club) => {
+                {user?.stravaClubs?.map((club) => {
                   return (
                     <Grid item key={club.id}>
                       <Box

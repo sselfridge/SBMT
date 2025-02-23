@@ -9,7 +9,7 @@ import { ApiGet } from "api/api";
 import "./global.css";
 
 import Feedback from "components/Feedback";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Box } from "@mui/material";
 import { db } from "utils/helperFuncs";
 
 function App() {
@@ -33,14 +33,32 @@ function App() {
     }
   }, [onSetUser]);
 
+  const navBar = document.getElementById("SBMTmainNavBar");
+  const navBarHeight = navBar?.offsetHeight || 150;
+
   return (
-    <div className="App">
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
       <NavBar />
-      <main className="App-Body">
+      <Box
+        sx={{
+          backgroundColor: "#282c34",
+          minHeight: `calc(100vh - ${navBarHeight}px)`,
+          display: "flex",
+          WebkitFlexDirection: "column",
+          MsFlexDirection: "column",
+          flexDirection: "column",
+          WebkitAlignItems: "center",
+          WebkitBoxAlign: "center",
+          MsFlexAlign: "center",
+          alignItems: "center",
+          fontSize: "calc(10px + 1vmin)",
+          color: "white",
+        }}
+      >
         {!user ? <CircularProgress /> : <Outlet />}
-      </main>
+      </Box>
       <Feedback />
-    </div>
+    </Box>
   );
 }
 

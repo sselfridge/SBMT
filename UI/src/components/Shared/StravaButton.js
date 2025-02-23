@@ -1,43 +1,18 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  Typography,
-  useMediaQuery,
-  Link as MuiLink,
-  Box,
-  Button,
-} from "@mui/material";
+import { Typography, useMediaQuery, Link as MuiLink, Box } from "@mui/material";
 
 import { ReactComponent as ConnectStrava } from "assets/stravaBrand/btn_strava_connectwith_orange.svg";
 import AppContext from "AppContext";
-import { ApiDelete } from "api/api";
 
 const StravaButton = (props) => {
   let { text } = props;
 
-  const { redirectUri, user, dispatch } = React.useContext(AppContext);
-
-  const onSetUser = React.useCallback(
-    (user) => dispatch({ type: "setUser", user }),
-    [dispatch]
-  );
-
-  const onLogout = () => {
-    ApiDelete("/api/logout", onSetUser, {});
-  };
+  const { redirectUri } = React.useContext(AppContext);
 
   const stravaUrl = `https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirectUri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read,activity:read,profile:read_all`;
 
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
-
-  if (user?.firstname) {
-    return (
-      <Box sx={{ display: "flex", flexDirection: "column" }}>
-        {`${user.firstname} you're signed up for the next season!`}
-        <Button onClick={onLogout}>Logout</Button>
-      </Box>
-    );
-  }
 
   return (
     <Box sx={{ display: "flex" }}>

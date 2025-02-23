@@ -119,7 +119,7 @@ export default function NavBar() {
   }
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box id={"SBMTmainNavBar"} sx={{ flexGrow: 0 }}>
       <AppBar position="static">
         <Toolbar>
           <Box>
