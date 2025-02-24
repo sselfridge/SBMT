@@ -1,6 +1,6 @@
 import React from "react";
 import { toGeoJSON } from "@mapbox/polyline";
-import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
+import mapboxgl from "mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import * as ReactDOMServer from "react-dom/server";
 
 export const addSegmentToMap = (map, segment, markerArr) => {

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <meta name="SBMT" content="Santa Barbara Mountain Challenge" />
-    <meta
+    <!-- <meta
       http-equiv="Content-Security-Policy"
       content="
       default-src 'self' https://api.mapbox.com;
@@ -16,8 +16,8 @@
       child-src blob: ;
       connect-src 'self' https://*.tiles.mapbox.com https://api.mapbox.com https://events.mapbox.com ;
       worker-src blob: ;      
-      "
-    />
+      " //TODO read add csp
+    />  -->
 
     <link
       href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
@@ -40,6 +40,7 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>SBMT: Santa Barbara Mountain Challenge</title>
+    <script type="module" src="src/index"></script>
   </head>
   <body>
     <noscript

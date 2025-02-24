@@ -4,7 +4,7 @@ import _ from "lodash";
 
 import { addSegmentToMap, getBounds, getGeometry } from "utils/mapUtils";
 
-import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
+import mapboxgl from "mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 
 const SegmentDetailMap = (props) => {
   const { segment } = props;
