@@ -1,4 +1,5 @@
-﻿using TodoApi.Models.stravaApi;
+﻿using System.Text.Json.Serialization;
+using TodoApi.Models.stravaApi;
 
 namespace TodoApi.Models.db
 {
@@ -27,6 +28,7 @@ namespace TodoApi.Models.db
     public string SurfaceType { get; set; } = "road";
     public string Years { get; set; } = "";
 
+    [JsonConstructor]
     public Segment(
       long id,
       long resourceState,

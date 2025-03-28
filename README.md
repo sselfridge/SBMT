@@ -9,3 +9,9 @@ DROPBOX_DIR - (optional) - for db backups to go in dropbox as well
 <!-- TODO - update for docker / fly.io -->
 
 - You'll Need to get values for appsettings.ENV.json
+
+Year / Seasons
+
+To Add new season update:
+appSettings.json
+UI\src\utils\constants.js:YEARS
