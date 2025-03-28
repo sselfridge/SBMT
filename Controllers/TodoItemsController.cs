@@ -160,6 +160,41 @@ namespace TodoApi.Controllers
       _logger = logger;
     }
 
+    [HttpGet()]
+    ///http://localhost:5000/api/todoitems
+    public async Task<ActionResult<long>> TestThing(
+      [FromServices] IServiceScopeFactory serviceScopeFactory
+    )
+    {
+      var count = _dbContext.StravaUsers.Count();
+      Console.WriteLine($"sbmtLog {count} users in DB");
+
+      var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+      if (env != "Development" && env != "LocalProd" && env != "Staging")
+      {
+        return Ok("Non-Dev Loaded!");
+      }
+
+      return Ok();
+
+      var newStudent = new Student();
+      newStudent.Name = "Bobby";
+      newStudent.Age = 34;
+      newStudent.Grade = 10;
+
+      _dbContext.Students.Add(newStudent);
+      _dbContext.SaveChanges();
+      var newCookie = GenerateJwtToken(1234);
+
+      var fifteen = RateLimits.GetUsage15();
+      var daily = RateLimits.GetUsageDaily();
+
+      int[] rates = new int[] { fifteen, daily };
+
+      return Ok("Shouldn't get here");
+    }
+
     // GET: api/TodoItems
     //[HttpGet]
     //public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
@@ -205,77 +240,6 @@ namespace TodoApi.Controllers
         return string.Empty;
 
       return string.Join(",", yearList.Split(',').Select(y => y.Trim()).Distinct().OrderBy(y => y)); // Optional sorting
-    }
-
-    [HttpGet()]
-    public async Task<ActionResult<long>> TestThing(
-      [FromServices] IServiceScopeFactory serviceScopeFactory
-    )
-    {
-      var count = _dbContext.StravaUsers.Count();
-      Console.WriteLine($"sbmtLog {count} users in DB");
-
-      var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-
-      if (env != "Development" && env != "LocalProd" && env != "Staging")
-      {
-        return Ok("Non-Dev Loaded!");
-      }
-
-      // DateTime newYears24 = new DateTime(2024, 1, 1, 0, 0, 0).ToUniversalTime();
-      // var efforts23 = _dbContext
-      //   .Efforts.Where(x => x.StartDate < newYears24)
-      //   .GroupBy(x => x.SegmentId)
-      //   .Select(g => new { SegmentId = g.Key })
-      //   .ToList();
-
-      // DateTime newYears25 = new DateTime(2025, 1, 1, 0, 0, 0).ToUniversalTime();
-      // var efforts24 = _dbContext
-      //   .Efforts.Where(x => x.StartDate < newYears25 && x.StartDate > newYears24)
-      //   .GroupBy(x => x.SegmentId)
-      //   .Select(g => new { SegmentId = g.Key })
-      //   .ToList();
-
-      // var segments = _dbContext.Segments.ToList();
-
-      // foreach (var segment in segments)
-      // {
-      //   if (efforts23.Any(x => x.SegmentId == segment.Id))
-      //   {
-      //     segment.Years = SbmtUtils.AddYear(segment.Years, "2023");
-      //   }
-      //   if (efforts24.Any(x => x.SegmentId == segment.Id))
-      //   {
-      //     segment.Years = SbmtUtils.AddYear(segment.Years, "2024");
-      //   }
-      //   _dbContext.Update(segment);
-      // }
-
-      // _dbContext.SaveChanges();
-
-      // return Ok("It is Done");
-
-      //var users25 = _dbContext.StravaUsers.Where(x => x.Years.Contains("2025")).ToList();
-      //var users24 = _dbContext.StravaUsers.Where(x => x.Years.Contains("2024")).ToList();
-      //var users23 = _dbContext.StravaUsers.Where(x => x.Years.Contains("2023")).ToList();
-
-      return Ok();
-
-      var newStudent = new Student();
-      newStudent.Name = "Bobby";
-      newStudent.Age = 34;
-      newStudent.Grade = 10;
-
-      _dbContext.Students.Add(newStudent);
-      _dbContext.SaveChanges();
-      var newCookie = GenerateJwtToken(1234);
-
-      var fifteen = RateLimits.GetUsage15();
-      var daily = RateLimits.GetUsageDaily();
-
-      int[] rates = new int[] { fifteen, daily };
-
-      return Ok("Shouldn't get here");
     }
 
     [HttpGet("init")]
@@ -461,3 +425,42 @@ namespace TodoApi.Controllers
 //   return Ok(rates);
 
 // }
+
+
+//get user of each season:
+// DateTime newYears24 = new DateTime(2024, 1, 1, 0, 0, 0).ToUniversalTime();
+// var efforts23 = _dbContext
+//   .Efforts.Where(x => x.StartDate < newYears24)
+//   .GroupBy(x => x.SegmentId)
+//   .Select(g => new { SegmentId = g.Key })
+//   .ToList();
+
+// DateTime newYears25 = new DateTime(2025, 1, 1, 0, 0, 0).ToUniversalTime();
+// var efforts24 = _dbContext
+//   .Efforts.Where(x => x.StartDate < newYears25 && x.StartDate > newYears24)
+//   .GroupBy(x => x.SegmentId)
+//   .Select(g => new { SegmentId = g.Key })
+//   .ToList();
+
+// var segments = _dbContext.Segments.ToList();
+
+// foreach (var segment in segments)
+// {
+//   if (efforts23.Any(x => x.SegmentId == segment.Id))
+//   {
+//     segment.Years = SbmtUtils.AddYear(segment.Years, "2023");
+//   }
+//   if (efforts24.Any(x => x.SegmentId == segment.Id))
+//   {
+//     segment.Years = SbmtUtils.AddYear(segment.Years, "2024");
+//   }
+//   _dbContext.Update(segment);
+// }
+
+// _dbContext.SaveChanges();
+
+// return Ok("It is Done");
+
+//var users25 = _dbContext.StravaUsers.Where(x => x.Years.Contains("2025")).ToList();
+//var users24 = _dbContext.StravaUsers.Where(x => x.Years.Contains("2024")).ToList();
+//var users23 = _dbContext.StravaUsers.Where(x => x.Years.Contains("2023")).ToList();

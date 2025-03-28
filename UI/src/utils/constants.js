@@ -1,6 +1,6 @@
 export const START_DATE = new Date("2023-05-26T01:00:00-07:00");
 
-export const YEARS = ["2025trail", "2024", "2023"];
+export const YEARS = ["2025sbmt", "2025trail", "2024", "2023"];
 
 export const surfaceList = ["ALL", "road", "gravel", "bikes", "trail"];
 export const APP_ATHLETE_ID = 1;
