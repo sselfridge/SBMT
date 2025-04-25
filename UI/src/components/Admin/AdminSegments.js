@@ -19,7 +19,7 @@ import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 
 import { styled } from "@mui/material/styles";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { ApiGet, ApiPut } from "api/api";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -297,6 +297,7 @@ const AdminSegments = (props) => {
         {segments === null && <StravaButton text={"Refresh Admin Cookie"} />}
       </Box>
       <DataGrid
+        slots={{ toolbar: GridToolbar }}
         rows={segments || []}
         columns={columns}
         disableColumnMenu

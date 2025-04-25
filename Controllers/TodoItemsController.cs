@@ -176,6 +176,20 @@ namespace TodoApi.Controllers
         return Ok("Non-Dev Loaded!");
       }
 
+      // var segments = _dbContext.Segments.ToList();
+      // foreach (var segment in segments)
+      // {
+      //   segment.Years = string.Join(
+      //     ",",
+      //     segment
+      //       .Years.Split(',', StringSplitOptions.RemoveEmptyEntries)
+      //       .Select(y => y.Trim() == "2025" ? "2025sbmt" : y.Trim())
+      //   );
+      //   _dbContext.Update(segment);
+      // }
+
+      // _dbContext.SaveChanges();
+
       return Ok();
 
       var newStudent = new Student();
