@@ -170,6 +170,7 @@ namespace TodoApi.Controllers
       Console.WriteLine($"sbmtLog {count} users in DB");
 
       var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+      Console.WriteLine($"Current ENV:{env}");
 
       if (env != "Development" && env != "LocalProd" && env != "Staging")
       {

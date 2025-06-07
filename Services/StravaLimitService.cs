@@ -7,14 +7,14 @@
     private static int usage15;
     private static int usageDaily;
 
-    private static int usage15Limit = 600;
-    private static int usageDailyLimit = 30000;
+    private static int usage15Limit = 300;
+    private static int usageDailyLimit = 3000;
 
     public StravaLimitService()
     {
       callCount = 0;
-      usage15Limit = 600;
-      usageDailyLimit = 30000;
+      usage15Limit = 300;
+      usageDailyLimit = 3000;
       usage15 = -1;
       usageDaily = -1;
     }
@@ -28,12 +28,20 @@
         {
           usage15 = Int32.Parse(usages[0]);
         }
-        catch (Exception) { }
+        catch (Exception err)
+        {
+          Console.WriteLine($"Error parsing Usage[0]");
+          Console.Write(err);
+        }
         try
         {
           usageDaily = Int32.Parse(usages[1]);
         }
-        catch (Exception) { }
+        catch (Exception err)
+        {
+          Console.WriteLine($"Error parsing Usage[0]");
+          Console.Write(err);
+        }
       }
 
       return true;

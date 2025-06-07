@@ -121,6 +121,8 @@
 
     public async Task<bool> DeleteUser(int athleteId)
     {
+      Console.WriteLine($"Starting Deleting user {athleteId}");
+
       var dbUser = _dbContext.StravaUsers.FirstOrDefault(u => u.AthleteId == athleteId);
       if (dbUser == null)
         throw new Exception("User not found");
