@@ -663,8 +663,10 @@ namespace TodoApi.Controllers
       {
         await _userService.DeleteUser(athleteId);
       }
-      catch (Exception)
+      catch (Exception err)
       {
+        Console.WriteLine($"Error Deleting user {athleteId}");
+        Console.Write(err);
         return BadRequest();
       }
 
@@ -719,6 +721,5 @@ namespace TodoApi.Controllers
 
       return Ok();
     }
-
   }
 }

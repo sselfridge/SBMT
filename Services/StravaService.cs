@@ -2,6 +2,7 @@
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
+using TodoApi.Helpers;
 using TodoApi.Models.db;
 using TodoApi.Models.stravaApi;
 
@@ -118,11 +119,14 @@ namespace TodoApi.Services
       var client = await GetClientForUser(athleteId);
 
       //TODO grab this from appSettings
+      var year = SbmtUtils.getCurrentYear();
+      var kickOffDate = SbmtUtils.getKickOffDate(year);
+      long kickOffUnix = new DateTimeOffset(kickOffDate).ToUnixTimeSeconds();
 
       var url =
         $"/athlete/activities"
         + $"?before=1965868100"
-        + $"&after=1716534122"
+        + $"&after={kickOffUnix}"
         + $"&page=1"
         + $"&per_page=200";
 
@@ -132,9 +136,10 @@ namespace TodoApi.Services
 
         return arrayResult.ToList();
       }
-      catch (Exception)
+      catch (Exception err)
       {
         Console.WriteLine($"Strava Get Failed for athlete:{athleteId}");
+        Console.WriteLine(err);
 
         return new List<ActivitySummaryResponse>();
       }

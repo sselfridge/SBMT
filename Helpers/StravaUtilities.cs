@@ -163,9 +163,10 @@ namespace TodoApi.Helpers
             context.SaveChanges();
             await context.SaveChangesAsync();
           }
-          catch (Exception)
+          catch (Exception err)
           {
             Console.WriteLine($"Error fetching data for AthleteId:{athleteId}");
+            Console.Write(err);
           }
         }
       });
@@ -380,7 +381,6 @@ namespace TodoApi.Helpers
           .ToList();
 
         var isEmpty = top10.Count() == 0;
-
 
         var index = top10.FindIndex(e => e.Id == newEffort.Id);
 
