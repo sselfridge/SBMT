@@ -177,7 +177,15 @@ namespace TodoApi.Controllers
         return Ok("Non-Dev Loaded!");
       }
 
-      // var segments = _dbContext.Segments.ToList();
+      //var segments = _dbContext.Segments.ToList();
+
+
+      //rescan activity
+      //await StravaUtilities.ParseNewActivity(_serviceScopeFactory, 7095846, 14799038858, 0);
+
+      //re-run onboarding scan7832703
+      // StravaUtilities.KickOffInitialFetch(_serviceScopeFactory, 7832703);
+
       // foreach (var segment in segments)
       // {
       //   segment.Years = string.Join(
@@ -191,7 +199,7 @@ namespace TodoApi.Controllers
 
       // _dbContext.SaveChanges();
 
-      return Ok();
+      return Ok("Ok TODO tasks done");
 
       var newStudent = new Student();
       newStudent.Name = "Bobby";

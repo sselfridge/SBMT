@@ -91,6 +91,8 @@ namespace TodoApi.Helpers
       }
       context.SaveChanges();
 
+      await Task.Delay(5000); // Sleeps for 5 seconds asynchronously
+
       KickOffInitialFetch(serviceScopeFactory, user.AthleteId);
 
       if (profile.Clubs != null)
