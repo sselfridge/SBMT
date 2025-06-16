@@ -543,7 +543,7 @@ namespace TodoApi.Controllers
     public async Task<IActionResult> UpdateCurrentAthleteAsync([FromBody] StravaUserDTO newUser)
     {
       var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
-
+      var kickOffFetch = false;
       if (userId == null)
         return NotFound();
 
@@ -562,6 +562,7 @@ namespace TodoApi.Controllers
       {
         dbUser.JoinDate = DateTime.UtcNow;
         dbUser.Active = true;
+        kickOffFetch = true;
       }
 
       try
@@ -570,6 +571,11 @@ namespace TodoApi.Controllers
         dbUser.Category = newUser.Category;
         _dbContext.Update(dbUser);
         await _dbContext.SaveChangesAsync();
+
+        if (kickOffFetch)
+        {
+          StravaUtilities.KickOffInitialFetch(_serviceScopeFactory, newUser.AthleteId);
+        }
 
         return Ok(new StravaUserDTO(dbUser));
       }
