@@ -179,6 +179,12 @@ namespace TodoApi.Controllers
 
       //var segments = _dbContext.Segments.ToList();
 
+      // var scanIds = new List<int> { 106854195, 107239576, 109076988, 153071145 };
+
+      // foreach (var id in scanIds)
+      // {
+      //   StravaUtilities.KickOffInitialFetch(_serviceScopeFactory, id);
+      // }
 
       //rescan activity
       //await StravaUtilities.ParseNewActivity(_serviceScopeFactory, 7095846, 14799038858, 0);
@@ -198,8 +204,9 @@ namespace TodoApi.Controllers
       // }
 
       // _dbContext.SaveChanges();
+      var yearSegments = _dbContext.Segments.Where(x => x.Years.Contains("2025sbmt"));
 
-      return Ok("Ok TODO tasks done");
+      return Ok(yearSegments);
 
       var newStudent = new Student();
       newStudent.Name = "Bobby";

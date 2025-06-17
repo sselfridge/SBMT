@@ -103,7 +103,8 @@
         .ToList();
 
       var userSegments = _dbContext
-        .Segments.ToList()
+        .Segments.Where(x => x.Years.Contains(year))
+        .ToList()
         .Select(s => new UserSegment(athleteId, s.Id, s.Name, s.SurfaceType))
         .ToList();
 
