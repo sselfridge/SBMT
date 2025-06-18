@@ -87,6 +87,13 @@ namespace TodoApi.Services
         var dtoResult = new StravaOAuthResponseDTO(result);
         return dtoResult;
       }
+      else
+      {
+        var errorContent = await response.Content.ReadAsStringAsync();
+        Console.WriteLine(
+          $"Oauth token POST failed with status code {response.StatusCode}. Response: {errorContent}"
+        );
+      }
 
       throw new Exception(response.StatusCode.ToString());
     }
