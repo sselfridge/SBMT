@@ -57,9 +57,6 @@ namespace TodoApi.Models.stravaApi
     [JsonPropertyName("premium")]
     public bool Premium { get; set; }
 
-    [JsonPropertyName("weight")]
-    public double Weight { get; set; }
-
     [JsonPropertyName("profile_medium")]
     public string ProfileMedium { get; set; }
 
