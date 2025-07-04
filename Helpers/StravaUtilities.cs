@@ -91,8 +91,6 @@ namespace TodoApi.Helpers
       }
       context.SaveChanges();
 
-
-
       if (profile.Clubs != null)
       {
         var clubUser = stravaService.UpdateUserClubs(user.AthleteId, profile.Clubs);
@@ -238,6 +236,21 @@ namespace TodoApi.Helpers
               var timeInMin = delayTime / 1000 / 60;
               Console.WriteLine($"sbmtLog: Retrying {activityId} in {timeInMin} minutes");
               ParseNewActivity(serviceScopeFactory, athleteId, activityId, delayTime);
+              return;
+            }
+            else if (activity.SegmentEfforts.Length == 0 && delayAmount != 0)
+            {
+              var timeInMin = delayAmount / 1000 / 60;
+              Console.WriteLine(
+                $"sbmtLog: Retried {activityId} after {timeInMin} minutes, still no segments"
+              );
+            }
+            else if (activity.SegmentEfforts.Length > 0 && delayAmount != 0)
+            {
+              var timeInMin = delayAmount / 1000 / 60;
+              Console.WriteLine(
+                $"sbmtLog: Successfully Retried {activityId} after {timeInMin} minutes with {activity.SegmentEfforts.Length} segments"
+              );
             }
             var segmentIds = context
               .Segments.Where(x => x.Years.Contains(year))

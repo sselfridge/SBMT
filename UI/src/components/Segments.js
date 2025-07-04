@@ -78,6 +78,15 @@ const Segments = () => {
     ApiGet(`api/segments/?year=${year}`, onLoad);
   }, [onLoad, year]);
 
+  const roadCount = allSegments.filter((s) => s.surfaceType === "road").length;
+  const gravelCount = allSegments.filter(
+    (s) => s.surfaceType === "gravel"
+  ).length;
+  const trailCount = allSegments.filter(
+    (s) => s.surfaceType === "trail"
+  ).length;
+  const allCount = allSegments.length;
+
   React.useEffect(() => {
     let filterFunc;
     if (surfaceList.includes(tabVal) === false)
@@ -102,10 +111,10 @@ const Segments = () => {
         onChange={handleTabChange}
         aria-label="nav tabs example"
       >
-        <Tab label="Road" value={"road"} />
-        <Tab label="Gravel" value={"gravel"} />
-        <Tab label="Trail Run" value={"trail"} />
-        <Tab label="Show All" value={"ALL"} />
+        <Tab label={`Road (${roadCount})`} value={"road"} />
+        <Tab label={`Gravel (${gravelCount})`} value={"gravel"} />
+        <Tab label={`Trail Run (${trailCount})`} value={"trail"} />
+        <Tab label={`Show All (${allCount})`} value={"ALL"} />
       </Tabs>
       <DataGrid
         rows={segments}
