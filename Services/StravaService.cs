@@ -76,6 +76,7 @@ namespace TodoApi.Services
 
       client.DefaultRequestHeaders.Accept.Clear();
       var response = await client.PostAsync("https://www.strava.com/api/v3/oauth/token", content);
+      var json = await response.Content.ReadAsStringAsync();
       if (response.IsSuccessStatusCode)
       {
         StravaOAuthResponse? result =
