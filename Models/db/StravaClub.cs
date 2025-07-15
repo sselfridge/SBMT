@@ -15,7 +15,7 @@ namespace TodoApi.Models.db
       Id = id;
       Name = name;
       ProfileMedium = profileMedium;
-      Url = url;
+      Url = url ?? $"{id}";
       StravaUsers = new List<StravaUser>();
     }
 
@@ -24,7 +24,7 @@ namespace TodoApi.Models.db
       Id = res.Id;
       Name = res.Name;
       ProfileMedium = res.ProfileMedium;
-      Url = res.Url;
+      Url = res.Url ?? $"{res.Id}";
       StravaUsers = new List<StravaUser>();
     }
   }
