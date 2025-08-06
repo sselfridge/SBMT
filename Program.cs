@@ -162,14 +162,16 @@ app.UseMiddleware<JwtMiddleware>();
 app.UseAuthorization();
 app.UseMiddleware<ResponseHeaderMiddleware>();
 
-app.Use(async (context, next) =>
-{
+app.Use(
+  async (context, next) =>
+  {
     var request = context.Request;
     var fullUrl = $"{request.Scheme}://{request.Host}{request.Path}{request.QueryString}";
     Console.WriteLine($"{fullUrl}");
 
     await next();
-});
+  }
+);
 
 app.MapControllers();
 

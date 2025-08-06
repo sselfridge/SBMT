@@ -177,36 +177,19 @@ namespace TodoApi.Controllers
         return Ok("Non-Dev Loaded!");
       }
 
-      //var segments = _dbContext.Segments.ToList();
-
-      // var scanIds = new List<int> { 106854195, 107239576, 109076988, 153071145 };
-
-      // foreach (var id in scanIds)
-      // {
-      //   StravaUtilities.KickOffInitialFetch(_serviceScopeFactory, id);
-      // }
-
       //rescan activity
       //await StravaUtilities.ParseNewActivity(_serviceScopeFactory, 7095846, 14799038858, 0);
 
-      //re-run onboarding scan7832703
-      // StravaUtilities.KickOffInitialFetch(_serviceScopeFactory, 7832703);
+      var kickOffDate = SbmtUtils.getKickOffDate("2025sbmt");
 
-      // foreach (var segment in segments)
-      // {
-      //   segment.Years = string.Join(
-      //     ",",
-      //     segment
-      //       .Years.Split(',', StringSplitOptions.RemoveEmptyEntries)
-      //       .Select(y => y.Trim() == "2025" ? "2025sbmt" : y.Trim())
-      //   );
-      //   _dbContext.Update(segment);
-      // }
+      //await StravaUtilities.ParseNewActivity(
+      //  _serviceScopeFactory,
+      //  effort.AthleteId,
+      //  effort.ActivityId,
+      //  0
+      //);
 
-      // _dbContext.SaveChanges();
-      var yearSegments = _dbContext.Segments.Where(x => x.Years.Contains("2025sbmt"));
-
-      return Ok(yearSegments);
+      return Ok(kickOffDate);
 
       var newStudent = new Student();
       newStudent.Name = "Bobby";

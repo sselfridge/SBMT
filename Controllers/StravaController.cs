@@ -223,9 +223,10 @@ namespace TodoApi.Controllers
           )
         )
         {
-          DateTime startTime = new DateTime(2023, 5, 26, 8, 0, 0, 0, DateTimeKind.Utc);
+          var kickOffDate = SbmtUtils.getKickOffDate("2025sbmt");
+
           DateTime now = DateTime.UtcNow;
-          if (startTime > now)
+          if (kickOffDate > now)
           {
             Console.WriteLine("sbmtLog: Not go time yet");
             return Ok();
@@ -241,6 +242,7 @@ namespace TodoApi.Controllers
           }
         }
         //User has canceled their auth via strava, remove from DB
+
         else if (
           pushNotification.AspectType == "update"
           && pushNotification.ObjectType == "athlete"
@@ -253,6 +255,7 @@ namespace TodoApi.Controllers
           await _userService.DeleteUser(athleteId);
         }
         //Either activity was deleted or made private, either way remove from the efforts table
+        //TODO - handle activity being made public
         else if (
           (pushNotification.AspectType == "delete" && pushNotification.ObjectType == "activity")
           || (
