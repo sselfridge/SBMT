@@ -191,7 +191,7 @@ namespace TodoApi.Helpers
           try
           {
             Console.WriteLine(
-              $"sbmtLog: parsing new activity {activityId} for athlete:{athleteId}"
+              $"sbmtLog: parsing new activity {activityId} for athlete:{athleteId} with delay:{delayAmount}"
             );
 
             var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
