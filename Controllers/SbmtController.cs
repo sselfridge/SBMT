@@ -723,6 +723,8 @@ namespace TodoApi.Controllers
         return NotFound();
       var athleteId = Int32.Parse(userId);
 
+      Console.WriteLine($"User (id:{athleteId}) triggered rescan for activityId:{id} ");
+
       await StravaUtilities.ParseNewActivity(_serviceScopeFactory, athleteId, id, 0);
 
       return Ok();

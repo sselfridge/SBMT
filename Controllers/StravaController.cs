@@ -205,11 +205,11 @@ namespace TodoApi.Controllers
         await _dbContext.SaveChangesAsync();
 
         var outStr =
-          $"sbmtLog: New Strava Push-----"
-          + $"Aspect:{pushNotification.AspectType} -----"
-          + $"owner:{pushNotification.OwnerId} -----"
-          + $"object:{pushNotification.ObjectId} -----"
-          + $"updates:{pushNotification.Updates} -----";
+          $"sbmtLog: New Strava Push---"
+          + $"Aspect:{pushNotification.AspectType} ---"
+          + $"owner:{pushNotification.OwnerId} ---"
+          + $"object:{pushNotification.ObjectId} ---"
+          + $"updates:{pushNotification.Updates} ---";
         Console.WriteLine(outStr);
 
         if (
@@ -223,9 +223,10 @@ namespace TodoApi.Controllers
           )
         )
         {
-          DateTime startTime = new DateTime(2023, 5, 26, 8, 0, 0, 0, DateTimeKind.Utc);
+          var kickOffDate = SbmtUtils.getKickOffDate("2025sbmt");
+
           DateTime now = DateTime.UtcNow;
-          if (startTime > now)
+          if (kickOffDate > now)
           {
             Console.WriteLine("sbmtLog: Not go time yet");
             return Ok();
@@ -241,6 +242,7 @@ namespace TodoApi.Controllers
           }
         }
         //User has canceled their auth via strava, remove from DB
+
         else if (
           pushNotification.AspectType == "update"
           && pushNotification.ObjectType == "athlete"
