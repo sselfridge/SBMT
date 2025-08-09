@@ -205,11 +205,11 @@ namespace TodoApi.Controllers
         await _dbContext.SaveChangesAsync();
 
         var outStr =
-          $"sbmtLog: New Strava Push---"
-          + $"Aspect:{pushNotification.AspectType} ---"
-          + $"owner:{pushNotification.OwnerId} ---"
-          + $"object:{pushNotification.ObjectId} ---"
-          + $"updates:{pushNotification.Updates} ---";
+          $"sbmtLog: New Strava Push-"
+          + $"Aspect:{pushNotification.AspectType} -"
+          + $"owner:{pushNotification.OwnerId} -"
+          + $"object:{pushNotification.ObjectId} -"
+          + $"updates:{pushNotification.Updates} -";
         Console.WriteLine(outStr);
 
         if (

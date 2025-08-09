@@ -64,7 +64,7 @@ namespace TodoApi.Models.db
       ObjectType = dto.ObjectType;
       OwnerId = dto.OwnerId;
       SubscriptionId = dto.SubscriptionId;
-      Updates = dto.Updates?.ToString().Replace("\r\n", "--").Replace("\n", "--");
+      Updates = dto.Updates?.ToString().Replace("\r\n", "").Replace("\n", "");
     }
   }
 }
