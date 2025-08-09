@@ -113,9 +113,17 @@
         var userSegment = userSegments.Find(u => u.SegmentId == i.SegmentId);
         var effort = new UserSegmentEffort(i.Id, i.CreatedAt, i.ElapsedTime, i.ActivityId);
         if (userSegment == null)
-          throw new Exception("Invalid SegmentID");
-
-        userSegment.AddEffort(effort);
+        {
+          // TODO See if there are other areas where having segmentEfforts that don't have a matching semgnet causes issues
+          // Swapped out the aroyyo burro segment and throwing an error here was breaking things
+          Console.WriteLine(
+            $"ERROR: segment({i.SegmentId}) not found for user effort {i.Id} Athlete:{i.AthleteId}:Activity:{i.ActivityId}"
+          );
+        }
+        else
+        {
+          userSegment.AddEffort(effort);
+        }
       }
       return userSegments;
     }
