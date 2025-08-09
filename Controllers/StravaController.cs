@@ -205,11 +205,11 @@ namespace TodoApi.Controllers
         await _dbContext.SaveChangesAsync();
 
         var outStr =
-          $"sbmtLog: New Strava Push-----"
-          + $"Aspect:{pushNotification.AspectType} -----"
-          + $"owner:{pushNotification.OwnerId} -----"
-          + $"object:{pushNotification.ObjectId} -----"
-          + $"updates:{pushNotification.Updates} -----";
+          $"sbmtLog: New Strava Push---"
+          + $"Aspect:{pushNotification.AspectType} ---"
+          + $"owner:{pushNotification.OwnerId} ---"
+          + $"object:{pushNotification.ObjectId} ---"
+          + $"updates:{pushNotification.Updates} ---";
         Console.WriteLine(outStr);
 
         if (
@@ -255,7 +255,6 @@ namespace TodoApi.Controllers
           await _userService.DeleteUser(athleteId);
         }
         //Either activity was deleted or made private, either way remove from the efforts table
-        //TODO - handle activity being made public
         else if (
           (pushNotification.AspectType == "delete" && pushNotification.ObjectType == "activity")
           || (
