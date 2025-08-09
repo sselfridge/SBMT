@@ -209,7 +209,7 @@ namespace TodoApi.Controllers
           + $"Aspect:{pushNotification.AspectType} -"
           + $"owner:{pushNotification.OwnerId} -"
           + $"object:{pushNotification.ObjectId} -"
-          + $"updates:{pushNotification.Updates} -";
+          + $"updates:{pushNotification.Updates}";
         Console.WriteLine(outStr);
 
         if (
