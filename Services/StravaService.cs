@@ -446,7 +446,7 @@ namespace TodoApi.Services
         try
         {
           string rawJson = await response.Content.ReadAsStringAsync();
-          Console.WriteLine(rawJson);
+          // Console.WriteLine(rawJson);
           T? result = JsonSerializer.Deserialize<T>(rawJson);
           var limit = response.Headers.GetValues("X-RateLimit-Limit");
           var usage = response.Headers.GetValues("X-RateLimit-Usage");
