@@ -379,7 +379,7 @@ namespace TodoApi.Services
         {
           club.ProfileMedium = newClub.ProfileMedium;
           club.Name = newClub.Name;
-          club.Url = newClub.Url;
+          club.Url = newClub.Url ?? "";
         }
         context.Update(club);
       }
