@@ -44,7 +44,7 @@ const NewEffort = (props) => {
   const isAdmin = currentUser.athleteId === 1075670;
 
   React.useEffect(() => {
-    ApiGet("/api/segments", setSegments);
+    ApiGet("/api/admin/segments", setSegments);
   }, []);
 
   React.useEffect(() => {
