@@ -214,7 +214,7 @@ const NewEffort = (props) => {
         </Button>
       </Box>
       <Box sx={{ p: 3 }}>
-        <Box>AthleteId: {user.athleteId || ""}</Box>
+        <Box>AthleteId: {user?.athleteId || ""}</Box>
         <Box>Segment: {segment?.name || ""}</Box>
         <Box>Date: {date?.toString() || ""}</Box>
         <Box>MovingTime: {movingTime || ""}</Box>

@@ -69,6 +69,14 @@ read -p "Do you want to continue? (y/N):" response
 # Default to 'n' if no input is provided
 response=${response:-n}
 
+if [[ "$response" =~ ^[Yy]$ && "$env" == "prod" ]]; then
+  read -p "You've selected prod, type 'prod' to continue: " confirm
+  if [[ "$confirm" != "prod" ]]; then
+    echo "Confirmation failed. Exiting..."
+    exit 1
+  fi
+fi
+
 if [[ "$response" =~ ^[Yy]$ ]]; then
     echo "Dropping..."
     dropdb -h localhost -p $dbLocalPort -f $dbName  #cspell: disable-line
