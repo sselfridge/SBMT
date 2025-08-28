@@ -29,7 +29,7 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceFolder}/bin/Debug/net6.0/TodoApi.dll",
+      "program": "${workspaceFolder}/bin/Debug/net9.0/TodoApi.dll",
       // "program": "dotnet",
       // "args": ["watch"], https://www.reddit.com/r/dotnet/comments/vhtcji/is_it_possible_to_use_hot_reload_while_debugging/k4b8li6/
       "cwd": "${workspaceFolder}",
