@@ -188,6 +188,7 @@ namespace TodoApi.Controllers
       //  effort.ActivityId,
       //  0
       //);
+      return Ok("YES!");
 
       return Ok(kickOffDate);
 
