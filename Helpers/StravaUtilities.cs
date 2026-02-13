@@ -109,7 +109,7 @@ namespace TodoApi.Helpers
       return new Effort(segEffort);
     }
 
-    public static void KickOffInitialFetch(IServiceScopeFactory serviceScopeFactory, int athleteId)
+    public static void KickOffInitialFetch(IServiceScopeFactory serviceScopeFactory, int athleteId,long unixTime)
     {
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
       Task.Run(async () =>
@@ -120,7 +120,7 @@ namespace TodoApi.Helpers
           {
             var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
             var stravaService = scope.ServiceProvider.GetRequiredService<IStravaService>();
-            var activities = await stravaService.GetActivities(athleteId);
+            var activities = await stravaService.GetActivitiesSinceDate(athleteId,unixTime);
 
             Console.WriteLine(
               $"sbmtLog: athleteId:{athleteId} onboarding with {activities.Count} activities"

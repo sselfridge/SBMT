@@ -17,7 +17,8 @@ import StravaButton from "./Shared/StravaButton";
 
 const MyBox = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 
-const linkRegex = /^https:\/\/strava.app.link\/.{8,20}$/;
+const appLinkRegex = /^https:\/\/strava.app.link\/.{8,20}$/;
+const webLinkRegex = /^https:\/\/www.strava.com\/activities\/(\d+)/;
 
 const RescanActivity = () => {
   const { user } = useContext(AppContext);
@@ -53,15 +54,20 @@ const RescanActivity = () => {
       const num = Number(input);
 
       if (Number.isNaN(num)) {
-        if (linkRegex.test(input)) {
+        if (appLinkRegex.test(input)) {
           setHelperText("");
 
           return false;
+        } else if (webLinkRegex.test(input)) {
+          const match = webLinkRegex.exec(input);
+          setInput(match[1]);
+          return true;
         } else {
           setHelperText(
             <Box>
               <Box>Unsupported link format. Must be:</Box>
               <Box>https://strava.app.link/xxxxxxxxxx</Box>
+              <Box>https://www.strava.com/activities/xxxxxxx</Box>
               <Box>Or just Activity ID number</Box>
             </Box>
           );
