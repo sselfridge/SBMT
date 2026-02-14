@@ -1,0 +1,12 @@
+
+# .bashrc or .bash_profile file to add expected env/path values
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+SBMT_DIR="/Users/Sam/repos/SBMT"
+DROPBOX_DIR="/Users/Sam/Dropbox"
+
+export PATH="/usr/local/Cellar/postgresql@16/16.6/bin:$PATH"
+
