@@ -15,7 +15,6 @@ import {
 } from "react-router-dom";
 import { ReactComponent as PwdByStrava } from "assets/stravaBrand/api_logo_pwrdBy_strava_horiz_light.svg";
 import { YEARS } from "utils/constants";
-import { useIsOffSeason } from "utils/hooks";
 import { format, parseISO } from "date-fns";
 import SbmtTitle from "./Shared/SbmtTitle";
 const TitleLink = styled(Link)(({ theme }) => ({
@@ -32,7 +31,7 @@ const PwdBy = styled(PwdByStrava)(({ theme }) => ({
 export default function NavBar() {
   const [currentTabIdx, setCurrentTabIdx] = useState(false);
 
-  const { user, env, dispatch, year, kickOffDate } =
+  const { user, env, dispatch, year, kickOffDate, isOffSeason } =
     React.useContext(AppContext);
   const [, setSearchParams] = useSearchParams();
 
@@ -61,8 +60,6 @@ export default function NavBar() {
       navigate("/settings?remind");
     }
   }, [navigate, pathname, user?.active]);
-
-  const isOffSeason = useIsOffSeason();
 
   useEffect(() => {
     switch (pathname) {

@@ -47,7 +47,6 @@ const useCountdown = (kickOffDateStr) => {
 
 const OffSeason = () => {
   const { kickOffDate } = React.useContext(AppContext);
-  console.log("kickOffDate: ", kickOffDate);
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const { days, hours, minutes, seconds } = useCountdown(kickOffDate);
 
@@ -88,8 +87,7 @@ const OffSeason = () => {
           </Typography>
         </Box>
 
-        <Typography
-          variant="body1"
+        <Box
           sx={{
             textAlign: "center",
             maxWidth: 600,
@@ -102,7 +100,7 @@ const OffSeason = () => {
           </div>
           <div>Use the dropdown in the top left to see past seasons.</div> How
           does it work? See the <Link to={"/info"}>info</Link> page.
-        </Typography>
+        </Box>
       </Paper>
     </Box>
   );

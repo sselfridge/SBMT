@@ -35,18 +35,15 @@ import StravaOops from "components/StravaOops";
 import AdminEfforts from "components/Admin/AdminEfforts";
 import { YEARS } from "utils/constants";
 import { db } from "utils/helperFuncs";
-import { useIsOffSeason } from "utils/hooks";
 
 mapboxgl.accessToken = config.mapBox;
 
 const MeinRoutes = () => {
-  const { user, year } = useContext(AppContext);
+  const { user, year, isOffSeason } = useContext(AppContext);
   db("Render Routes");
   const isAdmin = user?.athleteId === 1075670;
 
   const isPrevYear = YEARS.includes(year) && year !== YEARS[0];
-
-  const isOffSeason = useIsOffSeason();
 
   //TODO - verify isOffSeason is being calculated properly, timezones etc?
   const rootRoute = isPrevYear

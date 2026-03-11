@@ -37,19 +37,19 @@ const AthleteDetail = () => {
 
   const [hideIncomplete, setHideIncomplete] = useState(false);
 
-  const { user: loggedInUser, isPreLaunch, year } = useContext(AppContext);
+  const { user: loggedInUser, isPreSeason, year } = useContext(AppContext);
 
   const gravelSegments = userSegments.filter((s) => s.surfaceType === "gravel");
   const roadSegments = userSegments.filter((s) => s.surfaceType === "road");
   const trailSegments = userSegments.filter((s) => s.surfaceType === "trail");
   const roadCompletedCount = roadSegments.filter(
-    (s) => s.efforts.length > 0
+    (s) => s.efforts.length > 0,
   ).length;
   const gravelCompletedCount = gravelSegments.filter(
-    (s) => s.efforts.length > 0
+    (s) => s.efforts.length > 0,
   ).length;
   const trailCompletedCount = trailSegments.filter(
-    (s) => s.efforts.length > 0
+    (s) => s.efforts.length > 0,
   ).length;
 
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
@@ -58,7 +58,7 @@ const AthleteDetail = () => {
     ApiGet(`/api/athletes/${params.athleteId}`, setUser, null);
     ApiGet(
       `/api/athletes/${params.athleteId}/efforts?year=${year}`,
-      setUserSegments
+      setUserSegments,
     );
   }, [params, year]);
 
@@ -178,7 +178,7 @@ const AthleteDetail = () => {
             View on Strava
           </a>
         </Box>
-        {!isPreLaunch || loggedInUser.athleteId === 1075670 ? (
+        {!isPreSeason || loggedInUser.athleteId === 1075670 ? (
           <React.Fragment>
             <Typography variant="h4">Segment Efforts</Typography>
             <Button onClick={() => setHideIncomplete((v) => !v)}>
