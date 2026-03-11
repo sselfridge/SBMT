@@ -5,12 +5,13 @@ import { styled } from "@mui/material/styles";
 
 import RescanActivity from "./RescanActivity";
 
+//@ts-ignore --svg import
 import { ReactComponent as Insta } from "assets/insta.svg";
 import { Link } from "react-router-dom";
 
 const MyBox = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 
-const HelpContact = (props) => {
+const HelpContact = () => {
   return (
     <MyBox
       sx={{

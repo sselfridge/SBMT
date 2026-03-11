@@ -1,8 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { List, ListItem, styled, Box } from "@mui/material";
+import { List, ListItem, styled, Box,TypographyProps, BoxProps } from "@mui/material";
 
-const Updates = (props) => {
+interface UpdateProps {
+  TitleTypography: React.ComponentType<TypographyProps>;
+  SubTitleTypo:React.ComponentType<TypographyProps>
+  ArticleBox:React.ComponentType<BoxProps>
+}
+
+const Updates = (props:UpdateProps) => {
   const { TitleTypography, SubTitleTypo } = props;
 
   const ArticleBox = styled(Box)(({ theme }) => ({ margin: "0 15%" }));

@@ -27,7 +27,7 @@ const RescanActivity = () => {
   const [input, setInput] = useState("");
   const [disabled, setDisabled] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [helperText, setHelperText] = useState("");
+  const [helperText, setHelperText] = useState<string | React.ReactElement>("");
 
   const handleSubmit = () => {
     const num = Number(input);

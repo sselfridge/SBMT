@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 const MyPaper = styled(Paper)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 
-const StravaOops = (props) => {
+const StravaOops: React.FC = () => {
   return (
     <MyPaper
       sx={{
@@ -26,10 +26,6 @@ const StravaOops = (props) => {
       <Link to="/help">Contact Info</Link>
     </MyPaper>
   );
-};
-
-StravaOops.propTypes = {
-  //   prop: PropTypes.object,
 };
 
 export default StravaOops;

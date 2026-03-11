@@ -17,18 +17,18 @@ const SubTitleTypo = styled(Typography)(({ theme }) => ({
 }));
 
 // eslint-disable-next-line no-unused-vars
-const pejoratives = [
-  "Jerk",
-  "Dick",
-  "Ass",
-  "Tool",
-  "Prick",
-  "Bitch",
-  "Douche",
-  "Twat",
-];
+// const pejoratives = [
+//   "Jerk",
+//   "Dick",
+//   "Ass",
+//   "Tool",
+//   "Prick",
+//   "Bitch",
+//   "Douche",
+//   "Twat",
+// ];
 
-const InfoScopes = (props) => {
+const InfoScopes = () => {
   const navigate = useNavigate();
   return (
     <MyBox>

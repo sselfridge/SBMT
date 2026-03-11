@@ -1,3 +1,5 @@
+import { AxiosResponse } from "axios";
+
 export declare const ApiGet: (
   url: string,
   setValue: (data: any) => void,
@@ -30,7 +32,7 @@ export declare const ApiPut: (
 export declare const ApiPostCb: (
   url: string,
   body: unknown,
-  onSuccess?: (response: unknown) => void,
+  onSuccess?: (response: AxiosResponse) => void,
   onError?: (err: unknown) => void,
 ) => void;
 

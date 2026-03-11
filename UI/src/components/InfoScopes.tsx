@@ -16,7 +16,7 @@ const SubTitleTypo = styled(Typography)(({ theme }) => ({
   margin: "0 20%",
 }));
 
-const InfoScopes = (props) => {
+const InfoScopes = () => {
   return (
     <MyBox>
       <Paper

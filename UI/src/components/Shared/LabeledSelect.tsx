@@ -1,8 +1,26 @@
 import React, { useCallback } from "react";
 import PropTypes from "prop-types";
-import { MenuItem, Box, FormControl, InputLabel, Select } from "@mui/material";
+import {
+  MenuItem,
+  Box,
+  FormControl,
+  InputLabel,
+  Select,
+  SelectChangeEvent,
+} from "@mui/material";
 
-const LabeledSelect = (props) => {
+interface LabeledSelectProps {
+  value: string;
+  setValue: Function;
+  label: string;
+  list: string[];
+  minWidth?: number;
+  maxWidth: number;
+  helpText?: string;
+  onOpen?: (event: React.SyntheticEvent<Element, Event>) => void;
+}
+
+const LabeledSelect = (props: LabeledSelectProps) => {
   const {
     value,
     label,
@@ -15,10 +33,10 @@ const LabeledSelect = (props) => {
   } = props;
 
   const onChange = useCallback(
-    (e) => {
+    (e: SelectChangeEvent) => {
       setValue(e.target.value);
     },
-    [setValue]
+    [setValue],
   );
 
   return (

@@ -16,6 +16,7 @@ import {
 import { styled } from "@mui/material/styles";
 import AppContext from "AppContext";
 
+//@ts-ignore
 import { ReactComponent as StravaLogo } from "assets/stravaLogoTransparent.svg";
 
 import LabeledSelect from "./Shared/LabeledSelect";
@@ -25,6 +26,10 @@ import { ApiGet, ApiPostCb } from "api/api";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import { deepFreeze } from "utils/helperFuncs";
+
+import type { User } from "@/types/StravaUserDTO";
+import { AxiosResponse } from "axios";
+import { StravaClub } from "@/types/StravaClub";
 
 const MyPaper = styled(Paper)(({ theme }) => ({
   padding: 8,
@@ -39,13 +44,13 @@ const categorySelect = categoryList.filter((c) => c !== "ALL");
 
 const UserInfo = () => {
   const { user, dispatch } = useContext(AppContext);
-  const [age, setAge] = useState("");
+  const [age, setAge] = useState<string>("");
   const [ageHelperText, setAgeHelperText] = useState("");
   const [category, setCategory] = useState("");
   const [agreeToTerms, setAgreeToTerms] = useState(!!user?.active);
-  const [profile, setProfile] = useState({});
+  const [profile, setProfile] = useState<User>({} as User);
 
-  const activeRef = React.useRef();
+  const activeRef = React.useRef(null);
 
   const [signupRedirect, setSignupRedirect] = React.useState(false);
 
@@ -53,7 +58,7 @@ const UserInfo = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const fetchProfile = useCallback((athleteId) => {
+  const fetchProfile = useCallback((athleteId: number) => {
     ApiGet(`/api/strava/userRefresh/${athleteId}`, setProfile);
   }, []);
 
@@ -61,10 +66,10 @@ const UserInfo = () => {
   const showReminder = params.has("remind") && !user?.active;
 
   const updateContextUser = React.useCallback(
-    (newUserData) => {
+    (newUserData: User) => {
       dispatch({ type: "setUser", user: newUserData });
     },
-    [dispatch]
+    [dispatch],
   );
 
   const updateProfile = useCallback(() => {
@@ -75,7 +80,7 @@ const UserInfo = () => {
     updatedUser.stravaClubs = [];
     updatedUser.active = agreeToTerms || user.active;
 
-    const onSuccess = (res) => {
+    const onSuccess = (res: AxiosResponse) => {
       const newUser = deepFreeze(res.data);
       updateContextUser(res.data);
       fetchProfile(newUser.athleteId);
@@ -106,7 +111,7 @@ const UserInfo = () => {
 
   React.useEffect(() => {
     if (profile?.age !== undefined) {
-      setAge(profile.age);
+      setAge(`${profile.age}`);
     }
     if (profile?.category !== undefined) {
       setCategory(profile.category);
@@ -140,7 +145,7 @@ const UserInfo = () => {
                 } else if (numVal > 100) {
                   setAgeHelperText("Age must be less than 100");
                 } else {
-                  setAge(numVal);
+                  setAge(`${numVal}`);
                 }
               }
             }}
@@ -197,7 +202,7 @@ const UserInfo = () => {
     { label: "Clubs", content: "", fromStrava: true },
   ];
 
-  const mapField = (field) => {
+  const mapField = (field: any) => {
     return (
       <React.Fragment key={field?.label}>
         <Grid item sx={{ display: { xs: "none", sm: "block" } }} sm={3} />
@@ -255,8 +260,8 @@ const UserInfo = () => {
     saving ||
     !category ||
     !age ||
-    age < 13 ||
-    age > 100 ||
+    Number(age) < 13 ||
+    Number(age) > 100 ||
     (`${age}` === `${user.age}` && category === user.category) ||
     (!agreeToTerms && !!user?.active === true) ||
     (!agreeToTerms && !user?.active);
@@ -401,7 +406,7 @@ const UserInfo = () => {
             <Grid item xs={1} sm={2} />
             <Grid item xs={10} sm={8}>
               <Grid container sx={{ justifyContent: "center" }}>
-                {user?.stravaClubs?.map((club) => {
+                {user?.stravaClubs?.map((club: StravaClub) => {
                   return (
                     <Grid item key={club.id}>
                       <Box
@@ -446,7 +451,7 @@ const UserInfo = () => {
                   width: "100%",
                 }}
                 variant="body2"
-                target={"_blank"}
+                // target={"_blank"}
                 href="https://www.strava.com/settings/profile"
                 underline="none"
               >

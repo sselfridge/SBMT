@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Box, Link as MuiLink, Paper, Typography } from "@mui/material";
+//@ts-ignore --svg import
 import { ReactComponent as Logo } from "assets/logoV1.svg";
 
 import { styled } from "@mui/material/styles";
@@ -20,7 +21,7 @@ const SubTitleTypo = styled(Typography)(({ theme }) => ({
   margin: "0 20%",
 }));
 
-const Info = (props) => {
+const Info = () => {
   return (
     <MyBox>
       <Paper
