@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import AppContext from "AppContext";
 import { Box, Paper, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { Link } from "react-router-dom";
 
 const MyBox = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 
@@ -20,7 +21,11 @@ const PostSeason = (props) => {
           overflow: "auto",
         }}
       >
-        <Typography variant="h4">Thats a wrap for the {year} season</Typography>
+        <Typography variant="h1">Santa Barbara Mountain Challenge</Typography>
+        <Typography variant="h1">Thats a wrap for the {year} season</Typography>
+        Check the leaderboards to see who won, use the dropdown in the top left
+        to see past seasons. How does it work? See the{" "}
+        <Link to={"info"}>info</Link>
       </Paper>
     </MyBox>
   );
