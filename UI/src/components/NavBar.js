@@ -31,7 +31,7 @@ const PwdBy = styled(PwdByStrava)(({ theme }) => ({
 export default function NavBar() {
   const [currentTabIdx, setCurrentTabIdx] = useState(false);
 
-  const { user, env, dispatch, year, kickOffDate } =
+  const { user, env, dispatch, year, kickOffDate, isOffSeason } =
     React.useContext(AppContext);
   const [, setSearchParams] = useSearchParams();
 
@@ -70,7 +70,7 @@ export default function NavBar() {
         break;
 
       case "/recent":
-        if (isMobile) {
+        if (isMobile || isOffSeason) {
           setCurrentTabIdx(false);
         } else {
           setCurrentTabIdx(pathname);
@@ -87,11 +87,11 @@ export default function NavBar() {
       title = title[0].toUpperCase() + title.slice(1);
       document.title = `SBMT - ${title}`;
     }
-  }, [isMobile, pathname]);
+  }, [isMobile, isOffSeason, pathname]);
 
   const tabs = ["leaderboard", "segments", "athletes"];
 
-  if (!isMobile && YEARS[0] === year) tabs.unshift("recent");
+  if (!isMobile && YEARS[0] === year && !isOffSeason) tabs.unshift("recent");
 
   let titleText = "SBMT";
 
@@ -124,7 +124,7 @@ export default function NavBar() {
         <Toolbar>
           <Box>
             <Box sx={{ display: "flex", fontFamily: "roboto", gap: 1 }}>
-              <TitleLink to="recent">
+              <TitleLink to="/">
                 <SbmtTitle>{titleText}</SbmtTitle>
               </TitleLink>
               <Box

@@ -189,7 +189,7 @@ namespace TodoApi.Controllers
     }
 
     [HttpPost("push")]
-    public async Task<IActionResult> pushNotificaitonAsync()
+    public async Task<IActionResult> pushNotificationAsync()
     {
       Stream req = Request.Body;
       var json = await new StreamReader(req).ReadToEndAsync();
@@ -225,7 +225,7 @@ namespace TodoApi.Controllers
           )
         )
         {
-          var kickOffDate = SbmtUtils.getKickOffDate("2025sbmt");
+          var kickOffDate = SbmtUtils.getKickOffDate("2026sbmt");
 
           DateTime now = DateTime.UtcNow;
           if (kickOffDate > now)

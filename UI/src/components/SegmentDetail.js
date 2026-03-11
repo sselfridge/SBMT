@@ -39,7 +39,7 @@ const Segments = () => {
   // const [userEfforts, setUserEfforts] = useState(null);
   const [segmentLeaderboard, setSegmentLeaderboard] = useState(null);
 
-  const { user, isPreLaunch, year } = React.useContext(AppContext);
+  const { user, isPreSeason, year } = React.useContext(AppContext);
 
   const isAdmin = user?.athleteId === 1075670;
 
@@ -58,7 +58,7 @@ const Segments = () => {
     if (segmentId) {
       ApiGet(
         `/api/segments/${segmentId}/leaderboard?year=${year}`,
-        setSegmentLeaderboard
+        setSegmentLeaderboard,
       );
     }
   }, [segmentId, year]);
@@ -77,7 +77,7 @@ const Segments = () => {
     {
       label: "Thats roughly ",
       value: `${(segment.effortCount / segment.athleteCount).toFixed(
-        2
+        2,
       )} times each`,
     },
     {
@@ -140,8 +140,8 @@ const Segments = () => {
               {e.segmentName} - {formattedTime(e.bestTime)}
             </div>
           ))} */}
-          {isPreLaunch && <TempCountdown banner={"Segment leaderboard"} />}
-          {!!segmentLeaderboard?.length && (!isPreLaunch || isAdmin) && (
+          {isPreSeason && <TempCountdown banner={"Segment leaderboard"} />}
+          {!!segmentLeaderboard?.length && (!isPreSeason || isAdmin) && (
             <React.Fragment>
               <Typography sx={{ mt: 3 }} variant="h5">
                 Segment Leaderboard

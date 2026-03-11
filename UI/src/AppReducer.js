@@ -1,4 +1,3 @@
-import { differenceInSeconds } from "date-fns";
 import { YEARS } from "utils/constants";
 
 export default function reducer(state, action) {
@@ -8,11 +7,7 @@ export default function reducer(state, action) {
     // case "setRateLimit":
     //   return { ...state, rateLimit: action.rateLimit };
     case "setSettings":
-      const { kickOffDate } = action.settings;
-
-      const isPreLaunch = differenceInSeconds(kickOffDate, new Date()) > 0;
-
-      return { ...state, isPreLaunch, ...action.settings };
+      return { ...state, ...action.settings };
     case "setYear":
       if (YEARS.includes(year) === false) {
         console.error("Invalid Year", year);
@@ -35,7 +30,9 @@ if (YEARS.includes(year) === false) {
 
 export const INITIAL_STATE = {
   user: null,
-  isPreLaunch: false,
+  isPreSeason: false,
+  isPostSeason: false,
+  isOffSeason: false,
   rateLimit: -1,
   env: "Production",
   kickOffDate: "",

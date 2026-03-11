@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import TeresaWon from "./TeresaWon";
 import NotFound from "routes/NotFound";
 import Recent from "components/Recent";
+import OffSeason from "components/OffSeason";
 import Leaderboard from "components/Leaderboard";
 import Segments from "components/Segments";
 import SegmentDetails from "components/SegmentDetail";
@@ -38,26 +39,29 @@ import { db } from "utils/helperFuncs";
 mapboxgl.accessToken = config.mapBox;
 
 const MeinRoutes = () => {
-  const { user, year } = useContext(AppContext);
+  const { user, year, isOffSeason } = useContext(AppContext);
   db("Render Routes");
   const isAdmin = user?.athleteId === 1075670;
 
   const isPrevYear = YEARS.includes(year) && year !== YEARS[0];
 
+  //TODO - verify isOffSeason is being calculated properly, timezones etc?
+  const rootRoute = isPrevYear
+    ? "/leaderboard"
+    : isOffSeason
+      ? "/offSeason"
+      : "/recent";
+
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />}>
-          <Route
-            index
-            element={
-              <Navigate to={isPrevYear ? "/leaderboard" : "/recent"} replace />
-            }
-          />
+          <Route index element={<Navigate to={rootRoute} replace />} />
           <Route path="landing" element={<Navigate to="/" />} />
           <Route path="teresa" element={<TeresaWon />} />
           <Route path="beta/*" element={<BetaRedirect />} />
           <Route path="recent" element={<Recent />} />
+          <Route path="offSeason" element={<OffSeason />} />
           <Route path="leaderboard" element={<Leaderboard />} />
 
           <Route path="segments" element={<Segments />} />

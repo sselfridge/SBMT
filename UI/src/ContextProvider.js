@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import AppContext from "AppContext";
 import AppReducer, { INITIAL_STATE } from "./AppReducer";
 import { ApiGet } from "api/api";
-import { isAfter, parseISO } from "date-fns";
+import { DateTime } from "luxon";
 import { db } from "utils/helperFuncs";
 
 function ContextProvider({ children }) {
@@ -14,16 +14,21 @@ function ContextProvider({ children }) {
   React.useEffect(() => {
     db("settings call");
     ApiGet(`/api?year=${year}`, (arr) => {
-      const kickOffDate = parseISO(arr[1]);
-      const now = new Date();
-      const isPreLaunch = isAfter(kickOffDate, now);
+      const [env, kickOffDate, endingDate, redirectUri] = arr;
+
+      const endDate = DateTime.fromISO(endingDate).plus({ weeks: 1 });
+      const startDate = DateTime.fromISO(kickOffDate);
+      const isPostSeason = endDate < DateTime.now();
+      const isPreSeason = DateTime.now() < startDate;
 
       const settings = {
-        env: arr[0],
-        kickOffDate: arr[1],
-        endingDate: arr[2],
-        redirectUri: arr[3],
-        isPreLaunch,
+        env,
+        kickOffDate,
+        endingDate,
+        redirectUri,
+        isPreSeason,
+        isPostSeason,
+        isOffSeason: isPostSeason || isPreSeason,
       };
       dispatch({ type: "setSettings", settings });
     });
