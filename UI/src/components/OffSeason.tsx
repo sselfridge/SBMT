@@ -1,20 +1,21 @@
 import React from "react";
 import AppContext from "AppContext";
+//@ts-ignore -- svgImport
 import { ReactComponent as Logo } from "assets/logoV1.svg";
 import { DateTime } from "luxon";
 
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Paper, Typography ,type Theme} from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Link } from "react-router-dom";
 
 const styles = {
-  mainBox: (isMobile) => ({
+  mainBox: (isMobile:boolean) => ({
     width: "95vw",
     maxWidth: 1000,
     padding: isMobile ? 1 : 2,
     borderRadius: 1,
   }),
-  mainPaper: (isMobile) => ({
+  mainPaper: (isMobile:boolean) => ({
     height: "100%",
     width: "100%",
     boxShadow: "none",
@@ -27,7 +28,7 @@ const styles = {
   }),
 };
 
-const useCountdown = (kickOffDateStr) => {
+const useCountdown = (kickOffDateStr:string) => {
   const kickOffDate = DateTime.fromISO(kickOffDateStr);
   const [timeLeft, setTimeLeft] = React.useState(() => {
     const diff = kickOffDate.diffNow(["days", "hours", "minutes", "seconds"]);
@@ -47,10 +48,10 @@ const useCountdown = (kickOffDateStr) => {
 
 const OffSeason = () => {
   const { kickOffDate } = React.useContext(AppContext);
-  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery((theme:Theme) => theme.breakpoints.down("sm"));
   const { days, hours, minutes, seconds } = useCountdown(kickOffDate);
 
-  const pad = (n) => String(Math.floor(Math.abs(n))).padStart(2, "0");
+  const pad = (n:number|undefined) => String(Math.floor(Math.abs(n || 0))).padStart(2, "0");
 
   return (
     <Box sx={styles.mainBox(isMobile)}>

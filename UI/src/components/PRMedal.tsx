@@ -10,7 +10,13 @@ const COLOR_MAP = {
   3: { color: "strava.bronze", label: "3rd fastest time" },
 };
 
-const Cup = (props) => {
+type MedalRank = keyof typeof COLOR_MAP;
+
+interface PRMedalProps {
+  rank: MedalRank;
+}
+
+const Cup = (props:PRMedalProps) => {
   const { rank } = props;
 
   if (!rank) return null;

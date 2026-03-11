@@ -4,13 +4,15 @@ import { Box, Paper, Autocomplete, TextField, Button } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { ApiGet, ApiPut } from "api/api";
 import AppContext from "AppContext";
+import type {User} from '@/types/StravaUserDTO'
+import type { Segment } from "@/types/db/Segment";
 
 const shortLinkRegex = /^https:\/\/strava.app.link\/.{8,20}$/;
 const linkRegex = /^https:\/\/www.strava.com\/activities\/(\d{8,20})$/;
 const hoursRegex = /^(\d?\d):?([0-5]\d):([0-5]\d)$/;
 const minRegex = /^([0-5]?\d):([0-5]\d)$/;
 
-function formatSeconds(seconds) {
+function formatSeconds(seconds:number) {
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
   const secs = seconds % 60;
@@ -23,22 +25,24 @@ function formatSeconds(seconds) {
   return `${minutes}:${String(secs).padStart(2, "0")}`;
 }
 
-const NewEffort = (props) => {
+
+
+const NewEffort = () => {
   const [users, setUsers] = React.useState([]);
-  const [user, setUser] = React.useState(null);
+  const [user, setUser] = React.useState<User|null>(null);
 
-  const [segments, setSegments] = React.useState([]);
-  const [segment, setSegment] = React.useState(null);
+  const [segments, setSegments] = React.useState<Segment[]>([]);
+  const [segment, setSegment] = React.useState<Segment |null>(null);
 
-  const [movingTime, setMovingTime] = React.useState(0);
+  const [movingTime, setMovingTime] = React.useState<number>(0);
   const [movingTimeInput, setMovingTimeInput] = React.useState("");
-  const [movingTimeHelper, setMovingTimeHelper] = React.useState("");
+  const [movingTimeHelper, setMovingTimeHelper] = React.useState<string | React.ReactElement>("");
 
   const [activityInput, setActivityInput] = React.useState("");
   const [activityId, setActivityId] = React.useState(0);
-  const [activityHelper, setHelperText] = React.useState("");
+  const [activityHelper, setHelperText] = React.useState<string | React.ReactElement>("");
   const [submitDisabled, setSubmit] = React.useState(false);
-  const [date, setDate] = React.useState(null);
+  const [date, setDate] = React.useState<Date|null>(null);
 
   const { kickOffDate, user: currentUser, endingDate } = useContext(AppContext);
   const isAdmin = currentUser.athleteId === 1075670;
@@ -64,7 +68,7 @@ const NewEffort = (props) => {
 
         return;
       } else if (linkRegex.test(activityInput)) {
-        const result = linkRegex.exec(activityInput);
+        const result = linkRegex.exec(activityInput)!;
         const [, actId] = result;
 
         setActivityInput(`${actId}`);
@@ -141,12 +145,22 @@ const NewEffort = (props) => {
   }, [calcTime]);
 
   const onBlur = () => {
-    const newTime = calcTime();
+    const newTime = calcTime() || 0;
     setMovingTime(newTime);
     setMovingTimeInput(formatSeconds(newTime));
   };
 
   const save = () => {
+    if(!user) {
+      console.error("User cannot be null to save")
+      return;
+    }
+
+    if(!segment){
+      console.error("Segment cannot be null")
+      return
+    }
+
     const newEffort = {
       athleteId: user.athleteId,
       activityId,
