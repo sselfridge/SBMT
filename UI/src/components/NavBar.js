@@ -124,7 +124,7 @@ export default function NavBar() {
         <Toolbar>
           <Box>
             <Box sx={{ display: "flex", fontFamily: "roboto", gap: 1 }}>
-              <TitleLink to="recent">
+              <TitleLink to="/">
                 <SbmtTitle>{titleText}</SbmtTitle>
               </TitleLink>
               <Box

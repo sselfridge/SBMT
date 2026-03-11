@@ -9,12 +9,6 @@ namespace TodoApi.Helpers
       return DateTime.Parse(kickOffDateStr).ToUniversalTime();
     }
 
-    public static DateTime getEndingDate()
-    {
-      var endingDateStr = getConfigVal("EndingDate");
-      return DateTime.Parse(endingDateStr).ToUniversalTime();
-    }
-
     public static string getCurrentYear()
     {
       var year = getConfigVal("CurrentYear");
