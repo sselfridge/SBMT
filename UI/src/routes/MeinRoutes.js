@@ -1,12 +1,11 @@
 import React, { useContext } from "react";
 import App from "../App";
-import { DateTime } from "luxon";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import TeresaWon from "./TeresaWon";
 import NotFound from "routes/NotFound";
 import Recent from "components/Recent";
-import PostSeason from "components/PostSeason";
+import OffSeason from "components/OffSeason";
 import Leaderboard from "components/Leaderboard";
 import Segments from "components/Segments";
 import SegmentDetails from "components/SegmentDetail";
@@ -36,24 +35,24 @@ import StravaOops from "components/StravaOops";
 import AdminEfforts from "components/Admin/AdminEfforts";
 import { YEARS } from "utils/constants";
 import { db } from "utils/helperFuncs";
+import { useIsOffSeason } from "utils/hooks";
 
 mapboxgl.accessToken = config.mapBox;
 
 const MeinRoutes = () => {
-  const { user, year, endingDate } = useContext(AppContext);
+  const { user, year } = useContext(AppContext);
   db("Render Routes");
   const isAdmin = user?.athleteId === 1075670;
 
   const isPrevYear = YEARS.includes(year) && year !== YEARS[0];
 
-  const endDate = DateTime.fromISO(endingDate).plus({ weeks: 1 });
-  const isPostSeason = endDate < DateTime.now();
+  const isOffSeason = useIsOffSeason();
 
-  //TODO - verify isPostSeason is being calculated properly
+  //TODO - verify isOffSeason is being calculated properly, timezones etc?
   const rootRoute = isPrevYear
     ? "/leaderboard"
-    : isPostSeason
-      ? "/postSeason"
+    : isOffSeason
+      ? "/offSeason"
       : "/recent";
 
   return (
@@ -65,7 +64,7 @@ const MeinRoutes = () => {
           <Route path="teresa" element={<TeresaWon />} />
           <Route path="beta/*" element={<BetaRedirect />} />
           <Route path="recent" element={<Recent />} />
-          <Route path="postSeason" element={<PostSeason />} />
+          <Route path="offSeason" element={<OffSeason />} />
           <Route path="leaderboard" element={<Leaderboard />} />
 
           <Route path="segments" element={<Segments />} />

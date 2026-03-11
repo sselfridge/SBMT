@@ -15,6 +15,7 @@ import {
 } from "react-router-dom";
 import { ReactComponent as PwdByStrava } from "assets/stravaBrand/api_logo_pwrdBy_strava_horiz_light.svg";
 import { YEARS } from "utils/constants";
+import { useIsOffSeason } from "utils/hooks";
 import { format, parseISO } from "date-fns";
 import SbmtTitle from "./Shared/SbmtTitle";
 const TitleLink = styled(Link)(({ theme }) => ({
@@ -61,6 +62,8 @@ export default function NavBar() {
     }
   }, [navigate, pathname, user?.active]);
 
+  const isOffSeason = useIsOffSeason();
+
   useEffect(() => {
     switch (pathname) {
       case "/segments":
@@ -70,7 +73,7 @@ export default function NavBar() {
         break;
 
       case "/recent":
-        if (isMobile) {
+        if (isMobile || isOffSeason) {
           setCurrentTabIdx(false);
         } else {
           setCurrentTabIdx(pathname);
@@ -87,11 +90,11 @@ export default function NavBar() {
       title = title[0].toUpperCase() + title.slice(1);
       document.title = `SBMT - ${title}`;
     }
-  }, [isMobile, pathname]);
+  }, [isMobile, isOffSeason, pathname]);
 
   const tabs = ["leaderboard", "segments", "athletes"];
 
-  if (!isMobile && YEARS[0] === year) tabs.unshift("recent");
+  if (!isMobile && YEARS[0] === year && !isOffSeason) tabs.unshift("recent");
 
   let titleText = "SBMT";
 
