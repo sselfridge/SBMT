@@ -8,6 +8,7 @@ import {
   TextField,
   ButtonBase,
   IconButton,
+  Theme,
 } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import FilterListIcon from "@mui/icons-material/FilterList";
@@ -15,13 +16,21 @@ import CloseIcon from "@mui/icons-material/Close";
 import { ApiGet } from "api/api";
 
 import AppContext from "AppContext";
+import type { User } from "@/types/StravaUserDTO";
+import type { Segment } from "@/types/db/Segment";
 
-const SelectCompUser = (props) => {
+interface SelectCompUserProps {
+  setCompSegments: (segments: Segment[]) => void;
+}
+
+const SelectCompUser = (props: SelectCompUserProps) => {
   const { setCompSegments } = props;
 
   const { user: meinUser, year } = useContext(AppContext);
 
-  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery((theme: Theme) =>
+    theme.breakpoints.down("sm"),
+  );
 
   const [users, setUsers] = useState([meinUser]);
   const [compUser, setCompUser] = useState(meinUser);
@@ -29,19 +38,18 @@ const SelectCompUser = (props) => {
   const [selectIndex, setSelectIndex] = useState(-1);
 
   const [open, setOpen] = useState(false);
-  const anchorRef = React.useRef();
-  const selectedItemRef = React.useRef();
+  const anchorRef = React.useRef(null);
 
-  const setSortUsers = (users) =>
+  const setSortUsers = (users: User[]) =>
     setUsers(
-      users.slice().sort((a, b) => (a.firstname < b.firstname ? -1 : 1))
+      users.slice().sort((a, b) => (a.firstname < b.firstname ? -1 : 1)),
     );
 
   React.useEffect(() => {
     if (isMobile === false && compUser.athleteId) {
       ApiGet(
         `/api/athletes/${compUser.athleteId}/efforts?year=${year}`,
-        setCompSegments
+        setCompSegments,
       );
     }
   }, [isMobile, compUser, setCompSegments, year]);
@@ -56,14 +64,8 @@ const SelectCompUser = (props) => {
   const filteredUsers = users.filter((u) =>
     `${u.firstname} ${u.lastname}`
       .toLowerCase()
-      .includes(filterText.toLowerCase())
+      .includes(filterText.toLowerCase()),
   );
-
-  React.useEffect(() => {
-    if (selectedItemRef.current) {
-      selectedItemRef.current.scrollIntoView({ block: "center" });
-    }
-  }, [selectIndex]);
 
   return (
     <Box>
@@ -134,7 +136,6 @@ const SelectCompUser = (props) => {
               <ButtonBase
                 id={u.athleteId}
                 key={u.athleteId}
-                ref={selectIndex === i ? selectedItemRef : undefined}
                 sx={{
                   display: "flex",
                   width: "100%",

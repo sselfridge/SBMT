@@ -4,12 +4,27 @@ import _ from "lodash";
 
 import { addSegmentToMap, getBounds, getGeometry } from "utils/mapUtils";
 
+//@ts-ignore
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
+import type { Map } from "mapbox-gl";
+import type { Segment } from "@/types/db/Segment";
 
-const SegmentDetailMap = (props) => {
+interface MeinMarkers {
+  markers: mapboxgl.Marker[];
+  layers: string[];
+  sources: string[];
+}
+
+type MapWithMarkers = Map & { meinMarkers: MeinMarkers };
+
+interface SegmentDetailMapProps {
+  segment: Segment;
+}
+
+const SegmentDetailMap = (props: SegmentDetailMapProps) => {
   const { segment } = props;
-  const mapContainer = useRef(null);
-  const [map, setMap] = useState(null);
+  const mapContainer = useRef<HTMLDivElement>(null);
+  const [map, setMap] = useState<MapWithMarkers | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -43,6 +58,7 @@ const SegmentDetailMap = (props) => {
       // );
       const geo = getGeometry(segment);
       if (geo.coordinates) {
+        //@ts-ignore
         map.fitBounds(getBounds(geo.coordinates, 0.003));
       }
     }

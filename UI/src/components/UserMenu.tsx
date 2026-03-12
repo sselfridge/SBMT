@@ -23,6 +23,7 @@ import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import AppContext from "AppContext";
 import { ApiDelete } from "api/api";
 import StravaButton from "./Shared/StravaButton";
+import { User } from "@/types/StravaUserDTO";
 
 const UserMenuBox = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -36,10 +37,10 @@ const UserMenuBox = styled(Box)(({ theme }) => ({
 const UserMenu = () => {
   const { dispatch, user: contextUser } = useContext(AppContext);
 
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const open = Boolean(anchorEl);
-  const handleClick = (event) => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
@@ -48,15 +49,15 @@ const UserMenu = () => {
 
   let navigate = useNavigate();
   let { pathname } = useLocation();
-  const navTo = (path) => {
+  const navTo = (path: string) => {
     navigate(path);
   };
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
 
   const onSetUser = React.useCallback(
-    (user) => dispatch({ type: "setUser", user }),
-    [dispatch]
+    (user: User) => dispatch({ type: "setUser", user }),
+    [dispatch],
   );
 
   useEffect(() => {

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-// import PropTypes from "prop-types";
 import {
   Paper,
   Typography,
@@ -15,6 +14,7 @@ import {
 import { styled } from "@mui/material/styles";
 import { Link, useParams } from "react-router-dom";
 
+//@ts-ignore --svg import
 import { ReactComponent as StravaLogo } from "assets/stravaLogoTransparent.svg";
 
 import SegmentDetailMap from "./SegmentDetailMap";
@@ -24,6 +24,8 @@ import AppContext from "AppContext";
 // import { MAX_INT } from "utils/constants";
 import { formattedTime } from "utils/helperFuncs";
 import TempCountdown from "./LandingPage/TempCountdown";
+import { Segment } from "@/types/db/Segment";
+import { SegmentLeaderboard } from "@/types/SegmentLeaderboard";
 
 const MyBox = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -31,13 +33,20 @@ const MyBox = styled(Paper)(({ theme }) => ({
   borderRadius: 4,
 }));
 
+interface SegmentDetail {
+  value: string;
+  label: string;
+}
+
 const Segments = () => {
-  let { segmentId } = useParams();
-  segmentId = Number(segmentId);
+  let { segmentIdStr } = useParams();
+  let segmentId: Number | null = Number(segmentIdStr);
+
   segmentId = Number.isNaN(segmentId) ? null : segmentId;
-  const [segment, setSegment] = useState({});
+  const [segment, setSegment] = useState<Segment>({} as Segment);
   // const [userEfforts, setUserEfforts] = useState(null);
-  const [segmentLeaderboard, setSegmentLeaderboard] = useState(null);
+  const [segmentLeaderboard, setSegmentLeaderboard] =
+    useState<SegmentLeaderboard | null>(null);
 
   const { user, isPreSeason, year } = React.useContext(AppContext);
 
@@ -63,7 +72,7 @@ const Segments = () => {
     }
   }, [segmentId, year]);
 
-  const details = deepFreeze([
+  const details: SegmentDetail[] = deepFreeze([
     {
       label: "Distance",
       value: `${metersToMiles(segment.distance)} miles`,
