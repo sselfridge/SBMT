@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Box, Paper, Typography, Button } from "@mui/material";
 
+// @ts-ignore
 import { ReactComponent as StravaLogo } from "assets/stravaLogoOrange.svg";
 
 import { ApiDelete } from "api/api";

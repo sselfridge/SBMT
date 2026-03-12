@@ -17,10 +17,9 @@ import { ApiGet } from "api/api";
 
 import AppContext from "AppContext";
 import type { User } from "@/types/StravaUserDTO";
-import type { Segment } from "@/types/db/Segment";
-
+import type { UserSegment } from "@/types/UserSegment";
 interface SelectCompUserProps {
-  setCompSegments: (segments: Segment[]) => void;
+  setCompSegments: (segments: UserSegment[]) => void;
 }
 
 const SelectCompUser = (props: SelectCompUserProps) => {

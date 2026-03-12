@@ -10,7 +10,9 @@ import { segments as datas } from "mockData/data";
 
 // import markerSvg from "assets/maki/marker.svg";
 
+// @ts-ignore
 import redMarkerSvg from "assets/hackyColors/redMarker.svg";
+// @ts-ignore
 import greenMarkerSvg from "assets/hackyColors/greenMarker.svg";
 import segments from "mockData/segments";
 import config from "config";

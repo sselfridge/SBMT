@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Paper, Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -11,9 +10,11 @@ const MyPaper = styled(Paper)(({ theme }) => ({
   alignItems: "center",
 }));
 
-const TempCountdown = (props) => {
-  const { banner } = props;
+interface TempCountdownProps {
+  banner?: string;
+}
 
+const TempCountdown: React.FC<TempCountdownProps> = ({ banner = "SBMT" }) => {
   return (
     <Box
       sx={{
@@ -39,14 +40,6 @@ const TempCountdown = (props) => {
       </MyPaper>
     </Box>
   );
-};
-
-TempCountdown.defaultProps = {
-  banner: "SBMT",
-};
-
-TempCountdown.propTypes = {
-  banner: PropTypes.string,
 };
 
 export default TempCountdown;

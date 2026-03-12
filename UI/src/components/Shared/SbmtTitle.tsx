@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -12,13 +11,12 @@ const SbmtBox = styled(Box)(({ theme }) => ({
   display: "inline",
 }));
 
-const SbmtTitle = (props) => {
-  const { children } = props;
-  return <SbmtBox>{children ? children : "SBMT"}</SbmtBox>;
-};
+interface SbmtTitleProps {
+  children?: React.ReactNode;
+}
 
-SbmtTitle.propTypes = {
-  children: PropTypes.node,
+const SbmtTitle: React.FC<SbmtTitleProps> = ({ children }) => {
+  return <SbmtBox>{children ? children : "SBMT"}</SbmtBox>;
 };
 
 export default SbmtTitle;

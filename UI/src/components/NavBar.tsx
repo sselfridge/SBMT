@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { AppBar, Box, Toolbar, Tab, Tabs, useMediaQuery } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { styled } from "@mui/material/styles";
+import { styled, Theme } from "@mui/material/styles";
 import DownIcon from "@mui/icons-material/ArrowDropDown";
 import AppContext from "AppContext";
 
@@ -13,6 +13,7 @@ import {
   useNavigate,
   useSearchParams,
 } from "react-router-dom";
+// @ts-ignore
 import { ReactComponent as PwdByStrava } from "assets/stravaBrand/api_logo_pwrdBy_strava_horiz_light.svg";
 import { YEARS } from "utils/constants";
 import { format, parseISO } from "date-fns";
@@ -28,15 +29,17 @@ const PwdBy = styled(PwdByStrava)(({ theme }) => ({
   top: "-15px",
 }));
 
+type NavTab = "/recent" | "/segments" | "/leaderboard" | "/athletes" | "";
+
 export default function NavBar() {
-  const [currentTabIdx, setCurrentTabIdx] = useState(false);
+  const [currentTabIdx, setCurrentTabIdx] = useState<NavTab>("");
 
   const { user, env, dispatch, year, kickOffDate, isOffSeason } =
     React.useContext(AppContext);
   const [, setSearchParams] = useSearchParams();
 
   const [menuOpen, setMenuOpen] = React.useState(false);
-  const selectYear = (year) => {
+  const selectYear = (year: string) => {
     dispatch({ type: "setYear", year });
     setSearchParams((params) => {
       params.set("year", year);
@@ -48,8 +51,10 @@ export default function NavBar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { pathname } = location;
-  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
-  const yearMenuRef = React.useRef();
+  const isMobile = useMediaQuery((theme: Theme) =>
+    theme.breakpoints.down("sm"),
+  );
+  const yearMenuRef = React.useRef(null);
 
   React.useEffect(() => {
     if (
@@ -71,14 +76,14 @@ export default function NavBar() {
 
       case "/recent":
         if (isMobile || isOffSeason) {
-          setCurrentTabIdx(false);
+          setCurrentTabIdx("");
         } else {
           setCurrentTabIdx(pathname);
         }
         break;
 
       default:
-        setCurrentTabIdx(false);
+        setCurrentTabIdx("");
         break;
     }
 

@@ -3,12 +3,16 @@ import React, { Component } from "react";
 import StravaButton from "components/Shared/StravaButton";
 
 // import "./mein.css";
+// @ts-ignore
 import styles from "./mein.module.css";
 
 import { Link } from "react-router-dom";
 
+// @ts-ignore
 import { ReactComponent as LogoV1 } from "./assets/logoV1.svg";
+// @ts-ignore
 import { ReactComponent as Insta } from "./assets/insta.svg";
+// @ts-ignore
 import { ReactComponent as StravaLogo } from "./assets/stravaLogo.svg";
 import Countdown from "./Countdown";
 
@@ -21,7 +25,9 @@ const targetMap = {
 };
 
 export default class LandingPage extends Component {
-  constructor(props) {
+  intervalRef: React.RefObject<unknown>;
+
+  constructor(props: any) {
     super(props);
     this.intervalRef = React.createRef();
   }
@@ -30,8 +36,9 @@ export default class LandingPage extends Component {
   componentDidMount() {
     const btns = Object.keys(targetMap);
 
-    const scrollToArea = (e) => {
-      const id = targetMap[e.target.id];
+    const scrollToArea = (e: MouseEvent) => {
+      const id =
+        targetMap[(e.target as HTMLElement).id as keyof typeof targetMap];
       document
         .getElementById(id)
         ?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -57,12 +64,13 @@ export default class LandingPage extends Component {
       const btns = Object.keys(targetMap);
 
       btns.forEach((btn) =>
-        document.getElementById(btn)?.addEventListener("click", scrollToArea)
+        document.getElementById(btn)?.addEventListener("click", scrollToArea),
       );
     };
 
-    const scrollToArea = (e) => {
-      const id = targetMap[e.target.id];
+    const scrollToArea = (e: MouseEvent) => {
+      const id =
+        targetMap[(e.target as HTMLElement).id as keyof typeof targetMap];
       document
         .getElementById(id)
         ?.scrollIntoView({ behavior: "smooth", block: "start" });

@@ -10,9 +10,14 @@ const MyBox = styled(Box)(({ theme }) => ({
   fontSize: "30px",
 }));
 
-const Countdown = (props) => {
-  const intervalRef = React.useRef();
-  const [countdown, setCountdown] = useState({
+interface CountdownState {
+  dayDisplay: string;
+  lower: string;
+}
+
+const Countdown: React.FC = () => {
+  const intervalRef = React.useRef<NodeJS.Timeout>(null);
+  const [countdown, setCountdown] = useState<CountdownState>({
     dayDisplay: "",
     lower: "...soon",
   });
@@ -39,7 +44,9 @@ const Countdown = (props) => {
     }, 1000);
 
     return () => {
-      clearInterval(intervalRef.current);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
     };
   }, [kickOffDate]);
 

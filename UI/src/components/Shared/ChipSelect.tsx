@@ -1,13 +1,16 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Box, Chip, FormHelperText } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 const MyBox = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 
-const ChipSelect = (props) => {
-  const { list, setValue, value } = props;
+interface ChipSelectProps {
+  list: string[];
+  value: string;
+  setValue: (value: string) => void;
+}
 
+const ChipSelect: React.FC<ChipSelectProps> = ({ list, setValue, value }) => {
   return (
     <MyBox>
       <FormHelperText>Surface</FormHelperText>
@@ -28,12 +31,6 @@ const ChipSelect = (props) => {
       </div>
     </MyBox>
   );
-};
-
-ChipSelect.propTypes = {
-  list: PropTypes.array.isRequired,
-  value: PropTypes.string.isRequired,
-  setValue: PropTypes.func.isRequired,
 };
 
 export default ChipSelect;

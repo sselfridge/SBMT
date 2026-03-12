@@ -1,18 +1,20 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Typography, useMediaQuery, Link as MuiLink, Box } from "@mui/material";
 
+// @ts-ignore
 import { ReactComponent as ConnectStrava } from "assets/stravaBrand/btn_strava_connectwith_orange.svg";
 import AppContext from "AppContext";
 
-const StravaButton = (props) => {
-  let { text } = props;
+interface StravaButtonProps {
+  text?: string;
+}
 
+const StravaButton: React.FC<StravaButtonProps> = ({ text }) => {
   const { redirectUri } = React.useContext(AppContext);
 
   const stravaUrl = `https://www.strava.com/oauth/authorize?client_id=16175&redirect_uri=${redirectUri}/api/strava/callback&response_type=code&approval_prompt=auto&scope=read,activity:read,profile:read_all`;
 
-  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -46,10 +48,6 @@ const StravaButton = (props) => {
       </MuiLink>
     </Box>
   );
-};
-
-StravaButton.propTypes = {
-  text: PropTypes.string,
 };
 
 export default StravaButton;

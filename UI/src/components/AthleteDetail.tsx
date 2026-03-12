@@ -13,12 +13,14 @@ import {
 } from "@mui/material";
 import AppContext from "AppContext";
 
-import { styled } from "@mui/material/styles";
+import { styled, Theme } from "@mui/material/styles";
 import { Link, useParams } from "react-router-dom";
 import { ApiGet } from "api/api";
 import { formattedTime } from "utils/helperFuncs";
 import { MAX_INT } from "utils/constants";
-
+import type { User } from "@/types/StravaUserDTO";
+import type { UserSegment } from "@/types/UserSegment";
+// @ts-ignore
 import { ReactComponent as StravaLogo } from "assets/stravaLogoTransparent.svg";
 import SelectCompUser from "./SelectCompUser";
 
@@ -31,9 +33,9 @@ const MyBox = styled(Box)(({ theme }) => ({
 
 const AthleteDetail = () => {
   const params = useParams();
-  const [user, setUser] = useState(undefined);
-  const [userSegments, setUserSegments] = useState([]);
-  const [compSegments, setCompSegments] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [userSegments, setUserSegments] = useState<UserSegment[]>([]);
+  const [compSegments, setCompSegments] = useState<UserSegment[]>([]);
 
   const [hideIncomplete, setHideIncomplete] = useState(false);
 
@@ -52,7 +54,9 @@ const AthleteDetail = () => {
     (s) => s.efforts.length > 0,
   ).length;
 
-  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery((theme: Theme) =>
+    theme.breakpoints.down("sm"),
+  );
 
   React.useEffect(() => {
     ApiGet(`/api/athletes/${params.athleteId}`, setUser, null);
@@ -62,16 +66,18 @@ const AthleteDetail = () => {
     );
   }, [params, year]);
 
-  const makeSegmentRow = (segment, index) => {
+  const makeSegmentRow = (segment: UserSegment, index: number) => {
     let timeDiff = 0;
     let compSegment = null;
     let compActLink = null;
-    if (compSegments) {
+    if (compSegments.length) {
       compSegment = compSegments.find((s) => s.segmentId === segment.segmentId);
-      if (compSegment.bestTime !== MAX_INT && segment.bestTime !== MAX_INT) {
-        timeDiff = compSegment.bestTime - segment.bestTime;
+      if (compSegment) {
+        if (compSegment.bestTime !== MAX_INT && segment.bestTime !== MAX_INT) {
+          timeDiff = compSegment.bestTime - segment.bestTime;
+        }
+        compActLink = `${compSegment.bestActId}/segments/${compSegment.bestEffortId}`;
       }
-      compActLink = `${compSegment.bestActId}/segments/${compSegment.bestEffortId}`;
     }
 
     const isBehind = timeDiff > 0;
@@ -138,7 +144,7 @@ const AthleteDetail = () => {
     );
   };
 
-  const filterCompleted = (segment) => {
+  const filterCompleted = (segment: UserSegment) => {
     if (hideIncomplete) {
       return segment.bestTime !== MAX_INT;
     } else return true;
