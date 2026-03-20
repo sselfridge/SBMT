@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
+
+//@ts-ignore
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import {
   addSegmentToMap,
@@ -9,12 +11,19 @@ import {
 
 import config from "config";
 
+import type { Segment } from "@/types/db/Segment";
+import type { MapWithMarkers } from "@/types/mapBoxgl";
+
 mapboxgl.accessToken = config.mapBox;
 
-const SegmentMap = (props) => {
+interface SegmentMapProps {
+  segments: Segment[];
+}
+
+const SegmentMap = (props: SegmentMapProps) => {
   const { segments } = props;
 
-  const [map, setMap] = useState(null);
+  const [map, setMap] = useState<MapWithMarkers | null>(null);
   const mapRef = useRef(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -43,9 +52,10 @@ const SegmentMap = (props) => {
   }, []);
 
   useEffect(() => {
-    const startMarkers = [];
+    const startMarkers: mapboxgl.Marker[] = [];
     if (isLoaded) {
       segments.forEach((seg) => {
+        if (!map) return;
         addSegmentToMap(map, seg, startMarkers);
         addSegmentPopupToMap(map, seg);
       });
@@ -54,7 +64,8 @@ const SegmentMap = (props) => {
     //TODO - this doesn't look great on mobile, maybe start from all then zoom in to DT area?
 
     if (startMarkers.length > 0) {
-      map.fitBounds(getBounds(startMarkers));
+      if (map)
+        map.fitBounds(getBounds(startMarkers) as mapboxgl.LngLatBoundsLike);
     }
     return () => {
       if (map?.meinMarkers) {

@@ -1,18 +1,5 @@
 import React, { useContext, useState, Fragment } from "react";
-import PropTypes from "prop-types";
-import {
-  // Avatar,
-  Box,
-  // List,
-  // ListItem,
-  // ListItemButton,
-  // ListItemIcon,
-  // ListItemText,
-  // Checkbox,
-  // IconButton,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 // import clubs from "mockData/clubs";
 import ConfirmDelete from "./ConfirmDelete";
@@ -30,7 +17,7 @@ const MyBox = styled(Box)(({ theme }) => ({
   alignItems: "center",
 }));
 
-const UserSettings = (props) => {
+const UserSettings = () => {
   const { user } = useContext(AppContext);
   const [noClubScope, setNoClubScope] = useState(false);
   const [noActivityScope, setNoActivityScope] = useState(false);
@@ -106,10 +93,6 @@ const UserSettings = (props) => {
       )}
     </MyBox>
   );
-};
-
-UserSettings.propTypes = {
-  prop: PropTypes.string,
 };
 
 export default UserSettings;

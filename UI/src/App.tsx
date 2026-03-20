@@ -12,18 +12,20 @@ import Feedback from "components/Feedback";
 import { CircularProgress, Box } from "@mui/material";
 import { db } from "utils/helperFuncs";
 
+import type { User } from "./types/StravaUserDTO";
+
 function App() {
   const { dispatch, user } = React.useContext(AppContext);
 
   const onSetUser = React.useCallback(
-    (user) => {
+    (user: User) => {
       db("setUser");
       dispatch({ type: "setUser", user });
     },
-    [dispatch]
+    [dispatch],
   );
 
-  const fetchOnce = React.useRef(true);
+  const fetchOnce = React.useRef<Boolean | null>(true);
   React.useEffect(() => {
     if (fetchOnce.current) {
       fetchOnce.current = null;

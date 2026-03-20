@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-const BetaRedirect = (props) => {
+const BetaRedirect = () => {
   const params = useParams();
   const navigate = useNavigate();
 

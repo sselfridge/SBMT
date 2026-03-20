@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 
-export default function TeresaWon(props) {
+export default function TeresaWon() {
   return (
     <Box
       sx={{

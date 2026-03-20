@@ -1,6 +1,24 @@
 import { YEARS } from "utils/constants";
+import type { User } from "./types/StravaUserDTO";
 
-export default function reducer(state, action) {
+type State = {
+  user: User | null;
+  isPreSeason: boolean;
+  isPostSeason: boolean;
+  isOffSeason: boolean;
+  rateLimit: number;
+  env: string;
+  kickOffDate: string;
+  endingDate: string;
+  year: string | null;
+};
+
+type Action =
+  | { type: "setUser"; user: User }
+  | { type: "setSettings"; settings: Partial<State> }
+  | { type: "setYear"; year: string };
+
+export default function reducer(state: State, action: Action): State {
   switch (action.type) {
     case "setUser":
       return { ...state, user: action.user };
@@ -9,9 +27,9 @@ export default function reducer(state, action) {
     case "setSettings":
       return { ...state, ...action.settings };
     case "setYear":
-      if (YEARS.includes(year) === false) {
-        console.error("Invalid Year", year);
-        break;
+      if (YEARS.includes(action.year) === false) {
+        console.error("Invalid Year", action.year);
+        return state;
       }
       return { ...state, year: action.year };
 
@@ -23,7 +41,7 @@ export default function reducer(state, action) {
 const { search } = window.location;
 const params = new URLSearchParams(search);
 let year = params.get("year");
-if (YEARS.includes(year) === false) {
+if (YEARS.includes(year as string) === false) {
   // eslint-disable-next-line prefer-destructuring
   year = YEARS[0];
 }

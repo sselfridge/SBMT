@@ -1,9 +1,18 @@
 import React from "react";
+//@ts-ignore
 import { toGeoJSON } from "@mapbox/polyline";
+//@ts-ignore
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import * as ReactDOMServer from "react-dom/server";
 
-export const addSegmentToMap = (map, segment, markerArr) => {
+import type { MapWithMarkers } from "@/types/mapBoxgl";
+import type { Segment } from "@/types/db/Segment";
+
+export const addSegmentToMap = (
+  map: MapWithMarkers,
+  segment: Segment,
+  markerArr?: mapboxgl.Marker[],
+) => {
   const geometry = getGeometry(segment);
   const { id, startLatlng } = segment;
 
@@ -80,7 +89,7 @@ export const addSegmentToMap = (map, segment, markerArr) => {
   map.meinMarkers.markers.push(markerGreen);
 };
 
-export const addSegmentPopupToMap = (map, segment) => {
+export const addSegmentPopupToMap = (map: MapWithMarkers, segment: Segment) => {
   const { name, id } = segment;
   const idString = `${id}`;
 
@@ -121,7 +130,7 @@ export const addSegmentPopupToMap = (map, segment) => {
   });
 };
 
-export const getGeometry = (segment) => {
+export const getGeometry = (segment: Segment) => {
   const polyline = segment?.polyline;
   let geoJson = {
     type: "lineString",
@@ -130,10 +139,10 @@ export const getGeometry = (segment) => {
   if (polyline) {
     geoJson = toGeoJSON(polyline);
   }
-  return geoJson;
+  return geoJson as any;
 };
 
-export const getBounds = (arr, padding = 0.015) => {
+export const getBounds = (arr: mapboxgl.Markers[], padding = 0.015) => {
   let minLat = Number.POSITIVE_INFINITY,
     maxLat = Number.NEGATIVE_INFINITY,
     minLng = Number.POSITIVE_INFINITY,

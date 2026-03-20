@@ -6,4 +6,4 @@ const config = {
   mapBox: `${mapBox2}${mapBox3}${mapBox1}`,
 };
 
-module.exports = config;
+export default config;

@@ -5,7 +5,6 @@ import theme from "theme/theme";
 import CssBaseline from "@mui/material/CssBaseline";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-// import reportWebVitals from "./reportWebVitals";
 import MeinRoutes from "./routes/MeinRoutes";
 
 import { db } from "utils/helperFuncs";
@@ -24,10 +23,5 @@ root.render(
         </ContextProvider>
       </LocalizationProvider>
     </ThemeProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
-
-// // If you want to start measuring performance in your app, pass a function
-// // to log results (for example: reportWebVitals(console.log))
-// // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-// reportWebVitals();

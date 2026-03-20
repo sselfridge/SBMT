@@ -6,16 +6,8 @@ import { addSegmentToMap, getBounds, getGeometry } from "utils/mapUtils";
 
 //@ts-ignore
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
-import type { Map } from "mapbox-gl";
 import type { Segment } from "@/types/db/Segment";
-
-interface MeinMarkers {
-  markers: mapboxgl.Marker[];
-  layers: string[];
-  sources: string[];
-}
-
-type MapWithMarkers = Map & { meinMarkers: MeinMarkers };
+import type { MapWithMarkers } from "@/types/mapBoxgl";
 
 interface SegmentDetailMapProps {
   segment: Segment;
@@ -48,7 +40,9 @@ const SegmentDetailMap = (props: SegmentDetailMapProps) => {
 
   useEffect(() => {
     if (_.isEmpty(segment) === false && isLoaded) {
-      addSegmentToMap(map, segment);
+      if (map) {
+        addSegmentToMap(map, segment);
+      }
       // const bounds = getBounds(
       //   [
       //     segment?.startLatlng.slice().reverse(),
