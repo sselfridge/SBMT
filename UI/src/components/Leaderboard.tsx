@@ -24,7 +24,7 @@ import type {
   GridRenderCellParams,
   GridColumnVisibilityModel,
 } from "@mui/x-data-grid";
-import type { Filters as FilterType } from "@/types/Filters";
+// import type { Filters as FilterType } from "@/types/Filters"; //TODO
 
 const MainBox = styled(Box)(({ theme }) => {
   return {
