@@ -17,7 +17,7 @@ import { styled, Theme } from "@mui/material/styles";
 import { Link, useParams } from "react-router-dom";
 import { ApiGet } from "api/api";
 import { formattedTime } from "utils/helperFuncs";
-import { MAX_INT } from "utils/constants";
+import { MAX_INT, SURFACE } from "utils/constants";
 import type { User } from "@/types/StravaUserDTO";
 import type { UserSegment } from "@/types/UserSegment";
 // @ts-ignore
@@ -41,9 +41,9 @@ const AthleteDetail = () => {
 
   const { user: loggedInUser, isPreSeason, year } = useContext(AppContext);
 
-  const gravelSegments = userSegments.filter((s) => s.surfaceType === "gravel");
-  const roadSegments = userSegments.filter((s) => s.surfaceType === "road");
-  const trailSegments = userSegments.filter((s) => s.surfaceType === "trail");
+  const gravelSegments = userSegments.filter((s) => s.surfaceType === SURFACE.gravel);
+  const roadSegments = userSegments.filter((s) => s.surfaceType === SURFACE.road);
+  const trailSegments = userSegments.filter((s) => s.surfaceType === SURFACE.trail);
   const roadCompletedCount = roadSegments.filter(
     (s) => s.efforts.length > 0,
   ).length;

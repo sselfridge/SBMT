@@ -1,16 +1,18 @@
 import React, { useState } from "react";
-// import PropTypes from "prop-types";
 import { Box, Tabs, Tab } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridRenderCellParams } from "@mui/x-data-grid";
 import SegmentMap from "./SegmentMap";
 
-import SEGMENTS from "mockData/segments";
 import { ApiGet } from "api/api";
 
 import { surfaceList } from "utils/constants";
 import AppContext from "AppContext";
+
+import { SURFACE } from "utils/constants";
+
+import type { Segment } from "@/types/db/Segment";
 
 const MyBox = styled(Box)(({ theme }) => ({
   height: "90vh",
@@ -22,7 +24,7 @@ const MyBox = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
 }));
-const MapBox = styled(Box)(({ theme }) => ({
+const MapBox = styled(Box)(() => ({
   height: "30vh",
   width: "calc(100%)",
 }));
@@ -32,7 +34,7 @@ const columns = [
     field: "name",
     headerName: "Segment",
     flex: 4,
-    renderCell: (props) => {
+    renderCell: (props: GridRenderCellParams) => {
       const { value, id } = props;
       return <Link to={`${id}`}>{value}</Link>;
     },
@@ -48,29 +50,29 @@ const columns = [
 ];
 
 const Segments = () => {
-  const [tabVal, setTabVal] = useState("road");
-  const [allSegments, setAllSegments] = useState([]);
-  const [segments, setSegments] = useState(SEGMENTS);
+  const [tabVal, setTabVal] = useState(SURFACE.all);
+  const [allSegments, setAllSegments] = useState<Segment[]>([]);
+  const [segments, setSegments] = useState<Segment[]>([]);
 
   const [loading, setLoading] = useState(true);
 
   const { year } = React.useContext(AppContext);
 
-  const handleTabChange = (event, newValue) => {
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => {
     setTabVal(newValue);
   };
 
-  const onLoad = React.useCallback((data) => {
+  const onLoad = React.useCallback((data: Segment[]) => {
     setAllSegments(data);
     setLoading(false);
 
-    const noRoad = !data.some((x) => x.surfaceType === "road");
-    const noGravel = !data.some((x) => x.surfaceType === "gravel");
+    const noRoad = !data.some((x) => x.surfaceType === SURFACE.road);
+    const noGravel = !data.some((x) => x.surfaceType === SURFACE.gravel);
 
     if (noRoad && !noGravel) {
-      setTabVal("gravel");
+      setTabVal(SURFACE.gravel);
     } else if (noRoad && noGravel) {
-      setTabVal("trail");
+      setTabVal(SURFACE.trail);
     }
   }, []);
 
@@ -78,26 +80,28 @@ const Segments = () => {
     ApiGet(`api/segments/?year=${year}`, onLoad);
   }, [onLoad, year]);
 
-  const roadCount = allSegments.filter((s) => s.surfaceType === "road").length;
+  const roadCount = allSegments.filter(
+    (s) => s.surfaceType === SURFACE.road,
+  ).length;
   const gravelCount = allSegments.filter(
-    (s) => s.surfaceType === "gravel"
+    (s) => s.surfaceType === SURFACE.gravel,
   ).length;
   const trailCount = allSegments.filter(
-    (s) => s.surfaceType === "trail"
+    (s) => s.surfaceType === SURFACE.trail,
   ).length;
   const allCount = allSegments.length;
 
   React.useEffect(() => {
-    let filterFunc;
+    let filterFunc: (s: Segment) => boolean;
     if (surfaceList.includes(tabVal) === false)
       throw new Error("Invalid surface type");
-    if (tabVal === "ALL") {
+    if (tabVal === SURFACE.all) {
       filterFunc = () => true;
     } else {
       filterFunc = (s) => s.surfaceType === tabVal;
     }
-
-    setSegments((seg) => allSegments.filter(filterFunc));
+    const filteredSegments = allSegments.filter(filterFunc);
+    setSegments(filteredSegments);
     return () => {};
   }, [allSegments, tabVal]);
 
@@ -110,11 +114,12 @@ const Segments = () => {
         value={tabVal}
         onChange={handleTabChange}
         aria-label="nav tabs example"
+        variant="scrollable"
       >
-        <Tab label={`Road (${roadCount})`} value={"road"} />
-        <Tab label={`Gravel (${gravelCount})`} value={"gravel"} />
-        <Tab label={`Trail Run (${trailCount})`} value={"trail"} />
-        <Tab label={`Show All (${allCount})`} value={"ALL"} />
+        <Tab label={`Show All (${allCount})`} value={SURFACE.all} />
+        <Tab label={`Road (${roadCount})`} value={SURFACE.road} />
+        <Tab label={`Gravel (${gravelCount})`} value={SURFACE.gravel} />
+        <Tab label={`Trail Run (${trailCount})`} value={SURFACE.trail} />
       </Tabs>
       <DataGrid
         rows={segments}
@@ -137,10 +142,6 @@ const Segments = () => {
       />
     </MyBox>
   );
-};
-
-Segments.propTypes = {
-  // prop: PropTypes.string,
 };
 
 export default Segments;

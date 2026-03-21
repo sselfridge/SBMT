@@ -28,7 +28,7 @@ import StravaButton from "components/Shared/StravaButton";
 import { ApiPost } from "api/api";
 import { metersToMiles } from "utils/helperFuncs";
 import { ApiDelete } from "api/api";
-import { surfaceList, YEARS } from "utils/constants";
+import { surfaceList, YEARS, SURFACE } from "utils/constants";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -46,7 +46,7 @@ const AdminSegments = (props) => {
   const navigate = useNavigate();
 
   const [segmentId, setSegmentId] = React.useState(null);
-  const [surfaceType, setSurfaceType] = React.useState("road");
+  const [surfaceType, setSurfaceType] = React.useState(SURFACE.road);
 
   const [yearCopyFrom, setYearCopyFrom] = React.useState("");
   const [yearCopyTo, setYearCopyTo] = React.useState("");
@@ -67,7 +67,7 @@ const AdminSegments = (props) => {
         setNewSegment(newSegment);
         refreshSegments();
       },
-      () => setNewSegment({ name: "Segment Already exists" })
+      () => setNewSegment({ name: "Segment Already exists" }),
     );
   };
 
@@ -82,7 +82,7 @@ const AdminSegments = (props) => {
         refreshSegments,
         (err) => {
           console.error(err);
-        }
+        },
       );
     }
   };
@@ -136,7 +136,9 @@ const AdminSegments = (props) => {
         return (
           <Autocomplete
             sx={{ width: "100%" }}
-            options={surfaceList.filter((s) => s !== "ALL" && s !== "bikes")}
+            options={surfaceList.filter(
+              (s) => s !== SURFACE.all && s !== SURFACE.bikes,
+            )}
             value={value}
             filterOptions={(v) => v}
             onChange={(e, newVal) => {
@@ -255,9 +257,9 @@ const AdminSegments = (props) => {
                   value={surfaceType}
                   onChange={(e) => setSurfaceType(e.target.value)}
                 >
-                  <MenuItem value={"road"}>Road</MenuItem>
-                  <MenuItem value={"gravel"}>Gravel</MenuItem>
-                  <MenuItem value={"trail"}>Trail Run</MenuItem>
+                  <MenuItem value={SURFACE.road}>Road</MenuItem>
+                  <MenuItem value={SURFACE.gravel}>Gravel</MenuItem>
+                  <MenuItem value={SURFACE.trail}>Trail Run</MenuItem>
                 </Select>
               </FormControl>
             </Box>

@@ -2,10 +2,24 @@ export const START_DATE = new Date("2023-05-26T01:00:00-07:00");
 
 export const YEARS = ["2026sbmt", "2025sbmt", "2025trail", "2024", "2023"];
 
-export const surfaceList = ["ALL", "road", "gravel", "bikes", "trail"];
+export const SURFACE = {
+  all: "ALL",
+  road: "road",
+  gravel: "gravel",
+  bikes: "bikes",
+  trail: "trail",
+};
+
+export const surfaceList = [SURFACE.all, SURFACE.road, SURFACE.gravel, SURFACE.bikes, SURFACE.trail];
 export const APP_ATHLETE_ID = 1;
 
-export const genderList = ["ALL", "M", "F"];
+export const GENDER = {
+  all: "ALL",
+  male: "M",
+  female: "F",
+};
+
+export const genderList = [GENDER.all, GENDER.male, GENDER.female];
 export const categoryList = [
   "ALL",
   "Pro",
