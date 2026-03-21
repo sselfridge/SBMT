@@ -1,5 +1,4 @@
 import React, { useCallback } from "react";
-import PropTypes from "prop-types";
 import {
   MenuItem,
   Box,
@@ -66,17 +65,6 @@ const LabeledSelect = (props: LabeledSelectProps) => {
       </Select>
     </FormControl>
   );
-};
-
-LabeledSelect.propTypes = {
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
-  label: PropTypes.string.isRequired,
-  setValue: PropTypes.func.isRequired,
-  list: PropTypes.array.isRequired,
-  minWidth: PropTypes.number,
-  maxWidth: PropTypes.number,
-  helpText: PropTypes.string,
-  onOpen: PropTypes.func,
 };
 
 export default LabeledSelect;

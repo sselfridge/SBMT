@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { List, ListItem, styled, Box,TypographyProps, BoxProps } from "@mui/material";
 
 interface UpdateProps {
@@ -160,11 +159,6 @@ const Updates = (props:UpdateProps) => {
       </List>
     </ArticleBox>
   );
-};
-
-Updates.propTypes = {
-  TitleTypography: PropTypes.object,
-  SubTitleTypo: PropTypes.string,
 };
 
 export default Updates;

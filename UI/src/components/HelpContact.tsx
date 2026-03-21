@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Box, Paper, Typography, Divider } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -100,10 +99,6 @@ const HelpContact = () => {
       </Paper>
     </MyBox>
   );
-};
-
-HelpContact.propTypes = {
-  prop: PropTypes.string,
 };
 
 export default HelpContact;

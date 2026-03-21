@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from "react";
-import PropTypes from "prop-types";
 import {
   Box,
   TextField,
@@ -143,10 +142,6 @@ const RescanActivity = () => {
       )}
     </MyBox>
   );
-};
-
-RescanActivity.propTypes = {
-  prop: PropTypes.object,
 };
 
 export default RescanActivity;

@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Tooltip } from "@mui/material";
 
 import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
@@ -28,10 +27,6 @@ const Cup = (props:PRMedalProps) => {
       />
     </Tooltip>
   );
-};
-
-Cup.propTypes = {
-  rank: PropTypes.oneOf([0, 1, 2, 3]),
 };
 
 export default Cup;

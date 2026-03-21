@@ -1,6 +1,4 @@
 import React, { useState, useMemo } from "react";
-import PropTypes from "prop-types";
-
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
@@ -342,10 +340,6 @@ const Leaderboard = () => {
       </Paper>
     </MainBox>
   );
-};
-
-Leaderboard.propTypes = {
-  prop: PropTypes.string,
 };
 
 export default Leaderboard;

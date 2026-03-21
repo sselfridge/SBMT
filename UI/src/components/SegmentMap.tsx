@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import PropTypes from "prop-types";
-
 //@ts-ignore
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import {
@@ -81,10 +79,6 @@ const SegmentMap = (props: SegmentMapProps) => {
   }, [isLoaded, map, segments]);
 
   return <div style={{ height: "100%", width: "100%" }} ref={mapRef} />;
-};
-
-SegmentMap.propTypes = {
-  segments: PropTypes.array.isRequired,
 };
 
 export default SegmentMap;

@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Box, Link as MuiLink, Paper, Typography } from "@mui/material";
 //@ts-ignore --svg import
 import { ReactComponent as Logo } from "assets/logoV1.svg";
@@ -111,10 +110,6 @@ const Info = () => {
       </Paper>
     </MyBox>
   );
-};
-
-Info.propTypes = {
-  prop: PropTypes.string,
 };
 
 export default Info;

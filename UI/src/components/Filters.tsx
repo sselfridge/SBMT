@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from "react";
-import PropTypes from "prop-types";
 import _ from "lodash";
 import {
   Box,
@@ -410,11 +409,6 @@ const Filters = (props: FilterProps) => {
       )}
     </FormGroup>
   );
-};
-
-Filters.propTypes = {
-  onApplyFilters: PropTypes.func.isRequired,
-  searchParams: PropTypes.object.isRequired,
 };
 
 const FiltersWithMobile = (props: FilterProps) => {

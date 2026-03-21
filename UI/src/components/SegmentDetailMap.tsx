@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import PropTypes from "prop-types";
 import _ from "lodash";
 
 import { addSegmentToMap, getBounds, getGeometry } from "utils/mapUtils";
@@ -77,10 +76,6 @@ const SegmentDetailMap = (props: SegmentDetailMapProps) => {
       className="map-container"
     ></div>
   );
-};
-
-SegmentDetailMap.propTypes = {
-  segment: PropTypes.object.isRequired,
 };
 
 export default SegmentDetailMap;

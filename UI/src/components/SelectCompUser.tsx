@@ -1,5 +1,4 @@
 import React, { useState, useContext, useCallback } from "react";
-import PropTypes from "prop-types";
 import {
   Box,
   useMediaQuery,
@@ -160,10 +159,6 @@ const SelectCompUser = (props: SelectCompUserProps) => {
       </Popover>
     </Box>
   );
-};
-
-SelectCompUser.propTypes = {
-  setCompSegments: PropTypes.func.isRequired,
 };
 
 export default SelectCompUser;

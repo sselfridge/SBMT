@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Box, List, ListItem, Paper, Typography } from "@mui/material";
 
 import { styled } from "@mui/material/styles";
@@ -64,10 +63,6 @@ const InfoScopes = () => {
       </Paper>
     </MyBox>
   );
-};
-
-InfoScopes.propTypes = {
-  prop: PropTypes.string,
 };
 
 export default InfoScopes;

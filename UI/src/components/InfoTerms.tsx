@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Box, Button, List, ListItem, Paper, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
@@ -87,10 +86,6 @@ const InfoScopes = () => {
       </Paper>
     </MyBox>
   );
-};
-
-InfoScopes.propTypes = {
-  prop: PropTypes.string,
 };
 
 export default InfoScopes;

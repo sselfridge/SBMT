@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Tooltip, Badge, Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
@@ -14,7 +13,11 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-const Cup = (props) => {
+interface CupProps {
+  rank: number;
+}
+
+const Cup = (props: CupProps) => {
   const { rank } = props;
 
   if (!rank) return <Box sx={{ width: 35, height: 35 }} />;
@@ -26,10 +29,6 @@ const Cup = (props) => {
       </StyledBadge>
     </Tooltip>
   );
-};
-
-Cup.propTypes = {
-  rank: PropTypes.oneOf([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
 };
 
 export default Cup;

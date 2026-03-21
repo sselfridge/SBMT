@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import PropTypes from "prop-types";
 import { Box, Paper, Autocomplete, TextField, Button } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { ApiGet, ApiPut } from "api/api";
@@ -236,10 +235,6 @@ const NewEffort = () => {
       </Box>
     </Paper>
   );
-};
-
-NewEffort.propTypes = {
-  prop: PropTypes.object,
 };
 
 export default NewEffort;

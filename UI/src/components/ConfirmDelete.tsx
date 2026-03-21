@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
-import PropTypes from "prop-types";
+import React, { useState, useEffect, useRef, ReactNode } from "react";
 import { styled } from "@mui/material/styles";
 import AppContext from "AppContext";
 import { useNavigate } from "react-router-dom";
@@ -17,17 +16,19 @@ const MyBox = styled(Box)(({ theme }) => ({
   minHeight: "600px",
 }));
 
-const ConfirmDelete = (props) => {
+const ConfirmDelete = () => {
   const { user, dispatch } = React.useContext(AppContext);
 
   const navigate = useNavigate();
 
   const [deletePressed, setDeletePressed] = useState(false);
   const [deleteEnabledCount, setDeleteEnabledCount] = useState(3);
-  const [deleteConfirmMsg, setDeleteConfirmMsg] = useState("");
+  const [deleteConfirmMsg, setDeleteConfirmMsg] = useState<ReactNode | null>(
+    null,
+  );
   const [deleteComplete, setDeleteComplete] = useState(false);
-  const deleteRef = useRef(null);
-  const countRef = useRef(null);
+  const deleteRef = useRef<NodeJS.Timeout | undefined>(undefined);
+  const countRef = useRef<NodeJS.Timeout | undefined>(undefined);
   useEffect(() => {
     clearTimeout(deleteRef.current);
     deleteRef.current = setTimeout(() => {
@@ -61,7 +62,7 @@ const ConfirmDelete = (props) => {
         <div>
           <div>Your data has been removed</div>
           <div>You will be redirected to the home page.</div>
-        </div>
+        </div>,
       );
       setTimeout(() => {
         navigate("/");
@@ -139,10 +140,6 @@ const ConfirmDelete = (props) => {
       </Paper>
     </MyBox>
   );
-};
-
-ConfirmDelete.propTypes = {
-  prop: PropTypes.string,
 };
 
 export default ConfirmDelete;

@@ -200,6 +200,4 @@ const Segments = () => {
   );
 };
 
-Segments.propTypes = {};
-
 export default Segments;
