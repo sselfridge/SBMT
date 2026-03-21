@@ -18,6 +18,14 @@ import LeaderboardAthleteCell from "./LeaderboardAthleteCell";
 import AppContext from "AppContext";
 import { format, parseISO } from "date-fns";
 
+import type { LeaderboardEntry } from "@/types/LeaderboardEntry";
+import type {
+  GridColDef,
+  GridRenderCellParams,
+  GridColumnVisibilityModel,
+} from "@mui/x-data-grid";
+import type { Filters as FilterType } from "@/types/Filters";
+
 const MainBox = styled(Box)(({ theme }) => {
   return {
     backgroundColor: theme.palette.background.paper,
@@ -38,7 +46,8 @@ const Leaderboard = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [columnVisible, setColumnVisible] = React.useState(ALL_COLUMNS);
+  const [columnVisible, setColumnVisible] =
+    React.useState<GridColumnVisibilityModel>(ALL_COLUMNS);
   const [loading, setLoading] = useState(true);
 
   const { year, kickOffDate } = React.useContext(AppContext);
@@ -48,15 +57,18 @@ const Leaderboard = () => {
     setColumnVisible(newColumns);
   }, [isMobile]);
 
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState<LeaderboardEntry[]>([]);
 
-  const onLoad = React.useCallback((data) => {
+  const onLoad = React.useCallback((data: LeaderboardEntry[]) => {
     setRows(data);
     setLoading(false);
   }, []);
 
   const onApplyFilters = React.useCallback(
-    (filters) => {
+    (filters: any) => {
+      //TODO fix proper like
+      //TODO - fix any
+      console.log("filters: ", filters);
       setSearchParams((params) => {
         const simpleFilters = [
           "surface",
@@ -91,10 +103,10 @@ const Leaderboard = () => {
         return params;
       });
     },
-    [onLoad, setSearchParams, year]
+    [onLoad, setSearchParams, year],
   );
 
-  const columns = useMemo(
+  const columns = useMemo<GridColDef<LeaderboardEntry>[]>(
     () => [
       {
         minWidth: 40,
@@ -118,12 +130,12 @@ const Leaderboard = () => {
         headerName: "Completed",
         align: "right",
         // valueGetter: ({ row }) => `${row.completed}`,
-        renderCell: (cell) => {
+        renderCell: (cell: GridRenderCellParams) => {
           const { row } = cell;
           const { completed, segmentCount } = row;
 
           const completedTotalPercent = Math.floor(
-            (completed / segmentCount) * 100
+            (completed / segmentCount) * 100,
           );
 
           return (
@@ -165,12 +177,12 @@ const Leaderboard = () => {
         headerName: "#",
         headerAlign: "right",
         align: "right",
-        renderCell: (cell) => {
+        renderCell: (cell: GridRenderCellParams) => {
           const { row } = cell;
           const { completed, segmentCount } = row;
 
           const completedTotalPercent = Math.floor(
-            (completed / segmentCount) * 100
+            (completed / segmentCount) * 100,
           );
 
           return (
@@ -228,7 +240,7 @@ const Leaderboard = () => {
         headerAlign: "right",
         align: "right",
         flex: 25,
-        renderCell: ({ value }) => `${metersToFeet(value)} ft`,
+        renderCell: ({ value }) => `${metersToFeet(value ?? 0)} ft`,
       },
       {
         field: "totalTimeDesktop",
@@ -257,7 +269,7 @@ const Leaderboard = () => {
         },
       },
     ],
-    []
+    [],
   );
 
   let kickOffLabel = "the start";

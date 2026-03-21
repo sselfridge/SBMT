@@ -12,6 +12,7 @@ import {
   Avatar,
   Tooltip,
   IconButton,
+  Theme,
 } from "@mui/material";
 import FilterListIcon from "@mui/icons-material/FilterList";
 
@@ -33,17 +34,25 @@ import AppContext from "AppContext";
 import StravaButton from "./Shared/StravaButton";
 import { ApiPost } from "api/api";
 
+import type { User } from "@/types/StravaUserDTO";
+import type { StravaClub } from "@/types/StravaClub";
+
 const emptyClub = (
   <Box id={"0"} key={"0"} sx={{ display: "flex" }}>
     {"None"}
   </Box>
 );
 
-const Filters = (props) => {
+interface FilterProps {
+  onApplyFilters: Function;
+  searchParams: URLSearchParams;
+}
+
+const Filters = (props: FilterProps) => {
   const { onApplyFilters, searchParams } = props;
   const { user, dispatch } = useContext(AppContext);
 
-  const setUser = (user) => dispatch({ type: "setUser", user });
+  const setUser = (user: User) => dispatch({ type: "setUser", user });
 
   const [surface, setSurface] = useState(surfaceList[0]);
   const [gender, setGender] = useState(genderList[0]);
@@ -54,12 +63,14 @@ const Filters = (props) => {
   const [category, setCategory] = useState(categoryList[0]);
   const [clubList, setClubList] = useState([]);
   const [clubNode, setClubNode] = useState(emptyClub);
-  const [clubId, setClubId] = useState(null);
+  const [clubId, setClubId] = useState<number>(0);
   const [stravaBtnText, setStravaBtnText] = useState("");
 
   const [savedFiltersActive, setSavedFiltersActive] = useState(false);
 
-  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery((theme: Theme) =>
+    theme.breakpoints.down("sm"),
+  );
 
   const didMount = React.useRef(false);
   useEffect(() => {
@@ -73,7 +84,7 @@ const Filters = (props) => {
             setGender(value);
             break;
           case "club":
-            setClubId(value);
+            setClubId(Number(value));
             break;
           case "category":
             setCategory(value);
@@ -141,7 +152,8 @@ const Filters = (props) => {
       for (let filterName in userFilters) {
         if (Object.hasOwnProperty.call(userFilters, filterName)) {
           let userValue = userFilters[filterName];
-          let filterValue = filters[filterName];
+          let filterValue: number | string | null =
+            filters[filterName as keyof typeof filters];
 
           if (filterName === "clubId") {
             userValue = Number(userValue);
@@ -175,8 +187,8 @@ const Filters = (props) => {
       setClubList([]);
       setStravaBtnText("Enable Clubs");
     } else if (user?.stravaClubs?.length > 0) {
-      const clubs = user.stravaClubs.map((club) => (
-        <Box id={club.id} key={club.id} sx={{ display: "flex" }}>
+      const clubs = user.stravaClubs.map((club: StravaClub) => (
+        <Box id={`${club.id}`} key={club.id} sx={{ display: "flex" }}>
           <Avatar src={club.profileMedium} />
           {club.name}
         </Box>
@@ -184,7 +196,9 @@ const Filters = (props) => {
       clubs.unshift(emptyClub);
       setClubList(clubs);
       if (clubId) {
-        const club = clubs.find((c) => c.key === `${clubId}`);
+        const club = clubs.find(
+          (c: React.ReactElement) => c.key === `${clubId}`,
+        );
         setClubNode(club || emptyClub);
       } else {
         setClubNode(emptyClub);
@@ -270,7 +284,7 @@ const Filters = (props) => {
   const onClearFilters = () => {
     setSurface(surfaceList[1]);
     setGender(genderList[0]);
-    setClubId(null);
+    setClubId(0);
     setCategory(categoryList[0]);
     setAge(ageList[0]);
     setDistance(distanceList[0]);
@@ -313,7 +327,7 @@ const Filters = (props) => {
       {clubList.length > 0 && (
         <LabeledSelect
           label={"Club"}
-          value={clubNode}
+          value={clubNode as any} //not clean
           setValue={setClubNode}
           list={clubList}
           maxWidth={45}
@@ -323,7 +337,7 @@ const Filters = (props) => {
       {!!stravaBtnText && (
         <Tooltip
           arrow
-          position="left"
+          placement="left"
           title="Enable 'View Complete Profile' so we can see your club information"
         >
           <Box sx={{ margin: isMobile ? "15px" : "0px 0px 10px" }}>
@@ -403,8 +417,10 @@ Filters.propTypes = {
   searchParams: PropTypes.object.isRequired,
 };
 
-const FiltersWithMobile = (props) => {
-  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+const FiltersWithMobile = (props: FilterProps) => {
+  const isMobile = useMediaQuery((theme: Theme) =>
+    theme.breakpoints.down("sm"),
+  );
 
   return isMobile ? (
     <Box>

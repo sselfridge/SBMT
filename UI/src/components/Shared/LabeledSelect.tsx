@@ -10,12 +10,12 @@ import {
 } from "@mui/material";
 
 interface LabeledSelectProps {
-  value: string;
+  value: string | Element;
   setValue: Function;
   label: string;
   list: string[];
   minWidth?: number;
-  maxWidth: number;
+  maxWidth?: number;
   helpText?: string;
   onOpen?: (event: React.SyntheticEvent<Element, Event>) => void;
 }
@@ -43,7 +43,7 @@ const LabeledSelect = (props: LabeledSelectProps) => {
     <FormControl variant="standard">
       <InputLabel>{label}</InputLabel>
       <Select
-        value={value}
+        value={value as string} //Not pretty but it works
         onChange={onChange}
         sx={{
           ":first-letter": {
