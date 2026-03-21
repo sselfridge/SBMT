@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import {
   Fab,
   Box,
@@ -13,12 +12,12 @@ import CloseIcon from "@mui/icons-material/Close";
 import * as DOMPurify from "dompurify";
 import { ApiPostCb } from "api/api";
 
-const Feedback = (props) => {
+const Feedback = () => {
   const [showText, setShowText] = useState(false);
   const [submitting, setSubmitting] = useState("un-submitted");
   const [feedback, setFeedback] = useState("");
   const [email, setEmail] = useState("");
-  const emailRef = React.useRef();
+  const emailRef = React.useRef<HTMLInputElement>(null);
 
   const onSubmit = () => {
     const preText = `${feedback} -- ${email}`;
@@ -87,7 +86,7 @@ const Feedback = (props) => {
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
-                emailRef.current.focus();
+                emailRef.current?.focus();
               }
               if (e.key === "Escape") {
                 e.preventDefault();
@@ -133,10 +132,6 @@ const Feedback = (props) => {
       )}
     </Box>
   );
-};
-
-Feedback.propTypes = {
-  prop: PropTypes.object,
 };
 
 export default Feedback;

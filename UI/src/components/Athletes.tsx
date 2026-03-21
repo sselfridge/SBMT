@@ -17,10 +17,19 @@ import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import ViewStreamIcon from "@mui/icons-material/ViewStream";
 import ViewModuleIcon from "@mui/icons-material/ViewModule";
 import AppContext from "AppContext";
-const viewTypes = ["standard", "dots", "list"];
+
+import type { User } from "@/types/StravaUserDTO";
+
+const VIEW_TYPES = {
+  standard: "standard",
+  dots: "dots",
+  list: "list",
+};
+
+const viewTypes = [VIEW_TYPES.standard, VIEW_TYPES.dots, VIEW_TYPES.list];
 
 const Athletes = () => {
-  const [athletes, setAthletes] = useState([]);
+  const [athletes, setAthletes] = useState<User[]>([]);
   const [viewIndex, setViewIndex] = useState(0);
 
   const { year } = React.useContext(AppContext);
@@ -79,16 +88,16 @@ const Athletes = () => {
         <IconButton
           onClick={() => setViewIndex((t) => (t + 1) % viewTypes.length)}
         >
-          {viewTypes[viewIndex] === "dots" ? (
+          {viewTypes[viewIndex] === VIEW_TYPES.dots ? (
             <ViewStreamIcon />
-          ) : viewTypes[viewIndex] === "standard" ? (
+          ) : viewTypes[viewIndex] === VIEW_TYPES.standard ? (
             <DragIndicatorIcon />
           ) : (
             <ViewModuleIcon />
           )}
         </IconButton>
       </Box>
-      {viewTypes[viewIndex] === "standard" && (
+      {viewTypes[viewIndex] === VIEW_TYPES.standard && (
         <Grid container sx={{ justifyContent: "center" }}>
           {filteredAthletes.map((user) => (
             <Grid sx={{ margin: "5px" }} key={user.athleteId}>
@@ -114,7 +123,7 @@ const Athletes = () => {
           ))}
         </Grid>
       )}
-      {viewTypes[viewIndex] === "dots" && (
+      {viewTypes[viewIndex] === VIEW_TYPES.dots && (
         <Box
           sx={{
             display: "flex",
@@ -142,7 +151,7 @@ const Athletes = () => {
           ))}
         </Box>
       )}
-      {viewTypes[viewIndex] === "list" && (
+      {viewTypes[viewIndex] === VIEW_TYPES.list && (
         <Box
           sx={{
             display: "flex",

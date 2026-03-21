@@ -41,9 +41,15 @@ const AthleteDetail = () => {
 
   const { user: loggedInUser, isPreSeason, year } = useContext(AppContext);
 
-  const gravelSegments = userSegments.filter((s) => s.surfaceType === SURFACE.gravel);
-  const roadSegments = userSegments.filter((s) => s.surfaceType === SURFACE.road);
-  const trailSegments = userSegments.filter((s) => s.surfaceType === SURFACE.trail);
+  const gravelSegments = userSegments.filter(
+    (s) => s.surfaceType === SURFACE.gravel,
+  );
+  const roadSegments = userSegments.filter(
+    (s) => s.surfaceType === SURFACE.road,
+  );
+  const trailSegments = userSegments.filter(
+    (s) => s.surfaceType === SURFACE.trail,
+  );
   const roadCompletedCount = roadSegments.filter(
     (s) => s.efforts.length > 0,
   ).length;
@@ -184,7 +190,7 @@ const AthleteDetail = () => {
             View on Strava
           </a>
         </Box>
-        {!isPreSeason || loggedInUser.athleteId === 1075670 ? (
+        {!isPreSeason || loggedInUser?.athleteId === 1075670 ? (
           <React.Fragment>
             <Typography variant="h4">Segment Efforts</Typography>
             <Button onClick={() => setHideIncomplete((v) => !v)}>

@@ -16,7 +16,7 @@ interface CountdownState {
 }
 
 const Countdown: React.FC = () => {
-  const intervalRef = React.useRef<NodeJS.Timeout>(null);
+  const intervalRef = React.useRef<NodeJS.Timeout | null>(null);
   const [countdown, setCountdown] = useState<CountdownState>({
     dayDisplay: "",
     lower: "...soon",

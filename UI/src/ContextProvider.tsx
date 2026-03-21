@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { type ReactNode, useReducer } from "react";
 import PropTypes from "prop-types";
 import AppContext from "AppContext";
 import AppReducer, { INITIAL_STATE } from "./AppReducer";
@@ -6,7 +6,12 @@ import { ApiGet } from "api/api";
 import { DateTime } from "luxon";
 import { db } from "utils/helperFuncs";
 
-function ContextProvider({ children }) {
+interface ContextProviderProps {
+  children: ReactNode;
+}
+
+function ContextProvider(props: ContextProviderProps) {
+  const { children } = props;
   const [state, dispatch] = useReducer(AppReducer, INITIAL_STATE);
 
   const { year } = state;
