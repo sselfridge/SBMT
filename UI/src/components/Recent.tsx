@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import {
   Box,
   Paper,
@@ -8,6 +8,7 @@ import {
   Tooltip,
   Avatar,
   useMediaQuery,
+  Theme,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Link, useNavigate } from "react-router-dom";
@@ -26,6 +27,10 @@ import { YEARS } from "utils/constants";
 import { ApiGet } from "api/api";
 import AppContext from "AppContext";
 
+import type { RecentEffort } from "@/types/RecentEffort";
+
+type AppGridColDef = GridColDef<RecentEffort> & { mobile?: boolean };
+
 const MyBox = styled(Box)(({ theme }) => {
   return {
     backgroundColor: theme.palette.background.paper,
@@ -35,9 +40,11 @@ const MyBox = styled(Box)(({ theme }) => {
 });
 
 const Recent = () => {
-  const [recentEfforts, setRecentEfforts] = useState([]);
+  const [recentEfforts, setRecentEfforts] = useState<RecentEffort[]>([]);
   const [loading, setLoading] = useState(true);
-  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery((theme: Theme) =>
+    theme.breakpoints.down("sm"),
+  );
   const navigate = useNavigate();
 
   const { year } = React.useContext(AppContext);
@@ -48,8 +55,8 @@ const Recent = () => {
     }
   }, [navigate, year]);
 
-  const columns = React.useMemo(() => {
-    const COLUMNS = [
+  const columns = React.useMemo<AppGridColDef[]>(() => {
+    const COLUMNS: AppGridColDef[] = [
       {
         mobile: true,
         field: "avatar",
@@ -137,9 +144,7 @@ const Recent = () => {
 
           return (
             <Tooltip arrow title={title}>
-              <Box>
-                {formattedTimeAgo(value.startDate, { addSuffix: true })}
-              </Box>
+              <Box>{formattedTimeAgo(value.startDate)}</Box>
             </Tooltip>
           );
         },
@@ -158,7 +163,7 @@ const Recent = () => {
     return columns;
   }, [isMobile]);
 
-  const onLoad = React.useCallback((data) => {
+  const onLoad = React.useCallback((data: RecentEffort[]) => {
     setRecentEfforts(data);
     setLoading(false);
   }, []);

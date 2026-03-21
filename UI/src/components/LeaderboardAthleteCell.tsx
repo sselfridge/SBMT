@@ -1,10 +1,10 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Box, Avatar, Popover } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
+import type { LeaderboardEntry } from "@/types/LeaderboardEntry";
 
-const TooltipRow = styled(Box)(({ theme }) => ({
+const TooltipRow = styled(Box)(() => ({
   display: "flex",
   justifyContent: "space-between",
   width: "100%",
@@ -13,14 +13,17 @@ const TooltipRow = styled(Box)(({ theme }) => ({
   },
 }));
 
-const LeaderboardAthleteCell = (props) => {
-  const { row } = props;
+interface LeaderboardAthleteCellProps {
+  row: LeaderboardEntry;
+}
+
+const LeaderboardAthleteCell = ({ row }: LeaderboardAthleteCellProps) => {
   const { athleteName, avatar, id, recentDistance, recentElevation, category } =
     row;
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
-  const handleClick = (event) => {
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -80,17 +83,6 @@ const LeaderboardAthleteCell = (props) => {
     </React.Fragment>
     // </Link>
   );
-};
-
-LeaderboardAthleteCell.propTypes = {
-  row: PropTypes.shape({
-    athleteName: PropTypes.string.isRequired,
-    avatar: PropTypes.string.isRequired,
-    id: PropTypes.number.isRequired,
-    recentDistance: PropTypes.number.isRequired,
-    recentElevation: PropTypes.number.isRequired,
-    category: PropTypes.string.isRequired,
-  }),
 };
 
 export default LeaderboardAthleteCell;
