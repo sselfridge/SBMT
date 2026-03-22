@@ -20,3 +20,22 @@ export interface User {
   savedFilters: Filters | null;
   active: boolean;
 }
+
+export interface AdminUser {
+  athleteId: number;
+  firstname: string;
+  lastname: string;
+  avatar: string;
+  accessToken: string;
+  expiresAt: number;
+  refreshToken: string;
+  sex: string;
+  weight: number;
+  scope?: string;
+  age: number;
+  category: string;
+  recentDistance: number;
+  recentElevation: number;
+  active: boolean;
+  years: string;
+}

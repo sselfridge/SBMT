@@ -17,7 +17,7 @@ const palette = {
 
 export default palette;
 
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 const paletteREFERENCE = {
   mode: "light",
   primary: {

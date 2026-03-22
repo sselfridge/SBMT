@@ -13,7 +13,7 @@ const components = {
       },
     },
     defaultProps: {
-      variant: "contained",
+      variant: "contained" as any,
     },
   },
   MuiTabs: {
@@ -26,7 +26,7 @@ const components = {
   },
   MuiTypography: {
     defaultProps: {
-      align: "center",
+      align: "center" as any,
     },
   },
   MuiAvatar: {

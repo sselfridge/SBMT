@@ -88,8 +88,8 @@ namespace TodoApi.Controllers
           errors.Add("Invalid athleteId");
           continue;
         }
-        var atheleteId = Int32.Parse(athId);
-        var user = _context.StravaUsers.FirstOrDefault(x => x.AthleteId == atheleteId);
+        var athleteId = Int32.Parse(athId);
+        var user = _context.StravaUsers.FirstOrDefault(x => x.AthleteId == athleteId);
 
         if (user == null)
         {

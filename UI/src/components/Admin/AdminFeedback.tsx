@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
+
 import {
   Paper,
   Table,
@@ -17,9 +17,10 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 import { ApiGet, ApiDelete } from "api/api";
+import { FeedbackDTO } from "@/types/FeedbackDTO";
 
-const AdminFeedback = (props) => {
-  const [feedback, setFeedback] = useState([]);
+const AdminFeedback = () => {
+  const [feedback, setFeedback] = useState<FeedbackDTO[]>([]);
 
   const navigate = useNavigate();
 
@@ -32,10 +33,10 @@ const AdminFeedback = (props) => {
   }, [refreshFeedback]);
 
   const handleDelete = React.useCallback(
-    (id) => {
+    (id: string) => {
       ApiDelete(`/api/admin/feedback/${id}`, refreshFeedback);
     },
-    [refreshFeedback]
+    [refreshFeedback],
   );
 
   return (
@@ -88,10 +89,6 @@ const AdminFeedback = (props) => {
       </Table>
     </TableContainer>
   );
-};
-
-AdminFeedback.propTypes = {
-  prop: PropTypes.object,
 };
 
 export default AdminFeedback;

@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import _ from "lodash";
 import {
   Box,
@@ -19,7 +18,7 @@ import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 
 import { styled } from "@mui/material/styles";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { ApiGet, ApiPut } from "api/api";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -30,6 +29,10 @@ import { metersToMiles } from "utils/helperFuncs";
 import { ApiDelete } from "api/api";
 import { surfaceList, YEARS, SURFACE } from "utils/constants";
 
+import type { Segment } from "@/types/db/Segment";
+
+type SegmentField = "surfaceType" | "years";
+
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
@@ -38,18 +41,18 @@ const MyBox = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
 }));
 
-const AdminSegments = (props) => {
+const AdminSegments = () => {
   const { user } = React.useContext(AppContext);
-  const [segments, setSegments] = React.useState([]);
+  const [segments, setSegments] = React.useState<Segment[]>([]);
 
-  const [newSegment, setNewSegment] = React.useState(null);
+  const [newSegment, setNewSegment] = React.useState<Segment | null>(null);
   const navigate = useNavigate();
 
-  const [segmentId, setSegmentId] = React.useState(null);
+  const [segmentId, setSegmentId] = React.useState<string | null>(null);
   const [surfaceType, setSurfaceType] = React.useState(SURFACE.road);
 
-  const [yearCopyFrom, setYearCopyFrom] = React.useState("");
-  const [yearCopyTo, setYearCopyTo] = React.useState("");
+  const [yearCopyFrom, setYearCopyFrom] = React.useState<string>("");
+  const [yearCopyTo, setYearCopyTo] = React.useState<string>("");
 
   const refreshSegments = React.useCallback(() => {
     ApiGet("/api/admin/segments", setSegments, null);
@@ -67,11 +70,11 @@ const AdminSegments = (props) => {
         setNewSegment(newSegment);
         refreshSegments();
       },
-      () => setNewSegment({ name: "Segment Already exists" }),
+      () => setNewSegment({ name: "Segment Already exists" } as Segment),
     );
   };
 
-  const updateSegment = (segmentId, field, newVal) => {
+  const updateSegment = (segmentId: any, field: SegmentField, newVal: any) => {
     const segment = segments.find((s) => s.id === segmentId);
     const newSeg = _.cloneDeep(segment);
     if (newSeg) {
@@ -87,7 +90,7 @@ const AdminSegments = (props) => {
     }
   };
 
-  const copySegmentYear = (to, from) => {
+  const copySegmentYear = (to: string, from: string) => {
     const newSegments = _.cloneDeep(segments);
 
     newSegments.forEach((s) => {
@@ -142,7 +145,7 @@ const AdminSegments = (props) => {
             value={value}
             filterOptions={(v) => v}
             onChange={(e, newVal) => {
-              updateSegment(id, "surface", newVal);
+              updateSegment(id, "surfaceType", newVal);
             }}
             renderInput={(props) => {
               return <TextField {...props} />;
@@ -215,7 +218,7 @@ const AdminSegments = (props) => {
         );
       },
     },
-  ];
+  ] as GridColDef<Segment>[];
 
   if (!user) {
     return null;
@@ -277,7 +280,9 @@ const AdminSegments = (props) => {
             <Autocomplete
               sx={{ width: "130px" }}
               options={YEARS}
-              onChange={(e, newVal) => setYearCopyTo(newVal)}
+              onChange={(e, newVal) => {
+                if (newVal) setYearCopyTo(newVal);
+              }}
               renderInput={(props) => {
                 return <TextField label="New Season" {...props} />;
               }}
@@ -285,12 +290,18 @@ const AdminSegments = (props) => {
             <Autocomplete
               sx={{ width: "130px" }}
               options={YEARS}
-              onChange={(e, newVal) => setYearCopyFrom(newVal)}
+              onChange={(e, newVal) => {
+                if (newVal) setYearCopyFrom(newVal);
+              }}
               renderInput={(props) => {
                 return <TextField label="Copy From" {...props} />;
               }}
             />
-            <Button onClick={() => copySegmentYear(yearCopyTo, yearCopyFrom)}>
+            <Button
+              onClick={() => {
+                copySegmentYear(yearCopyTo, yearCopyFrom);
+              }}
+            >
               Copy
             </Button>
           </Box>
@@ -316,10 +327,6 @@ const AdminSegments = (props) => {
       />
     </MyBox>
   );
-};
-
-AdminSegments.propTypes = {
-  prop: PropTypes.object,
 };
 
 export default AdminSegments;

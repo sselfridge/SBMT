@@ -28,6 +28,7 @@ import AdminUsers from "components/Admin/AdminUsers";
 import AdminFeedback from "components/Admin/AdminFeedback";
 import AppContext from "AppContext";
 
+//@ts-ignore
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import config from "config";
 import StravaOops from "components/StravaOops";

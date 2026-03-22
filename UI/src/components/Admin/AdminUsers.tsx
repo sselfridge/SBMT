@@ -1,15 +1,15 @@
 import React, { useState, useContext, useEffect, useCallback } from "react";
-import PropTypes from "prop-types";
 import _ from "lodash";
 import { Box, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { ApiGet, ApiPatch } from "api/api";
 import { useNavigate } from "react-router-dom";
 
 import AppContext from "AppContext";
 
 import { APP_ATHLETE_ID } from "utils/constants";
+import { AdminUser } from "@/types/StravaUserDTO";
 
 const MyBox = styled(Box)(({ theme }) => ({
   width: "80vw",
@@ -17,12 +17,16 @@ const MyBox = styled(Box)(({ theme }) => ({
   overflow: "scroll",
 }));
 
-const AdminUsers = (props) => {
-  const { user } = useContext(AppContext);
-  const [users, setUsers] = useState([]);
+type UpdatableFields = "years" | "active";
 
-  const [updatedUsers, setUpdatedUsers] = useState({});
-  const [error, setError] = useState({});
+const AdminUsers = () => {
+  const { user } = useContext(AppContext);
+  const [users, setUsers] = useState<AdminUser[]>([]);
+
+  const [updatedUsers, setUpdatedUsers] = useState<Record<string, AdminUser>>(
+    {},
+  );
+  const [error, setError] = useState<unknown>({});
 
   const navigate = useNavigate();
 
@@ -43,10 +47,11 @@ const AdminUsers = (props) => {
   }, [navigate, user?.athleteId]);
 
   const submit = () => {
-    const users = [];
+    const users: AdminUser[] = [];
+
     Object.keys(updatedUsers).forEach((athleteId, i) => {
       const user = updatedUsers[athleteId];
-      user.athleteId = athleteId;
+      user.athleteId = Number(athleteId);
       users.push(user);
     });
     ApiPatch(
@@ -55,7 +60,7 @@ const AdminUsers = (props) => {
       () => {
         refreshUsers();
       },
-      setError
+      setError,
     );
   };
 
@@ -128,11 +133,16 @@ const AdminUsers = (props) => {
       headerName: "Avatar",
       // flex: 1
     },
-  ];
+  ] as GridColDef<AdminUser>[];
 
   if (!user) {
     return null;
   }
+
+  const updatedKeys = Object.keys(updatedUsers);
+  const hasKeys = updatedKeys.length > 0;
+
+  const disableSave = !hasKeys;
 
   return (
     <MyBox>
@@ -143,11 +153,7 @@ const AdminUsers = (props) => {
       >
         Back to Admin
       </Button>
-      <Button
-        sx={{ m: 2 }}
-        onClick={submit}
-        disabled={!Object.keys(updatedUsers).length > 0}
-      >
+      <Button sx={{ m: 2 }} onClick={submit} disabled={disableSave}>
         Save Updates
       </Button>
       <Box sx={{ color: "black" }}>{JSON.stringify(error)}</Box>
@@ -169,17 +175,19 @@ const AdminUsers = (props) => {
         }}
         processRowUpdate={(newRow, oldRow) => {
           const { athleteId } = newRow;
-          const editableFields = ["years", "active"];
+          const editableFields: UpdatableFields[] = ["years", "active"];
 
           setUpdatedUsers((u) => {
             const updated = _.cloneDeep(u);
 
             let changed = false;
-            const updateUser = updated[athleteId] || {};
+            const updateUser: AdminUser =
+              updated[athleteId] || ({} as AdminUser);
             editableFields.forEach((f) => {
               if (newRow[f] !== oldRow[f]) {
                 changed = true;
-                updateUser[f] = newRow[f];
+                const newVal = newRow[f];
+                updateUser[f] = newVal as never;
               }
             });
             updated[athleteId] = updateUser;
@@ -204,10 +212,6 @@ const AdminUsers = (props) => {
       />
     </MyBox>
   );
-};
-
-AdminUsers.propTypes = {
-  prop: PropTypes.object,
 };
 
 export default AdminUsers;

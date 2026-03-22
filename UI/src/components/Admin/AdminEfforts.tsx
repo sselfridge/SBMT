@@ -5,14 +5,12 @@ import NewEffort from "components/NewEffort";
 
 const MyBox = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 
-const AdminEfforts = (props) => {
+const AdminEfforts = () => {
   return (
     <MyBox sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
       <NewEffort />
     </MyBox>
   );
 };
-
-AdminEfforts.propTypes = {};
 
 export default AdminEfforts;
