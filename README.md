@@ -1,10 +1,8 @@
 # SBMT
 
-Need to set the following ENV variable in .bashrc
+Need to set the following ENV variable in .bashrc (.bash_profile on mac)
 
-PATH - Add Postgres/bin
-SBMT_DIR - root dir of project
-DROPBOX_DIR - (optional) - for db backups to go in dropbox as well
+See scripts/bashConfig for examples
 
 <!-- TODO - update for docker / fly.io -->
 

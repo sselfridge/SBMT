@@ -379,7 +379,7 @@ namespace TodoApi.Services
         {
           club.ProfileMedium = newClub.ProfileMedium;
           club.Name = newClub.Name;
-          club.Url = newClub.Url;
+          club.Url = newClub.Url ?? "";
         }
         context.Update(club);
       }
@@ -445,7 +445,9 @@ namespace TodoApi.Services
       {
         try
         {
-          T? result = await response.Content.ReadFromJsonAsync<T>();
+          string rawJson = await response.Content.ReadAsStringAsync();
+          // Console.WriteLine(rawJson);
+          T? result = JsonSerializer.Deserialize<T>(rawJson);
           var limit = response.Headers.GetValues("X-RateLimit-Limit");
           var usage = response.Headers.GetValues("X-RateLimit-Usage");
 
