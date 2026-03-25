@@ -1,13 +1,20 @@
 import React from "react";
-import { List, ListItem, styled, Box,TypographyProps, BoxProps } from "@mui/material";
+import {
+  List,
+  ListItem,
+  styled,
+  Box,
+  TypographyProps,
+  BoxProps,
+} from "@mui/material";
 
 interface UpdateProps {
   TitleTypography: React.ComponentType<TypographyProps>;
-  SubTitleTypo:React.ComponentType<TypographyProps>
-  ArticleBox:React.ComponentType<BoxProps>
+  SubTitleTypo: React.ComponentType<TypographyProps>;
+  ArticleBox: React.ComponentType<BoxProps>;
 }
 
-const Updates = (props:UpdateProps) => {
+const Updates = (props: UpdateProps) => {
   const { TitleTypography, SubTitleTypo } = props;
 
   const ArticleBox = styled(Box)(({ theme }) => ({ margin: "0 15%" }));
@@ -22,6 +29,11 @@ const Updates = (props:UpdateProps) => {
         </ListItem>
      
       </List> */}
+      <SubTitleTypo variant="h4">2026 Prep</SubTitleTypo>
+      <List sx={{ fontSize: ".8em" }}>
+        <ListItem>Migrated to typescript</ListItem>
+        <ListItem></ListItem>
+      </List>
       <SubTitleTypo variant="h4">Thanks date-fns</SubTitleTypo>
       <List sx={{ fontSize: ".8em" }}>
         <ListItem>Fix date display on diff for users</ListItem>

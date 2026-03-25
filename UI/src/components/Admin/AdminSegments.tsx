@@ -297,11 +297,7 @@ const AdminSegments = () => {
                 return <TextField label="Copy From" {...props} />;
               }}
             />
-            <Button
-              onClick={() => {
-                copySegmentYear(yearCopyTo, yearCopyFrom);
-              }}
-            >
+            <Button onClick={() => copySegmentYear(yearCopyTo, yearCopyFrom)}>
               Copy
             </Button>
           </Box>
