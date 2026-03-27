@@ -4,18 +4,18 @@ import AppContext from "AppContext";
 import { ReactComponent as Logo } from "assets/logoV1.svg";
 import { DateTime } from "luxon";
 
-import { Box, Paper, Typography ,type Theme} from "@mui/material";
+import { Box, Paper, Typography, type Theme } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Link } from "react-router-dom";
 
 const styles = {
-  mainBox: (isMobile:boolean) => ({
+  mainBox: (isMobile: boolean) => ({
     width: "95vw",
     maxWidth: 1000,
     padding: isMobile ? 1 : 2,
     borderRadius: 1,
   }),
-  mainPaper: (isMobile:boolean) => ({
+  mainPaper: (isMobile: boolean) => ({
     height: "100%",
     width: "100%",
     boxShadow: "none",
@@ -28,7 +28,7 @@ const styles = {
   }),
 };
 
-const useCountdown = (kickOffDateStr:string) => {
+const useCountdown = (kickOffDateStr: string) => {
   const kickOffDate = DateTime.fromISO(kickOffDateStr);
   const [timeLeft, setTimeLeft] = React.useState(() => {
     const diff = kickOffDate.diffNow(["days", "hours", "minutes", "seconds"]);
@@ -48,10 +48,13 @@ const useCountdown = (kickOffDateStr:string) => {
 
 const OffSeason = () => {
   const { kickOffDate } = React.useContext(AppContext);
-  const isMobile = useMediaQuery((theme:Theme) => theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery((theme: Theme) =>
+    theme.breakpoints.down("sm"),
+  );
   const { days, hours, minutes, seconds } = useCountdown(kickOffDate);
 
-  const pad = (n:number|undefined) => String(Math.floor(Math.abs(n || 0))).padStart(2, "0");
+  const pad = (n: number | undefined) =>
+    String(Math.floor(Math.abs(n || 0))).padStart(2, "0");
 
   return (
     <Box sx={styles.mainBox(isMobile)}>
@@ -95,12 +98,20 @@ const OffSeason = () => {
             fontSize: isMobile ? "1rem" : "1.1rem",
           }}
         >
+          <section>
+            How does it work? See the <Link to={"/info"}>info</Link> page.
+          </section>
+          <div>Check the past season leaderboards</div>
+          <Box sx={{ display: "flex", gap: 2, justifyContent: "center" }}>
+            <Link to="/leaderboard?year=2025sbmt">2025</Link>
+            <Link to="/leaderboard?year=2025trail">2025 Trail League</Link>
+            <Link to="/leaderboard?year=2024">2024</Link>
+            <Link to="/leaderboard?year=2023">2023</Link>
+          </Box>
           <div>
-            Check the <Link to={"/leaderboard"}>leaderboards</Link> to see who
-            won.
+            Use the dropdown in the top left to see past seasons anywhere on the
+            site.
           </div>
-          <div>Use the dropdown in the top left to see past seasons.</div> How
-          does it work? See the <Link to={"/info"}>info</Link> page.
         </Box>
       </Paper>
     </Box>
