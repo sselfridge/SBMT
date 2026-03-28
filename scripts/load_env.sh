@@ -19,12 +19,12 @@ else
     
     if [[ $# -ge 1 ]]; then
         case "$1" in
-            dev|stg|prod|stgdb)
+            dev|stg|prod|stgDb|localProd)
                 environment="$1"
             ;;
             *)
                 echo "Invalid argument: $1"
-                echo "Usage: source $0 [dev|stg|prod]"
+                echo "Usage: source $0 [dev|stg|prod|stgDb|localProd]"
             ;;
         esac
         elif [[ $# -eq 0 ]]; then
@@ -41,8 +41,11 @@ else
         prod)
             env=Production
         ;;
-        stgdb)
+        stgDb)
             env=StagingDB
+        ;;
+        localProd)
+            env=LocalProd
         ;;
         *)
             env=Development
