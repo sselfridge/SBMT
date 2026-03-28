@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect, useCallback } from "react";
-import _ from "lodash";
+import _, { cloneDeep } from "lodash";
 import { Box, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 import AppContext from "AppContext";
 
-import { APP_ATHLETE_ID } from "utils/constants";
+import { ADMIN_ATHLETE_ID, APP_ATHLETE_ID } from "utils/constants";
 import { AdminUser } from "@/types/StravaUserDTO";
 
 const MyBox = styled(Box)(({ theme }) => ({
@@ -19,6 +19,81 @@ const MyBox = styled(Box)(({ theme }) => ({
 
 type UpdatableFields = "years" | "active";
 
+const columns = [
+  {
+    field: "athleteId",
+    headerName: "AthleteId",
+    // flex: 10
+  },
+  {
+    field: "firstname",
+    headerName: "Firstname",
+    // flex: 10
+  },
+  {
+    field: "lastname",
+    headerName: "Lastname",
+    // flex: 10
+  },
+  {
+    field: "active",
+    headerName: "Active",
+    editable: true,
+    type: "boolean",
+  },
+  {
+    field: "years",
+    headerName: "Years",
+    editable: true,
+  },
+  {
+    field: "refreshToken",
+    headerName: "RefreshToken",
+    // flex: 3
+  },
+  {
+    field: "accessToken",
+    headerName: "AccessToken",
+    // flex: 3
+  },
+  {
+    field: "expiresAt",
+    headerName: "ExpiresAt",
+    // flex: 7
+  },
+  {
+    field: "joinDate",
+    headerName: "JoinDate",
+    // flex: 10
+  },
+  {
+    field: "sex",
+    headerName: "Sex",
+    // flex: 2
+  },
+  {
+    field: "weight",
+    headerName: "Weight",
+    // flex: 4
+  },
+  {
+    field: "scope",
+    headerName: "Scope",
+    editable: true,
+    width: 200,
+    // flex: 10
+  },
+  {
+    field: "avatar",
+    headerName: "Avatar",
+    // flex: 1
+  },
+  {
+    field: "email",
+    headerName: "Email",
+  },
+] as GridColDef<AdminUser>[];
+
 const AdminUsers = () => {
   const { user } = useContext(AppContext);
   const [users, setUsers] = useState<AdminUser[]>([]);
@@ -27,7 +102,8 @@ const AdminUsers = () => {
     {},
   );
   const [error, setError] = useState<unknown>({});
-
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [disableConfirm, setDisableConfirm] = useState(true);
   const navigate = useNavigate();
 
   const refreshUsers = useCallback(() => {
@@ -48,6 +124,7 @@ const AdminUsers = () => {
 
   const submit = () => {
     const users: AdminUser[] = [];
+    console.log("updatedUsers: ", updatedUsers);
 
     Object.keys(updatedUsers).forEach((athleteId, i) => {
       const user = updatedUsers[athleteId];
@@ -63,77 +140,6 @@ const AdminUsers = () => {
       setError,
     );
   };
-
-  const columns = [
-    {
-      field: "athleteId",
-      headerName: "AthleteId",
-      // flex: 10
-    },
-    {
-      field: "firstname",
-      headerName: "Firstname",
-      // flex: 10
-    },
-    {
-      field: "lastname",
-      headerName: "Lastname",
-      // flex: 10
-    },
-    {
-      field: "active",
-      headerName: "Active",
-      editable: true,
-      type: "boolean",
-    },
-    {
-      field: "years",
-      headerName: "Years",
-      editable: true,
-    },
-    {
-      field: "refreshToken",
-      headerName: "RefreshToken",
-      // flex: 3
-    },
-    {
-      field: "accessToken",
-      headerName: "AccessToken",
-      // flex: 3
-    },
-    {
-      field: "expiresAt",
-      headerName: "ExpiresAt",
-      // flex: 7
-    },
-    {
-      field: "joinDate",
-      headerName: "JoinDate",
-      // flex: 10
-    },
-    {
-      field: "sex",
-      headerName: "Sex",
-      // flex: 2
-    },
-    {
-      field: "weight",
-      headerName: "Weight",
-      // flex: 4
-    },
-    {
-      field: "scope",
-      headerName: "Scope",
-      editable: true,
-      width: 200,
-      // flex: 10
-    },
-    {
-      field: "avatar",
-      headerName: "Avatar",
-      // flex: 1
-    },
-  ] as GridColDef<AdminUser>[];
 
   if (!user) {
     return null;
@@ -156,6 +162,46 @@ const AdminUsers = () => {
       <Button sx={{ m: 2 }} onClick={submit} disabled={disableSave}>
         Save Updates
       </Button>
+      {!showConfirm && (
+        <Button
+          onClick={() => {
+            setShowConfirm(true);
+            setTimeout(() => setDisableConfirm(false), 1500);
+
+            //reset to initial
+            setTimeout(() => setDisableConfirm(true), 4500);
+            setTimeout(() => setShowConfirm(false), 4500);
+          }}
+        >
+          Mark All Inactive
+        </Button>
+      )}
+      {showConfirm && (
+        <Button
+          disabled={disableConfirm}
+          onClick={() => {
+            setUpdatedUsers((prev) => {
+              const updated = cloneDeep(prev);
+              users.forEach((u) => {
+                const { athleteId } = u;
+                if (
+                  athleteId === APP_ATHLETE_ID ||
+                  athleteId === ADMIN_ATHLETE_ID
+                ) {
+                  return;
+                }
+                const updateUser: AdminUser =
+                  updated[athleteId] || ({} as AdminUser);
+                updateUser.active = false;
+                updated[athleteId] = updateUser;
+              });
+              return updated;
+            });
+          }}
+        >
+          Confirm?
+        </Button>
+      )}
       <Box sx={{ color: "black" }}>{JSON.stringify(error)}</Box>
 
       <DataGrid
