@@ -19,7 +19,7 @@ else
     
     if [[ $# -ge 1 ]]; then
         case "$1" in
-            dev|stg|prod)
+            dev|stg|prod|stgdb)
                 environment="$1"
             ;;
             *)
@@ -40,6 +40,9 @@ else
         ;;
         prod)
             env=Production
+        ;;
+        stgdb)
+            env=StagingDB
         ;;
         *)
             env=Development

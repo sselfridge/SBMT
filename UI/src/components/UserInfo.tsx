@@ -27,7 +27,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 import { deepFreeze } from "utils/helperFuncs";
 
-import type { User } from "@/types/StravaUserDTO";
+import type { UserWithEmail } from "@/types/StravaUserDTO";
 import { AxiosResponse } from "axios";
 import { StravaClub } from "@/types/StravaClub";
 
@@ -58,7 +58,7 @@ const UserInfo = () => {
   const [ageHelperText, setAgeHelperText] = useState("");
   const [category, setCategory] = useState("");
   const [agreeToTerms, setAgreeToTerms] = useState(!!user?.active);
-  const [profile, setProfile] = useState<User>({} as User);
+  const [profile, setProfile] = useState<UserWithEmail>({} as UserWithEmail);
 
   const activeRef = React.useRef(null);
 
@@ -76,7 +76,7 @@ const UserInfo = () => {
   const showReminder = params.has("remind") && !user?.active;
 
   const updateContextUser = React.useCallback(
-    (newUserData: User) => {
+    (newUserData: UserWithEmail) => {
       dispatch({ type: "setUser", user: newUserData });
     },
     [dispatch],
@@ -134,6 +134,9 @@ const UserInfo = () => {
     }
     if (profile?.category !== undefined) {
       setCategory(profile.category);
+    }
+    if (profile?.email !== undefined) {
+      setEmail(profile.email);
     }
   }, [profile]);
 

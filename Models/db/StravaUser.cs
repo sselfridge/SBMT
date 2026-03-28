@@ -33,6 +33,8 @@ namespace TodoApi.Models.db
 
     public string Years { get; set; }
 
+    public string Email { get; set; }
+
     //public StravaUser() { }
 
     [JsonConstructor] // Parameterized constructor annotated with JsonConstructorAttribute
@@ -52,7 +54,8 @@ namespace TodoApi.Models.db
       double recentDistance,
       double recentElevation,
       bool active,
-      string years
+      string years,
+      string email
     )
     {
       //This one is used for incoming JSON objects, such as admin user update
@@ -75,6 +78,7 @@ namespace TodoApi.Models.db
       SavedFilters = "";
       Active = active;
       Years = years;
+      Email = email;
     }
 
     public StravaUser(OauthStravaUser oAuth, StravaAthleteProfile profile, string year)
@@ -102,6 +106,7 @@ namespace TodoApi.Models.db
       SavedFilters = "";
       Years = year;
       Active = false;
+      Email = "";
     }
   }
 

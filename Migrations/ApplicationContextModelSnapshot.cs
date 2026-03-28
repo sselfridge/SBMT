@@ -260,6 +260,10 @@ namespace TodoApi.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<long>("ExpiresAt")
                         .HasColumnType("bigint");
 
