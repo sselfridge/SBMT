@@ -116,7 +116,6 @@ const AdminUsers = () => {
   }, [refreshUsers]);
 
   useEffect(() => {
-    console.log("user?.athleteId: ", user?.athleteId);
     if (user?.athleteId && user.athleteId !== 1075670) {
       navigate("/");
     }
@@ -124,7 +123,6 @@ const AdminUsers = () => {
 
   const submit = () => {
     const users: AdminUser[] = [];
-    console.log("updatedUsers: ", updatedUsers);
 
     Object.keys(updatedUsers).forEach((athleteId, i) => {
       const user = updatedUsers[athleteId];

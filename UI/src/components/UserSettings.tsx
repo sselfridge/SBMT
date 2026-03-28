@@ -33,7 +33,6 @@ const UserSettings = () => {
 
   const isLoggedIn = !!user.athleteId;
 
-  console.log("user: ", user);
   if (!isLoggedIn) {
     return (
       <MyBox>

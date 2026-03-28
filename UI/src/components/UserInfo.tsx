@@ -155,12 +155,9 @@ const UserInfo = () => {
               setEmail(e.target.value);
             }}
             onBlur={(e) => {
-              console.log("e: ", e);
               const newVal = e.target.value.trim();
-              console.log("newVal: ", newVal);
               const isValid = validateEmail(newVal);
               if (!isValid) setEmailHelperText("Invalid Email");
-              console.log("isValid: ", isValid);
             }}
           />
         </Box>
@@ -295,7 +292,6 @@ const UserInfo = () => {
   };
 
   const isEmailValid = !!validateEmail(email);
-  console.log("isEmailValid: ", isEmailValid);
 
   let missingInfoWarning = " ";
   if (user?.age === 0 && user?.category === "") {

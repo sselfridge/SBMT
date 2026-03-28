@@ -64,9 +64,7 @@ const Leaderboard = () => {
 
   const onApplyFilters = React.useCallback(
     (filters: any) => {
-      //TODO fix proper like
       //TODO - fix any
-      console.log("filters: ", filters);
       setSearchParams((params) => {
         const simpleFilters = [
           "surface",
