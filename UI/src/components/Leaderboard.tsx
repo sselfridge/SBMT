@@ -43,12 +43,20 @@ const Leaderboard = () => {
   const isMobile = !useMediaQuery(theme.breakpoints.up("sm"));
 
   const [searchParams, setSearchParams] = useSearchParams();
+  const yearParam = searchParams.get("year");
 
   const [columnVisible, setColumnVisible] =
     React.useState<GridColumnVisibilityModel>(ALL_COLUMNS);
   const [loading, setLoading] = useState(true);
 
-  const { year, kickOffDate } = React.useContext(AppContext);
+  const { year, kickOffDate, dispatch } = React.useContext(AppContext);
+
+  //sync appContext year with
+  React.useEffect(() => {
+    if (yearParam && year !== yearParam) {
+      dispatch({ type: "setYear", yearParam });
+    }
+  }, [dispatch, year, yearParam]);
 
   React.useEffect(() => {
     const newColumns = isMobile ? MOBILE_COLUMNS : ALL_COLUMNS;
@@ -64,9 +72,7 @@ const Leaderboard = () => {
 
   const onApplyFilters = React.useCallback(
     (filters: any) => {
-      //TODO fix proper like
-      //TODO - fix any
-      console.log("filters: ", filters);
+      //TODO - fix any type^
       setSearchParams((params) => {
         const simpleFilters = [
           "surface",
