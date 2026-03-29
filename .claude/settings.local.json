@@ -3,7 +3,8 @@
     "allow": [
       "Bash(dotnet --version)",
       "Bash(dotnet tool:*)",
-      "Bash(dotnet restore:*)"
+      "Bash(dotnet restore:*)",
+      "Bash(git -C /c/Users/samse/repos/SBMT show main:env/StagingDB.env)"
     ]
   }
 }
