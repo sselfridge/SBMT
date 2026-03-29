@@ -31,6 +31,16 @@ const UserSettings = () => {
     }
   }, [user?.scope]);
 
+  const isLoggedIn = !!user.athleteId;
+
+  if (!isLoggedIn) {
+    return (
+      <MyBox>
+        Connect with strava to edit your SBMT profile <StravaButton />
+      </MyBox>
+    );
+  }
+
   return (
     <MyBox>
       <Typography

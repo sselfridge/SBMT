@@ -27,7 +27,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 import { deepFreeze } from "utils/helperFuncs";
 
-import type { User } from "@/types/StravaUserDTO";
+import type { UserWithEmail } from "@/types/StravaUserDTO";
 import { AxiosResponse } from "axios";
 import { StravaClub } from "@/types/StravaClub";
 
@@ -42,13 +42,23 @@ const MyPaper = styled(Paper)(({ theme }) => ({
 
 const categorySelect = categoryList.filter((c) => c !== "ALL");
 
+const validateEmail = (email: string) => {
+  return String(email)
+    .toLowerCase()
+    .match(
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+    );
+};
+
 const UserInfo = () => {
   const { user, dispatch } = useContext(AppContext);
+  const [email, setEmail] = useState("");
+  const [emailHelperText, setEmailHelperText] = useState("");
   const [age, setAge] = useState<string>("");
   const [ageHelperText, setAgeHelperText] = useState("");
   const [category, setCategory] = useState("");
   const [agreeToTerms, setAgreeToTerms] = useState(!!user?.active);
-  const [profile, setProfile] = useState<User>({} as User);
+  const [profile, setProfile] = useState<UserWithEmail>({} as UserWithEmail);
 
   const activeRef = React.useRef(null);
 
@@ -66,7 +76,7 @@ const UserInfo = () => {
   const showReminder = params.has("remind") && !user?.active;
 
   const updateContextUser = React.useCallback(
-    (newUserData: User) => {
+    (newUserData: UserWithEmail) => {
       dispatch({ type: "setUser", user: newUserData });
     },
     [dispatch],
@@ -75,6 +85,7 @@ const UserInfo = () => {
   const updateProfile = useCallback(() => {
     setSaving(true);
     const updatedUser = _.cloneDeep(user);
+    updatedUser.email = email;
     updatedUser.category = category;
     updatedUser.age = age;
     updatedUser.stravaClubs = [];
@@ -89,7 +100,15 @@ const UserInfo = () => {
     setTimeout(() => {
       setSaving(false);
     }, 500);
-  }, [age, agreeToTerms, category, fetchProfile, updateContextUser, user]);
+  }, [
+    age,
+    agreeToTerms,
+    category,
+    email,
+    fetchProfile,
+    updateContextUser,
+    user,
+  ]);
 
   React.useEffect(() => {
     setProfile(user);
@@ -116,9 +135,34 @@ const UserInfo = () => {
     if (profile?.category !== undefined) {
       setCategory(profile.category);
     }
+    if (profile?.email !== undefined) {
+      setEmail(profile.email);
+    }
   }, [profile]);
 
   const profileFields = [
+    {
+      label: "Email",
+      content: (
+        <Box sx={{ width: "250px" }}>
+          <TextField
+            value={email}
+            onFocus={(e) => e.target.select()}
+            error={!!emailHelperText}
+            helperText={emailHelperText}
+            onChange={(e) => {
+              setEmailHelperText("");
+              setEmail(e.target.value);
+            }}
+            onBlur={(e) => {
+              const newVal = e.target.value.trim();
+              const isValid = validateEmail(newVal);
+              if (!isValid) setEmailHelperText("Invalid Email");
+            }}
+          />
+        </Box>
+      ),
+    },
     {
       label: "Age",
       content: (
@@ -247,6 +291,8 @@ const UserInfo = () => {
     );
   };
 
+  const isEmailValid = !!validateEmail(email);
+
   let missingInfoWarning = " ";
   if (user?.age === 0 && user?.category === "") {
     missingInfoWarning = "Please enter your age and category";
@@ -254,15 +300,17 @@ const UserInfo = () => {
     missingInfoWarning = "Please enter your age";
   } else if (user?.category === "") {
     missingInfoWarning = "Please enter your category";
+  } else if (!isEmailValid) {
+    missingInfoWarning = "Please enter valid email";
   }
 
   const saveDisabled =
+    !isEmailValid ||
     saving ||
     !category ||
     !age ||
     Number(age) < 13 ||
     Number(age) > 100 ||
-    (`${age}` === `${user.age}` && category === user.category) ||
     (!agreeToTerms && !!user?.active === true) ||
     (!agreeToTerms && !user?.active);
 
@@ -275,7 +323,7 @@ const UserInfo = () => {
       <Typography color="warning.main"> {missingInfoWarning}</Typography>
       <Grid container spacing={1}>
         {profileFields.map(mapField)}
-        {user?.active === false ? (
+        {user?.active !== true ? (
           <React.Fragment>
             <Grid item xs={1} sm={3} />
             <Grid item xs={5} sm={3}>

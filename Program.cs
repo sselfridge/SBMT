@@ -34,8 +34,7 @@ string? dbUser = Environment.GetEnvironmentVariable("DB_USER");
 string? dbName = Environment.GetEnvironmentVariable("DB_NAME");
 string dbSsl = configuration["DbConfig:sslMode"];
 
-bool includeError = bool.Parse(configuration["DbConfig:includeError"]);
-bool enableSensitiveDataLogging = bool.Parse(configuration["DbConfig:enableSensitiveDataLogging"]);
+// use scripts/load_env.sh to setup ENV before migration
 
 if (string.IsNullOrEmpty(dbServer))
 {
@@ -57,6 +56,9 @@ if (string.IsNullOrEmpty(dbName))
 {
   throw new Exception("Invalid ENV value for: dbName");
 }
+
+bool includeError = bool.Parse(configuration["DbConfig:includeError"]);
+bool enableSensitiveDataLogging = bool.Parse(configuration["DbConfig:enableSensitiveDataLogging"]);
 
 string connectionString =
   $""

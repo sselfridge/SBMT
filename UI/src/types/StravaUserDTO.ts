@@ -21,6 +21,10 @@ export interface User {
   active: boolean;
 }
 
+export interface UserWithEmail extends User {
+  email: string;
+}
+
 export interface AdminUser {
   athleteId: number;
   firstname: string;
@@ -38,4 +42,5 @@ export interface AdminUser {
   recentElevation: number;
   active: boolean;
   years: string;
+  email: string;
 }

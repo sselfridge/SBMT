@@ -57,4 +57,20 @@ namespace TodoApi.Models
       Active = user.Active;
     }
   }
+
+  public class StravaUserWithEmailDTO : StravaUserDTO
+  {
+    public string Email { get; set; }
+
+    [JsonConstructor]
+#pragma warning disable CS8618
+    public StravaUserWithEmailDTO() { }
+#pragma warning restore CS8618
+
+    public StravaUserWithEmailDTO(StravaUser user)
+      : base(user)
+    {
+      Email = user.Email;
+    }
+  }
 }

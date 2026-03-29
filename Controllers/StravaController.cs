@@ -326,7 +326,7 @@ namespace TodoApi.Controllers
 
       user = _stravaService.UpdateUserClubs(user.AthleteId, profile.Clubs);
 
-      var returnUser = new StravaUserDTO(user);
+      var returnUser = new StravaUserWithEmailDTO(user);
 
       return Ok(returnUser);
     }

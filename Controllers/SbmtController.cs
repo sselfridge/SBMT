@@ -536,11 +536,13 @@ namespace TodoApi.Controllers
         club.StravaUsers = new List<StravaUser>();
       }
 
-      return Ok(new StravaUserDTO(user));
+      return Ok(new StravaUserWithEmailDTO(user));
     }
 
     [HttpPost("athletes/current")]
-    public async Task<IActionResult> UpdateCurrentAthleteAsync([FromBody] StravaUserDTO newUser)
+    public async Task<IActionResult> UpdateCurrentAthleteAsync(
+      [FromBody] StravaUserWithEmailDTO newUser
+    )
     {
       var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
       var kickOffFetch = false;
@@ -569,6 +571,7 @@ namespace TodoApi.Controllers
       {
         dbUser.Age = newUser.Age;
         dbUser.Category = newUser.Category;
+        dbUser.Email = newUser.Email;
         _dbContext.Update(dbUser);
         await _dbContext.SaveChangesAsync();
 
@@ -577,7 +580,7 @@ namespace TodoApi.Controllers
           StravaUtilities.KickOffInitialFetch(_serviceScopeFactory, newUser.AthleteId);
         }
 
-        return Ok(new StravaUserDTO(dbUser));
+        return Ok(new StravaUserWithEmailDTO(dbUser));
       }
       catch (Exception ex)
       {

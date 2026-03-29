@@ -10,8 +10,15 @@ export const SURFACE = {
   trail: "trail",
 };
 
-export const surfaceList = [SURFACE.all, SURFACE.road, SURFACE.gravel, SURFACE.bikes, SURFACE.trail];
+export const surfaceList = [
+  SURFACE.all,
+  SURFACE.road,
+  SURFACE.gravel,
+  SURFACE.bikes,
+  SURFACE.trail,
+];
 export const APP_ATHLETE_ID = 1;
+export const ADMIN_ATHLETE_ID = 1075670;
 
 export const GENDER = {
   all: "ALL",
