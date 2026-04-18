@@ -278,6 +278,9 @@ namespace TodoApi.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("MailingList")
+                        .HasColumnType("boolean");
+
                     b.Property<double>("RecentDistance")
                         .HasColumnType("double precision");
 

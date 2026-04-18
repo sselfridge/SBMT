@@ -23,6 +23,7 @@ export interface User {
 
 export interface UserWithEmail extends User {
   email: string;
+  mailingList: boolean;
 }
 
 export interface AdminUser {
