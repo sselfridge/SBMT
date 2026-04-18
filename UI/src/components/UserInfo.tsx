@@ -51,16 +51,18 @@ const validateEmail = (email: string) => {
 };
 
 const UserInfo = () => {
-  const { user, dispatch } = useContext(AppContext);
+  const { user: userWithoutType, dispatch } = useContext(AppContext);
+  const user = userWithoutType as UserWithEmail;
   const [email, setEmail] = useState("");
   const [emailHelperText, setEmailHelperText] = useState("");
   const [age, setAge] = useState<string>("");
   const [ageHelperText, setAgeHelperText] = useState("");
   const [category, setCategory] = useState("");
   const [agreeToTerms, setAgreeToTerms] = useState(!!user?.active);
+  const [mailingList, setMailingList] = useState(!!user?.mailingList);
   const [profile, setProfile] = useState<UserWithEmail>({} as UserWithEmail);
 
-  const activeRef = React.useRef(null);
+  const activeRef = React.useRef<any>(null);
 
   const [signupRedirect, setSignupRedirect] = React.useState(false);
 
@@ -87,7 +89,7 @@ const UserInfo = () => {
     const updatedUser = _.cloneDeep(user);
     updatedUser.email = email;
     updatedUser.category = category;
-    updatedUser.age = age;
+    updatedUser.age = Number(age) || 99;
     updatedUser.stravaClubs = [];
     updatedUser.active = agreeToTerms || user.active;
 
@@ -370,6 +372,36 @@ const UserInfo = () => {
             <Grid item xs={1} sm={3} />
           </React.Fragment>
         )}
+        <Grid item xs={1} sm={3} />
+        <Grid item xs={5} sm={3}>
+          <Typography variant="h5">
+            Agree to get email from SBMT
+            <Box sx={{ fontSize: 12 }}>
+              (unsub any time, Will need to have it on at the end to get any
+              prizes, but I'll send out a reminder to everyone towards the end.)
+            </Box>
+          </Typography>
+        </Grid>
+        <Grid item xs={3} sm={2}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              height: "100%",
+              minWidth: "150px",
+              alignContent: "center",
+            }}
+          >
+            <Checkbox
+              checked={mailingList}
+              onChange={(v) => {
+                setMailingList((v) => !v);
+              }}
+            />
+          </Box>
+        </Grid>
+        <Grid item xs={2} sm={1} />
+        <Grid item xs={1} sm={3} />
         {/* LineBreak */}
         {!signupRedirect && (
           <>
