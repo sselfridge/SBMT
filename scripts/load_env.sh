@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+# set -e
 # Run from root `source "./scripts/load_env.sh [env]"`
 
 # The ugly bit we don't want to do but avoids so much of this pain

@@ -13,7 +13,7 @@ namespace TodoApi.Migrations
                 table: "StravaUsers",
                 type: "boolean",
                 nullable: false,
-                defaultValue: false);
+                defaultValue: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
