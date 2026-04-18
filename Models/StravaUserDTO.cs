@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using TodoApi.Models.db;
 
@@ -60,6 +61,7 @@ namespace TodoApi.Models
 
   public class StravaUserWithEmailDTO : StravaUserDTO
   {
+    [EmailAddress]
     public string Email { get; set; }
 
     [JsonConstructor]
