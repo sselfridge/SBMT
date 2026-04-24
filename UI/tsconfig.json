@@ -14,12 +14,13 @@
     // Path aliases
     // `baseUrl: "src"` preserves existing bare imports (e.g. import AppContext from "AppContext")
     // `paths` adds the @ alias — paths are relative to baseUrl
+    "baseUrl": "src",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./*"]
     },
 
     // Incremental JS→TS migration: allow .js files alongside .ts
-    "allowJs": false,
+    "allowJs": true,
     "checkJs": false,
 
     // Strict mode — enforced for all new .ts/.tsx files
