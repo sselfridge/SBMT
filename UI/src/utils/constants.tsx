@@ -1,7 +1,7 @@
 export const START_DATE = new Date("2023-05-26T01:00:00-07:00");
 
 export const YEARS = [
-  "2026sbmt",
+  // "2026sbmt",
   "2026sprint",
   "2025sbmt",
   "2025trail",
