@@ -225,7 +225,7 @@ namespace TodoApi.Controllers
           )
         )
         {
-          var kickOffDate = SbmtUtils.getKickOffDate("2026sbmt");
+          var kickOffDate = SbmtUtils.getKickOffDate("2026sprint");
 
           DateTime now = DateTime.UtcNow;
           if (kickOffDate > now)
