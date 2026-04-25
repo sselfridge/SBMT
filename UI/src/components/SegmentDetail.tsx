@@ -49,7 +49,6 @@ const Segments = () => {
     useState<SegmentLeaderboard | null>(null);
 
   const { user, isPreSeason, year } = React.useContext(AppContext);
-  console.log("year: ", year);
 
   const isAdmin = user?.athleteId === 1075670;
 
