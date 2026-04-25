@@ -32,7 +32,7 @@ const MyBox = styled(Box)(({ theme }) => ({
 }));
 
 const AthleteDetail = () => {
-  const params = useParams();
+  const { athleteId } = useParams();
   const [user, setUser] = useState<User | null>(null);
   const [userSegments, setUserSegments] = useState<UserSegment[]>([]);
   const [compSegments, setCompSegments] = useState<UserSegment[]>([]);
@@ -65,12 +65,9 @@ const AthleteDetail = () => {
   );
 
   React.useEffect(() => {
-    ApiGet(`/api/athletes/${params.athleteId}`, setUser, null);
-    ApiGet(
-      `/api/athletes/${params.athleteId}/efforts?year=${year}`,
-      setUserSegments,
-    );
-  }, [params, year]);
+    ApiGet(`/api/athletes/${athleteId}`, setUser, null);
+    ApiGet(`/api/athletes/${athleteId}/efforts?year=${year}`, setUserSegments);
+  }, [athleteId, year]);
 
   const makeSegmentRow = (segment: UserSegment, index: number) => {
     let timeDiff = 0;
@@ -262,7 +259,7 @@ const AthleteDetail = () => {
       </MyBox>
     );
   } else if (user === null) {
-    return <MyBox>Athlete Not found {params.athleteId}</MyBox>;
+    return <MyBox>Athlete Not found {athleteId}</MyBox>;
   } else {
     return null;
   }
