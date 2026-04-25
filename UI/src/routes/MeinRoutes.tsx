@@ -40,7 +40,7 @@ import { db } from "utils/helperFuncs";
 mapboxgl.accessToken = config.mapBox;
 
 const MeinRoutes = () => {
-  const { user, year, isOffSeason } = useContext(AppContext);
+  const { user, year, isOffSeason, siteReady } = useContext(AppContext);
   db("Render Routes");
   const isAdmin = user?.athleteId === 1075670;
 
@@ -57,7 +57,9 @@ const MeinRoutes = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />}>
-          <Route index element={<Navigate to={rootRoute} replace />} />
+          {siteReady && (
+            <Route index element={<Navigate to={rootRoute} replace />} />
+          )}
           <Route path="landing" element={<Navigate to="/" />} />
           <Route path="teresa" element={<TeresaWon />} />
           <Route path="beta/*" element={<BetaRedirect />} />

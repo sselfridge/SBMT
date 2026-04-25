@@ -33,6 +33,7 @@ function ContextProvider(props: ContextProviderProps) {
         isPreSeason,
         isPostSeason,
         isOffSeason: isPostSeason || isPreSeason,
+        siteReady: true,
       };
       dispatch({ type: "setSettings", settings });
     });
