@@ -56,4 +56,5 @@ export const INITIAL_STATE = {
   kickOffDate: "",
   endingDate: "",
   year,
+  siteReady: false,
 };
