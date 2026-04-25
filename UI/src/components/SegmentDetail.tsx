@@ -39,7 +39,7 @@ interface SegmentDetail {
 }
 
 const Segments = () => {
-  let { segmentIdStr } = useParams();
+  let { segmentId: segmentIdStr } = useParams();
   let segmentId: Number | null = Number(segmentIdStr);
 
   segmentId = Number.isNaN(segmentId) ? null : segmentId;
