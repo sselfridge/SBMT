@@ -197,8 +197,6 @@ namespace TodoApi.Controllers
 
       subRes = JsonSerializer.Deserialize<StravaPushNotificationDTO>(json);
 
-      return Ok();
-
       if (subRes != null)
       {
         var pushNotification = new StravaPushNotification(subRes);
