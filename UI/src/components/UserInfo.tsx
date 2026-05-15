@@ -59,8 +59,9 @@ const UserInfo = () => {
   const [ageHelperText, setAgeHelperText] = useState("");
   const [category, setCategory] = useState("");
   const [agreeToTerms, setAgreeToTerms] = useState(!!user?.active);
-  const [mailingList, setMailingList] = useState(!!user?.mailingList);
+  const [mailingList, setMailingList] = useState(user.mailingList);
   const [profile, setProfile] = useState<UserWithEmail>({} as UserWithEmail);
+  //TODO - pretty sure we don't need profile here at all....
 
   const activeRef = React.useRef<any>(null);
 
@@ -70,19 +71,22 @@ const UserInfo = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const fetchProfile = useCallback((athleteId: number) => {
-    ApiGet(`/api/strava/userRefresh/${athleteId}`, setProfile);
-  }, []);
-
-  const params = new URLSearchParams(location.search);
-  const showReminder = params.has("remind") && !user?.active;
-
   const updateContextUser = React.useCallback(
     (newUserData: UserWithEmail) => {
       dispatch({ type: "setUser", user: newUserData });
     },
     [dispatch],
   );
+
+  const fetchProfile = useCallback(
+    (athleteId: number) => {
+      ApiGet(`/api/strava/userRefresh/${athleteId}`, updateContextUser);
+    },
+    [updateContextUser],
+  );
+
+  const params = new URLSearchParams(location.search);
+  const showReminder = params.has("remind") && !user?.active;
 
   const updateProfile = useCallback(() => {
     setSaving(true);
@@ -92,6 +96,7 @@ const UserInfo = () => {
     updatedUser.age = Number(age) || 99;
     updatedUser.stravaClubs = [];
     updatedUser.active = agreeToTerms || user.active;
+    updatedUser.mailingList = mailingList;
 
     const onSuccess = (res: AxiosResponse) => {
       const newUser = deepFreeze(res.data);
@@ -108,6 +113,7 @@ const UserInfo = () => {
     category,
     email,
     fetchProfile,
+    mailingList,
     updateContextUser,
     user,
   ]);
@@ -146,9 +152,10 @@ const UserInfo = () => {
     {
       label: "Email",
       content: (
-        <Box sx={{ width: "250px" }}>
+        <Box sx={{ width: "100%" }}>
           <TextField
             value={email}
+            sx={{ width: "100%" }}
             onFocus={(e) => e.target.select()}
             error={!!emailHelperText}
             helperText={emailHelperText}
@@ -282,9 +289,10 @@ const UserInfo = () => {
             display: "flex",
             justifyContent: "flex-start",
             alignItems: "center",
+            width: "100%",
           }}
         >
-          <Typography variant="h5" align="left">
+          <Typography variant="h5" align="left" sx={{ width: "100%" }}>
             {field.content}
           </Typography>
         </Grid>
@@ -296,11 +304,11 @@ const UserInfo = () => {
   const isEmailValid = !!validateEmail(email);
 
   let missingInfoWarning = " ";
-  if (user?.age === 0 && user?.category === "") {
+  if (age === "" && category === "") {
     missingInfoWarning = "Please enter your age and category";
-  } else if (user?.age === 0) {
+  } else if (age === "") {
     missingInfoWarning = "Please enter your age";
-  } else if (user?.category === "") {
+  } else if (category === "") {
     missingInfoWarning = "Please enter your category";
   } else if (!isEmailValid) {
     missingInfoWarning = "Please enter valid email";

@@ -35,7 +35,7 @@ namespace TodoApi.Models.db
 
     public string Email { get; set; }
 
-    public bool MailingList { get; set; }
+    public bool MailingList { get; set; } = true;
 
     //public StravaUser() { }
 
@@ -58,7 +58,7 @@ namespace TodoApi.Models.db
       bool active,
       string years,
       string email,
-      bool mailingList = false
+      bool mailingList = true
     )
     {
       //This one is used for incoming JSON objects, such as admin user update
@@ -111,7 +111,7 @@ namespace TodoApi.Models.db
       Years = year;
       Active = false;
       Email = "";
-      MailingList = false;
+      MailingList = true;
     }
   }
 

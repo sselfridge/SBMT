@@ -572,6 +572,7 @@ namespace TodoApi.Controllers
         dbUser.Age = newUser.Age;
         dbUser.Category = newUser.Category;
         dbUser.Email = newUser.Email;
+        dbUser.MailingList = newUser.MailingList;
         _dbContext.Update(dbUser);
         await _dbContext.SaveChangesAsync();
 

@@ -84,6 +84,7 @@ namespace TodoApi.Helpers
         user.RecentDistance = 0;
         user.RecentElevation = 0;
         user.SavedFilters = "";
+        user.MailingList = true;
 
         user.Active = false;
         user.Years = SbmtUtils.AddYear(user.Years, year);
