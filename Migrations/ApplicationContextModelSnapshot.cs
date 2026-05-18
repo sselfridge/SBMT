@@ -91,6 +91,9 @@ namespace TodoApi.Migrations
                     b.Property<int>("AthleteId")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("Read")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasColumnType("text");
