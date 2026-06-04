@@ -81,6 +81,7 @@ const Segments = () => {
       label: "Elevation Gain",
       value: `${metersToFeet(segment.totalElevationGain)} ft`,
     },
+    { label: "KOM/QOM", value: `${segment.kom} / ${segment.qom}` },
     { label: "Has been ridden:", value: `${segment.effortCount} times` },
     { label: "by ", value: `${segment.athleteCount} people` },
     {
