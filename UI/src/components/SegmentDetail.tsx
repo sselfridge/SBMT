@@ -63,7 +63,6 @@ const Segments = () => {
       ApiGet(`/api/segments/${segmentId}/?year=${year}`, setSegment);
     }
   }, [segmentId, year]);
-  console.log("year: ", year);
 
   useEffect(() => {
     if (!fullLeaderboard) return;
@@ -73,7 +72,6 @@ const Segments = () => {
         return s.sex === sexFilter;
       }),
     );
-    console.log("fullLeaderboard: ", fullLeaderboard);
   }, [fullLeaderboard, sexFilter]);
 
   useEffect(() => {

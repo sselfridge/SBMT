@@ -34,7 +34,6 @@ const Segments = () => {
   const [tabVal, setTabVal] = useState(SURFACE.all);
   const [allSegments, setAllSegments] = useState<Segment[]>([]);
   const [segments, setSegments] = useState<Segment[]>([]);
-  console.log("segments: ", segments);
 
   const isMobile = useMediaQuery((theme: Theme) =>
     theme.breakpoints.down("sm"),
@@ -99,7 +98,6 @@ const Segments = () => {
       headerName: "KOM/QOM",
       flex: 2,
       renderCell: (props: any) => {
-        console.log("props: ", props);
         const { value, row } = props;
         const kom = value;
         const { qom } = row;
