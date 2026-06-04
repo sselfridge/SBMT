@@ -10,6 +10,7 @@ import {
   TableRow,
   TableBody,
   Avatar,
+  Button,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Link, useParams } from "react-router-dom";
@@ -45,6 +46,9 @@ const Segments = () => {
   segmentId = Number.isNaN(segmentId) ? null : segmentId;
   const [segment, setSegment] = useState<Segment>({} as Segment);
   // const [userEfforts, setUserEfforts] = useState(null);
+  const [fullLeaderboard, setFullLeaderboard] =
+    useState<SegmentLeaderboard | null>(null);
+  const [sexFilter, setSexFilter] = useState<null | string>(null);
   const [segmentLeaderboard, setSegmentLeaderboard] =
     useState<SegmentLeaderboard | null>(null);
 
@@ -57,17 +61,19 @@ const Segments = () => {
       ApiGet(`/api/segments/${segmentId}/?year=${year}`, setSegment);
     }
   }, [segmentId, year]);
-  // useEffect(() => {
-  //   if (user && !userEfforts) {
-  //     ApiGet(`/api/athletes/${user.athleteId}/efforts`, setUserEfforts);
-  //   }
-  // }, [user, userEfforts]);
+  console.log("year: ", year);
+
+  useEffect(() => {
+    if (!fullLeaderboard) return;
+    setSegmentLeaderboard(fullLeaderboard.filter((s) => s.sex === sexFilter));
+    console.log("fullLeaderboard: ", fullLeaderboard);
+  }, [fullLeaderboard, sexFilter]);
 
   useEffect(() => {
     if (segmentId) {
       ApiGet(
         `/api/segments/${segmentId}/leaderboard?year=${year}`,
-        setSegmentLeaderboard,
+        setFullLeaderboard,
       );
     }
   }, [segmentId, year]);
@@ -150,12 +156,15 @@ const Segments = () => {
               {e.segmentName} - {formattedTime(e.bestTime)}
             </div>
           ))} */}
+          <Button onClick={() => setSexFilter((v) => (v === "M" ? "F" : "M"))}>
+            M/F
+          </Button>
           {isPreSeason && <TempCountdown banner={"Segment leaderboard"} />}
+          <Typography sx={{ mt: 3 }} variant="h5">
+            Segment Leaderboard
+          </Typography>
           {!!segmentLeaderboard?.length && (!isPreSeason || isAdmin) && (
             <React.Fragment>
-              <Typography sx={{ mt: 3 }} variant="h5">
-                Segment Leaderboard
-              </Typography>
               <Table>
                 <TableHead>
                   <TableRow>
