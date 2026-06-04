@@ -10,6 +10,8 @@ import {
   TableRow,
   TableBody,
   Avatar,
+  Alert,
+  Button,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Link, useParams } from "react-router-dom";
@@ -23,6 +25,7 @@ import { deepFreeze, metersToMiles, metersToFeet } from "utils/helperFuncs";
 import AppContext from "AppContext";
 // import { MAX_INT } from "utils/constants";
 import { formattedTime } from "utils/helperFuncs";
+import { GENDER, genderList } from "utils/constants";
 import TempCountdown from "./LandingPage/TempCountdown";
 import { Segment } from "@/types/db/Segment";
 import { SegmentLeaderboard } from "@/types/SegmentLeaderboard";
@@ -45,6 +48,9 @@ const Segments = () => {
   segmentId = Number.isNaN(segmentId) ? null : segmentId;
   const [segment, setSegment] = useState<Segment>({} as Segment);
   // const [userEfforts, setUserEfforts] = useState(null);
+  const [fullLeaderboard, setFullLeaderboard] =
+    useState<SegmentLeaderboard | null>(null);
+  const [sexFilter, setSexFilter] = useState<string>(genderList[0]);
   const [segmentLeaderboard, setSegmentLeaderboard] =
     useState<SegmentLeaderboard | null>(null);
 
@@ -57,17 +63,24 @@ const Segments = () => {
       ApiGet(`/api/segments/${segmentId}/?year=${year}`, setSegment);
     }
   }, [segmentId, year]);
-  // useEffect(() => {
-  //   if (user && !userEfforts) {
-  //     ApiGet(`/api/athletes/${user.athleteId}/efforts`, setUserEfforts);
-  //   }
-  // }, [user, userEfforts]);
+  console.log("year: ", year);
+
+  useEffect(() => {
+    if (!fullLeaderboard) return;
+    setSegmentLeaderboard(
+      fullLeaderboard.filter((s) => {
+        if (sexFilter === GENDER.all) return true;
+        return s.sex === sexFilter;
+      }),
+    );
+    console.log("fullLeaderboard: ", fullLeaderboard);
+  }, [fullLeaderboard, sexFilter]);
 
   useEffect(() => {
     if (segmentId) {
       ApiGet(
         `/api/segments/${segmentId}/leaderboard?year=${year}`,
-        setSegmentLeaderboard,
+        setFullLeaderboard,
       );
     }
   }, [segmentId, year]);
@@ -81,6 +94,7 @@ const Segments = () => {
       label: "Elevation Gain",
       value: `${metersToFeet(segment.totalElevationGain)} ft`,
     },
+    { label: "KOM/QOM", value: `${segment.kom} / ${segment.qom}` },
     { label: "Has been ridden:", value: `${segment.effortCount} times` },
     { label: "by ", value: `${segment.athleteCount} people` },
     {
@@ -107,20 +121,30 @@ const Segments = () => {
     },
   ]);
 
+  const missingSeason = segment && segment?.years?.includes(year) === false;
+
   return (
     <MyBox>
-      <Typography
-        variant="h4"
-        sx={{
-          fontSize: "min(50px,4vw)",
-          borderBottomColor: "secondary.main",
-          borderBottomWidth: 4,
-          borderBottomStyle: "solid",
-          mb: 1,
-        }}
-      >
-        {segment.name}
-      </Typography>
+      <Box>
+        <Typography
+          variant="h4"
+          sx={{
+            fontSize: "min(50px,4vw)",
+            borderBottomColor: "secondary.main",
+            borderBottomWidth: 4,
+            borderBottomStyle: "solid",
+            mb: 1,
+          }}
+        >
+          {segment.name}
+        </Typography>
+        {missingSeason && (
+          <Alert severity="error">
+            This segment isn't part of the selected season: {year}.{" "}
+            <Link to={"/segments"}>Go back to Segments</Link>
+          </Alert>
+        )}
+      </Box>
       <Grid container spacing={1} sx={{ width: "90vw" }}>
         <Grid item xs={12} md={6}>
           <Box
@@ -150,11 +174,36 @@ const Segments = () => {
             </div>
           ))} */}
           {isPreSeason && <TempCountdown banner={"Segment leaderboard"} />}
+          <Box
+            sx={{
+              display: "flex",
+              width: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+              mt: 3,
+            }}
+          >
+            <Typography variant="h5">Segment Leaderboard</Typography>
+            <Button
+              variant="text"
+              sx={{ color: "primary.main" }}
+              onClick={() =>
+                setSexFilter((v) => {
+                  let idx = genderList.findIndex((g) => g === sexFilter);
+                  idx += 1;
+                  idx %= genderList.length;
+                  return genderList[idx];
+                })
+              }
+            >
+              {sexFilter === GENDER.all && "M/F"}
+              {sexFilter === GENDER.female && "F"}
+              {sexFilter === GENDER.male && "M"}
+            </Button>
+          </Box>
+          {!segmentLeaderboard?.length && <Box>Leaderboard is empty</Box>}
           {!!segmentLeaderboard?.length && (!isPreSeason || isAdmin) && (
             <React.Fragment>
-              <Typography sx={{ mt: 3 }} variant="h5">
-                Segment Leaderboard
-              </Typography>
               <Table>
                 <TableHead>
                   <TableRow>

@@ -48,8 +48,33 @@ fi
 
 date=$(date +"%Y-%m-%d_%H%M%S")
 filename="sbmt_$env.$date$tag.sql"
+fullPath="$SBMT_DIR/backups/$filename"
 echo "pg_dump -h localhost -p $dbLocalPort -U $dbUser $dbName > $filename"
-pg_dump -h localhost -p $dbLocalPort -U $dbUser $dbName > "$SBMT_DIR/backups/$filename"
+pg_dump -h localhost -p $dbLocalPort -U $dbUser $dbName > "$fullPath"
+
+
+# Check if the previous command failed
+if [ $? -ne 0 ]; then
+    # Delete the file specified by $fullPath if the command failed
+    rm -f "$fullPath"
+    echo "Previous command failed. File $fullPath has been deleted."
+else
+    echo "Previous command succeeded. File $fullPath was not deleted."
+fi
+
+if [[ ! -f "$fullPath" ]]; then
+  echo "Error: File does not exist: $fullPath" >&2
+  exit 1
+fi
+
+file_size=$(stat -c%s "$fullPath")
+
+if (( file_size < 1024 )); then
+  echo "Error: File is smaller than 1KB ($file_size bytes)" >&2
+  rm $fullPath
+  exit 1
+fi
+
 
 if [[ -n "$DROPBOX_DIR" ]]; then
     echo "DROPBOX_DIR is set to: $DROPBOX_DIR"
