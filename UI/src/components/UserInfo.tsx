@@ -22,7 +22,7 @@ import { ReactComponent as StravaLogo } from "assets/stravaLogoTransparent.svg";
 import LabeledSelect from "./Shared/LabeledSelect";
 
 import { categoryList } from "utils/constants";
-import { ApiGet, ApiPostCb } from "api/api";
+import { ApiPostCb } from "api/api";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import { deepFreeze } from "utils/helperFuncs";
