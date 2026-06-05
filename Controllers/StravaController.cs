@@ -349,7 +349,7 @@ namespace TodoApi.Controllers
       Console.WriteLine($"Updating Xoms for year {year}");
       var result = await _stravaService.UpdateSegmentsXoms(year);
       Console.WriteLine($"Updated: {result} Xoms in {year}");
-      return Ok(true);
+      return Ok(result);
     }
   }
 }

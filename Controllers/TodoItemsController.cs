@@ -188,12 +188,10 @@ namespace TodoApi.Controllers
       //  effort.ActivityId,
       //  0
       //);
-      // return Ok("YES!");
+      return Ok("YES!");
 
+      // var result = await _stravaService.UpdateSegmentsXoms("2026sbmt");
 
-      var result = await _stravaService.UpdateSegmentsXoms("2026sbmt");
-
-      return Ok(result);
 
       var newStudent = new Student();
       newStudent.Name = "Bobby";

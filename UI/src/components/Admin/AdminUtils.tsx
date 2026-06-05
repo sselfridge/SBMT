@@ -11,13 +11,15 @@ import { YEARS } from "utils/constants";
 
 const AdminUtils = () => {
   const [xomYear, setXomYear] = React.useState(YEARS[0]);
+  const [xomMsg, setXomMsg] = React.useState("");
 
   const handleUpdate = async () => {
     try {
-      const res = await updateXoms(xomYear);
-      console.log("res: ", res);
+      const count = await updateXoms(xomYear);
+      setXomMsg(`Updated ${count} Xoms for this season`);
     } catch (e) {
       console.log("e: ", e);
+      setXomMsg("Error updating Xoms");
     }
   };
 
@@ -42,6 +44,7 @@ const AdminUtils = () => {
           <MenuItem value={y}>{y}</MenuItem>
         ))}
       </Select>
+      {xomMsg}
     </Paper>
   );
 };

@@ -254,7 +254,6 @@ const AdminSegments = () => {
               <FormControl>
                 <InputLabel id="surfaceSelectLabel">Surface</InputLabel>
                 <Select
-                  id="hellothere"
                   labelId="surfaceSelectLabel"
                   label="Surface"
                   value={surfaceType}

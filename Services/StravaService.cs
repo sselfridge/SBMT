@@ -398,7 +398,6 @@ namespace TodoApi.Services
       var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
 
       var segments = context.Segments.Where(x => x.Years.Contains(year)).ToList();
-      Console.WriteLine("hello");
       var results = await Task.WhenAll(segments.Select(seg => GetSegment(seg.Id)));
 
       var count = 0;
@@ -412,7 +411,7 @@ namespace TodoApi.Services
 
         if (toUpdate.Kom != updated.Kom)
         {
-          updateString += $" Kom {updated.Id}  Before: {toUpdate.Kom} After: {updated.Kom} ";
+          updateString += $" Kom {updated.Id} Before: {toUpdate.Kom} After: {updated.Kom} ";
           toUpdate.Kom = updated.Kom;
           didUpdate = true;
           count++;
