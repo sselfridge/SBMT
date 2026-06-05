@@ -439,5 +439,7 @@ namespace TodoApi.Helpers
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
       return "allo";
     }
+
+    public static void SegmentUpdate(IServiceScopeFactory serviceScopeFactory) { }
   }
 }
