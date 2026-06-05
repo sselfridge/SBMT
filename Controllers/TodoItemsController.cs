@@ -190,7 +190,8 @@ namespace TodoApi.Controllers
       //);
       return Ok("YES!");
 
-      return Ok(kickOffDate);
+      // var result = await _stravaService.UpdateSegmentsXoms("2026sbmt");
+
 
       var newStudent = new Student();
       newStudent.Name = "Bobby";

@@ -26,6 +26,7 @@ import AdminSegments from "components/Admin/AdminSegments";
 
 import AdminUsers from "components/Admin/AdminUsers";
 import AdminFeedback from "components/Admin/AdminFeedback";
+import AdminUtils from "components/Admin/AdminUtils";
 import AppContext from "AppContext";
 
 //@ts-ignore
@@ -90,6 +91,7 @@ const MeinRoutes = () => {
               <Route path="users" element={<AdminUsers />} />
               <Route path="feedback" element={<AdminFeedback />} />
               <Route path="efforts" element={<AdminEfforts />} />
+              <Route path="utils" element={<AdminUtils />} />
             </Route>
           )}
 
