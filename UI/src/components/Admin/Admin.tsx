@@ -13,6 +13,7 @@ const Admin = () => {
       <Link to="users">Users</Link>
       <Link to="feedback">Feedback</Link>
       <Link to="efforts">Efforts</Link>
+      <Link to="utils">Util Functions</Link>
     </MyPaper>
   );
 };

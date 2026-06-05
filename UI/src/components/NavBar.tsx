@@ -178,7 +178,7 @@ export default function NavBar() {
           </Box>
         </Toolbar>
         <Toolbar sx={{ justifyContent: "flex-end" }}>
-          <Tabs value={currentTabIdx} aria-label="nav tabs example">
+          <Tabs value={currentTabIdx || false} aria-label="nav tabs example">
             {tabs.map((tabName) => (
               <Tab
                 value={`/${tabName}`}

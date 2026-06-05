@@ -429,9 +429,12 @@ namespace TodoApi.Services
 
         if (didUpdate)
         {
+          Console.WriteLine(updateString);
           var newStudent = new Student();
           newStudent.Name = updateString;
-          newStudent.Age = 1234;
+          DateTime dateTime = DateTime.Now;
+          int dateAsInt = dateTime.Year * 10000 + dateTime.Month * 100 + dateTime.Day;
+          newStudent.Age = dateAsInt;
           context.Add(newStudent);
           context.Update(toUpdate);
         }

@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import { deepFreeze } from "utils/helperFuncs";
 
-const Api = axios.create({
+export const Api = axios.create({
   baseURL: "/",
   // timeout: 1500
 });
@@ -16,7 +16,7 @@ Api.interceptors.response.use(
   },
   function (error) {
     return Promise.reject(error);
-  }
+  },
 );
 
 export const ApiGet = (
