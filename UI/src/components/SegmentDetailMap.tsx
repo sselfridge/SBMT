@@ -4,7 +4,7 @@ import _ from "lodash";
 import { addSegmentToMap, getBounds, getGeometry } from "utils/mapUtils";
 
 //@ts-ignore
-import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
+import mapboxgl from "mapbox-gl";
 import type { Segment } from "@/types/db/Segment";
 import type { MapWithMarkers } from "@/types/mapBoxgl";
 
