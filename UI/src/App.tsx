@@ -17,7 +17,7 @@ import type { User } from "./types/StravaUserDTO";
 function App() {
   const { dispatch, user } = React.useContext(AppContext);
 
-  const commitHash = process.env.REACT_APP_GIT_COMMIT;
+  const commitHash = import.meta.env.VITE_GIT_COMMIT;
   console.log("commitHash: ", commitHash);
 
   const onSetUser = React.useCallback(

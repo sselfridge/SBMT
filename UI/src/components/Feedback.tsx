@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import AddCommentIcon from "@mui/icons-material/AddComment";
 import CloseIcon from "@mui/icons-material/Close";
-import * as DOMPurify from "dompurify";
+import DOMPurify from "dompurify";
 import { ApiPostCb } from "api/api";
 
 const Feedback = () => {

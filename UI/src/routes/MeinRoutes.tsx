@@ -29,8 +29,7 @@ import AdminFeedback from "components/Admin/AdminFeedback";
 import AdminUtils from "components/Admin/AdminUtils";
 import AppContext from "AppContext";
 
-//@ts-ignore
-import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
+import mapboxgl from "mapbox-gl";
 import config from "config";
 import StravaOops from "components/StravaOops";
 // import TempCountdown from "components/LandingPage/TempCountdown";
