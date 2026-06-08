@@ -34,8 +34,16 @@ type NavTab = "/recent" | "/segments" | "/leaderboard" | "/athletes" | "";
 export default function NavBar() {
   const [currentTabIdx, setCurrentTabIdx] = useState<NavTab>("");
 
-  const { user, env, dispatch, year, kickOffDate, isOffSeason } =
-    React.useContext(AppContext);
+  const {
+    user,
+    env,
+    dispatch,
+    year,
+    kickOffDate,
+    endingDate,
+    isOffSeason,
+    isPreSeason,
+  } = React.useContext(AppContext);
   const [, setSearchParams] = useSearchParams();
 
   const [menuOpen, setMenuOpen] = React.useState(false);
@@ -123,6 +131,16 @@ export default function NavBar() {
     console.error("error: ", error);
   }
 
+  let endDateLabel = "";
+  try {
+    if (endingDate) {
+      const date = parseISO(endingDate);
+      endDateLabel = format(date, "EEE LLL do, yyyy");
+    }
+  } catch (e) {
+    console.error("error: ", e);
+  }
+
   return (
     <Box id={"SBMTmainNavBar"} sx={{ flexGrow: 0 }}>
       <AppBar position="static">
@@ -167,7 +185,8 @@ export default function NavBar() {
                 fontFamily: "roboto",
               }}
             >
-              {kickOffLabel && `Starts ${kickOffLabel}!!`}
+              {kickOffLabel && isPreSeason && `Starts ${kickOffLabel}!!`}
+              {endDateLabel && !isOffSeason && `Ends ${endDateLabel}`}
               {/* TODO Add To / From for past years */}
             </Box>
             <Box sx={{ position: "relative" }}>

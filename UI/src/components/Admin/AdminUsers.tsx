@@ -1,15 +1,22 @@
 import React, { useState, useContext, useEffect, useCallback } from "react";
 import _, { cloneDeep } from "lodash";
-import { Box, Button } from "@mui/material";
+import { Avatar, Box, Button, CircularProgress } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { ApiGet, ApiPatch } from "api/api";
+import {
+  DataGrid,
+  GridColDef,
+  GridRenderCellParams,
+  GridRenderEditCellParams,
+} from "@mui/x-data-grid";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import { useNavigate } from "react-router-dom";
 
 import AppContext from "AppContext";
 
 import { ADMIN_ATHLETE_ID, APP_ATHLETE_ID } from "utils/constants";
 import { AdminUser } from "@/types/StravaUserDTO";
+import { fetchAdminUsers, updateUsers } from "@/services/adminUsers";
+import { userRefresh } from "@/services/strava";
 
 const MyBox = styled(Box)(({ theme }) => ({
   width: "80vw",
@@ -17,7 +24,7 @@ const MyBox = styled(Box)(({ theme }) => ({
   overflow: "scroll",
 }));
 
-type UpdatableFields = "years" | "active";
+type UpdatableFields = "years" | "active" | "avatar";
 
 const columns = [
   {
@@ -34,6 +41,37 @@ const columns = [
     field: "lastname",
     headerName: "Lastname",
     // flex: 10
+  },
+  {
+    field: "avatar",
+    headerName: "Avatar",
+    // flex: 1
+    editable: true,
+    renderCell: (params: GridRenderCellParams) => {
+      const { formattedValue } = params;
+
+      return (
+        <Box>
+          <Avatar src={formattedValue} />
+        </Box>
+      );
+    },
+    renderEditCell: (params: GridRenderEditCellParams) => {
+      const { formattedValue, id, field, api, row, ...rest } = params;
+
+      return (
+        <Box>
+          <Button
+            onClick={() => {
+              userRefresh(row.athleteId);
+              api.stopCellEditMode({ id, field });
+            }}
+          >
+            <RefreshIcon />
+          </Button>
+        </Box>
+      );
+    },
   },
   {
     field: "active",
@@ -83,11 +121,7 @@ const columns = [
     width: 200,
     // flex: 10
   },
-  {
-    field: "avatar",
-    headerName: "Avatar",
-    // flex: 1
-  },
+
   {
     field: "email",
     headerName: "Email",
@@ -97,7 +131,7 @@ const columns = [
 const AdminUsers = () => {
   const { user } = useContext(AppContext);
   const [users, setUsers] = useState<AdminUser[]>([]);
-
+  const [submitting, setSubmitting] = useState(false);
   const [updatedUsers, setUpdatedUsers] = useState<Record<string, AdminUser>>(
     {},
   );
@@ -106,9 +140,13 @@ const AdminUsers = () => {
   const [disableConfirm, setDisableConfirm] = useState(true);
   const navigate = useNavigate();
 
-  const refreshUsers = useCallback(() => {
+  const refreshUsers = useCallback(async () => {
     setUpdatedUsers({});
-    ApiGet("/api/admin/users", setUsers, null);
+
+    try {
+      const res = await fetchAdminUsers();
+      setUsers(res);
+    } catch (error) {}
   }, []);
 
   useEffect(() => {
@@ -121,22 +159,23 @@ const AdminUsers = () => {
     }
   }, [navigate, user?.athleteId]);
 
-  const submit = () => {
-    const users: AdminUser[] = [];
+  const submit = async () => {
+    try {
+      setSubmitting(true);
+      const users: AdminUser[] = [];
 
-    Object.keys(updatedUsers).forEach((athleteId, i) => {
-      const user = updatedUsers[athleteId];
-      user.athleteId = Number(athleteId);
-      users.push(user);
-    });
-    ApiPatch(
-      `/api/admin/users`,
-      users,
-      () => {
-        refreshUsers();
-      },
-      setError,
-    );
+      Object.keys(updatedUsers).forEach((athleteId, i) => {
+        const user = updatedUsers[athleteId];
+        user.athleteId = Number(athleteId);
+        users.push(user);
+      });
+
+      await updateUsers(users);
+    } catch (e) {
+      setError(e);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (!user) {
@@ -150,56 +189,59 @@ const AdminUsers = () => {
 
   return (
     <MyBox>
-      <Button
-        onClick={() => {
-          navigate("/admin");
-        }}
-      >
-        Back to Admin
-      </Button>
-      <Button sx={{ m: 2 }} onClick={submit} disabled={disableSave}>
-        Save Updates
-      </Button>
-      {!showConfirm && (
+      <Box sx={{ display: "flex", gap: 2, m: 2 }}>
         <Button
+          variant="outlined"
           onClick={() => {
-            setShowConfirm(true);
-            setTimeout(() => setDisableConfirm(false), 1500);
-
-            //reset to initial
-            setTimeout(() => setDisableConfirm(true), 4500);
-            setTimeout(() => setShowConfirm(false), 4500);
+            navigate("/admin");
           }}
         >
-          Mark All Inactive
+          Back to Admin
         </Button>
-      )}
-      {showConfirm && (
-        <Button
-          disabled={disableConfirm}
-          onClick={() => {
-            setUpdatedUsers((prev) => {
-              const updated = cloneDeep(prev);
-              users.forEach((u) => {
-                const { athleteId } = u;
-                if (
-                  athleteId === APP_ATHLETE_ID ||
-                  athleteId === ADMIN_ATHLETE_ID
-                ) {
-                  return;
-                }
-                const updateUser: AdminUser =
-                  updated[athleteId] || ({} as AdminUser);
-                updateUser.active = false;
-                updated[athleteId] = updateUser;
+        <Button onClick={submit} disabled={disableSave}>
+          {submitting ? <CircularProgress /> : "Save Updates"}
+        </Button>
+        {!showConfirm && (
+          <Button
+            onClick={() => {
+              setShowConfirm(true);
+              setTimeout(() => setDisableConfirm(false), 1500);
+              //reset to initial
+              setTimeout(() => setDisableConfirm(true), 4500);
+              setTimeout(() => setShowConfirm(false), 4500);
+            }}
+          >
+            Mark All Inactive
+          </Button>
+        )}
+        {showConfirm && (
+          <Button
+            disabled={disableConfirm}
+            onClick={() => {
+              setUpdatedUsers((prev) => {
+                const updated = cloneDeep(prev);
+                users.forEach((u) => {
+                  const { athleteId } = u;
+                  if (
+                    athleteId === APP_ATHLETE_ID ||
+                    athleteId === ADMIN_ATHLETE_ID
+                  ) {
+                    return;
+                  }
+                  const updateUser: AdminUser =
+                    updated[athleteId] || ({} as AdminUser);
+                  updateUser.active = false;
+                  updated[athleteId] = updateUser;
+                });
+                return updated;
               });
-              return updated;
-            });
-          }}
-        >
-          Confirm?
-        </Button>
-      )}
+            }}
+          >
+            Confirm?
+          </Button>
+        )}
+        <Button onClick={refreshUsers}>Refresh</Button>
+      </Box>
       <Box sx={{ color: "black" }}>{JSON.stringify(error)}</Box>
 
       <DataGrid
@@ -219,7 +261,11 @@ const AdminUsers = () => {
         }}
         processRowUpdate={(newRow, oldRow) => {
           const { athleteId } = newRow;
-          const editableFields: UpdatableFields[] = ["years", "active"];
+          const editableFields: UpdatableFields[] = [
+            "years",
+            "active",
+            "avatar",
+          ];
 
           setUpdatedUsers((u) => {
             const updated = _.cloneDeep(u);

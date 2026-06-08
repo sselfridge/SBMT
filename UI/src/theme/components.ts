@@ -9,7 +9,7 @@ const components = {
   MuiButton: {
     styleOverrides: {
       root: {
-        color: "white",
+        // color: "white",
       },
     },
     defaultProps: {
