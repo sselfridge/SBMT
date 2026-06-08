@@ -287,6 +287,7 @@ namespace TodoApi.Controllers
         return NotFound();
 
       var cookieAthleteId = Int32.Parse(userId);
+      var adminId = Int32.Parse(SbmtUtils.getConfigVal("StravaConfig:rootAthleteId"));
 
       var profile = await _stravaService.GetProfile(athleteId);
 
@@ -299,7 +300,8 @@ namespace TodoApi.Controllers
 
       if (user == null)
         return NotFound();
-      if (cookieAthleteId != user.AthleteId)
+
+      if (cookieAthleteId != adminId && cookieAthleteId != user.AthleteId)
       {
         return Forbid();
       }
