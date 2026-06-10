@@ -287,6 +287,7 @@ namespace TodoApi.Controllers
         return NotFound();
 
       var cookieAthleteId = Int32.Parse(userId);
+      var adminId = Int32.Parse(SbmtUtils.getConfigVal("StravaConfig:rootAthleteId"));
 
       var profile = await _stravaService.GetProfile(athleteId);
 
@@ -299,7 +300,8 @@ namespace TodoApi.Controllers
 
       if (user == null)
         return NotFound();
-      if (cookieAthleteId != user.AthleteId)
+
+      if (cookieAthleteId != adminId && cookieAthleteId != user.AthleteId)
       {
         return Forbid();
       }
@@ -334,6 +336,22 @@ namespace TodoApi.Controllers
     {
       var result = await _stravaService.ParseLink(link);
       return result;
+    }
+
+    [HttpGet("updateXoms/{year}")]
+    public async Task<IActionResult> UpdateXoms(string year)
+    {
+      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
+      var adminId = SbmtUtils.getConfigVal("StravaConfig:rootAthleteId");
+
+      if (userId != adminId)
+      {
+        return Forbid();
+      }
+      Console.WriteLine($"Updating Xoms for year {year}");
+      var result = await _stravaService.UpdateSegmentsXoms(year);
+      Console.WriteLine($"Updated: {result} Xoms in {year}");
+      return Ok(result);
     }
   }
 }

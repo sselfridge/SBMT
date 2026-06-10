@@ -26,10 +26,10 @@ import AdminSegments from "components/Admin/AdminSegments";
 
 import AdminUsers from "components/Admin/AdminUsers";
 import AdminFeedback from "components/Admin/AdminFeedback";
+import AdminUtils from "components/Admin/AdminUtils";
 import AppContext from "AppContext";
 
-//@ts-ignore
-import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
+import mapboxgl from "mapbox-gl";
 import config from "config";
 import StravaOops from "components/StravaOops";
 // import TempCountdown from "components/LandingPage/TempCountdown";
@@ -90,6 +90,7 @@ const MeinRoutes = () => {
               <Route path="users" element={<AdminUsers />} />
               <Route path="feedback" element={<AdminFeedback />} />
               <Route path="efforts" element={<AdminEfforts />} />
+              <Route path="utils" element={<AdminUtils />} />
             </Route>
           )}
 

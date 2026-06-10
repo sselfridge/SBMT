@@ -2,7 +2,7 @@ import React from "react";
 //@ts-ignore
 import { toGeoJSON } from "@mapbox/polyline";
 //@ts-ignore
-import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
+import mapboxgl from "mapbox-gl";
 import * as ReactDOMServer from "react-dom/server";
 
 import type { MapWithMarkers } from "@/types/mapBoxgl";

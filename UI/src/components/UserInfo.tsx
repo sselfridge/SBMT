@@ -22,7 +22,7 @@ import { ReactComponent as StravaLogo } from "assets/stravaLogoTransparent.svg";
 import LabeledSelect from "./Shared/LabeledSelect";
 
 import { categoryList } from "utils/constants";
-import { ApiGet, ApiPostCb } from "api/api";
+import { ApiPostCb } from "api/api";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import { deepFreeze } from "utils/helperFuncs";
@@ -30,6 +30,7 @@ import { deepFreeze } from "utils/helperFuncs";
 import type { UserWithEmail } from "@/types/StravaUserDTO";
 import { AxiosResponse } from "axios";
 import { StravaClub } from "@/types/StravaClub";
+import { userRefresh } from "services/strava";
 
 const MyPaper = styled(Paper)(({ theme }) => ({
   padding: 8,
@@ -79,8 +80,13 @@ const UserInfo = () => {
   );
 
   const fetchProfile = useCallback(
-    (athleteId: number) => {
-      ApiGet(`/api/strava/userRefresh/${athleteId}`, updateContextUser);
+    async (athleteId: number) => {
+      try {
+        const profile = await userRefresh(athleteId);
+        updateContextUser(profile);
+      } catch (e) {
+        console.error(e);
+      }
     },
     [updateContextUser],
   );

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 //@ts-ignore
-import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
+import mapboxgl from "mapbox-gl";
 import {
   addSegmentToMap,
   addSegmentPopupToMap,

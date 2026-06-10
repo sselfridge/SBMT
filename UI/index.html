@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="SBMT" content="Santa Barbara Mountain Challenge" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+      default-src 'self' https://api.mapbox.com;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.typekit.net;
+      img-src 'self' data: blob:  https://*.cloudfront.net/;
+      font-src https://fonts.gstatic.com https://use.typekit.net;
+      child-src blob: ;
+      connect-src 'self' https://*.tiles.mapbox.com https://api.mapbox.com https://events.mapbox.com ;
+      worker-src blob: ;
+      "
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+      rel="stylesheet"
+    />
+    <!-- adobe font kit -->
+    <link rel="stylesheet" href="https://use.typekit.net/zkk0tuh.css" />
+
+    <link rel="manifest" href="/manifest.json" />
+    <title>SBMT: Santa Barbara Mountain Challenge</title>
+  </head>
+  <body>
+    <noscript
+      >You don't NEED to enable JavaScript to view this site... but it
+      helps</noscript
+    >
+    <div id="root"></div>
+    <!--
+      This HTML file is a temple to templates.
+      All hail templates...
+
+      Also water.
+
+      !!HAIL HYDRATE!!
+    -->
+    <script type="module" src="/src/index.tsx"></script>
+  </body>
+</html>

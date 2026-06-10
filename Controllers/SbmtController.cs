@@ -455,7 +455,7 @@ namespace TodoApi.Controllers
 
       var data = bestList
         .Join(
-          _dbContext.StravaUsers.Where(x => x.Active),
+          _dbContext.StravaUsers.Where(x => year == null ? x.Active : x.Years.Contains(year)),
           effort => effort.Key,
           user => user.AthleteId,
           (effort, user) =>
@@ -468,6 +468,7 @@ namespace TodoApi.Controllers
               firstname = user.Firstname,
               lastname = user.Lastname,
               avatar = user.Avatar,
+              sex = user.Sex,
             }
         )
         .ToList()

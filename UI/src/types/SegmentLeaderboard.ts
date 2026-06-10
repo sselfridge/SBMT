@@ -6,6 +6,7 @@ export interface SegmentLeaderboardEntry {
   firstname: string;
   lastname: string;
   avatar: string;
+  sex: string;
 }
 
 export type SegmentLeaderboard = SegmentLeaderboardEntry[];

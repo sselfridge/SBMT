@@ -97,7 +97,9 @@ const AthleteDetail = () => {
           <TableRow>
             <TableCell colSpan={5}>
               <Typography textAlign={"center"}>
-                <Link to={segment.segmentId}>{segment.segmentName}</Link>
+                <Link to={`/segments/${segment.segmentId}`}>
+                  {segment.segmentName}
+                </Link>
               </Typography>
             </TableCell>
           </TableRow>

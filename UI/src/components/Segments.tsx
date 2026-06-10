@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Box, Tabs, Tab } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { Box, Tabs, Tab, useMediaQuery } from "@mui/material";
+import { styled, type Theme } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 import { DataGrid, GridRenderCellParams } from "@mui/x-data-grid";
 import SegmentMap from "./SegmentMap";
@@ -8,6 +8,7 @@ import SegmentMap from "./SegmentMap";
 import { ApiGet } from "api/api";
 
 import { surfaceList } from "utils/constants";
+import { metersToMiles, metersToFeet } from "utils/helperFuncs";
 import AppContext from "AppContext";
 
 import { SURFACE } from "utils/constants";
@@ -29,31 +30,14 @@ const MapBox = styled(Box)(() => ({
   width: "calc(100%)",
 }));
 
-const columns = [
-  {
-    field: "name",
-    headerName: "Segment",
-    flex: 4,
-    renderCell: (props: GridRenderCellParams) => {
-      const { value, id } = props;
-      return <Link to={`${id}`}>{value}</Link>;
-    },
-  },
-  // {
-  //   field: "effort_count",
-  //   headerName: "Attempts",
-  //   flex: 2,
-  //   renderCell: (props) => {
-  //     return props.value;
-  //   },
-  // },
-];
-
 const Segments = () => {
   const [tabVal, setTabVal] = useState(SURFACE.all);
   const [allSegments, setAllSegments] = useState<Segment[]>([]);
   const [segments, setSegments] = useState<Segment[]>([]);
 
+  const isMobile = useMediaQuery((theme: Theme) =>
+    theme.breakpoints.down("sm"),
+  );
   const [loading, setLoading] = useState(true);
 
   const { year } = React.useContext(AppContext);
@@ -79,6 +63,48 @@ const Segments = () => {
   React.useEffect(() => {
     ApiGet(`api/segments/?year=${year}`, onLoad);
   }, [onLoad, year]);
+
+  const columns = [
+    {
+      field: "name",
+      headerName: "Segment",
+      flex: 4,
+      renderCell: (props: GridRenderCellParams) => {
+        const { value, id } = props;
+        return <Link to={`${id}`}>{value}</Link>;
+      },
+    },
+    {
+      field: "distance",
+      headerName: isMobile ? "Dist" : "Distance",
+      flex: 2,
+      renderCell: (props: any) => {
+        return `${metersToMiles(props.value)} mi`;
+      },
+    },
+    {
+      field: "totalElevationGain",
+      headerName: isMobile ? "Elev" : "Elevation",
+      flex: 2,
+      renderCell: (props: any) => {
+        return `${metersToFeet(props.value)} ft`;
+      },
+    },
+  ];
+
+  if (!isMobile) {
+    columns.push({
+      field: "kom",
+      headerName: "KOM/QOM",
+      flex: 2,
+      renderCell: (props: any) => {
+        const { value, row } = props;
+        const kom = value;
+        const { qom } = row;
+        return `${kom}/${qom}`;
+      },
+    });
+  }
 
   const roadCount = allSegments.filter(
     (s) => s.surfaceType === SURFACE.road,
