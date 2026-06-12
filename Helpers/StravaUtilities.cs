@@ -230,13 +230,12 @@ namespace TodoApi.Helpers
             Console.WriteLine(
               $"sbmtLog:  activity {activityId} has {activity.SegmentEfforts.Length} efforts on it Delay was:{delayAmount}"
             );
-
+            var initialDelay = 60000;
             if (activity.SegmentEfforts.Length == 0 && delayAmount == 0)
             {
-              var delayTime = 300000;
-              var timeInMin = delayTime / 1000 / 60;
+              var timeInMin = initialDelay / 1000 / 60;
               Console.WriteLine($"sbmtLog: Retrying {activityId} in {timeInMin} minutes");
-              ParseNewActivity(serviceScopeFactory, athleteId, activityId, delayTime);
+              ParseNewActivity(serviceScopeFactory, athleteId, activityId, initialDelay);
               return;
             }
             else if (activity.SegmentEfforts.Length == 0 && delayAmount != 0)
@@ -245,6 +244,12 @@ namespace TodoApi.Helpers
               Console.WriteLine(
                 $"sbmtLog: Retried {activityId} after {timeInMin} minutes, still no segments"
               );
+              if (delayAmount == initialDelay)
+              {
+                var newDelay = initialDelay + 1;
+                Console.WriteLine($"sbmtLog: Retrying {activityId} in {timeInMin} minutes + 1 sec");
+                ParseNewActivity(serviceScopeFactory, athleteId, activityId, newDelay);
+              }
             }
             else if (activity.SegmentEfforts.Length > 0 && delayAmount != 0)
             {
