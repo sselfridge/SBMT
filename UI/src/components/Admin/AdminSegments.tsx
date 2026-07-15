@@ -11,6 +11,7 @@ import {
   InputLabel,
   FormControl,
   Autocomplete,
+  CircularProgress,
 } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
 
@@ -33,6 +34,10 @@ import { ApiPost } from "api/api";
 import { metersToMiles } from "utils/helperFuncs";
 import { ApiDelete } from "api/api";
 import { surfaceList, YEARS, SURFACE } from "utils/constants";
+import {
+  updateSegment as updateSegmentAPI,
+  refreshAdminSegments,
+} from "@/services/segment";
 
 import type { Segment } from "@/types/db/Segment";
 
@@ -91,8 +96,20 @@ const AdminSegments = () => {
   const [yearCopyFrom, setYearCopyFrom] = React.useState<string>("");
   const [yearCopyTo, setYearCopyTo] = React.useState<string>("");
 
-  const refreshSegments = React.useCallback(() => {
-    ApiGet("/api/admin/segments", setSegments, null);
+  const [updating, setUpdating] = React.useState(false);
+  const [msg, setMsg] = React.useState("");
+
+  const refreshSegments = React.useCallback(async () => {
+    // ApiGet("/api/admin/segments", setSegments, null);
+    try {
+      setUpdating(true);
+      const updatedSegments = await refreshAdminSegments();
+      setSegments(updatedSegments);
+    } catch (err) {
+      setMsg("Error refreshing segments");
+    } finally {
+      setUpdating(false);
+    }
   }, []);
 
   React.useEffect(() => {
@@ -111,7 +128,11 @@ const AdminSegments = () => {
     );
   };
 
-  const updateSegment = (segmentId: any, field: SegmentField, newVal: any) => {
+  const updateSegment = async (
+    segmentId: any,
+    field: SegmentField,
+    newVal: any,
+  ) => {
     const segment = segments.find((s) => s.id === segmentId);
     const newSeg = _.cloneDeep(segment);
 
@@ -119,14 +140,17 @@ const AdminSegments = () => {
 
     if (newSeg) {
       (newSeg as any)[field] = newVal;
-      ApiPut(
-        `/api/admin/segments/${newSeg.id}`,
-        newSeg,
-        refreshSegments,
-        (err) => {
-          console.error(err);
-        },
-      );
+      try {
+        setUpdating(true);
+        await updateSegmentAPI(newSeg);
+        await refreshSegments();
+        setMsg("");
+      } catch (err) {
+        console.error(err);
+        setMsg("Error Updating");
+      } finally {
+        setUpdating(false);
+      }
     }
   };
 
@@ -343,6 +367,10 @@ const AdminSegments = () => {
         </Box>
 
         {segments === null && <StravaButton text={"Refresh Admin Cookie"} />}
+      </Box>
+      <Box sx={{ height: 40, color: "error.main", display: "flex" }}>
+        {msg}
+        {updating && <CircularProgress />}
       </Box>
       <DataGrid
         slots={{ toolbar: GridToolbar }}

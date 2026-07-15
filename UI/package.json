@@ -28,7 +28,7 @@
     "web-vitals": "3.5.2"
   },
   "scripts": {
-    "start": "vite",
+    "dev": "vite",
     "build": "vite build",
     "buildNoMap": "vite build",
     "eslint": "npx eslint src --ignore-pattern *scratch.js",
