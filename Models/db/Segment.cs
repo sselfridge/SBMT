@@ -28,6 +28,8 @@ namespace TodoApi.Models.db
     public string SurfaceType { get; set; } = "road";
     public string Years { get; set; } = "";
 
+    public string? RouteId { get; set; }
+
     [JsonConstructor]
     public Segment(
       long id,

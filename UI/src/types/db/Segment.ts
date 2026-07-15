@@ -19,4 +19,5 @@ export interface Segment {
   qom: string | null;
   surfaceType: string;
   years: string;
+  routeId: string | null;
 }
