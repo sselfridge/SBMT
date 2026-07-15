@@ -62,7 +62,23 @@ namespace TodoApi.Controllers
       _context.Update(feedback);
       await _context.SaveChangesAsync();
 
-      return Ok(feedback);
+      var athleteId = feedback.AthleteId;
+      var users = _context.StravaUsers.ToList();
+
+      var user = users.Find(u => u.AthleteId == athleteId);
+
+      FeedbackDTO newFeedback;
+
+      if (user == null)
+      {
+        newFeedback = new FeedbackDTO(feedback);
+      }
+      else
+      {
+        newFeedback = new FeedbackDTO(feedback, user);
+      }
+
+      return Ok(newFeedback);
     }
 
     [HttpDelete("{id}")]
