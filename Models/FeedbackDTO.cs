@@ -10,6 +10,7 @@ namespace TodoApi.Models
     public string Avatar { get; set; }
     public string Text { get; set; }
     public bool Read { get; set; }
+    public DateTime CreatedDate { get; set; }
 
     public FeedbackDTO(Feedback feedback, StravaUser user)
     {
@@ -19,6 +20,7 @@ namespace TodoApi.Models
       Avatar = user.Avatar;
       Name = $"{user.Firstname} {user.Lastname}";
       Read = feedback.Read;
+      CreatedDate = feedback.CreatedDate;
     }
 
     public FeedbackDTO(Feedback feedback)
@@ -29,6 +31,7 @@ namespace TodoApi.Models
       Avatar = "";
       Name = "";
       Read = feedback.Read;
+      CreatedDate = feedback.CreatedDate;
     }
   }
 }

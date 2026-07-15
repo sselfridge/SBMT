@@ -5,4 +5,5 @@ export interface FeedbackDTO {
   avatar: string;
   text: string;
   read: boolean;
+  createdDate: string;
 }

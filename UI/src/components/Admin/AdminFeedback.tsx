@@ -15,10 +15,13 @@ import {
 import { useNavigate } from "react-router-dom";
 
 import { Link } from "react-router-dom";
-
-import { ApiGet, ApiDelete } from "api/api";
+import {
+  fetchFeedback,
+  toggleRead,
+  deleteFeedback,
+} from "@/services/adminFeedback";
 import { FeedbackDTO } from "@/types/FeedbackDTO";
-import { toggleRead } from "services/feedback";
+import { formattedDate } from "@/utils/helperFuncs";
 
 const AdminFeedback = () => {
   const [feedback, setFeedback] = useState<FeedbackDTO[]>([]);
@@ -41,8 +44,13 @@ const AdminFeedback = () => {
     }
   };
 
-  const refreshFeedback = React.useCallback(() => {
-    ApiGet("/api/admin/feedback", setFeedback);
+  const refreshFeedback = React.useCallback(async () => {
+    try {
+      const newFeedback = await fetchFeedback();
+      setFeedback(newFeedback);
+    } catch (err) {
+      console.error(err);
+    }
   }, []);
 
   useEffect(() => {
@@ -50,8 +58,13 @@ const AdminFeedback = () => {
   }, [refreshFeedback]);
 
   const handleDelete = React.useCallback(
-    (id: string) => {
-      ApiDelete(`/api/admin/feedback/${id}`, refreshFeedback);
+    async (id: string) => {
+      try {
+        await deleteFeedback(id);
+        refreshFeedback();
+      } catch (error) {
+        console.error(error);
+      }
     },
     [refreshFeedback],
   );
@@ -73,7 +86,9 @@ const AdminFeedback = () => {
           <TableRow>
             <TableCell>Athlete Id</TableCell>
             <TableCell align="right">Text</TableCell>
-            <TableCell />
+            <TableCell align="right">Time</TableCell>
+            <TableCell>Actions</TableCell>
+            <TableCell></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -95,6 +110,7 @@ const AdminFeedback = () => {
                 <TableCell sx={{ maxWidth: 500 }} align="right">
                   {f.text}
                 </TableCell>
+                <TableCell>{formattedDate(f.createdDate)}</TableCell>
                 <TableCell align="right">
                   <Button
                     color={f.read ? "primary" : "warning"}

@@ -23,7 +23,7 @@ namespace TodoApi.Controllers
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Feedback>>> GetFeedback()
     {
-      var feedbacks = _context.Feedback.ToList();
+      var feedbacks = _context.Feedback.OrderByDescending(x => x.CreatedDate).ToList();
 
       var users = _context.StravaUsers.ToList();
 
