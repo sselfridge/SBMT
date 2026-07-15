@@ -718,7 +718,7 @@ namespace TodoApi.Controllers
       return Ok(activityId);
     }
 
-    [HttpGet("rescanactivity/{id}")]
+    [HttpGet("rescanActivity/{id}")]
     //[ResponseCache(Duration = 360)]
 
     public async Task<IActionResult> RescanActivity(long id)
@@ -727,6 +727,29 @@ namespace TodoApi.Controllers
       if (userId == null)
         return NotFound();
       var athleteId = Int32.Parse(userId);
+
+      Console.WriteLine($"User (id:{athleteId}) triggered rescan for activityId:{id} ");
+
+      await StravaUtilities.ParseNewActivity(_serviceScopeFactory, athleteId, id, 0);
+
+      return Ok();
+    }
+
+    [HttpGet("rescanActivity/{id}/athlete/{athleteId}")]
+    public async Task<IActionResult> RescanActivityAthlete(long id, int athleteId)
+    {
+      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
+      if (userId == null)
+        return NotFound();
+
+      var cookieAthleteId = Int32.Parse(userId);
+
+      var adminId = Int32.Parse(SbmtUtils.getConfigVal("StravaConfig:rootAthleteId"));
+
+      if (cookieAthleteId != adminId)
+      {
+        return Forbid();
+      }
 
       Console.WriteLine($"User (id:{athleteId}) triggered rescan for activityId:{id} ");
 

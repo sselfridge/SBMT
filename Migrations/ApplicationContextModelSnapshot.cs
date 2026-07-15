@@ -160,6 +160,9 @@ namespace TodoApi.Migrations
                     b.Property<long>("ResourceState")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("RouteId")
+                        .HasColumnType("text");
+
                     b.Property<float[]>("StartLatlng")
                         .IsRequired()
                         .HasColumnType("real[]");
