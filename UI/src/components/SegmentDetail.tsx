@@ -193,7 +193,7 @@ const Segments = () => {
                   <Box
                     sx={{
                       display: "flex",
-                      justifyContent: "flex-end",
+                      justifyContent: "flex-start",
                       alignItems: "center",
                     }}
                   >
