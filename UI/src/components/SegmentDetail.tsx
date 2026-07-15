@@ -29,7 +29,7 @@ import { GENDER, genderList } from "utils/constants";
 import TempCountdown from "./LandingPage/TempCountdown";
 import { Segment } from "@/types/db/Segment";
 import { SegmentLeaderboard } from "@/types/SegmentLeaderboard";
-
+import { getSegmentDetail } from "@/services/segment";
 const MyBox = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   padding: 8,
@@ -43,7 +43,7 @@ interface SegmentDetail {
 
 const Segments = () => {
   let { segmentId: segmentIdStr } = useParams();
-  let segmentId: Number | null = Number(segmentIdStr);
+  let segmentId: number | null = Number(segmentIdStr);
 
   segmentId = Number.isNaN(segmentId) ? null : segmentId;
   const [segment, setSegment] = useState<Segment>({} as Segment);
@@ -59,9 +59,14 @@ const Segments = () => {
   const isAdmin = user?.athleteId === 1075670;
 
   useEffect(() => {
-    if (segmentId) {
-      ApiGet(`/api/segments/${segmentId}/?year=${year}`, setSegment);
-    }
+    const fetchSegment = async () => {
+      if (segmentId) {
+        const response = await getSegmentDetail(segmentId, year);
+        setSegment(response);
+      }
+    };
+
+    fetchSegment();
   }, [segmentId, year]);
 
   useEffect(() => {
@@ -102,7 +107,7 @@ const Segments = () => {
       )} times each`,
     },
     {
-      label: "",
+      label: "Segment Page",
       value: (
         <a
           style={{
@@ -116,6 +121,24 @@ const Segments = () => {
           View on Strava
         </a>
       ),
+    },
+    {
+      label: "Route",
+      value: segment.routeId ? (
+        <Box sx={{ display: "flex" }}>
+          <a
+            style={{
+              display: "flex",
+              alignItems: "center",
+              whiteSpace: "nowrap",
+            }}
+            href={`https://www.strava.com/routes/${segment.routeId}`}
+          >
+            <StravaLogo style={{ height: 40 }} />
+            Route
+          </a>
+        </Box>
+      ) : null,
     },
   ]);
 
@@ -153,17 +176,32 @@ const Segments = () => {
               justifyContent: "center",
             }}
           >
-            {details.map((d, i) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <React.Fragment key={i}>
-                <Box>
-                  <Typography textAlign={"right"}>{d.label}</Typography>
-                </Box>
-                <Box>
-                  <Typography textAlign="left">{d.value}</Typography>
-                </Box>
-              </React.Fragment>
-            ))}
+            {details.map((d, i) => {
+              if (!d.value) return null;
+              return (
+                // eslint-disable-next-line react/no-array-index-key
+                <React.Fragment key={i}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography>{d.label}</Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography>{d.value}</Typography>
+                  </Box>
+                </React.Fragment>
+              );
+            })}
           </Box>
           {/* <Typography>Your efforts:</Typography>
           {segmentEfforts.map((e) => (

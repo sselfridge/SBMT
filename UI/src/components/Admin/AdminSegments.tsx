@@ -18,7 +18,12 @@ import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 
 import { styled } from "@mui/material/styles";
-import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  type GridColDef,
+  GridToolbar,
+  type GridRowId,
+} from "@mui/x-data-grid";
 import { ApiGet, ApiPut } from "api/api";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -31,8 +36,12 @@ import { surfaceList, YEARS, SURFACE } from "utils/constants";
 
 import type { Segment } from "@/types/db/Segment";
 
-type SegmentField = "surfaceType" | "years";
-
+type SegmentField = "surfaceType" | "years" | "routeId";
+interface RouteIdFieldProps {
+  id: GridRowId;
+  value: string | null;
+  updateSegment: (id: GridRowId, fieldName: SegmentField, value: any) => void;
+}
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
@@ -40,6 +49,34 @@ const MyBox = styled(Box)(({ theme }) => ({
   width: "80vw",
   backgroundColor: theme.palette.background.paper,
 }));
+
+const RouteIdField = (props: RouteIdFieldProps) => {
+  const { id, value, updateSegment } = props;
+  const [localVal, setLocalVal] = React.useState<string>(value || "");
+  const autoSaveRef = React.useRef(0);
+
+  const clearAutoSave = () => {
+    clearTimeout(autoSaveRef.current);
+    autoSaveRef.current = 0;
+  };
+  return (
+    <TextField
+      sx={{ width: "100%" }}
+      value={localVal}
+      onBlur={(e) => {
+        if (autoSaveRef.current) updateSegment(id, "routeId", localVal);
+        clearAutoSave();
+      }}
+      onChange={(e) => {
+        setLocalVal(e.target.value);
+        clearAutoSave();
+        autoSaveRef.current = setTimeout(() => {
+          updateSegment(id, "routeId", e.target.value);
+        }, 750);
+      }}
+    />
+  );
+};
 
 const AdminSegments = () => {
   const { user } = React.useContext(AppContext);
@@ -77,8 +114,11 @@ const AdminSegments = () => {
   const updateSegment = (segmentId: any, field: SegmentField, newVal: any) => {
     const segment = segments.find((s) => s.id === segmentId);
     const newSeg = _.cloneDeep(segment);
+
+    if (field === "routeId" && !newVal) newVal = null;
+
     if (newSeg) {
-      newSeg[field] = newVal;
+      (newSeg as any)[field] = newVal;
       ApiPut(
         `/api/admin/segments/${newSeg.id}`,
         newSeg,
@@ -121,15 +161,6 @@ const AdminSegments = () => {
         return <Link to={`${id}`}>{value}</Link>;
       },
     },
-    // {
-    //   field: "usage",
-    //   headerName: "Total Efforts",
-    //   flex: 20,
-    //   renderCell: (props) => {
-    //     const { value, id } = props;
-    //     return 0;
-    //   },
-    // },
     {
       field: "surfaceType",
       headerName: "Surface",
@@ -200,9 +231,18 @@ const AdminSegments = () => {
       },
     },
     {
+      field: "routeId",
+      headerName: "Route Id",
+      renderCell: (params) => {
+        const { value, id } = params;
+        return (
+          <RouteIdField id={id} value={value} updateSegment={updateSegment} />
+        );
+      },
+    },
+    {
       field: "id",
       headerName: "Action",
-      // flex: 4,
       minWidth: 4,
       renderCell: (cell) => {
         const { id } = cell;
@@ -247,7 +287,7 @@ const AdminSegments = () => {
           <Box sx={{ display: "flex" }}>
             <TextField
               label="Segment ID"
-              value={segmentId}
+              value={segmentId || ""}
               onChange={(e) => setSegmentId(e.target.value)}
             />
             <Box>
@@ -306,6 +346,11 @@ const AdminSegments = () => {
       </Box>
       <DataGrid
         slots={{ toolbar: GridToolbar }}
+        initialState={{
+          sorting: {
+            sortModel: [{ field: "name", sort: "asc" }],
+          },
+        }}
         rows={segments || []}
         columns={columns}
         disableColumnMenu
