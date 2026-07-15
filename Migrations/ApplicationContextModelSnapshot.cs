@@ -91,6 +91,12 @@ namespace TodoApi.Migrations
                     b.Property<int>("AthleteId")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("Read")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasColumnType("text");
