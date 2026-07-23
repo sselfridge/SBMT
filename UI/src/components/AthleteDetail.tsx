@@ -31,13 +31,19 @@ const MyBox = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
 }));
 
+enum ViewSegments {
+  ALL,
+  Completed,
+  Incomplete,
+}
+
 const AthleteDetail = () => {
   const { athleteId } = useParams();
   const [user, setUser] = useState<User | null>(null);
   const [userSegments, setUserSegments] = useState<UserSegment[]>([]);
   const [compSegments, setCompSegments] = useState<UserSegment[]>([]);
 
-  const [hideIncomplete, setHideIncomplete] = useState(false);
+  const [viewState, setViewState] = useState(ViewSegments.ALL);
 
   const { user: loggedInUser, isPreSeason, year } = useContext(AppContext);
 
@@ -148,11 +154,22 @@ const AthleteDetail = () => {
       </React.Fragment>
     );
   };
+  const toggleIncomplete = () =>
+    setViewState((v) => {
+      let next = v + 1;
+      next = next % 3;
+      return next;
+    });
 
   const filterCompleted = (segment: UserSegment) => {
-    if (hideIncomplete) {
+    if (viewState === ViewSegments.ALL) return true;
+
+    if (viewState === ViewSegments.Completed) {
       return segment.bestTime !== MAX_INT;
-    } else return true;
+    }
+    if (viewState === ViewSegments.Incomplete) {
+      return segment.bestTime === MAX_INT;
+    }
   };
 
   if (user) {
@@ -192,9 +209,19 @@ const AthleteDetail = () => {
         {!isPreSeason || loggedInUser?.athleteId === 1075670 ? (
           <React.Fragment>
             <Typography variant="h4">Segment Efforts</Typography>
-            <Button onClick={() => setHideIncomplete((v) => !v)}>
-              {hideIncomplete ? "Show" : "Hide"} uncompleted segments
-            </Button>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+              <Button onClick={toggleIncomplete}>Toggle View</Button>
+              <Box sx={{ fontSize: "14px" }}>
+                Showing{" "}
+                {viewState === ViewSegments.ALL
+                  ? "All"
+                  : viewState === ViewSegments.Completed
+                    ? "Completed"
+                    : viewState === ViewSegments.Incomplete
+                      ? "Incomplete"
+                      : ""}
+              </Box>
+            </Box>
             <Table>
               <TableHead>
                 <TableRow>
