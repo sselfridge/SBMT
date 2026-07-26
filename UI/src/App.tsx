@@ -38,6 +38,7 @@ function App() {
         const currentAthlete = await getCurrentAthlete();
         onSetUser(currentAthlete);
       } catch (e) {
+        // await new Promise((r) => setTimeout(r, 350));
         if (retry) initUserFetch(false);
       }
     };
