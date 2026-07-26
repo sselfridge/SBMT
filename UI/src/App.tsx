@@ -21,7 +21,7 @@ function App() {
   console.log("commitHash: ", commitHash);
 
   const onSetUser = React.useCallback(
-    (user: User) => {
+    (user: User | {}) => {
       db("setUser");
       dispatch({ type: "setUser", user });
     },
@@ -37,6 +37,7 @@ function App() {
         const currentAthlete = await getCurrentAthlete();
         onSetUser(currentAthlete);
       } catch (e) {
+        onSetUser({});
         await new Promise((r) => setTimeout(r, 1350));
         if (retry) initUserFetch(false);
       }
