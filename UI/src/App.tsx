@@ -11,6 +11,7 @@ import "./global.css";
 import Feedback from "components/Feedback";
 import { CircularProgress, Box } from "@mui/material";
 import { db } from "utils/helperFuncs";
+import { getCurrentAthlete } from "services/sbmt";
 
 import type { User } from "./types/StravaUserDTO";
 
@@ -30,11 +31,20 @@ function App() {
 
   const fetchOnce = React.useRef<Boolean | null>(true);
   React.useEffect(() => {
-    if (fetchOnce.current) {
-      fetchOnce.current = null;
+    const initUserFetch = async (retry = true) => {
       //init user here
       db("User Call");
-      ApiGet("/api/athletes/current", onSetUser, {});
+      try {
+        const currentAthlete = await getCurrentAthlete();
+        onSetUser(currentAthlete);
+      } catch (e) {
+        if (retry) initUserFetch(false);
+      }
+    };
+
+    if (fetchOnce.current) {
+      fetchOnce.current = null;
+      initUserFetch();
     }
   }, [onSetUser]);
 

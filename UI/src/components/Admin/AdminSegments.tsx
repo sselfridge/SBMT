@@ -100,7 +100,6 @@ const AdminSegments = () => {
   const [msg, setMsg] = React.useState("");
 
   const refreshSegments = React.useCallback(async () => {
-    // ApiGet("/api/admin/segments", setSegments, null);
     try {
       setUpdating(true);
       const updatedSegments = await refreshAdminSegments();
