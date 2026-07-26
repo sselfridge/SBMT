@@ -1,6 +1,8 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.Repositories;
 using Microsoft.EntityFrameworkCore;
 using TodoApi.Helpers;
 using TodoApi.Models.db;
@@ -101,6 +103,28 @@ builder.Services.AddScoped<IStravaService, StravaService>();
 builder.Services.AddSingleton(new StravaLimitService());
 
 builder.Services.AddHttpContextAccessor();
+
+// Configure data protection to use environment variable for key storage
+var masterKey = Environment.GetEnvironmentVariable("DATA_PROTECTION_KEY");
+if (masterKey == null && env == "Production")
+{
+  throw new Exception("Missing DATA_PROTECTION_KEY");
+}
+else if (masterKey == null)
+{
+  masterKey = "defaultValue";
+  Console.WriteLine("No DATA_PROTECTION_KEY set in lower ENV");
+}
+
+var xmlRepo = new SimpleKeyRepository(masterKey);
+
+builder
+  .Services.AddDataProtection()
+  .AddKeyManagementOptions(options =>
+  {
+    options.XmlRepository = new SimpleKeyRepository(masterKey);
+  });
+
 builder.Services.AddSingleton<IAuthorizationHandler, AdminAuthHandler>();
 builder
   .Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
