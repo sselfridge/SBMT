@@ -6,9 +6,3 @@ export const rescanAthleteActivity = async (id: string, athleteId: string) => {
 
   return response.data;
 };
-
-export const getCurrentAthlete = async () => {
-  const url = `/api/athletes/current`;
-  const response = await Api.get(url);
-  return response.data;
-};
