@@ -1,9 +1,12 @@
-﻿using System.Security.Claims;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using TodoApi.Helpers;
 using TodoApi.Models;
 using TodoApi.Models.db;
@@ -37,6 +40,32 @@ namespace TodoApi.Controllers
       _serviceScopeFactory = serviceScopeFactory;
     }
 
+    private string GenerateJwtToken(int id)
+    {
+      // generate token that is valid for 30 days
+      var tokenHandler = new JwtSecurityTokenHandler();
+      string? jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
+      if (jwtKey == null)
+      {
+        Console.WriteLine("Error, no JWT key found in ENV");
+        return "";
+      }
+
+      var key = Encoding.ASCII.GetBytes(jwtKey);
+      var tokenDescriptor = new Microsoft.IdentityModel.Tokens.SecurityTokenDescriptor
+      {
+        Subject = new ClaimsIdentity(new[] { new Claim("id", id.ToString()) }),
+        Expires = DateTime.UtcNow.AddDays(300),
+        SigningCredentials = new Microsoft.IdentityModel.Tokens.SigningCredentials(
+          new SymmetricSecurityKey(key),
+          SecurityAlgorithms.HmacSha256Signature
+        ),
+      };
+      var createdToken = tokenHandler.CreateToken(tokenDescriptor);
+      var finalToken = tokenHandler.WriteToken(createdToken);
+      return finalToken;
+    }
+
     [HttpGet("callback")]
     public async Task<ActionResult<IEnumerable<TodoItem>>> GetStravaCallback(
       [FromServices] IServiceScopeFactory serviceScopeFactory,
@@ -53,54 +82,9 @@ namespace TodoApi.Controllers
       var oAuth = await _stravaService.GetTokens(code);
 
       var oAuthUser = new OauthStravaUser(oAuth, scope);
+      var cookie = GenerateJwtToken(oAuthUser.AthleteId);
 
-      //setup login cookie
-      var claims = new List<Claim>
-      {
-        //new Claim(ClaimTypes.Name, oAuthUser.AthleteId),
-        new Claim("AthleteId", $"{oAuthUser.AthleteId}"),
-      };
-
-      if (oAuthUser.AthleteId == 1075670)
-      {
-        var adminClaim = new Claim(ClaimTypes.Role, "Administrator");
-        claims.Add(adminClaim);
-      }
-
-      var claimsIdentity = new ClaimsIdentity(
-        claims,
-        CookieAuthenticationDefaults.AuthenticationScheme
-      );
-
-      var authProperties = new AuthenticationProperties
-      {
-        //AllowRefresh = < bool >,
-        // Refreshing the authentication session should be allowed.
-
-        ExpiresUtc = DateTimeOffset.UtcNow.AddDays(10),
-        // The time at which the authentication ticket expires. A
-        // value set here overrides the ExpireTimeSpan option of
-        // CookieAuthenticationOptions set with AddCookie.
-
-        IsPersistent = true,
-        // Whether the authentication session is persisted across
-        // multiple requests. When used with cookies, controls
-        // whether the cookie's lifetime is absolute (matching the
-        // lifetime of the authentication ticket) or session-based.
-
-        //IssuedUtc = <DateTimeOffset>,
-        // The time at which the authentication ticket was issued.
-
-        //RedirectUri = <string>
-        // The full path or absolute URI to be used as an http
-        // redirect response value.
-      };
-
-      await HttpContext.SignInAsync(
-        CookieAuthenticationDefaults.AuthenticationScheme,
-        new ClaimsPrincipal(claimsIdentity),
-        authProperties
-      );
+      HttpContext.Response.Cookies.Append("SBMT", cookie.ToString());
 
       var existingUser = _userService.GetById(oAuthUser.AthleteId);
       if (existingUser == null)
@@ -281,12 +265,12 @@ namespace TodoApi.Controllers
     [HttpGet("userRefresh/{athleteId}")]
     public async Task<IActionResult> RefreshUser(int athleteId)
     {
-      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
+      var cookieUser = HttpContext.Items["User"] as StravaUser;
 
-      if (userId == null)
+      if (cookieUser == null)
         return NotFound();
 
-      var cookieAthleteId = Int32.Parse(userId);
+      var cookieAthleteId = cookieUser.AthleteId;
       var adminId = Int32.Parse(SbmtUtils.getConfigVal("StravaConfig:rootAthleteId"));
 
       var profile = await _stravaService.GetProfile(athleteId);
@@ -341,10 +325,13 @@ namespace TodoApi.Controllers
     [HttpGet("updateXoms/{year}")]
     public async Task<IActionResult> UpdateXoms(string year)
     {
-      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
-      var adminId = SbmtUtils.getConfigVal("StravaConfig:rootAthleteId");
+      var cookieUser = HttpContext.Items["User"] as StravaUser;
 
-      if (userId != adminId)
+      var userId = cookieUser?.AthleteId;
+      var adminId = SbmtUtils.getConfigVal("StravaConfig:rootAthleteId");
+      var adminNum = Int32.Parse(adminId);
+
+      if (userId == null || userId != adminNum)
       {
         return Forbid();
       }
