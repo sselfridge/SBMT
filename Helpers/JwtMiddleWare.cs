@@ -23,15 +23,10 @@
 
     public async Task Invoke(HttpContext context, IUserService userService)
     {
-      // keep this to remind/shame me into doing proper auth headers
-      //var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-
       attachUserToContext(context, userService);
 
       var date = DateTime.UtcNow;
       TimeZoneInfo tzi = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
-
-      // it's a simple one-liner
       DateTime pacific = TimeZoneInfo.ConvertTimeFromUtc(date, tzi);
 
       Console.WriteLine(
@@ -45,55 +40,18 @@
 
     private void attachUserToContext(HttpContext context, IUserService userService)
     {
-      // var cookieId = context.User.Claims.FirstOrDefault(c => c.Type == "AthleteId")?.Value;
       var cookie = context.Request.Cookies["SBMT"];
       if (cookie == null)
       {
         return;
       }
-
       attachUserToContext(context, userService, cookie);
-      // if (cookieId != null)
-      // {
-      //   var athleteId = int.Parse(cookieId);
-      //   StravaUser? user = userService.GetById(athleteId);
-      //   if (user != null)
-      //   {
-      //     context.Items["User"] = user;
-      //     Console.WriteLine($"sbmtLog:user:{user.AthleteId} - {user.Firstname} {user.Lastname}");
-      //   }
-      // }
 
       Console.WriteLine("AttachUserToContext");
     }
 
     private void attachUserToContext(HttpContext context, IUserService userService, string token)
     {
-      //var token = context.Request.Cookies["SBMT"];
-      //if (token != null)
-      //  attachUserToContext(context, userService, token);
-
-      // JWT generation from stravaController
-      //private string GenerateJwtToken(int id)
-      //{
-      //  // generate token that is valid for 30 days
-      //  var tokenHandler = new JwtSecurityTokenHandler();
-      //  var jwtKey = Configuration["jwtKey"];
-      //  var key = Encoding.ASCII.GetBytes(jwtKey);
-      //  var tokenDescriptor = new SecurityTokenDescriptor
-      //  {
-      //    Subject = new ClaimsIdentity(new[] { new Claim("id", id.ToString()) }),
-      //    Expires = DateTime.UtcNow.AddDays(300),
-      //    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-      //  };
-      //  var token = tokenHandler.CreateToken(tokenDescriptor);
-      //  return tokenHandler.WriteToken(token);
-      //}
-
-      //Added on login:
-      //var cookie = GenerateJwtToken(oAuthUser.AthleteId);
-      //HttpContext.Response.Cookies.Append("SBMT", cookie.ToString());
-
       try
       {
         var tokenHandler = new JwtSecurityTokenHandler();
