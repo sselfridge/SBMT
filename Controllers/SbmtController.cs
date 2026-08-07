@@ -191,17 +191,16 @@ namespace TodoApi.Controllers
         allSegment = allSegment.FindAll(s => s.SurfaceType == "gravel" || s.SurfaceType == "road");
       }
 
-      //TODO - Add year filter for users.  Active is only for current year/season
       var users = _dbContext
         .StravaUsers.Where(x => x.Years.Contains(year))
         .Include(x => x.StravaClubs)
         .ToList();
 
-      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
+      var cookieUser = HttpContext.Items["User"] as StravaUser;
       StravaUser? currentUser = null;
-      if (userId != null)
+      if (cookieUser != null)
       {
-        var currId = Int32.Parse(userId);
+        var currId = cookieUser.AthleteId;
 
         currentUser = users.Find(u => u.AthleteId == currId);
       }
@@ -387,10 +386,11 @@ namespace TodoApi.Controllers
     [HttpPost("saveFilters")]
     public IActionResult saveFilters([FromBody] Filters filters)
     {
-      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
-      if (userId == null)
+      var cookieUser = HttpContext.Items["User"] as StravaUser;
+
+      if (cookieUser == null)
         return Unauthorized();
-      var cookieAthleteId = Int32.Parse(userId);
+      var cookieAthleteId = cookieUser.AthleteId;
 
       var strFilters = JsonSerializer.Serialize(filters);
 
@@ -516,12 +516,12 @@ namespace TodoApi.Controllers
     [HttpGet("athletes/current")]
     public IActionResult GetCurrentAthlete()
     {
-      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
+      var cookieUser = HttpContext.Items["User"] as StravaUser;
 
-      if (userId == null)
+      if (cookieUser == null)
         return NotFound();
 
-      var athleteId = Int32.Parse(userId);
+      var athleteId = cookieUser.AthleteId;
       var possibleNullUser = _dbContext
         .StravaUsers.Include(x => x.StravaClubs)
         .FirstOrDefault(u => u.AthleteId == athleteId);
@@ -545,12 +545,12 @@ namespace TodoApi.Controllers
       [FromBody] StravaUserWithEmailDTO newUser
     )
     {
-      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
+      var cookieUser = HttpContext.Items["User"] as StravaUser;
       var kickOffFetch = false;
-      if (userId == null)
+      if (cookieUser == null)
         return NotFound();
 
-      var athleteId = Int32.Parse(userId);
+      var athleteId = cookieUser.AthleteId;
       var dbUser = _dbContext
         .StravaUsers.Include(x => x.StravaClubs)
         .FirstOrDefault(u => u.AthleteId == athleteId);
@@ -636,10 +636,10 @@ namespace TodoApi.Controllers
     public IActionResult SubmitFeedback([FromBody] Feedback feedback)
     {
       Console.WriteLine(feedback);
-      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
-      if (userId != null)
+      var cookieUser = HttpContext.Items["User"] as StravaUser;
+      if (cookieUser != null)
       {
-        var athleteId = Int32.Parse(userId);
+        var athleteId = cookieUser.AthleteId;
         feedback.AthleteId = athleteId;
       }
 
@@ -658,10 +658,10 @@ namespace TodoApi.Controllers
     [HttpDelete("athletes/{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
-      if (userId == null)
+      var cookieUser = HttpContext.Items["User"] as StravaUser;
+      if (cookieUser == null)
         return NotFound();
-      var athleteId = Int32.Parse(userId);
+      var athleteId = cookieUser.AthleteId;
 
       if (id != athleteId)
         return Unauthorized();
@@ -723,10 +723,10 @@ namespace TodoApi.Controllers
 
     public async Task<IActionResult> RescanActivity(long id)
     {
-      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
-      if (userId == null)
+      var cookieUser = HttpContext.Items["User"] as StravaUser;
+      if (cookieUser == null)
         return NotFound();
-      var athleteId = Int32.Parse(userId);
+      var athleteId = cookieUser.AthleteId;
 
       Console.WriteLine($"User (id:{athleteId}) triggered rescan for activityId:{id} ");
 
@@ -738,11 +738,11 @@ namespace TodoApi.Controllers
     [HttpGet("rescanActivity/{id}/athlete/{athleteId}")]
     public async Task<IActionResult> RescanActivityAthlete(long id, int athleteId)
     {
-      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
-      if (userId == null)
+      var cookieUser = HttpContext.Items["User"] as StravaUser;
+      if (cookieUser == null)
         return NotFound();
 
-      var cookieAthleteId = Int32.Parse(userId);
+      var cookieAthleteId = cookieUser.AthleteId;
 
       var adminId = Int32.Parse(SbmtUtils.getConfigVal("StravaConfig:rootAthleteId"));
 

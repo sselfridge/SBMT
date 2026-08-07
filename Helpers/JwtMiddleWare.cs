@@ -26,8 +26,7 @@
       // keep this to remind/shame me into doing proper auth headers
       //var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
-
-      //attachUserToContext(context, userService);
+      attachUserToContext(context, userService);
 
       var date = DateTime.UtcNow;
       TimeZoneInfo tzi = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
@@ -46,25 +45,30 @@
 
     private void attachUserToContext(HttpContext context, IUserService userService)
     {
-      var cookieId = context.User.Claims.FirstOrDefault(c => c.Type == "AthleteId")?.Value;
-
-      if (cookieId != null)
+      // var cookieId = context.User.Claims.FirstOrDefault(c => c.Type == "AthleteId")?.Value;
+      var cookie = context.Request.Cookies["SBMT"];
+      if (cookie == null)
       {
-        var athleteId = int.Parse(cookieId);
-        StravaUser? user = userService.GetById(athleteId);
-        if (user != null)
-        {
-          context.Items["User"] = user;
-          Console.WriteLine($"sbmtLog:user:{user.AthleteId} - {user.Firstname} {user.Lastname}");
-        }
+        return;
       }
 
-      Console.WriteLine("allo");
+      attachUserToContext(context, userService, cookie);
+      // if (cookieId != null)
+      // {
+      //   var athleteId = int.Parse(cookieId);
+      //   StravaUser? user = userService.GetById(athleteId);
+      //   if (user != null)
+      //   {
+      //     context.Items["User"] = user;
+      //     Console.WriteLine($"sbmtLog:user:{user.AthleteId} - {user.Firstname} {user.Lastname}");
+      //   }
+      // }
+
+      Console.WriteLine("AttachUserToContext");
     }
 
     private void attachUserToContext(HttpContext context, IUserService userService, string token)
     {
-      //Old invocation of this:
       //var token = context.Request.Cookies["SBMT"];
       //if (token != null)
       //  attachUserToContext(context, userService, token);
@@ -108,7 +112,7 @@
             ValidateIssuer = false,
             ValidateAudience = false,
             // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
-            ClockSkew = TimeSpan.Zero,
+            // ClockSkew = TimeSpan.Zero,
           },
           out SecurityToken validatedToken
         );
