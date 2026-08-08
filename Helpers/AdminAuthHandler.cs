@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using TodoApi.Models.db;
 
 namespace TodoApi.Helpers
 {
@@ -16,10 +17,20 @@ namespace TodoApi.Helpers
       UserIsAdminRequirement requirement
     )
     {
-      var cookieUser = authContext.User;
+      var httpContext = _httpContextAccessor.HttpContext;
+      if (httpContext == null)
+      {
+        return Task.CompletedTask;
+      }
 
-      var isSam = cookieUser.HasClaim("AthleteId", $"{1075670}");
+      var cookieUser = httpContext.Items["User"] as StravaUser;
+      if (cookieUser == null)
+      {
+        return Task.CompletedTask;
+      }
+      var adminId = Int32.Parse(SbmtUtils.getConfigVal("StravaConfig:rootAthleteId"));
 
+      var isSam = cookieUser.AthleteId == adminId;
       if (isSam == true)
       {
         authContext.Succeed(requirement);

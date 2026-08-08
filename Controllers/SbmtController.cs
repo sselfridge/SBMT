@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Net;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -315,6 +316,11 @@ namespace TodoApi.Controllers
         int totalTime = 0;
         double totalDistance = 0;
         double totalElevation = 0;
+        int diffFromCurrent = 0;
+        if (cookieUser != null)
+        {
+          diffFromCurrent = SbmtUtils.CalcDiff(cookieUser.AthleteId, athleteId, effortGroup);
+        }
 
         foreach (KeyValuePair<long, int> effort in efforts)
         {
@@ -342,7 +348,8 @@ namespace TodoApi.Controllers
             user.RecentDistance,
             user.RecentElevation,
             user.Category,
-            segmentCount
+            segmentCount,
+            diffFromCurrent
           );
 
           leaderboard.Add(leaderboardEntry);

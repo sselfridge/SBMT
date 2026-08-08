@@ -11,4 +11,5 @@ export interface LeaderboardEntry {
   recentElevation: number;
   category: string;
   segmentCount: number;
+  timeDiff: number;
 }

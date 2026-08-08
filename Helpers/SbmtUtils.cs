@@ -45,5 +45,28 @@ namespace TodoApi.Helpers
 
       return string.IsNullOrWhiteSpace(yearList) ? year.ToString() : $"{yearList},{year}";
     }
+
+    public static int CalcDiff(
+      int cookieUserId,
+      int userId,
+      Dictionary<int, Dictionary<long, int>> effortGroup
+    )
+    {
+      var cookieEfforts = effortGroup[cookieUserId];
+      var userEfforts = effortGroup[userId];
+      var total = 0;
+
+      foreach (KeyValuePair<long, int> effort in cookieEfforts)
+      {
+        var segId = effort.Key;
+        var userEffort = userEfforts.FirstOrDefault(x => x.Key == segId);
+        if (userEffort.Value != 0)
+        {
+          total = total + (effort.Value - userEffort.Value);
+        }
+      }
+
+      return total;
+    }
   }
 }
