@@ -92,6 +92,7 @@ export const MOBILE_COLUMNS = {
   totalElevation: false,
   totalTimeDesktop: false,
   totalTimeMobile: true,
+  timeDiff: false,
 };
 export const ALL_COLUMNS = {
   rank: true,
@@ -102,6 +103,7 @@ export const ALL_COLUMNS = {
   totalElevation: true,
   totalTimeDesktop: true,
   totalTimeMobile: false,
+  timeDiff: false,
 };
 
 export const MAX_INT = 2147483647;

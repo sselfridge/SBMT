@@ -49,7 +49,8 @@ const Leaderboard = () => {
     React.useState<GridColumnVisibilityModel>(ALL_COLUMNS);
   const [loading, setLoading] = useState(true);
 
-  const { year, kickOffDate, dispatch } = React.useContext(AppContext);
+  const { year, kickOffDate, dispatch, user } = React.useContext(AppContext);
+  const userLoggedIn = !!user.athleteId;
 
   //sync appContext year with
   React.useEffect(() => {
@@ -60,6 +61,9 @@ const Leaderboard = () => {
 
   React.useEffect(() => {
     const newColumns = isMobile ? MOBILE_COLUMNS : ALL_COLUMNS;
+    if (userLoggedIn) {
+      newColumns.timeDiff = true;
+    }
     setColumnVisible(newColumns);
   }, [isMobile]);
 
@@ -110,8 +114,8 @@ const Leaderboard = () => {
     [onLoad, setSearchParams, year],
   );
 
-  const columns = useMemo<GridColDef<LeaderboardEntry>[]>(
-    () => [
+  const columns = useMemo<GridColDef<LeaderboardEntry>[]>(() => {
+    return [
       {
         minWidth: 40,
         flex: 4,
@@ -272,9 +276,28 @@ const Leaderboard = () => {
           return formattedTime(value, true);
         },
       },
-    ],
-    [],
-  );
+      {
+        field: "timeDiff",
+        sortable: false,
+        headerName: "Time Diff",
+        align: "right",
+        headerAlign: "right",
+        flex: 15,
+        description:
+          "Time difference on segments you've both completed. Red is you're behind, green you're ahead.",
+        valueGetter: ({ row }) => row.timeDiff,
+        renderCell: (cell) => {
+          const { value } = cell;
+          const absVal = Math.abs(value);
+          const isNeg = value <= 0;
+          const formatTime = formattedTime(absVal, true);
+          return (
+            <Box sx={{ color: isNeg ? "green" : "red" }}>{formatTime}</Box>
+          );
+        },
+      },
+    ];
+  }, []);
 
   let kickOffLabel = "the start";
   try {
@@ -341,6 +364,7 @@ const Leaderboard = () => {
             </li>
             <li>Each segment only counts once, lowest total time is taken</li>
             <li>Sub-leaderboards based on segment surface + gender</li>
+            <li>Time Diff is based on segments you've both completed</li>
           </ul>
         </Paper>
       </Paper>
