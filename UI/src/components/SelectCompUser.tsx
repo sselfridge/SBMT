@@ -8,15 +8,17 @@ import {
   ButtonBase,
   IconButton,
   Theme,
+  CircularProgress,
 } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import CloseIcon from "@mui/icons-material/Close";
-import { ApiGet } from "api/api";
 
 import AppContext from "AppContext";
 import type { User } from "@/types/StravaUserDTO";
 import type { UserSegment } from "@/types/UserSegment";
+import { getAthleteEfforts, getAthletes } from "@/services/sbmt";
+import { AppState } from "@/AppReducer";
 interface SelectCompUserProps {
   setCompSegments: (segments: UserSegment[]) => void;
 }
@@ -24,38 +26,58 @@ interface SelectCompUserProps {
 const SelectCompUser = (props: SelectCompUserProps) => {
   const { setCompSegments } = props;
 
-  const { user: meinUser, year } = useContext(AppContext);
+  const { user: meinUser, year }: AppState = useContext(AppContext);
 
   const isMobile = useMediaQuery((theme: Theme) =>
     theme.breakpoints.down("sm"),
   );
 
-  const [users, setUsers] = useState([meinUser]);
+  const [users, setUsers] = useState<User[]>([]);
   const [compUser, setCompUser] = useState(meinUser);
   const [filterText, setFilterText] = useState("");
   const [selectIndex, setSelectIndex] = useState(-1);
+  const [loading, setLoading] = useState(true);
+  const [listLoading, setListLoading] = useState(true);
 
   const [open, setOpen] = useState(false);
   const anchorRef = React.useRef(null);
 
-  const setSortUsers = (users: User[]) =>
-    setUsers(
-      users.slice().sort((a, b) => (a.firstname < b.firstname ? -1 : 1)),
-    );
-
   React.useEffect(() => {
-    if (isMobile === false && compUser.athleteId) {
-      ApiGet(
-        `/api/athletes/${compUser.athleteId}/efforts?year=${year}`,
-        setCompSegments,
-      );
+    const getCompEfforts = async (athleteId: number, year: string | null) => {
+      try {
+        setLoading(true);
+        const newEfforts = await getAthleteEfforts(athleteId, year);
+        setCompSegments(newEfforts);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (isMobile === false && compUser?.athleteId) {
+      getCompEfforts(compUser?.athleteId, year);
     }
   }, [isMobile, compUser, setCompSegments, year]);
 
   const onOpen = useCallback(() => {
+    const getUserList = async () => {
+      try {
+        setListLoading(true);
+        const newUsers: User[] = await getAthletes(year);
+        const sortedUsers = newUsers
+          .slice()
+          .sort((a, b) => (a.firstname < b.firstname ? -1 : 1));
+        setUsers(sortedUsers);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setListLoading(false);
+      }
+    };
     setOpen(true);
     if (users.length < 2) {
-      ApiGet(`api/athletes?year=${year}`, setSortUsers);
+      getUserList();
     }
   }, [users, year]);
 
@@ -72,14 +94,18 @@ const SelectCompUser = (props: SelectCompUserProps) => {
         sx={{ maxWidth: "45px", cursor: "pointer" }}
         onClick={onOpen}
       >
-        <Box
-          id={compUser.athleteId}
-          key={compUser.athleteId}
-          sx={{ display: "flex", alignItems: "center" }}
-        >
-          <Avatar src={compUser.avatar} />
-          <ArrowDropDownIcon />
-        </Box>
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <Box
+            id={`${compUser?.athleteId}`}
+            key={compUser?.athleteId}
+            sx={{ display: "flex", alignItems: "center" }}
+          >
+            <Avatar src={compUser?.avatar} />
+            <ArrowDropDownIcon />
+          </Box>
+        )}
       </Box>
       <Popover
         open={open}
@@ -90,7 +116,13 @@ const SelectCompUser = (props: SelectCompUserProps) => {
           placeholder="Filter"
           autoFocus
           InputProps={{
-            startAdornment: <FilterListIcon />,
+            startAdornment: listLoading ? (
+              <Box>
+                <CircularProgress size={20} />
+              </Box>
+            ) : (
+              <FilterListIcon />
+            ),
             endAdornment: (
               <IconButton onClick={() => setFilterText("")}>
                 <CloseIcon />
@@ -132,8 +164,8 @@ const SelectCompUser = (props: SelectCompUserProps) => {
           {filteredUsers.map((u, i) => {
             return (
               <ButtonBase
-                id={u.athleteId}
-                key={u.athleteId}
+                id={`${u.athleteId}`}
+                key={`${u.athleteId}`}
                 sx={{
                   display: "flex",
                   width: "100%",

@@ -32,7 +32,6 @@ const AdminFeedback = () => {
   const onToggleRead = async (id: string) => {
     try {
       const updated = await toggleRead(id);
-      console.log("updated: ", updated);
       setFeedback((prev) => {
         const newFeedbacks = prev.slice();
         const idx = newFeedbacks.findIndex((f) => f.id === id);
