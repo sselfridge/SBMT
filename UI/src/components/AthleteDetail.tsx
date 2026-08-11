@@ -10,12 +10,13 @@ import {
   Typography,
   Button,
   useMediaQuery,
+  CircularProgress,
+  Paper,
 } from "@mui/material";
 import AppContext from "AppContext";
 
 import { styled, Theme } from "@mui/material/styles";
 import { Link, useParams } from "react-router-dom";
-import { ApiGet } from "api/api";
 import { formattedTime } from "utils/helperFuncs";
 import { MAX_INT, SURFACE } from "utils/constants";
 import type { User } from "@/types/StravaUserDTO";
@@ -23,6 +24,8 @@ import type { UserSegment } from "@/types/UserSegment";
 // @ts-ignore
 import { ReactComponent as StravaLogo } from "assets/stravaLogoTransparent.svg";
 import SelectCompUser from "./SelectCompUser";
+import { AppState } from "@/AppReducer";
+import { getAthlete, getAthleteEfforts } from "@/services/sbmt";
 
 const MyBox = styled(Box)(({ theme }) => ({
   padding: 8,
@@ -37,6 +40,45 @@ enum ViewSegments {
   Incomplete,
 }
 
+interface TimeDisplayProps {
+  time: number;
+}
+
+const TimeDisplay = (props: TimeDisplayProps) => {
+  const { time } = props;
+
+  const isBehind = time > 0;
+  const isAhead = time < 0;
+
+  const value = Math.abs(time);
+
+  return (
+    <Box
+      sx={{
+        display: "inline-flex",
+        color: isBehind ? "red" : isAhead ? "green" : "",
+      }}
+    >
+      {isAhead ? "-" : isBehind ? "+" : ""}
+      {time ? formattedTime(value) : "--"}
+    </Box>
+  );
+};
+
+const calcDiff = (segments: UserSegment[], compSegments: UserSegment[]) => {
+  let total = 0;
+
+  segments.forEach((s) => {
+    const compSeg = compSegments.find((cs) => cs.segmentId === s.segmentId);
+    if (!compSeg) return;
+
+    if (s.bestTime !== MAX_INT && compSeg.bestTime !== MAX_INT) {
+      total = total + (compSeg.bestTime - s.bestTime);
+    }
+  });
+  return total;
+};
+
 const AthleteDetail = () => {
   const { athleteId } = useParams();
   const [user, setUser] = useState<User | null>(null);
@@ -45,7 +87,13 @@ const AthleteDetail = () => {
 
   const [viewState, setViewState] = useState(ViewSegments.ALL);
 
-  const { user: loggedInUser, isPreSeason, year } = useContext(AppContext);
+  const [loading, setLoading] = useState(true);
+
+  const {
+    user: loggedInUser,
+    isPreSeason,
+    year,
+  }: AppState = useContext(AppContext);
 
   const gravelSegments = userSegments.filter(
     (s) => s.surfaceType === SURFACE.gravel,
@@ -71,11 +119,29 @@ const AthleteDetail = () => {
   );
 
   React.useEffect(() => {
-    ApiGet(`/api/athletes/${athleteId}`, setUser, null);
-    ApiGet(`/api/athletes/${athleteId}/efforts?year=${year}`, setUserSegments);
+    const fetchDetails = async () => {
+      if (athleteId) {
+        try {
+          setLoading(true);
+          const [newUser, newEfforts] = await Promise.all([
+            getAthlete(athleteId),
+            getAthleteEfforts(athleteId, year),
+          ]);
+
+          setUser(newUser);
+          setUserSegments(newEfforts);
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchDetails();
   }, [athleteId, year]);
 
-  const makeSegmentRow = (segment: UserSegment, index: number) => {
+  const makeSegmentRow = (segment: UserSegment) => {
     let timeDiff = 0;
     let compSegment = null;
     let compActLink = null;
@@ -88,14 +154,6 @@ const AthleteDetail = () => {
         compActLink = `${compSegment.bestActId}/segments/${compSegment.bestEffortId}`;
       }
     }
-
-    const isBehind = timeDiff > 0;
-    const isAhead = timeDiff < 0;
-
-    const negStyle = { color: "red" };
-    const posStyle = { color: "green" };
-
-    timeDiff = Math.abs(timeDiff);
 
     return (
       <React.Fragment key={segment.segmentId}>
@@ -144,9 +202,8 @@ const AthleteDetail = () => {
                   </a>
                 )}
               </TableCell>
-              <TableCell sx={isBehind ? negStyle : isAhead ? posStyle : {}}>
-                {isAhead ? "-" : isBehind ? "+" : ""}
-                {timeDiff ? formattedTime(timeDiff) : "--"}
+              <TableCell>
+                <TimeDisplay time={timeDiff} />
               </TableCell>
             </React.Fragment>
           )}
@@ -171,6 +228,18 @@ const AthleteDetail = () => {
       return segment.bestTime === MAX_INT;
     }
   };
+
+  const roadDiff = React.useMemo(() => {
+    return calcDiff(roadSegments, compSegments);
+  }, [roadSegments, compSegments]);
+  const gravelDiff = React.useMemo(() => {
+    return calcDiff(gravelSegments, compSegments);
+  }, [gravelSegments, compSegments]);
+  const trailDiff = React.useMemo(() => {
+    return calcDiff(trailSegments, compSegments);
+  }, [trailSegments, compSegments]);
+
+  const totalDiff = roadDiff + gravelDiff + trailDiff;
 
   if (user) {
     return (
@@ -236,7 +305,14 @@ const AthleteDetail = () => {
                         <TableCell>
                           <SelectCompUser setCompSegments={setCompSegments} />
                         </TableCell>
-                        <TableCell>Diff +/-</TableCell>
+                        <TableCell>
+                          <Box
+                            sx={{ display: "flex", flexDirection: "column" }}
+                          >
+                            <TimeDisplay time={totalDiff} />
+                            Diff +/-
+                          </Box>
+                        </TableCell>
                       </React.Fragment>
                     )}
                 </TableRow>
@@ -247,6 +323,7 @@ const AthleteDetail = () => {
                     <Typography textAlign={"center"}>
                       Road Segments {roadCompletedCount} of{" "}
                       {roadSegments.length} completed
+                      <TimeDisplay time={roadDiff} />
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -261,6 +338,7 @@ const AthleteDetail = () => {
                     <Typography textAlign={"center"}>
                       Gravel Segments {gravelCompletedCount} of{" "}
                       {gravelSegments.length} completed
+                      <TimeDisplay time={gravelDiff} />
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -275,6 +353,7 @@ const AthleteDetail = () => {
                     <Typography textAlign={"center"}>
                       Trail Run Segments {trailCompletedCount} of{" "}
                       {trailSegments.length} completed
+                      <TimeDisplay time={trailDiff} />
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -287,7 +366,9 @@ const AthleteDetail = () => {
         )}
       </MyBox>
     );
-  } else if (user === null) {
+  } else if (loading) {
+    return <CircularProgress />;
+  } else if (user === null && !loading) {
     return <MyBox>Athlete Not found {athleteId}</MyBox>;
   } else {
     return null;

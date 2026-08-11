@@ -1,7 +1,7 @@
 import { YEARS } from "utils/constants";
 import type { User } from "./types/StravaUserDTO";
 
-type State = {
+export type AppState = {
   user: User | null;
   isPreSeason: boolean;
   isPostSeason: boolean;
@@ -15,10 +15,10 @@ type State = {
 
 type Action =
   | { type: "setUser"; user: User }
-  | { type: "setSettings"; settings: Partial<State> }
+  | { type: "setSettings"; settings: Partial<AppState> }
   | { type: "setYear"; year: string };
 
-export default function reducer(state: State, action: Action): State {
+export default function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
     case "setUser":
       return { ...state, user: action.user };
