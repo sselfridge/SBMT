@@ -36,8 +36,8 @@ const SelectCompUser = (props: SelectCompUserProps) => {
   const [compUser, setCompUser] = useState(meinUser);
   const [filterText, setFilterText] = useState("");
   const [selectIndex, setSelectIndex] = useState(-1);
-  const [loading, setLoading] = useState(true);
-  const [listLoading, setListLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [listLoading, setListLoading] = useState(false);
 
   const [open, setOpen] = useState(false);
   const anchorRef = React.useRef(null);

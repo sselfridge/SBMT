@@ -56,7 +56,7 @@ const TimeDisplay = (props: TimeDisplayProps) => {
     <Box
       sx={{
         display: "inline-flex",
-        color: isBehind ? "red" : isAhead ? "green" : "",
+        color: isAhead ? "green" : isBehind ? "red" : "",
       }}
     >
       {isAhead ? "-" : isBehind ? "+" : ""}
