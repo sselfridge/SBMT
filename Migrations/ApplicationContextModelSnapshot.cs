@@ -348,6 +348,24 @@ namespace TodoApi.Migrations
                     b.ToTable("Students");
                 });
 
+            modelBuilder.Entity("TodoApi.Models.db.UserActivity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserActivity");
+                });
+
             modelBuilder.Entity("StravaClubStravaUser", b =>
                 {
                     b.HasOne("TodoApi.Models.db.StravaClub", null)

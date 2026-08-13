@@ -9,6 +9,7 @@
 
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "ignoreDeprecations": "6.0",
 
     // Path aliases
     // `baseUrl: "src"` preserves existing bare imports (e.g. import AppContext from "AppContext")

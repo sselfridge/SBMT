@@ -100,6 +100,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IStravaService, StravaService>();
+builder.Services.AddScoped<IUserActivityService, UserActivityService>();
 builder.Services.AddSingleton(new StravaLimitService());
 
 builder.Services.AddHttpContextAccessor();
@@ -187,13 +188,14 @@ app.UseAuthentication();
 app.UseMiddleware<JwtMiddleware>();
 app.UseAuthorization();
 app.UseMiddleware<ResponseHeaderMiddleware>();
+app.UseMiddleware<UserActivityMiddleware>();
 
 app.Use(
   async (context, next) =>
   {
-    var request = context.Request;
-    var fullUrl = $"{request.Scheme}://{request.Host}{request.Path}{request.QueryString}";
-    Console.WriteLine($"{fullUrl}");
+    // var request = context.Request;
+    // var fullUrl = $"{request.Scheme}://{request.Host}{request.Path}{request.QueryString}";
+    // Console.WriteLine($"URL:{fullUrl}");
 
     await next();
   }
