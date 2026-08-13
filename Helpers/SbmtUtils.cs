@@ -52,18 +52,25 @@ namespace TodoApi.Helpers
       Dictionary<int, Dictionary<long, int>> effortGroup
     )
     {
-      var cookieEfforts = effortGroup[cookieUserId];
-      var userEfforts = effortGroup[userId];
       var total = 0;
-
-      foreach (KeyValuePair<long, int> effort in cookieEfforts)
+      try
       {
-        var segId = effort.Key;
-        var userEffort = userEfforts.FirstOrDefault(x => x.Key == segId);
-        if (userEffort.Value != 0)
+        var cookieEfforts = effortGroup[cookieUserId];
+        var userEfforts = effortGroup[userId];
+
+        foreach (KeyValuePair<long, int> effort in cookieEfforts)
         {
-          total = total + (effort.Value - userEffort.Value);
+          var segId = effort.Key;
+          var userEffort = userEfforts.FirstOrDefault(x => x.Key == segId);
+          if (userEffort.Value != 0)
+          {
+            total = total + (effort.Value - userEffort.Value);
+          }
         }
+      }
+      catch (System.Exception)
+      {
+        return 0;
       }
 
       return total;
