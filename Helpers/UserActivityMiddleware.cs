@@ -2,19 +2,13 @@
 {
   using TodoApi.Services;
 
-  //Taken from
-  //{
-  //  https://jasonwatmore.com/post/2021/12/14/net-6-jwt-authentication-tutorial-with-example-api
-  //}:
   public class UserActivityMiddleware
   {
     private readonly RequestDelegate _next;
-    private readonly IConfiguration Configuration;
 
-    public UserActivityMiddleware(RequestDelegate next, IConfiguration configuration)
+    public UserActivityMiddleware(RequestDelegate next)
     {
       _next = next;
-      Configuration = configuration;
     }
 
     public async Task Invoke(HttpContext context, IUserActivityService userActivityService)

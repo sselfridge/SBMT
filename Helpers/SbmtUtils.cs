@@ -54,7 +54,6 @@ namespace TodoApi.Helpers
     {
       var total = 0;
       try
-      //TODO - Add current user to filter list for the comparison
       {
         var cookieEfforts = effortGroup[cookieUserId];
         var userEfforts = effortGroup[userId];

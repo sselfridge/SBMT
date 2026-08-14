@@ -252,7 +252,7 @@ namespace TodoApi.Controllers
       {
         //Put user in list for timeDiff calc and flag to remove them from leaderboard payload
         currentUserNotInFilter = users.FindIndex(u => u.AthleteId == currentUser.AthleteId) == -1;
-        Console.WriteLine($"User in Filter:{currentUserNotInFilter}");
+        Console.WriteLine($"User NOT in Filter:{currentUserNotInFilter}");
         if (currentUserNotInFilter)
         {
           users.Add(currentUser);

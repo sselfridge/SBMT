@@ -190,16 +190,14 @@ app.UseAuthorization();
 app.UseMiddleware<ResponseHeaderMiddleware>();
 app.UseMiddleware<UserActivityMiddleware>();
 
-app.Use(
-  async (context, next) =>
-  {
-    // var request = context.Request;
-    // var fullUrl = $"{request.Scheme}://{request.Host}{request.Path}{request.QueryString}";
-    // Console.WriteLine($"URL:{fullUrl}");
+// app.Use(
+//   async (context, next) =>
+//   {
+//     //temp middleware goes here for basic testing
 
-    await next();
-  }
-);
+//     await next();
+//   }
+// );
 
 app.MapControllers();
 
