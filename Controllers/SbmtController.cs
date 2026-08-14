@@ -202,7 +202,6 @@ namespace TodoApi.Controllers
       if (cookieUser != null)
       {
         var currId = cookieUser.AthleteId;
-
         currentUser = users.Find(u => u.AthleteId == currId);
       }
 
@@ -248,6 +247,18 @@ namespace TodoApi.Controllers
         });
       }
 
+      var currentUserNotInFilter = false;
+      if (currentUser != null)
+      {
+        //Put user in list for timeDiff calc and flag to remove them from leaderboard payload
+        currentUserNotInFilter = users.FindIndex(u => u.AthleteId == currentUser.AthleteId) == -1;
+        Console.WriteLine($"User NOT in Filter:{currentUserNotInFilter}");
+        if (currentUserNotInFilter)
+        {
+          users.Add(currentUser);
+        }
+      }
+
       var data = users
         .Join(
           _dbContext.Efforts.Where(x => x.StartDate > kickOffDate && x.StartDate < endingDate),
@@ -270,7 +281,7 @@ namespace TodoApi.Controllers
         )
         .ToList();
 
-      //Effortgroup contains key of athleteID and value of a dict with <segId, EffortTime>
+      //EffortGroup contains key of athleteID and value of a dict with <segId, EffortTime>
       var effortGroup = new Dictionary<int, Dictionary<long, int>>();
 
       foreach (var entry in data)
@@ -317,9 +328,9 @@ namespace TodoApi.Controllers
         double totalDistance = 0;
         double totalElevation = 0;
         int diffFromCurrent = 0;
-        if (cookieUser != null)
+        if (currentUser != null)
         {
-          diffFromCurrent = SbmtUtils.CalcDiff(cookieUser.AthleteId, athleteId, effortGroup);
+          diffFromCurrent = SbmtUtils.CalcDiff(currentUser.AthleteId, athleteId, effortGroup);
         }
 
         foreach (KeyValuePair<long, int> effort in efforts)
@@ -353,6 +364,15 @@ namespace TodoApi.Controllers
           );
 
           leaderboard.Add(leaderboardEntry);
+        }
+      }
+
+      if (currentUserNotInFilter && currentUser != null)
+      {
+        var currLeader = leaderboard.FirstOrDefault(l => l.Id == currentUser.AthleteId);
+        if (currLeader != null)
+        {
+          leaderboard.Remove(currLeader);
         }
       }
 
