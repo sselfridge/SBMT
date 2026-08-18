@@ -23,6 +23,7 @@
 
     public async Task Invoke(HttpContext context, IUserService userService)
     {
+      //TODO - see about just adding athleteID here instead of looking up the user for every request
       attachUserToContext(context, userService);
 
       var date = DateTime.UtcNow;
@@ -84,6 +85,19 @@
         {
           context.Items["User"] = user;
           Console.WriteLine($"sbmtLog:user:{user.AthleteId} - {user.Firstname} {user.Lastname}");
+        }
+        else
+        {
+          Console.WriteLine($"sbmtLog:user not active");
+          StravaUser? newUser = userService.GetInactiveById(userId);
+          if (newUser != null)
+          {
+            context.Items["User"] = newUser;
+          }
+          else
+          {
+            Console.WriteLine($"sbmtLog:user:not found in DB");
+          }
         }
       }
       catch

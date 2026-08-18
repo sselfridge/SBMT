@@ -9,6 +9,7 @@
   {
     //StravaUser? GetById(int id);
     StravaUser? GetById(int id);
+    StravaUser? GetInactiveById(int id);
     Task Add(StravaUser user);
 
     //Task<StravaUser> Update(StravaUser user);
@@ -50,6 +51,28 @@
         }
 
         var user = context.StravaUsers.Where(x => x.Active).FirstOrDefault(x => x.AthleteId == id);
+        return user;
+      }
+    }
+
+    public StravaUser? GetInactiveById(int id)
+    {
+      using (var scope = _serviceScopeFactory.CreateScope())
+      {
+        var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
+        IConfiguration configuration = new ConfigurationBuilder()
+          .AddJsonFile("appsettings.json")
+          .Build();
+
+        var appAthleteIdStr = configuration["AppAthleteId"];
+
+        if ($"{id}" == appAthleteIdStr)
+        {
+          var appUser = context.StravaUsers.FirstOrDefault(x => x.AthleteId == id);
+          return appUser;
+        }
+
+        var user = context.StravaUsers.FirstOrDefault(x => x.AthleteId == id);
         return user;
       }
     }
