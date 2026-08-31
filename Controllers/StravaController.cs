@@ -84,7 +84,7 @@ namespace TodoApi.Controllers
       var oAuthUser = new OauthStravaUser(oAuth, scope);
       var cookie = GenerateJwtToken(oAuthUser.AthleteId);
 
-      HttpContext.Response.Cookies.Append("SBMT", cookie.ToString());
+      HttpContext.Response.Cookies.Append((Configuration["CookieName"]), cookie.ToString());
 
       var existingUser = _userService.GetById(oAuthUser.AthleteId);
       if (existingUser == null)

@@ -41,7 +41,8 @@
 
     private void attachUserToContext(HttpContext context, IUserService userService)
     {
-      var cookie = context.Request.Cookies["SBMT"];
+      var cookieName = (Configuration["CookieName"]);
+      var cookie = context.Request.Cookies[cookieName];
       if (cookie == null)
       {
         return;
