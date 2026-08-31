@@ -76,8 +76,6 @@ const Vote2026 = () => {
     }
   };
 
-  console.log("user: ", user);
-
   return (
     <MyPaper>
       {error && <Box>Error Submitting Vote, try again?</Box>}
