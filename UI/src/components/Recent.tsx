@@ -9,6 +9,7 @@ import {
   Avatar,
   useMediaQuery,
   Theme,
+  Button,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Link, useNavigate } from "react-router-dom";
@@ -185,6 +186,9 @@ const Recent = () => {
 
   return (
     <MyBox sx={{ width: "95vw", maxWidth: 1000 }}>
+      <Link to="/vote2026">
+        <Button>End of season Happy Hour - 9/12. Vote on time here</Button>
+      </Link>
       <Paper
         sx={{
           height: "100%",

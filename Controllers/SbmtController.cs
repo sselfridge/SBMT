@@ -655,7 +655,6 @@ namespace TodoApi.Controllers
     public IActionResult Logout()
     {
       HttpContext.Response.Cookies.Delete(Configuration["CookieName"]);
-
       return Ok("Cookie Deleted");
     }
 
@@ -781,6 +780,29 @@ namespace TodoApi.Controllers
       Console.WriteLine($"User (id:{athleteId}) triggered rescan for activityId:{id} ");
 
       await StravaUtilities.ParseNewActivity(_serviceScopeFactory, athleteId, id, 0);
+
+      return Ok();
+    }
+
+    [HttpGet("vote2026/{athleteId}/time/{time}")]
+    public async Task<IActionResult> VoteEndOfYear(int athleteID, string time)
+    {
+      var cookieUser = HttpContext.Items["User"] as StravaUser;
+      if (cookieUser == null)
+        return NotFound();
+
+      var cookieAthleteId = cookieUser.AthleteId;
+
+      if (athleteID != cookieAthleteId)
+      {
+        return Forbid();
+      }
+
+      var vote = new Feedback($"vote2026 voted for {time}");
+      vote.AthleteId = athleteID;
+
+      _dbContext.Feedback.Add(vote);
+      await _dbContext.SaveChangesAsync();
 
       return Ok();
     }

@@ -33,3 +33,9 @@ export const getAthleteEfforts = async (
   const response = await Api.get(url);
   return response.data;
 };
+
+export const vote2026 = async (athleteId: string | number, time: string) => {
+  const url = `/api/vote2026/${athleteId}/time/${time}`;
+  const response = await Api.get(url);
+  return response.data;
+};

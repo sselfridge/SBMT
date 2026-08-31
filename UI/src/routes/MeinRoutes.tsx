@@ -18,6 +18,7 @@ import Info from "components/Info";
 import InfoScopes from "components/InfoScopes";
 import InfoTerms from "components/InfoTerms";
 import UserInfo from "components/UserInfo";
+import Vote2026 from "components/Vote2026";
 import BetaRedirect from "./BetaRedirect";
 // import Landing from "components/LandingPage/LandingPage";
 
@@ -81,6 +82,8 @@ const MeinRoutes = () => {
           </Route>
 
           <Route path="UserInfo" element={<UserInfo />} />
+          <Route path="Vote2026" element={<Vote2026 />} />
+
           <Route path="StravaOops" element={<StravaOops />} />
 
           {isAdmin && (
