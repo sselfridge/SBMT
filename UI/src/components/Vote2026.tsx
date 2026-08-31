@@ -98,15 +98,16 @@ const Vote2026 = () => {
               {user.lastname}
             </span>
             <Box>
-              <Box>
-                Having an end of the season happy hour / awards ceremony at{" "}
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                <span>Having an end of the season happy hour</span>
                 <Link to="https://maps.app.goo.gl/nj5CNrJKS9u6yahP8">
                   Sama Llama San Roque
                 </Link>
-                on <br /> Saturday September 12.
+                3435 State St, Santa Barbara, CA 93105
+                <span>Saturday September 12.</span>
               </Box>
-              What time would you be able to make? Check all that apply{" "}
             </Box>
+            What time would you be able to make? Check all that apply
             <Box sx={{ width: "100%", color: "black" }}>
               <FormControl fullWidth>
                 <FormControlLabel
