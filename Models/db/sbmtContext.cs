@@ -16,5 +16,6 @@ namespace TodoApi.Models.db
     public DbSet<Segment> Segments { get; set; }
     public DbSet<StravaClub> StravaClubs { get; set; }
     public DbSet<Feedback> Feedback { get; set; }
+    public DbSet<UserActivity> UserActivity { get; set; }
   }
 }

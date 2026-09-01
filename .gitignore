@@ -9,3 +9,4 @@ env/Staging.env
 env/Development.env
 env/Production.env
 env/Common.env
+/TodoApi.csproj.lscache

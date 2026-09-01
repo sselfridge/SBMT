@@ -1,6 +1,8 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.Repositories;
 using Microsoft.EntityFrameworkCore;
 using TodoApi.Helpers;
 using TodoApi.Models.db;
@@ -34,8 +36,7 @@ string? dbUser = Environment.GetEnvironmentVariable("DB_USER");
 string? dbName = Environment.GetEnvironmentVariable("DB_NAME");
 string dbSsl = configuration["DbConfig:sslMode"];
 
-bool includeError = bool.Parse(configuration["DbConfig:includeError"]);
-bool enableSensitiveDataLogging = bool.Parse(configuration["DbConfig:enableSensitiveDataLogging"]);
+// use scripts/load_env.sh to setup ENV before migration
 
 if (string.IsNullOrEmpty(dbServer))
 {
@@ -57,6 +58,9 @@ if (string.IsNullOrEmpty(dbName))
 {
   throw new Exception("Invalid ENV value for: dbName");
 }
+
+bool includeError = bool.Parse(configuration["DbConfig:includeError"]);
+bool enableSensitiveDataLogging = bool.Parse(configuration["DbConfig:enableSensitiveDataLogging"]);
 
 string connectionString =
   $""
@@ -96,9 +100,32 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IStravaService, StravaService>();
+builder.Services.AddScoped<IUserActivityService, UserActivityService>();
 builder.Services.AddSingleton(new StravaLimitService());
 
 builder.Services.AddHttpContextAccessor();
+
+// Configure data protection to use environment variable for key storage
+var masterKey = Environment.GetEnvironmentVariable("DATA_PROTECTION_KEY");
+if (masterKey == null && env == "Production")
+{
+  throw new Exception("Missing DATA_PROTECTION_KEY");
+}
+else if (masterKey == null)
+{
+  masterKey = "defaultValue";
+  Console.WriteLine("No DATA_PROTECTION_KEY set in lower ENV");
+}
+
+var xmlRepo = new SimpleKeyRepository(masterKey);
+
+builder
+  .Services.AddDataProtection()
+  .AddKeyManagementOptions(options =>
+  {
+    options.XmlRepository = new SimpleKeyRepository(masterKey);
+  });
+
 builder.Services.AddSingleton<IAuthorizationHandler, AdminAuthHandler>();
 builder
   .Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -161,17 +188,16 @@ app.UseAuthentication();
 app.UseMiddleware<JwtMiddleware>();
 app.UseAuthorization();
 app.UseMiddleware<ResponseHeaderMiddleware>();
+app.UseMiddleware<UserActivityMiddleware>();
 
-app.Use(
-  async (context, next) =>
-  {
-    var request = context.Request;
-    var fullUrl = $"{request.Scheme}://{request.Host}{request.Path}{request.QueryString}";
-    Console.WriteLine($"{fullUrl}");
+// app.Use(
+//   async (context, next) =>
+//   {
+//     //temp middleware goes here for basic testing
 
-    await next();
-  }
-);
+//     await next();
+//   }
+// );
 
 app.MapControllers();
 

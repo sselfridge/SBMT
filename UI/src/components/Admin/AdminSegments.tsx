@@ -1,0 +1,400 @@
+import React from "react";
+import _ from "lodash";
+import {
+  Box,
+  Button,
+  Paper,
+  TextField,
+  Typography,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  Autocomplete,
+  CircularProgress,
+} from "@mui/material";
+import Checkbox from "@mui/material/Checkbox";
+
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+
+import { styled } from "@mui/material/styles";
+import {
+  DataGrid,
+  type GridColDef,
+  GridToolbar,
+  type GridRowId,
+} from "@mui/x-data-grid";
+import { ApiGet, ApiPut } from "api/api";
+import { useNavigate, Link } from "react-router-dom";
+
+import AppContext from "AppContext";
+import StravaButton from "components/Shared/StravaButton";
+import { ApiPost } from "api/api";
+import { metersToMiles } from "utils/helperFuncs";
+import { ApiDelete } from "api/api";
+import { surfaceList, YEARS, SURFACE } from "utils/constants";
+import {
+  updateSegment as updateSegmentAPI,
+  refreshAdminSegments,
+} from "@/services/segment";
+
+import type { Segment } from "@/types/db/Segment";
+
+type SegmentField = "surfaceType" | "years" | "routeId";
+interface RouteIdFieldProps {
+  id: GridRowId;
+  value: string | null;
+  updateSegment: (id: GridRowId, fieldName: SegmentField, value: any) => void;
+}
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
+
+const MyBox = styled(Box)(({ theme }) => ({
+  width: "80vw",
+  backgroundColor: theme.palette.background.paper,
+}));
+
+const RouteIdField = (props: RouteIdFieldProps) => {
+  const { id, value, updateSegment } = props;
+  const [localVal, setLocalVal] = React.useState<string>(value || "");
+  const autoSaveRef = React.useRef(0);
+
+  const clearAutoSave = () => {
+    clearTimeout(autoSaveRef.current);
+    autoSaveRef.current = 0;
+  };
+  return (
+    <TextField
+      sx={{ width: "100%" }}
+      value={localVal}
+      onBlur={(e) => {
+        if (autoSaveRef.current) updateSegment(id, "routeId", localVal);
+        clearAutoSave();
+      }}
+      onChange={(e) => {
+        setLocalVal(e.target.value);
+        clearAutoSave();
+        autoSaveRef.current = setTimeout(() => {
+          updateSegment(id, "routeId", e.target.value);
+        }, 750);
+      }}
+    />
+  );
+};
+
+const AdminSegments = () => {
+  const { user } = React.useContext(AppContext);
+  const [segments, setSegments] = React.useState<Segment[]>([]);
+
+  const [newSegment, setNewSegment] = React.useState<Segment | null>(null);
+  const navigate = useNavigate();
+
+  const [segmentId, setSegmentId] = React.useState<string | null>(null);
+  const [surfaceType, setSurfaceType] = React.useState(SURFACE.road);
+
+  const [yearCopyFrom, setYearCopyFrom] = React.useState<string>("");
+  const [yearCopyTo, setYearCopyTo] = React.useState<string>("");
+
+  const [updating, setUpdating] = React.useState(false);
+  const [msg, setMsg] = React.useState("");
+
+  const refreshSegments = React.useCallback(async () => {
+    // ApiGet("/api/admin/segments", setSegments, null);
+    try {
+      setUpdating(true);
+      const updatedSegments = await refreshAdminSegments();
+      setSegments(updatedSegments);
+    } catch (err) {
+      setMsg("Error refreshing segments");
+    } finally {
+      setUpdating(false);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    refreshSegments();
+  }, [refreshSegments]);
+
+  const addSegment = () => {
+    ApiPost(
+      `/api/admin/segments/${segmentId}?surfaceType=${surfaceType}`,
+      {},
+      (newSegment) => {
+        setNewSegment(newSegment);
+        refreshSegments();
+      },
+      () => setNewSegment({ name: "Segment Already exists" } as Segment),
+    );
+  };
+
+  const updateSegment = async (
+    segmentId: any,
+    field: SegmentField,
+    newVal: any,
+  ) => {
+    const segment = segments.find((s) => s.id === segmentId);
+    const newSeg = _.cloneDeep(segment);
+
+    if (field === "routeId" && !newVal) newVal = null;
+
+    if (newSeg) {
+      (newSeg as any)[field] = newVal;
+      try {
+        setUpdating(true);
+        await updateSegmentAPI(newSeg);
+        await refreshSegments();
+        setMsg("");
+      } catch (err) {
+        console.error(err);
+        setMsg("Error Updating");
+      } finally {
+        setUpdating(false);
+      }
+    }
+  };
+
+  const copySegmentYear = (to: string, from: string) => {
+    const newSegments = _.cloneDeep(segments);
+
+    newSegments.forEach((s) => {
+      if (s.years.includes(from) && !s.years.includes(to)) {
+        const yearArr = s.years.split(",");
+        yearArr.push(to);
+        s.years = yearArr.join(",");
+        setTimeout(() => {
+          updateSegment(s.id, "years", s.years);
+        }, 500);
+      }
+    });
+  };
+
+  React.useEffect(() => {
+    if (user?.athleteId && user.athleteId !== 1075670) {
+      navigate("/");
+    }
+  }, [navigate, user?.athleteId]);
+
+  const columns = [
+    {
+      field: "name",
+      headerName: "Segment",
+      flex: 10,
+      renderCell: (cell) => {
+        const { value, id } = cell;
+        return <Link to={`${id}`}>{value}</Link>;
+      },
+    },
+    {
+      field: "surfaceType",
+      headerName: "Surface",
+      flex: 5,
+      renderCell: (params) => {
+        const { value, id } = params;
+        return (
+          <Autocomplete
+            sx={{ width: "100%" }}
+            options={surfaceList.filter(
+              (s) => s !== SURFACE.all && s !== SURFACE.bikes,
+            )}
+            value={value}
+            filterOptions={(v) => v}
+            onChange={(e, newVal) => {
+              updateSegment(id, "surfaceType", newVal);
+            }}
+            renderInput={(props) => {
+              return <TextField {...props} />;
+            }}
+          />
+        );
+      },
+    },
+    {
+      field: "years",
+      headerName: "Season",
+      flex: 15,
+      renderCell: (params) => {
+        const { value, id } = params;
+        const yearsArr = value.split(",") || [];
+
+        return (
+          <Autocomplete
+            options={YEARS}
+            multiple
+            disableCloseOnSelect
+            disableClearable
+            limitTags={1}
+            value={yearsArr}
+            onChange={(e, newVal) => {
+              updateSegment(id, "years", newVal.join(","));
+            }}
+            renderInput={(props) => {
+              return <TextField {...props} />;
+            }}
+            renderTags={(tags) => (
+              <div>
+                {tags.map((v, i) => `${v}${i === tags.length - 1 ? "" : ","}`)}
+              </div>
+            )}
+            renderOption={(params, option, { selected }) => {
+              const { key, ...optionProps } = params;
+              return (
+                <li key={key} {...optionProps}>
+                  <Checkbox
+                    icon={icon}
+                    checkedIcon={checkedIcon}
+                    style={{ marginRight: 8 }}
+                    checked={selected}
+                  />
+                  {option}
+                </li>
+              );
+            }}
+          />
+        );
+      },
+    },
+    {
+      field: "routeId",
+      headerName: "Route Id",
+      renderCell: (params) => {
+        const { value, id } = params;
+        return (
+          <RouteIdField id={id} value={value} updateSegment={updateSegment} />
+        );
+      },
+    },
+    {
+      field: "id",
+      headerName: "Action",
+      minWidth: 4,
+      renderCell: (cell) => {
+        const { id } = cell;
+        return (
+          <Button
+            onClick={() => {
+              ApiDelete(`/api/admin/segments/${id}`, refreshSegments);
+            }}
+            sx={{ backgroundColor: "red" }}
+          >
+            Delete
+          </Button>
+        );
+      },
+    },
+  ] as GridColDef<Segment>[];
+
+  if (!user) {
+    return null;
+  }
+
+  return (
+    <MyBox>
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Box
+          sx={{
+            display: "flex",
+            color: "black",
+            p: 1,
+            justifyContent: "space-between",
+            gap: 1,
+            width: "100%",
+          }}
+        >
+          <Button
+            onClick={() => {
+              navigate("/admin");
+            }}
+          >
+            Back to Admin
+          </Button>
+          <Box sx={{ display: "flex" }}>
+            <TextField
+              label="Segment ID"
+              value={segmentId || ""}
+              onChange={(e) => setSegmentId(e.target.value)}
+            />
+            <Box>
+              <FormControl>
+                <InputLabel id="surfaceSelectLabel">Surface</InputLabel>
+                <Select
+                  labelId="surfaceSelectLabel"
+                  label="Surface"
+                  value={surfaceType}
+                  onChange={(e) => setSurfaceType(e.target.value)}
+                >
+                  <MenuItem value={SURFACE.road}>Road</MenuItem>
+                  <MenuItem value={SURFACE.gravel}>Gravel</MenuItem>
+                  <MenuItem value={SURFACE.trail}>Trail Run</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+            <Button onClick={addSegment}>Add Segment</Button>
+            {newSegment && (
+              <Paper>
+                <Typography>Name: {newSegment?.name}</Typography>
+                <Typography>
+                  Distance: {metersToMiles(newSegment?.distance)}mi
+                </Typography>
+              </Paper>
+            )}
+          </Box>
+          <Box sx={{ display: "flex" }}>
+            <Autocomplete
+              sx={{ width: "130px" }}
+              options={YEARS}
+              onChange={(e, newVal) => {
+                if (newVal) setYearCopyTo(newVal);
+              }}
+              renderInput={(props) => {
+                return <TextField label="New Season" {...props} />;
+              }}
+            />
+            <Autocomplete
+              sx={{ width: "130px" }}
+              options={YEARS}
+              onChange={(e, newVal) => {
+                if (newVal) setYearCopyFrom(newVal);
+              }}
+              renderInput={(props) => {
+                return <TextField label="Copy From" {...props} />;
+              }}
+            />
+            <Button onClick={() => copySegmentYear(yearCopyTo, yearCopyFrom)}>
+              Copy
+            </Button>
+          </Box>
+        </Box>
+
+        {segments === null && <StravaButton text={"Refresh Admin Cookie"} />}
+      </Box>
+      <Box sx={{ height: 40, color: "error.main", display: "flex" }}>
+        {msg}
+        {updating && <CircularProgress />}
+      </Box>
+      <DataGrid
+        slots={{ toolbar: GridToolbar }}
+        initialState={{
+          sorting: {
+            sortModel: [{ field: "name", sort: "asc" }],
+          },
+        }}
+        rows={segments || []}
+        columns={columns}
+        disableColumnMenu
+        hideFooter={true}
+        sx={{
+          boxShadow: 2,
+          border: 2,
+          height: "80vh",
+          borderColor: "primary.light",
+          "& .MuiDataGrid-cell:hover": {
+            color: "primary.main",
+          },
+        }}
+      />
+    </MyBox>
+  );
+};
+
+export default AdminSegments;

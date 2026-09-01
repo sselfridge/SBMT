@@ -23,16 +23,11 @@
 
     public async Task Invoke(HttpContext context, IUserService userService)
     {
-      // keep this to remind/shame me into doing proper auth headers
-      //var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-
-
-      //attachUserToContext(context, userService);
+      //TODO - see about just adding athleteID here instead of looking up the user for every request
+      attachUserToContext(context, userService);
 
       var date = DateTime.UtcNow;
       TimeZoneInfo tzi = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
-
-      // it's a simple one-liner
       DateTime pacific = TimeZoneInfo.ConvertTimeFromUtc(date, tzi);
 
       Console.WriteLine(
@@ -46,50 +41,19 @@
 
     private void attachUserToContext(HttpContext context, IUserService userService)
     {
-      var cookieId = context.User.Claims.FirstOrDefault(c => c.Type == "AthleteId")?.Value;
-
-      if (cookieId != null)
+      var cookieName = (Configuration["CookieName"]);
+      var cookie = context.Request.Cookies[cookieName];
+      if (cookie == null)
       {
-        var athleteId = int.Parse(cookieId);
-        StravaUser? user = userService.GetById(athleteId);
-        if (user != null)
-        {
-          context.Items["User"] = user;
-          Console.WriteLine($"sbmtLog:user:{user.AthleteId} - {user.Firstname} {user.Lastname}");
-        }
+        return;
       }
+      attachUserToContext(context, userService, cookie);
 
-      Console.WriteLine("allo");
+      Console.WriteLine("AttachUserToContext");
     }
 
     private void attachUserToContext(HttpContext context, IUserService userService, string token)
     {
-      //Old invocation of this:
-      //var token = context.Request.Cookies["SBMT"];
-      //if (token != null)
-      //  attachUserToContext(context, userService, token);
-
-      // JWT generation from stravaController
-      //private string GenerateJwtToken(int id)
-      //{
-      //  // generate token that is valid for 30 days
-      //  var tokenHandler = new JwtSecurityTokenHandler();
-      //  var jwtKey = Configuration["jwtKey"];
-      //  var key = Encoding.ASCII.GetBytes(jwtKey);
-      //  var tokenDescriptor = new SecurityTokenDescriptor
-      //  {
-      //    Subject = new ClaimsIdentity(new[] { new Claim("id", id.ToString()) }),
-      //    Expires = DateTime.UtcNow.AddDays(300),
-      //    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-      //  };
-      //  var token = tokenHandler.CreateToken(tokenDescriptor);
-      //  return tokenHandler.WriteToken(token);
-      //}
-
-      //Added on login:
-      //var cookie = GenerateJwtToken(oAuthUser.AthleteId);
-      //HttpContext.Response.Cookies.Append("SBMT", cookie.ToString());
-
       try
       {
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -108,7 +72,7 @@
             ValidateIssuer = false,
             ValidateAudience = false,
             // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
-            ClockSkew = TimeSpan.Zero,
+            // ClockSkew = TimeSpan.Zero,
           },
           out SecurityToken validatedToken
         );
@@ -122,6 +86,19 @@
         {
           context.Items["User"] = user;
           Console.WriteLine($"sbmtLog:user:{user.AthleteId} - {user.Firstname} {user.Lastname}");
+        }
+        else
+        {
+          Console.WriteLine($"sbmtLog:user not active");
+          StravaUser? newUser = userService.GetInactiveById(userId);
+          if (newUser != null)
+          {
+            context.Items["User"] = newUser;
+          }
+          else
+          {
+            Console.WriteLine($"sbmtLog:user:not found in DB");
+          }
         }
       }
       catch

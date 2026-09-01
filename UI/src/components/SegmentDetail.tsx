@@ -1,0 +1,288 @@
+import React, { useState, useEffect } from "react";
+import {
+  Paper,
+  Typography,
+  Box,
+  Grid,
+  Table,
+  TableHead,
+  TableCell,
+  TableRow,
+  TableBody,
+  Avatar,
+  Alert,
+  Button,
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
+import { Link, useParams } from "react-router-dom";
+
+//@ts-ignore --svg import
+import { ReactComponent as StravaLogo } from "assets/stravaLogoTransparent.svg";
+
+import SegmentDetailMap from "./SegmentDetailMap";
+import { ApiGet } from "api/api";
+import { deepFreeze, metersToMiles, metersToFeet } from "utils/helperFuncs";
+import AppContext from "AppContext";
+// import { MAX_INT } from "utils/constants";
+import { formattedTime } from "utils/helperFuncs";
+import { GENDER, genderList } from "utils/constants";
+import TempCountdown from "./LandingPage/TempCountdown";
+import { Segment } from "@/types/db/Segment";
+import { SegmentLeaderboard } from "@/types/SegmentLeaderboard";
+import { getSegmentDetail } from "@/services/segment";
+const MyBox = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.background.paper,
+  padding: 8,
+  borderRadius: 4,
+}));
+
+interface SegmentDetail {
+  value: string;
+  label: string;
+}
+
+const Segments = () => {
+  let { segmentId: segmentIdStr } = useParams();
+  let segmentId: number | null = Number(segmentIdStr);
+
+  segmentId = Number.isNaN(segmentId) ? null : segmentId;
+  const [segment, setSegment] = useState<Segment>({} as Segment);
+  // const [userEfforts, setUserEfforts] = useState(null);
+  const [fullLeaderboard, setFullLeaderboard] =
+    useState<SegmentLeaderboard | null>(null);
+  const [sexFilter, setSexFilter] = useState<string>(genderList[0]);
+  const [segmentLeaderboard, setSegmentLeaderboard] =
+    useState<SegmentLeaderboard | null>(null);
+
+  const { user, isPreSeason, year } = React.useContext(AppContext);
+
+  const isAdmin = user?.athleteId === 1075670;
+
+  useEffect(() => {
+    const fetchSegment = async () => {
+      if (segmentId) {
+        const response = await getSegmentDetail(segmentId, year);
+        setSegment(response);
+      }
+    };
+
+    fetchSegment();
+  }, [segmentId, year]);
+
+  useEffect(() => {
+    if (!fullLeaderboard) return;
+    setSegmentLeaderboard(
+      fullLeaderboard.filter((s) => {
+        if (sexFilter === GENDER.all) return true;
+        return s.sex === sexFilter;
+      }),
+    );
+  }, [fullLeaderboard, sexFilter]);
+
+  useEffect(() => {
+    if (segmentId) {
+      ApiGet(
+        `/api/segments/${segmentId}/leaderboard?year=${year}`,
+        setFullLeaderboard,
+      );
+    }
+  }, [segmentId, year]);
+
+  const details: SegmentDetail[] = deepFreeze([
+    {
+      label: "Distance",
+      value: `${metersToMiles(segment.distance)} miles`,
+    },
+    {
+      label: "Elevation Gain",
+      value: `${metersToFeet(segment.totalElevationGain)} ft`,
+    },
+    { label: "KOM/QOM", value: `${segment.kom} / ${segment.qom}` },
+    { label: "Has been ridden:", value: `${segment.effortCount} times` },
+    { label: "by ", value: `${segment.athleteCount} people` },
+    {
+      label: "Thats roughly ",
+      value: `${(segment.effortCount / segment.athleteCount).toFixed(
+        2,
+      )} times each`,
+    },
+    {
+      label: "Segment Page",
+      value: (
+        <a
+          style={{
+            display: "flex",
+            alignItems: "center",
+            whiteSpace: "nowrap",
+          }}
+          href={`https://www.strava.com/segments/${segment.id}`}
+        >
+          <StravaLogo style={{ height: 40 }} />
+          View on Strava
+        </a>
+      ),
+    },
+    {
+      label: "Route",
+      value: segment.routeId ? (
+        <Box sx={{ display: "flex" }}>
+          <a
+            style={{
+              display: "flex",
+              alignItems: "center",
+              whiteSpace: "nowrap",
+            }}
+            href={`https://www.strava.com/routes/${segment.routeId}`}
+          >
+            <StravaLogo style={{ height: 40 }} />
+            Route
+          </a>
+        </Box>
+      ) : null,
+    },
+  ]);
+
+  const missingSeason = segment && segment?.years?.includes(year) === false;
+
+  return (
+    <MyBox>
+      <Box>
+        <Typography
+          variant="h4"
+          sx={{
+            fontSize: "min(50px,4vw)",
+            borderBottomColor: "secondary.main",
+            borderBottomWidth: 4,
+            borderBottomStyle: "solid",
+            mb: 1,
+          }}
+        >
+          {segment.name}
+        </Typography>
+        {missingSeason && (
+          <Alert severity="error">
+            This segment isn't part of the selected season: {year}.{" "}
+            <Link to={"/segments"}>Go back to Segments</Link>
+          </Alert>
+        )}
+      </Box>
+      <Grid container spacing={1} sx={{ width: "90vw" }}>
+        <Grid item xs={12} md={6}>
+          <Box
+            sx={{
+              display: "grid",
+              gridGap: "10px",
+              gridTemplateColumns: "150px 150px",
+              justifyContent: "center",
+            }}
+          >
+            {details.map((d, i) => {
+              if (!d.value) return null;
+              return (
+                // eslint-disable-next-line react/no-array-index-key
+                <React.Fragment key={i}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography>{d.label}</Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography>{d.value}</Typography>
+                  </Box>
+                </React.Fragment>
+              );
+            })}
+          </Box>
+          {/* <Typography>Your efforts:</Typography>
+          {segmentEfforts.map((e) => (
+            <div>
+              {e.segmentName} - {formattedTime(e.bestTime)}
+            </div>
+          ))} */}
+          {isPreSeason && <TempCountdown banner={"Segment leaderboard"} />}
+          <Box
+            sx={{
+              display: "flex",
+              width: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+              mt: 3,
+            }}
+          >
+            <Typography variant="h5">Segment Leaderboard</Typography>
+            <Button
+              variant="text"
+              sx={{ color: "primary.main" }}
+              onClick={() =>
+                setSexFilter((v) => {
+                  let idx = genderList.findIndex((g) => g === sexFilter);
+                  idx += 1;
+                  idx %= genderList.length;
+                  return genderList[idx];
+                })
+              }
+            >
+              {sexFilter === GENDER.all && "M/F"}
+              {sexFilter === GENDER.female && "F"}
+              {sexFilter === GENDER.male && "M"}
+            </Button>
+          </Box>
+          {!segmentLeaderboard?.length && <Box>Leaderboard is empty</Box>}
+          {!!segmentLeaderboard?.length && (!isPreSeason || isAdmin) && (
+            <React.Fragment>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Rank</TableCell>
+                    <TableCell>Athlete</TableCell>
+                    <TableCell>Time</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {segmentLeaderboard.map((e, i) => {
+                    return (
+                      <TableRow key={e.athleteId}>
+                        <TableCell>{i + 1}</TableCell>
+                        <TableCell>
+                          <Link
+                            style={{ display: "flex", alignItems: "center" }}
+                            to={`/athletes/${e.athleteId}`}
+                          >
+                            <Avatar src={e.avatar} sx={{ mr: 1 }} />
+                            {e.firstname} {e.lastname}
+                          </Link>
+                        </TableCell>
+                        <TableCell>
+                          <a
+                            href={`https://www.strava.com/activities/${e.activityId}/segments/${e.id}`}
+                          >
+                            {formattedTime(e.elapsedTime)}
+                          </a>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </React.Fragment>
+          )}
+        </Grid>
+        <Grid item xs={12} md={6} sx={{ height: "80vh" }}>
+          <SegmentDetailMap segment={segment} />
+        </Grid>
+      </Grid>
+    </MyBox>
+  );
+};
+
+export default Segments;

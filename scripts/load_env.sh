@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+# set -e
 # Run from root `source "./scripts/load_env.sh [env]"`
 
 # The ugly bit we don't want to do but avoids so much of this pain
@@ -19,12 +19,12 @@ else
     
     if [[ $# -ge 1 ]]; then
         case "$1" in
-            dev|stg|prod)
+            dev|stg|prod|stgDb|localProd)
                 environment="$1"
             ;;
             *)
                 echo "Invalid argument: $1"
-                echo "Usage: source $0 [dev|stg|prod]"
+                echo "Usage: source $0 [dev|stg|prod|stgDb|localProd]"
             ;;
         esac
         elif [[ $# -eq 0 ]]; then
@@ -40,6 +40,12 @@ else
         ;;
         prod)
             env=Production
+        ;;
+        stgDb)
+            env=StagingDB
+        ;;
+        localProd)
+            env=LocalProd
         ;;
         *)
             env=Development

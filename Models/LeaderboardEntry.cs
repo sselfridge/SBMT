@@ -15,6 +15,7 @@
     public double RecentElevation { get; set; }
     public string Category { get; set; }
     public int SegmentCount { get; set; }
+    public int TimeDiff { get; set; }
 
     public LeaderboardEntry(
       int athleteId,
@@ -27,7 +28,8 @@
       double recentDistance,
       double recentElevation,
       string category,
-      int segmentCount
+      int segmentCount,
+      int timeDiff
     )
     {
       Id = athleteId;
@@ -41,6 +43,7 @@
       RecentElevation = recentElevation;
       Category = category;
       SegmentCount = segmentCount;
+      TimeDiff = timeDiff;
       rank = 0;
     }
   }

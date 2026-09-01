@@ -1,0 +1,375 @@
+import React, { useState, useMemo } from "react";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
+
+import { DataGrid } from "@mui/x-data-grid";
+import { Box, Paper, Typography, Button } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import Filters from "./Filters";
+
+import { ALL_COLUMNS, MOBILE_COLUMNS, YEARS } from "utils/constants";
+import { formattedTime, metersToMiles, metersToFeet } from "utils/helperFuncs";
+import { ApiGet } from "api/api";
+import { Link, useSearchParams } from "react-router-dom";
+
+import LeaderboardAthleteCell from "./LeaderboardAthleteCell";
+import AppContext from "AppContext";
+import { format, parseISO } from "date-fns";
+
+import type { LeaderboardEntry } from "@/types/LeaderboardEntry";
+import type {
+  GridColDef,
+  GridRenderCellParams,
+  GridColumnVisibilityModel,
+} from "@mui/x-data-grid";
+// import type { Filters as FilterType } from "@/types/Filters"; //TODO
+
+const MainBox = styled(Box)(({ theme }) => {
+  return {
+    backgroundColor: theme.palette.background.paper,
+    padding: 8,
+    borderRadius: 4,
+    height: "90vh",
+    width: "95vw",
+    maxWidth: 1000,
+    overflow: "auto",
+  };
+});
+
+const LEADERBOARD_URL = "/api/leaderboard";
+
+const Leaderboard = () => {
+  const theme = useTheme();
+  const isMobile = !useMediaQuery(theme.breakpoints.up("sm"));
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const yearParam = searchParams.get("year");
+
+  const [columnVisible, setColumnVisible] =
+    React.useState<GridColumnVisibilityModel>(ALL_COLUMNS);
+  const [loading, setLoading] = useState(true);
+
+  const { year, kickOffDate, dispatch, user } = React.useContext(AppContext);
+  const userLoggedIn = !!user.athleteId;
+
+  //sync appContext year with
+  React.useEffect(() => {
+    if (yearParam && year !== yearParam) {
+      dispatch({ type: "setYear", yearParam });
+    }
+  }, [dispatch, year, yearParam]);
+
+  React.useEffect(() => {
+    const newColumns = isMobile ? MOBILE_COLUMNS : ALL_COLUMNS;
+    if (userLoggedIn) {
+      newColumns.timeDiff = true;
+    }
+    setColumnVisible(newColumns);
+  }, [isMobile]);
+
+  const [rows, setRows] = useState<LeaderboardEntry[]>([]);
+
+  const onLoad = React.useCallback((data: LeaderboardEntry[]) => {
+    setRows(data);
+    setLoading(false);
+  }, []);
+
+  const onApplyFilters = React.useCallback(
+    (filters: any) => {
+      //TODO - fix any type^
+      setSearchParams((params) => {
+        const simpleFilters = [
+          "surface",
+          "gender",
+          "age",
+          "category",
+          "distance",
+          "elevation",
+        ];
+
+        if (year !== YEARS[0]) {
+          params.set("year", year);
+        }
+
+        simpleFilters.forEach((name) => {
+          if (filters?.[name] && filters[name] !== "ALL") {
+            params.set(name, filters[name]);
+          } else {
+            params.delete(name);
+          }
+        });
+
+        if (filters?.club !== "0") {
+          params.set("club", filters.club);
+        } else {
+          params.delete("club");
+        }
+
+        let url = LEADERBOARD_URL + "/?" + params.toString();
+        ApiGet(url, onLoad);
+
+        return params;
+      });
+    },
+    [onLoad, setSearchParams, year],
+  );
+
+  const columns = useMemo<GridColDef<LeaderboardEntry>[]>(() => {
+    return [
+      {
+        minWidth: 40,
+        flex: 4,
+        field: "rank",
+        sortable: false,
+        headerName: "",
+      },
+      {
+        flex: 35,
+        field: "athlete",
+        sortable: false,
+        headerName: "Athlete",
+
+        renderCell: LeaderboardAthleteCell,
+      },
+      {
+        flex: 13,
+        field: "completedDesktop",
+        sortable: false,
+        headerName: "Completed",
+        align: "right",
+        // valueGetter: ({ row }) => `${row.completed}`,
+        renderCell: (cell: GridRenderCellParams) => {
+          const { row } = cell;
+          const { completed, segmentCount } = row;
+
+          const completedTotalPercent = Math.floor(
+            (completed / segmentCount) * 100,
+          );
+
+          return (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-evenly",
+                flexDirection: "column",
+                flexGrow: 50,
+              }}
+            >
+              {completed}
+              <Box sx={{ display: "flex", width: "100%" }}>
+                <Box
+                  sx={{
+                    width: `${completedTotalPercent}%`,
+                    backgroundColor: "secondary.main",
+                    height: "5px",
+                  }}
+                />
+                <Box
+                  sx={{
+                    width: `${100 - completedTotalPercent}%`,
+                    backgroundColor: "primary.main",
+                    height: "5px",
+                  }}
+                />
+              </Box>
+            </Box>
+          );
+        },
+      },
+      {
+        flex: 8,
+        minWidth: 30,
+        field: "completedMobile",
+        sortable: false,
+        headerName: "#",
+        headerAlign: "right",
+        align: "right",
+        renderCell: (cell: GridRenderCellParams) => {
+          const { row } = cell;
+          const { completed, segmentCount } = row;
+
+          const completedTotalPercent = Math.floor(
+            (completed / segmentCount) * 100,
+          );
+
+          return (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                flexDirection: "row",
+                flexGrow: 50,
+              }}
+            >
+              <Box>{completed}</Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-end",
+                  height: "40px",
+                  width: "100%",
+                }}
+              >
+                <Box
+                  sx={{
+                    width: `5px`,
+                    backgroundColor: "primary.main",
+                    height: `${100 - completedTotalPercent}%`,
+                  }}
+                />
+                <Box
+                  sx={{
+                    width: "5px",
+                    backgroundColor: "secondary.main",
+                    height: `${completedTotalPercent}%`,
+                  }}
+                />
+              </Box>
+            </Box>
+          );
+        },
+      },
+      {
+        flex: 25,
+        field: "totalDistance",
+        sortable: false,
+        headerName: "Distance Total",
+        headerAlign: "right",
+        align: "right",
+        renderCell: ({ value }) => `${metersToMiles(value)} mi`,
+      },
+      {
+        field: "totalElevation",
+        sortable: false,
+        headerName: "Elevation Total",
+        headerAlign: "right",
+        align: "right",
+        flex: 25,
+        renderCell: ({ value }) => `${metersToFeet(value ?? 0)} ft`,
+      },
+      {
+        field: "totalTimeDesktop",
+        sortable: false,
+        headerName: "Total Time",
+        align: "center",
+        headerAlign: "center",
+        flex: 30,
+        valueGetter: ({ row }) => row.totalTime,
+        renderCell: (cell) => {
+          const { value } = cell;
+          return formattedTime(value);
+        },
+      },
+      {
+        field: "totalTimeMobile",
+        sortable: false,
+        headerName: "Total Time",
+        align: "right",
+        headerAlign: "right",
+        flex: 18,
+        valueGetter: ({ row }) => row.totalTime,
+        renderCell: (cell) => {
+          const { value } = cell;
+          return formattedTime(value, true);
+        },
+      },
+      {
+        field: "timeDiff",
+        sortable: false,
+        headerName: "Time Diff",
+        align: "right",
+        headerAlign: "right",
+        flex: 15,
+        description:
+          "Time difference on segments you've both completed. Red is you're behind, green you're ahead.",
+        valueGetter: ({ row }) => row.timeDiff,
+        renderCell: (cell) => {
+          const { value } = cell;
+          const absVal = Math.abs(value);
+          const isNeg = value <= 0;
+          const formatTime = formattedTime(absVal, true);
+          return (
+            <Box sx={{ color: isNeg ? "green" : "red" }}>{formatTime}</Box>
+          );
+        },
+      },
+    ];
+  }, []);
+
+  let kickOffLabel = "the start";
+  try {
+    if (kickOffDate) {
+      const date = parseISO(kickOffDate);
+      kickOffLabel = format(date, "EEEE LLL do, yyyy");
+    }
+  } catch (error) {
+    console.error("error: ", error);
+  }
+
+  return (
+    <MainBox sx={{}}>
+      <Paper
+        sx={{
+          height: "100%",
+          width: "100%",
+          boxShadow: "none",
+          overflow: "scroll",
+        }}
+      >
+        <Filters onApplyFilters={onApplyFilters} searchParams={searchParams} />
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          loading={loading}
+          disableColumnMenu
+          hideFooter={true}
+          columnVisibilityModel={columnVisible}
+          localeText={{ noRowsLabel: "The leaderboard is empty...for now" }}
+          initialState={
+            {
+              //need to sort by 2 fields, only supported by MDG pro so handling sort on server
+              //sorting: {sortModel: [{ field: "rank", sort: "asc" }],},
+            }
+          }
+          sx={{
+            boxShadow: 2,
+            border: 2,
+            borderColor: "primary.light",
+            "& .MuiDataGrid-cell:hover": {
+              color: "primary.main",
+            },
+            // maxHeight: "85vh",
+          }}
+        />
+        <Paper sx={{ fontSize: ".8em" }}>
+          <Link to="../recent">
+            <Button sx={{ mb: 3 }}>View Recent Efforts</Button>
+          </Link>
+          <Typography variant="h4">Current Leaderboard Rules</Typography>
+          <ul>
+            <li>
+              All efforts on{" "}
+              <Link style={{ margin: "4px 0" }} to="/segments">
+                {" "}
+                SBMT segments{" "}
+              </Link>{" "}
+              from {kickOffLabel} onward
+            </li>
+            <li>
+              Ranking is based first on total segments completed and second on
+              lowest total time.
+            </li>
+            <li>Each segment only counts once, lowest total time is taken</li>
+            <li>Sub-leaderboards based on segment surface + gender</li>
+            <li>Time Diff is based on segments you've both completed</li>
+          </ul>
+        </Paper>
+      </Paper>
+    </MainBox>
+  );
+};
+
+export default Leaderboard;

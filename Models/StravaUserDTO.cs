@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using TodoApi.Models.db;
 
@@ -21,6 +22,7 @@ namespace TodoApi.Models
     public double RecentElevation { get; set; }
     public Filters? SavedFilters { get; set; }
     public bool Active { get; set; }
+    public bool MailingList { get; set; }
 
     [JsonConstructor]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
@@ -55,6 +57,24 @@ namespace TodoApi.Models
       RecentDistance = user.RecentDistance;
       RecentElevation = user.RecentElevation;
       Active = user.Active;
+      MailingList = user.MailingList;
+    }
+  }
+
+  public class StravaUserWithEmailDTO : StravaUserDTO
+  {
+    [EmailAddress]
+    public string Email { get; set; }
+
+    [JsonConstructor]
+#pragma warning disable CS8618
+    public StravaUserWithEmailDTO() { }
+#pragma warning restore CS8618
+
+    public StravaUserWithEmailDTO(StravaUser user)
+      : base(user)
+    {
+      Email = user.Email;
     }
   }
 }

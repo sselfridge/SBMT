@@ -21,11 +21,9 @@ namespace TodoApi.Controllers
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Feedback>>> GetUsers()
+    public async Task<ActionResult<IEnumerable<Feedback>>> GetFeedback()
     {
-      //return await _context.Feedback.ToListAsync();
-
-      var feedbacks = _context.Feedback.ToList();
+      var feedbacks = _context.Feedback.OrderByDescending(x => x.CreatedDate).ToList();
 
       var users = _context.StravaUsers.ToList();
 
@@ -49,6 +47,38 @@ namespace TodoApi.Controllers
       }
 
       return Ok(data);
+    }
+
+    [HttpPatch("{id}")]
+    public async Task<ActionResult<FeedbackDTO>> ToggleRead(string id)
+    {
+      var feedback = await _context.Feedback.FindAsync(id);
+      if (feedback == null)
+      {
+        return NotFound();
+      }
+
+      feedback.Read = !feedback.Read;
+      _context.Update(feedback);
+      await _context.SaveChangesAsync();
+
+      var athleteId = feedback.AthleteId;
+      var users = _context.StravaUsers.ToList();
+
+      var user = users.Find(u => u.AthleteId == athleteId);
+
+      FeedbackDTO newFeedback;
+
+      if (user == null)
+      {
+        newFeedback = new FeedbackDTO(feedback);
+      }
+      else
+      {
+        newFeedback = new FeedbackDTO(feedback, user);
+      }
+
+      return Ok(newFeedback);
     }
 
     [HttpDelete("{id}")]

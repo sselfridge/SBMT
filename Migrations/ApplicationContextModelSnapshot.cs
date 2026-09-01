@@ -91,6 +91,12 @@ namespace TodoApi.Migrations
                     b.Property<int>("AthleteId")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("Read")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasColumnType("text");
@@ -156,6 +162,9 @@ namespace TodoApi.Migrations
 
                     b.Property<long>("ResourceState")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("RouteId")
+                        .HasColumnType("text");
 
                     b.Property<float[]>("StartLatlng")
                         .IsRequired()
@@ -260,6 +269,10 @@ namespace TodoApi.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<long>("ExpiresAt")
                         .HasColumnType("bigint");
 
@@ -273,6 +286,9 @@ namespace TodoApi.Migrations
                     b.Property<string>("Lastname")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("MailingList")
+                        .HasColumnType("boolean");
 
                     b.Property<double>("RecentDistance")
                         .HasColumnType("double precision");
@@ -330,6 +346,24 @@ namespace TodoApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Students");
+                });
+
+            modelBuilder.Entity("TodoApi.Models.db.UserActivity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserActivity");
                 });
 
             modelBuilder.Entity("StravaClubStravaUser", b =>

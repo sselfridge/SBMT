@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Net;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -191,18 +192,16 @@ namespace TodoApi.Controllers
         allSegment = allSegment.FindAll(s => s.SurfaceType == "gravel" || s.SurfaceType == "road");
       }
 
-      //TODO - Add year filter for users.  Active is only for current year/season
       var users = _dbContext
         .StravaUsers.Where(x => x.Years.Contains(year))
         .Include(x => x.StravaClubs)
         .ToList();
 
-      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
+      var cookieUser = HttpContext.Items["User"] as StravaUser;
       StravaUser? currentUser = null;
-      if (userId != null)
+      if (cookieUser != null)
       {
-        var currId = Int32.Parse(userId);
-
+        var currId = cookieUser.AthleteId;
         currentUser = users.Find(u => u.AthleteId == currId);
       }
 
@@ -248,6 +247,18 @@ namespace TodoApi.Controllers
         });
       }
 
+      var currentUserNotInFilter = false;
+      if (currentUser != null)
+      {
+        //Put user in list for timeDiff calc and flag to remove them from leaderboard payload
+        currentUserNotInFilter = users.FindIndex(u => u.AthleteId == currentUser.AthleteId) == -1;
+        Console.WriteLine($"User NOT in Filter:{currentUserNotInFilter}");
+        if (currentUserNotInFilter)
+        {
+          users.Add(currentUser);
+        }
+      }
+
       var data = users
         .Join(
           _dbContext.Efforts.Where(x => x.StartDate > kickOffDate && x.StartDate < endingDate),
@@ -270,7 +281,7 @@ namespace TodoApi.Controllers
         )
         .ToList();
 
-      //Effortgroup contains key of athleteID and value of a dict with <segId, EffortTime>
+      //EffortGroup contains key of athleteID and value of a dict with <segId, EffortTime>
       var effortGroup = new Dictionary<int, Dictionary<long, int>>();
 
       foreach (var entry in data)
@@ -316,6 +327,11 @@ namespace TodoApi.Controllers
         int totalTime = 0;
         double totalDistance = 0;
         double totalElevation = 0;
+        int diffFromCurrent = 0;
+        if (currentUser != null)
+        {
+          diffFromCurrent = SbmtUtils.CalcDiff(currentUser.AthleteId, athleteId, effortGroup);
+        }
 
         foreach (KeyValuePair<long, int> effort in efforts)
         {
@@ -343,10 +359,20 @@ namespace TodoApi.Controllers
             user.RecentDistance,
             user.RecentElevation,
             user.Category,
-            segmentCount
+            segmentCount,
+            diffFromCurrent
           );
 
           leaderboard.Add(leaderboardEntry);
+        }
+      }
+
+      if (currentUserNotInFilter && currentUser != null)
+      {
+        var currLeader = leaderboard.FirstOrDefault(l => l.Id == currentUser.AthleteId);
+        if (currLeader != null)
+        {
+          leaderboard.Remove(currLeader);
         }
       }
 
@@ -387,10 +413,11 @@ namespace TodoApi.Controllers
     [HttpPost("saveFilters")]
     public IActionResult saveFilters([FromBody] Filters filters)
     {
-      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
-      if (userId == null)
+      var cookieUser = HttpContext.Items["User"] as StravaUser;
+
+      if (cookieUser == null)
         return Unauthorized();
-      var cookieAthleteId = Int32.Parse(userId);
+      var cookieAthleteId = cookieUser.AthleteId;
 
       var strFilters = JsonSerializer.Serialize(filters);
 
@@ -455,7 +482,7 @@ namespace TodoApi.Controllers
 
       var data = bestList
         .Join(
-          _dbContext.StravaUsers.Where(x => x.Active),
+          _dbContext.StravaUsers.Where(x => year == null ? x.Active : x.Years.Contains(year)),
           effort => effort.Key,
           user => user.AthleteId,
           (effort, user) =>
@@ -468,6 +495,7 @@ namespace TodoApi.Controllers
               firstname = user.Firstname,
               lastname = user.Lastname,
               avatar = user.Avatar,
+              sex = user.Sex,
             }
         )
         .ToList()
@@ -515,12 +543,12 @@ namespace TodoApi.Controllers
     [HttpGet("athletes/current")]
     public IActionResult GetCurrentAthlete()
     {
-      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
+      var cookieUser = HttpContext.Items["User"] as StravaUser;
 
-      if (userId == null)
+      if (cookieUser == null)
         return NotFound();
 
-      var athleteId = Int32.Parse(userId);
+      var athleteId = cookieUser.AthleteId;
       var possibleNullUser = _dbContext
         .StravaUsers.Include(x => x.StravaClubs)
         .FirstOrDefault(u => u.AthleteId == athleteId);
@@ -536,18 +564,20 @@ namespace TodoApi.Controllers
         club.StravaUsers = new List<StravaUser>();
       }
 
-      return Ok(new StravaUserDTO(user));
+      return Ok(new StravaUserWithEmailDTO(user));
     }
 
     [HttpPost("athletes/current")]
-    public async Task<IActionResult> UpdateCurrentAthleteAsync([FromBody] StravaUserDTO newUser)
+    public async Task<IActionResult> UpdateCurrentAthleteAsync(
+      [FromBody] StravaUserWithEmailDTO newUser
+    )
     {
-      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
+      var cookieUser = HttpContext.Items["User"] as StravaUser;
       var kickOffFetch = false;
-      if (userId == null)
+      if (cookieUser == null)
         return NotFound();
 
-      var athleteId = Int32.Parse(userId);
+      var athleteId = cookieUser.AthleteId;
       var dbUser = _dbContext
         .StravaUsers.Include(x => x.StravaClubs)
         .FirstOrDefault(u => u.AthleteId == athleteId);
@@ -569,6 +599,8 @@ namespace TodoApi.Controllers
       {
         dbUser.Age = newUser.Age;
         dbUser.Category = newUser.Category;
+        dbUser.Email = newUser.Email;
+        dbUser.MailingList = newUser.MailingList;
         _dbContext.Update(dbUser);
         await _dbContext.SaveChangesAsync();
 
@@ -577,7 +609,7 @@ namespace TodoApi.Controllers
           StravaUtilities.KickOffInitialFetch(_serviceScopeFactory, newUser.AthleteId);
         }
 
-        return Ok(new StravaUserDTO(dbUser));
+        return Ok(new StravaUserWithEmailDTO(dbUser));
       }
       catch (Exception ex)
       {
@@ -623,7 +655,6 @@ namespace TodoApi.Controllers
     public IActionResult Logout()
     {
       HttpContext.Response.Cookies.Delete(Configuration["CookieName"]);
-
       return Ok("Cookie Deleted");
     }
 
@@ -631,10 +662,10 @@ namespace TodoApi.Controllers
     public IActionResult SubmitFeedback([FromBody] Feedback feedback)
     {
       Console.WriteLine(feedback);
-      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
-      if (userId != null)
+      var cookieUser = HttpContext.Items["User"] as StravaUser;
+      if (cookieUser != null)
       {
-        var athleteId = Int32.Parse(userId);
+        var athleteId = cookieUser.AthleteId;
         feedback.AthleteId = athleteId;
       }
 
@@ -653,10 +684,10 @@ namespace TodoApi.Controllers
     [HttpDelete("athletes/{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
-      if (userId == null)
+      var cookieUser = HttpContext.Items["User"] as StravaUser;
+      if (cookieUser == null)
         return NotFound();
-      var athleteId = Int32.Parse(userId);
+      var athleteId = cookieUser.AthleteId;
 
       if (id != athleteId)
         return Unauthorized();
@@ -713,19 +744,65 @@ namespace TodoApi.Controllers
       return Ok(activityId);
     }
 
-    [HttpGet("rescanactivity/{id}")]
+    [HttpGet("rescanActivity/{id}")]
     //[ResponseCache(Duration = 360)]
 
     public async Task<IActionResult> RescanActivity(long id)
     {
-      var userId = HttpContext.User.FindFirst("AthleteId")?.Value;
-      if (userId == null)
+      var cookieUser = HttpContext.Items["User"] as StravaUser;
+      if (cookieUser == null)
         return NotFound();
-      var athleteId = Int32.Parse(userId);
+      var athleteId = cookieUser.AthleteId;
 
       Console.WriteLine($"User (id:{athleteId}) triggered rescan for activityId:{id} ");
 
       await StravaUtilities.ParseNewActivity(_serviceScopeFactory, athleteId, id, 0);
+
+      return Ok();
+    }
+
+    [HttpGet("rescanActivity/{id}/athlete/{athleteId}")]
+    public async Task<IActionResult> RescanActivityAthlete(long id, int athleteId)
+    {
+      var cookieUser = HttpContext.Items["User"] as StravaUser;
+      if (cookieUser == null)
+        return NotFound();
+
+      var cookieAthleteId = cookieUser.AthleteId;
+
+      var adminId = Int32.Parse(SbmtUtils.getConfigVal("StravaConfig:rootAthleteId"));
+
+      if (cookieAthleteId != adminId)
+      {
+        return Forbid();
+      }
+
+      Console.WriteLine($"User (id:{athleteId}) triggered rescan for activityId:{id} ");
+
+      await StravaUtilities.ParseNewActivity(_serviceScopeFactory, athleteId, id, 0);
+
+      return Ok();
+    }
+
+    [HttpGet("vote2026/{athleteId}/time/{time}")]
+    public async Task<IActionResult> VoteEndOfYear(int athleteID, string time)
+    {
+      var cookieUser = HttpContext.Items["User"] as StravaUser;
+      if (cookieUser == null)
+        return NotFound();
+
+      var cookieAthleteId = cookieUser.AthleteId;
+
+      if (athleteID != cookieAthleteId)
+      {
+        return Forbid();
+      }
+
+      var vote = new Feedback($"vote2026 voted for {time}");
+      vote.AthleteId = athleteID;
+
+      _dbContext.Feedback.Add(vote);
+      await _dbContext.SaveChangesAsync();
 
       return Ok();
     }

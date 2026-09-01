@@ -25,6 +25,8 @@ namespace TodoApi.Services
     StravaUser UpdateUserClubs(int athleteId, List<StravaClub> newClubs);
     StravaUser UpdateUserClubs(int athleteId, StravaClubResponse[] newClubs);
 
+    Task<int> UpdateSegmentsXoms(string year);
+
     Task<bool> UpdateClubs();
 
     Task<StravaUser> UpdateUserStats(StravaUser user);
@@ -398,6 +400,59 @@ namespace TodoApi.Services
       return true;
     }
 
+    public async Task<int> UpdateSegmentsXoms(string year)
+    {
+      var client = await GetClientForUser(1);
+      var scope = _serviceScopeFactory.CreateScope();
+      var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
+
+      var segments = context.Segments.Where(x => x.Years.Contains(year)).ToList();
+      var results = await Task.WhenAll(segments.Select(seg => GetSegment(seg.Id)));
+
+      var count = 0;
+      foreach (var updated in results)
+      {
+        var didUpdate = false;
+        var updateString = "";
+        var toUpdate = segments.Where(x => x.Id == updated.Id).FirstOrDefault();
+        if (toUpdate == null)
+          continue;
+
+        if (toUpdate.Kom != updated.Kom)
+        {
+          updateString += $" Kom {updated.Id} Before: {toUpdate.Kom} After: {updated.Kom} ";
+          toUpdate.Kom = updated.Kom;
+          didUpdate = true;
+          count++;
+        }
+
+        if (toUpdate.Qom != updated.Qom)
+        {
+          toUpdate.Qom = updated.Qom;
+          updateString += $" QOM {updated.Id} Before: {toUpdate.Qom} After: {updated.Qom} ";
+
+          didUpdate = true;
+          count++;
+        }
+
+        if (didUpdate)
+        {
+          Console.WriteLine(updateString);
+          var newStudent = new Student();
+          newStudent.Name = updateString;
+          DateTime dateTime = DateTime.Now;
+          int dateAsInt = dateTime.Year * 10000 + dateTime.Month * 100 + dateTime.Day;
+          newStudent.Age = dateAsInt;
+          context.Add(newStudent);
+          context.Update(toUpdate);
+        }
+      }
+
+      context.SaveChanges();
+
+      return count;
+    }
+
     public async Task<string> ParseLink(string link)
     {
       var client = new HttpClient();
@@ -448,13 +503,15 @@ namespace TodoApi.Services
     ///
     private async Task<T> GetStrava<T>(HttpClient client, string url)
     {
-      Console.WriteLine($"sbmtLog:Making StravaCall:{url}");
+      Console.WriteLine($"sbmtLog:Making GetStravaCall:{url}");
       var response = await client.GetAsync($"https://www.strava.com/api/v3{url}");
       if (response.IsSuccessStatusCode)
       {
         try
         {
-          T? result = await response.Content.ReadFromJsonAsync<T>();
+          string rawJson = await response.Content.ReadAsStringAsync();
+          // Console.WriteLine(rawJson);
+          T? result = JsonSerializer.Deserialize<T>(rawJson);
           var limit = response.Headers.GetValues("X-RateLimit-Limit");
           var usage = response.Headers.GetValues("X-RateLimit-Usage");
 
@@ -491,7 +548,7 @@ namespace TodoApi.Services
 
     private async Task<string> GetStravaString(HttpClient client, string url)
     {
-      Console.WriteLine($"sbmtLog:Making StravaCall:{url}");
+      Console.WriteLine($"sbmtLog:Making GetStravaStringCall:{url}");
 
       var response = await client.GetAsync($"https://www.strava.com/api/v3{url}");
       if (response.IsSuccessStatusCode)

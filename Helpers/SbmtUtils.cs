@@ -9,12 +9,6 @@ namespace TodoApi.Helpers
       return DateTime.Parse(kickOffDateStr).ToUniversalTime();
     }
 
-    public static DateTime getEndingDate()
-    {
-      var endingDateStr = getConfigVal("EndingDate");
-      return DateTime.Parse(endingDateStr).ToUniversalTime();
-    }
-
     public static string getCurrentYear()
     {
       var year = getConfigVal("CurrentYear");
@@ -50,6 +44,36 @@ namespace TodoApi.Helpers
         return yearList; // Already exists, return as is
 
       return string.IsNullOrWhiteSpace(yearList) ? year.ToString() : $"{yearList},{year}";
+    }
+
+    public static int CalcDiff(
+      int cookieUserId,
+      int userId,
+      Dictionary<int, Dictionary<long, int>> effortGroup
+    )
+    {
+      var total = 0;
+      try
+      {
+        var cookieEfforts = effortGroup[cookieUserId];
+        var userEfforts = effortGroup[userId];
+
+        foreach (KeyValuePair<long, int> effort in cookieEfforts)
+        {
+          var segId = effort.Key;
+          var userEffort = userEfforts.FirstOrDefault(x => x.Key == segId);
+          if (userEffort.Value != 0)
+          {
+            total = total + (effort.Value - userEffort.Value);
+          }
+        }
+      }
+      catch (System.Exception)
+      {
+        return 0;
+      }
+
+      return total;
     }
   }
 }
