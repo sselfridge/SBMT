@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Paper, Typography, Divider } from "@mui/material";
+import { Box, Paper, Typography, Divider, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import RescanActivity from "./RescanActivity";
@@ -65,6 +65,22 @@ const HelpContact = () => {
             <a href="mailTo:Sam.Selfridge@gmail.com?subject=SBMT">
               Sam.Selfridge@gmail.com
             </a>
+          </Typography>
+        </Box>
+        <Box>
+          <Typography align="center" variant="h5">
+            SBMT Feedback - might not get it very fast, haven't hooked this up
+            to notifications yet.
+          </Typography>
+          <Typography variant="h5">
+            <Button
+              onClick={() => {
+                const feedbackFob = document.getElementById("add_feedback_fab");
+                if (feedbackFob) feedbackFob.click();
+              }}
+            >
+              Leave Feedback
+            </Button>
           </Typography>
         </Box>
         <Divider />

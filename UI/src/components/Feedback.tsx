@@ -41,7 +41,12 @@ const Feedback = () => {
   return (
     <Box sx={{ position: "fixed", bottom: "20px", right: "20px" }}>
       {!showText && (
-        <Fab color="primary" aria-label="add" onClick={() => setShowText(true)}>
+        <Fab
+          color="primary"
+          aria-label="add"
+          id="add_feedback_fab"
+          onClick={() => setShowText(true)}
+        >
           <AddCommentIcon />
         </Fab>
       )}

@@ -110,7 +110,7 @@ namespace TodoApi.Helpers
       return new Effort(segEffort);
     }
 
-    public static void KickOffInitialFetch(IServiceScopeFactory serviceScopeFactory, int athleteId,long unixTime)
+    public static void KickOffInitialFetch(IServiceScopeFactory serviceScopeFactory, int athleteId)
     {
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
       Task.Run(async () =>
@@ -121,7 +121,7 @@ namespace TodoApi.Helpers
           {
             var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
             var stravaService = scope.ServiceProvider.GetRequiredService<IStravaService>();
-            var activities = await stravaService.GetActivitiesSinceDate(athleteId,unixTime);
+            var activities = await stravaService.GetActivities(athleteId);
 
             Console.WriteLine(
               $"sbmtLog: athleteId:{athleteId} onboarding with {activities.Count} activities"
@@ -182,119 +182,117 @@ namespace TodoApi.Helpers
       int delayAmount
     )
     {
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-      Task.Run(async () =>
-      {
-        await Task.Delay(delayAmount);
+      await Task.Delay(delayAmount);
 
-        using (var scope = serviceScopeFactory.CreateScope())
+      using (var scope = serviceScopeFactory.CreateScope())
+      {
+        try
         {
-          try
+          Console.WriteLine(
+            $"sbmtLog: parsing new activity {activityId} for athlete:{athleteId} with delay:{delayAmount}"
+          );
+
+          var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
+          var stravaService = scope.ServiceProvider.GetRequiredService<IStravaService>();
+
+          var activity = await stravaService.GetActivity(activityId, athleteId);
+
+          if (activity == null)
+          {
+            Console.WriteLine($"sbmtLog: activity {activityId} is null, aborting");
+            return true;
+          }
+
+          var year = SbmtUtils.getCurrentYear();
+          var kickOffDate = SbmtUtils.getKickOffDate(year);
+          var endingDate = SbmtUtils.getEndingDate(year);
+
+          DateTime startDate = activity.StartDate;
+          DateTime now = DateTime.UtcNow;
+          ;
+          if (startDate > endingDate)
+          {
+            Console.WriteLine($"sbmtLog: activity {activityId} is after the cut off date");
+            return true;
+          }
+
+          if (activity.SegmentEfforts == null)
           {
             Console.WriteLine(
-              $"sbmtLog: parsing new activity {activityId} for athlete:{athleteId} with delay:{delayAmount}"
+              $"sbmtLog:  activity {activityId} has no efforts on it (efforts were null)"
             );
+            return true;
+          }
 
-            var context = scope.ServiceProvider.GetRequiredService<sbmtContext>();
-            var stravaService = scope.ServiceProvider.GetRequiredService<IStravaService>();
-
-            var activity = await stravaService.GetActivity(activityId, athleteId);
-
-            if (activity == null)
-            {
-              Console.WriteLine($"sbmtLog:  activity {activityId} is null, aborting");
-              return;
-            }
-
-            var year = SbmtUtils.getCurrentYear();
-            var kickOffDate = SbmtUtils.getKickOffDate(year);
-            var endingDate = SbmtUtils.getEndingDate(year);
-
-            DateTime startDate = activity.StartDate;
-            DateTime now = DateTime.UtcNow;
-            ;
-            if (startDate > endingDate)
-            {
-              Console.WriteLine($"sbmtLog: activity {activityId} is after the cut off date");
-              return;
-            }
-
-            if (activity.SegmentEfforts == null)
-            {
-              Console.WriteLine(
-                $"sbmtLog:  activity {activityId} has no efforts on it (efforts were null)"
-              );
-              return;
-            }
-
+          Console.WriteLine(
+            $"sbmtLog:  activity {activityId} has {activity.SegmentEfforts.Length} efforts on it Delay was:{delayAmount}"
+          );
+          var initialDelay = 60000;
+          if (activity.SegmentEfforts.Length == 0 && delayAmount == 0)
+          {
+            var timeInMin = initialDelay / 1000 / 60;
+            Console.WriteLine($"sbmtLog: Retrying {activityId} in {timeInMin} minutes");
+            await ParseNewActivity(serviceScopeFactory, athleteId, activityId, initialDelay);
+            return true;
+          }
+          else if (activity.SegmentEfforts.Length == 0 && delayAmount != 0)
+          {
+            var timeInMin = delayAmount / 1000 / 60;
             Console.WriteLine(
-              $"sbmtLog:  activity {activityId} has {activity.SegmentEfforts.Length} efforts on it Delay was:{delayAmount}"
+              $"sbmtLog: Retried {activityId} after {timeInMin} minutes, still no segments"
             );
-            var initialDelay = 60000;
-            if (activity.SegmentEfforts.Length == 0 && delayAmount == 0)
+            if (delayAmount == initialDelay)
             {
-              var timeInMin = initialDelay / 1000 / 60;
-              Console.WriteLine($"sbmtLog: Retrying {activityId} in {timeInMin} minutes");
-              ParseNewActivity(serviceScopeFactory, athleteId, activityId, initialDelay);
-              return;
-            }
-            else if (activity.SegmentEfforts.Length == 0 && delayAmount != 0)
-            {
-              var timeInMin = delayAmount / 1000 / 60;
-              Console.WriteLine(
-                $"sbmtLog: Retried {activityId} after {timeInMin} minutes, still no segments"
-              );
-              if (delayAmount == initialDelay)
-              {
-                var newDelay = initialDelay + 1;
-                Console.WriteLine($"sbmtLog: Retrying {activityId} in {timeInMin} minutes + 1 sec");
-                ParseNewActivity(serviceScopeFactory, athleteId, activityId, newDelay);
-              }
-            }
-            else if (activity.SegmentEfforts.Length > 0 && delayAmount != 0)
-            {
-              var timeInMin = delayAmount / 1000 / 60;
-              Console.WriteLine(
-                $"sbmtLog: Successfully Retried {activityId} after {timeInMin} minutes with {activity.SegmentEfforts.Length} segments"
-              );
-            }
-            var segmentIds = context
-              .Segments.Where(x => x.Years.Contains(year))
-              .Select(s => s.Id)
-              .ToList();
-
-            var efforts = PullEffortsFromActivity(activity, segmentIds);
-
-            var newEfforts = new List<Effort>();
-
-            foreach (var effort in efforts)
-            {
-              if (context.Efforts.Any(e => e.Id == effort.Id) == false)
-              {
-                newEfforts.Add(effort);
-              }
-            }
-
-            if (newEfforts.Count > 0)
-            {
-              context.AddRange(newEfforts);
-              context.SaveChanges();
-
-              UpdateTopTen(context, newEfforts);
+              var newDelay = initialDelay + 1;
+              Console.WriteLine($"sbmtLog: Retrying {activityId} in {timeInMin} minutes + 1 sec");
+              await ParseNewActivity(serviceScopeFactory, athleteId, activityId, newDelay);
             }
           }
-          catch (Exception e)
+          else if (activity.SegmentEfforts.Length > 0 && delayAmount != 0)
           {
+            var timeInMin = delayAmount / 1000 / 60;
             Console.WriteLine(
-              $"sbmtLog:ERROR parsing activity {activityId} for athlete:{athleteId} "
+              $"sbmtLog: Successfully Retried {activityId} after {timeInMin} minutes with {activity.SegmentEfforts.Length} segments"
             );
-            Console.WriteLine(e.Message);
+          }
+          var segmentIds = context
+            .Segments.Where(x => x.Years.Contains(year))
+            .Select(s => s.Id)
+            .ToList();
+
+          var efforts = PullEffortsFromActivity(activity, segmentIds);
+          Console.WriteLine($"Found {efforts.Count} SBMT efforts");
+
+          var newEfforts = new List<Effort>();
+
+          var result = new RescanDTO();
+          result.SbmtEfforts = efforts.Count;
+          foreach (var effort in efforts)
+          {
+            if (context.Efforts.Any(e => e.Id == effort.Id) == false)
+            {
+              newEfforts.Add(effort);
+            }
+          }
+
+          if (newEfforts.Count > 0)
+          {
+            Console.WriteLine($" {newEfforts.Count} NEW SBMT efforts will be added to DB");
+            result.NewEfforts = newEfforts.Count;
+            context.AddRange(newEfforts);
+            context.SaveChanges();
+
+            UpdateTopTen(context, newEfforts);
           }
         }
-      });
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-
-      await Task.Delay(1);
+        catch (Exception e)
+        {
+          Console.WriteLine(
+            $"sbmtLog:ERROR parsing activity {activityId} for athlete:{athleteId} "
+          );
+          Console.WriteLine(e.Message);
+        }
+      }
 
       return true;
     }

@@ -556,7 +556,7 @@ namespace TodoApi.Controllers
       if (possibleNullUser == null)
         return NotFound();
 
-      StravaUser user = (StravaUser)possibleNullUser;
+      StravaUser user = possibleNullUser;
 
       //remove users from clubs (more data leaks)
       foreach (var club in user.StravaClubs)

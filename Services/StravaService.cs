@@ -127,7 +127,6 @@ namespace TodoApi.Services
 
     public async Task<List<ActivitySummaryResponse>> GetActivities(int athleteId)
     {
-      //TODO grab this from appSettings
       var year = SbmtUtils.getCurrentYear();
       var kickOffDate = SbmtUtils.getKickOffDate(year);
       long kickOffUnix = new DateTimeOffset(kickOffDate).ToUnixTimeSeconds();
