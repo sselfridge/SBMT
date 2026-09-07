@@ -39,3 +39,15 @@ export const vote2026 = async (athleteId: string | number, time: string) => {
   const response = await Api.get(url);
   return response.data;
 };
+
+export const rescanActivityLink = async (urlEncoded: string) => {
+  const url = `/api/rescanActivityLink/${urlEncoded}`;
+  const response = await Api.get(url);
+  return response.data;
+};
+
+export const rescanActivity = async (activityId: string) => {
+  const url = `/api/rescanActivity/${activityId}`;
+  const response = await Api.get(url);
+  return response.data;
+};

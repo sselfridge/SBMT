@@ -6,17 +6,19 @@ import {
   Button,
   useMediaQuery,
   useTheme,
+  CircularProgress,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { Link } from "react-router-dom";
-import { ApiGet } from "api/api";
 import AppContext from "AppContext";
 import StravaButton from "./Shared/StravaButton";
+import { rescanActivity, rescanActivityLink } from "@/services/sbmt";
 
 const MyBox = styled(Box)(({ theme }) => ({ padding: 8, borderRadius: 4 }));
 
-const linkRegex = /^https:\/\/strava.app.link\/.{8,20}$/;
+const appLinkRegex = /^https:\/\/strava.app.link\/.{8,20}$/;
+const webLinkRegex = /^https:\/\/www.strava.com\/activities\/(\d+)/;
 
 const RescanActivity = () => {
   const { user } = useContext(AppContext);
@@ -27,23 +29,27 @@ const RescanActivity = () => {
   const [disabled, setDisabled] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [helperText, setHelperText] = useState<string | React.ReactElement>("");
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const num = Number(input);
-
-    if (Number.isNaN(num)) {
-      const urlEncoded = encodeURIComponent(input);
-      ApiGet(`/api/rescanActivityLink/${urlEncoded}`, () => {
+    try {
+      setSubmitting(true);
+      if (Number.isNaN(num)) {
+        const urlEncoded = encodeURIComponent(input);
+        await rescanActivityLink(urlEncoded);
         setSubmitted(true);
         setInput("");
-      });
-    } else {
-      //activity number
-
-      ApiGet(`/api/rescanActivity/${num}`, () => {
+      } else {
+        //activity number
+        await rescanActivity(`${num}`);
         setSubmitted(true);
         setInput("");
-      });
+      }
+    } catch (error) {
+      console.error("rescan error", error);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -52,17 +58,23 @@ const RescanActivity = () => {
       const num = Number(input);
 
       if (Number.isNaN(num)) {
-        if (linkRegex.test(input)) {
+        if (appLinkRegex.test(input)) {
           setHelperText("");
 
           return false;
+        } else if (webLinkRegex.test(input)) {
+          const match = webLinkRegex.exec(input);
+          if (!match) return true;
+          setInput(match[1]);
+          return true;
         } else {
           setHelperText(
             <Box>
               <Box>Unsupported link format. Must be:</Box>
               <Box>https://strava.app.link/xxxxxxxxxx</Box>
+              <Box>https://www.strava.com/activities/xxxxxxx</Box>
               <Box>Or just Activity ID number</Box>
-            </Box>
+            </Box>,
           );
           return true;
         }
@@ -100,8 +112,6 @@ const RescanActivity = () => {
             </Box>
             <br /> Enter the ActivityID or StravaLink here to rescan.
             <br />
-            <br /> If you're still having issues, contact me via one of the
-            methods below
           </Box>
           <Box>
             <Box
@@ -118,8 +128,8 @@ const RescanActivity = () => {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
               />
-              <Button disabled={disabled} onClick={handleSubmit}>
-                Submit
+              <Button disabled={disabled || submitting} onClick={handleSubmit}>
+                {submitting ? <CircularProgress size={15} /> : `Rescan`}
               </Button>
               <Box sx={{ fontSize: 14, color: "error.main" }}>{helperText}</Box>
             </Box>
@@ -134,6 +144,10 @@ const RescanActivity = () => {
               it worked
             </Box>
           )}
+          <Box sx={{ fontSize: "0.75em" }}>
+            <br /> If you're still having issues, contact me via one of the
+            methods below
+          </Box>
         </Box>
       ) : (
         <Box>

@@ -197,7 +197,14 @@ const Recent = () => {
           overflow: "auto",
         }}
       >
-        <Typography variant="h4">Recent Efforts</Typography>
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <div>
+            <Typography variant="h4">Recent Efforts</Typography>
+            <Link to="/help">
+              <Typography>Activity missing? Rescan here</Typography>
+            </Link>
+          </div>
+        </Box>
         <DataGrid
           rows={sortedEfforts}
           loading={loading}

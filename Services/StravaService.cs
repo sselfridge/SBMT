@@ -14,6 +14,7 @@ namespace TodoApi.Services
     Task<ActivitySummaryResponse> GetActivity(long id, int athleteId);
     Task<ActivitySummaryResponse> GetActivity(long id, HttpClient client);
     Task<List<ActivitySummaryResponse>> GetActivities(int athleteId);
+    Task<List<ActivitySummaryResponse>> GetActivitiesSinceDate(int athleteId, long unixDate);
     Task<Segment> GetSegment(long segmentId);
     Task<StravaAthleteProfile> GetProfile(int athleteId);
 
@@ -126,17 +127,24 @@ namespace TodoApi.Services
 
     public async Task<List<ActivitySummaryResponse>> GetActivities(int athleteId)
     {
-      var client = await GetClientForUser(athleteId);
-
-      //TODO grab this from appSettings
       var year = SbmtUtils.getCurrentYear();
       var kickOffDate = SbmtUtils.getKickOffDate(year);
       long kickOffUnix = new DateTimeOffset(kickOffDate).ToUnixTimeSeconds();
 
+      return await GetActivitiesSinceDate(athleteId, kickOffUnix);
+    }
+
+    public async Task<List<ActivitySummaryResponse>> GetActivitiesSinceDate(
+      int athleteId,
+      long unixDate
+    )
+    {
+      var client = await GetClientForUser(athleteId);
+
       var url =
         $"/athlete/activities"
         + $"?before=1965868100"
-        + $"&after={kickOffUnix}"
+        + $"&after={unixDate}"
         + $"&page=1"
         + $"&per_page=200";
 
